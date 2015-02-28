@@ -1,0 +1,10 @@
+Version: 1.2.0
+ - unittest  
+	* [New] Add assert_not_eq
+ - decorators Add 
+	* [New] Add TraceUsedTime. For tracing used time in a function
+	* [Bug] Bug decorators.Singleton (May cause a thread hang)
+
+ - cup.bidu
+	* fix a bug which will block cup usage on windows
+	* add jenkins support
