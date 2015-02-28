@@ -1,0 +1,7 @@
+1. Installation
+    - run # python setup.py install
+
+2. Reference
+    - CUP use pexpect and httplib.
+      * Pexpect http://pexpect.sourceforge.net/ (under MIT license)
+      * Httplib2 http://code.google.com/p/httplib2/ (under MIT license)
