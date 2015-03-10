@@ -5,3 +5,6 @@
     - CUP use pexpect and httplib.
       * Pexpect http://pexpect.sourceforge.net/ (under MIT license)
       * Httplib2 http://code.google.com/p/httplib2/ (under MIT license)
+
+
+基础库的详细文档和API指南将在本周完成并上传， 敬请期待。
