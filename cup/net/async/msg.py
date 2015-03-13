@@ -39,7 +39,7 @@ class CMsgType(object):
         """
         register types
         """
-        for key_value in kvs.tems():
+        for key_value in kvs.items():
             self._type2number[key_value[0]] = key_value[1]
             self._number2type[str(key_value[1])] = key_value[0]
 
