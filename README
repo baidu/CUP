@@ -26,3 +26,5 @@ cup
 |-- unittest.py             模块|module             UT测试相关、assert、noseClass                      
 |-- util                    目录|package            线程池、可打断线程、Public/Configure配置文件python实现、数据生成器
 |-- version.py              模块|module             CUP版本号管理   
+
+docs中有详细的网页版库文档， 欢迎查看。 
