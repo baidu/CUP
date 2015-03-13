@@ -1,10 +1,28 @@
-1. Installation
-    - run # python setup.py install
-
-2. Reference
-    - CUP use pexpect and httplib.
-      * Pexpect http://pexpect.sourceforge.net/ (under MIT license)
-      * Httplib2 http://code.google.com/p/httplib2/ (under MIT license)
-
-
-基础库的详细文档和API指南将在本周完成并上传， 敬请期待。
+1. Installation                                                                                        
+    - run # python setup.py install                                                                    
+                                                                                                       
+2. Reference                                                                                           
+    - CUP use pexpect and httplib.                                                                     
+      * Pexpect http://pexpect.sourceforge.net/ (under MIT license)                                    
+      * Httplib2 http://code.google.com/p/httplib2/ (under MIT license)                                
+                                                                                                       
+基础库代码结构说明:                                                                                    
+cup                                                                                                    
+|-- bidu                    目录| package           baidu服务相关                 
+|-- cache.py                模块|module             缓存相关                                           
+|-- decorators.py           module                  通用修饰符                                         
+|-- err.py                  module                  CUP内部Exception处理                               
+|-- __init__.py             module                  CUP import处理模块                                 
+|-- log.py                  module                  CUP logging                                        
+|-- mail.py                 module                  CUP Email 发送模块                                 
+|-- net                     目录|package            网络操作、资源、异步通信框架                       
+|-- oper.py                 模块|module             各类混杂操作opertions                              
+|-- platforms.py            模块|module             跨平台相关保留module                               
+|-- res                     目录|package            机器资源信息获取、进程信息获取、监控等             
+|-- shell                   目录|package            shell操作、跨机执行、跨机数据传输等                
+|-- services                目录|package            心跳机制                                           
+|-- thirdp                  目录|package            第三方库： pexpect、httplib2、                     
+|-- timeplus.py             模块|module             时间操作函数                                       
+|-- unittest.py             模块|module             UT测试相关、assert、noseClass                      
+|-- util                    目录|package            线程池、可打断线程、Public/Configure配置文件python实现、数据生成器
+|-- version.py              模块|module             CUP版本号管理   
