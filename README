@@ -4,7 +4,9 @@
 2. Reference                                                                                           
     - CUP use pexpect and httplib.                                                                     
       * Pexpect http://pexpect.sourceforge.net/ (under MIT license)                                    
-      * Httplib2 http://code.google.com/p/httplib2/ (under MIT license)                                
+      * Httplib2 http://code.google.com/p/httplib2/ (under MIT license)   
+3. Docs | 文档
+    最新文档：http://qxu1141900061.my3w.com/docs/cup/index.html
                                                                                                        
 基础库代码结构说明:                                                                                    
 cup                                                                                                    
