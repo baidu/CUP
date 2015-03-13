@@ -1,0 +1,30 @@
+cup.thirdp.httplib2 package
+===========================
+
+Submodules
+----------
+
+cup.thirdp.httplib2.iri2uri module
+----------------------------------
+
+.. automodule:: cup.thirdp.httplib2.iri2uri
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cup.thirdp.httplib2.socks module
+--------------------------------
+
+.. automodule:: cup.thirdp.httplib2.socks
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: cup.thirdp.httplib2
+    :members:
+    :undoc-members:
+    :show-inheritance:

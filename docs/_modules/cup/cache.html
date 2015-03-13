@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.cache &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.cache</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/python</span>
+<span class="c"># -*- coding: utf-8 -*</span>
+<span class="c"># #############################################################################</span>
+<span class="c">#</span>
+<span class="c">#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved</span>
+<span class="c">#</span>
+<span class="c"># #############################################################################</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:author:</span>
+<span class="sd">    Guannan Ma</span>
+<span class="sd">:create_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:last_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:descrition:</span>
+<span class="sd">    cache related module</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">contextlib</span>
+
+<span class="kn">import</span> <span class="nn">cup</span>
+<span class="kn">from</span> <span class="nn">cup.util</span> <span class="kn">import</span> <span class="n">thread</span>
+
+
+<div class="viewcode-block" id="KvCache"><a class="viewcode-back" href="../../cup.html#cup.cache.KvCache">[docs]</a><span class="k">class</span> <span class="nc">KvCache</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Key-Value Cache object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_STAT</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+        <span class="s">&#39;kvcache_stat&#39;</span><span class="p">,</span> <span class="s">&#39;key_num expired_num&#39;</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># store kv_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kv_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">thread</span><span class="o">.</span><span class="n">RWLock</span><span class="p">()</span>
+
+    <span class="nd">@contextlib.contextmanager</span>
+    <span class="k">def</span> <span class="nf">_lock_release</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b_rw_lock</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">b_rw_lock</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire_writelock</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire_readlock</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">yield</span>
+        <span class="c"># pylint: disable=W0703</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;something happend in cache:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">error</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">b_rw_lock</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release_writelock</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release_readlock</span><span class="p">()</span>
+
+<div class="viewcode-block" id="KvCache.set"><a class="viewcode-back" href="../../cup.html#cup.cache.KvCache.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kvlist</span><span class="p">,</span> <span class="n">expire_sec</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param kvlist:</span>
+<span class="sd">            kvlist is a dict that contains your cache.</span>
+<span class="sd">        :param expire_sec:</span>
+<span class="sd">            if expire_sec is None, the cache will never expire.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">expire_value</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">expire_sec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">expire_value</span> <span class="o">=</span> <span class="n">expire_sec</span> <span class="o">+</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock_release</span><span class="p">(</span><span class="n">b_rw_lock</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kvlist</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kv_data</span><span class="p">:</span>
+                    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Key:</span><span class="si">%s</span><span class="s"> of KvCache updated.&#39;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_kv_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">kvlist</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">expire_value</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="KvCache.get"><a class="viewcode-back" href="../../cup.html#cup.cache.KvCache.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get your cache with key.</span>
+<span class="sd">        If the cache is expired, it will return None.</span>
+<span class="sd">        If the key does not exist, it will return None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock_release</span><span class="p">(</span><span class="n">b_rw_lock</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kv_data</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">None</span>
+            <span class="n">value</span><span class="p">,</span> <span class="n">expire_sec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kv_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">expire_sec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">expire_sec</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;key:</span><span class="si">%s</span><span class="s"> of kvCache fetched.&#39;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="bp">None</span>
+</div>
+    <span class="k">def</span> <span class="nf">_get_expired_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">expired_keys</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kv_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="n">expire_sec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kv_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">expire_sec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">expire_sec</span><span class="p">:</span>
+                <span class="n">expired_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">expired_keys</span>
+
+<div class="viewcode-block" id="KvCache.cleanup_expired"><a class="viewcode-back" href="../../cup.html#cup.cache.KvCache.cleanup_expired">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup_expired</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete all expired items</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock_release</span><span class="p">(</span><span class="n">b_rw_lock</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+            <span class="n">expired_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_expired_keys</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">expired_keys</span><span class="p">:</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kv_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;key:</span><span class="si">%s</span><span class="s"> cleaned up&#39;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="KvCache.get_expired"><a class="viewcode-back" href="../../cup.html#cup.cache.KvCache.get_expired">[docs]</a>    <span class="k">def</span> <span class="nf">get_expired</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return expired items. Return type is a dict (</span>
+<span class="sd">            {</span>
+<span class="sd">                &#39;key&#39; : (value, expire_time)</span>
+<span class="sd">            }</span>
+<span class="sd">        :rtype:</span>
+<span class="sd">            dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kvlist</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock_release</span><span class="p">(</span><span class="n">b_rw_lock</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_expired_keys</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kv_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="n">kvlist</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kvlist</span>
+</div>
+<div class="viewcode-block" id="KvCache.stat"><a class="viewcode-back" href="../../cup.html#cup.cache.KvCache.stat">[docs]</a>    <span class="k">def</span> <span class="nf">stat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return:</span>
+<span class="sd">            a tuple with (item_num, expired_num)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock_release</span><span class="p">(</span><span class="n">b_rw_lock</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+            <span class="n">key_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kv_data</span><span class="p">)</span>
+            <span class="n">expired_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_expired_keys</span><span class="p">())</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">key_num</span><span class="p">,</span> <span class="n">expired_num</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="KvCache.clear"><a class="viewcode-back" href="../../cup.html#cup.cache.KvCache.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        remove all kv cache inside.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock_release</span><span class="p">(</span><span class="n">b_rw_lock</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kv_data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_kv_data</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="c"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,896 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.net.async.conn &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../../../index.html" />
+    <link rel="up" title="cup.net" href="../../net.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../net.html" accesskey="U">cup.net</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.net.async.conn</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/python</span>
+<span class="c"># -*- coding: utf-8 -*</span>
+<span class="c"># #############################################################################</span>
+<span class="c">#</span>
+<span class="c">#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved</span>
+<span class="c">#</span>
+<span class="c"># #############################################################################</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:author:</span>
+<span class="sd">    Guannan Ma</span>
+<span class="sd">:create_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:last_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:descrition:</span>
+<span class="sd">    connection related module</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">select</span>
+<span class="kn">import</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">Queue</span> <span class="kn">as</span> <span class="nn">queue</span>  <span class="c"># pylint: disable=F0401</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">queue</span>   <span class="c"># pylint: disable=F0401</span>
+
+<span class="kn">import</span> <span class="nn">cup</span>
+<span class="kn">from</span> <span class="nn">cup.util</span> <span class="kn">import</span> <span class="n">misc</span>
+<span class="kn">from</span> <span class="nn">cup.util</span> <span class="kn">import</span> <span class="n">threadpool</span>
+<span class="kn">from</span> <span class="nn">cup.net.async</span> <span class="kn">import</span> <span class="n">msg</span> <span class="k">as</span> <span class="n">async_msg</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&#39;CConnContext&#39;</span><span class="p">,</span>
+    <span class="s">&#39;CConnectionManager&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_try_get_peer_info</span><span class="p">(</span><span class="n">sock</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">peer</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">getpeername</span><span class="p">()</span>
+    <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">peer</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;Error happened&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">peer</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;_try_get_peer_info error happend&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">peer</span>
+
+
+<div class="viewcode-block" id="CConnContext"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnContext">[docs]</a><span class="k">class</span> <span class="nc">CConnContext</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c"># pylint: disable=R0902</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Connection上下文处理类</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_destroying</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sock</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_peerinfo</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sending_msg</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_send_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">PriorityQueue</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recving_msg</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_msgind_in_sendque</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_reading</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_1st_recv_msg</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_1st_send_msg</span> <span class="o">=</span> <span class="bp">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_readlock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writelock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="CConnContext.to_destroy"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnContext.to_destroy">[docs]</a>    <span class="k">def</span> <span class="nf">to_destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        destroy context</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_destroying</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sock</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;context is with no sock&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;context with socket: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sock</span><span class="p">)</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;to destroy context, &#39;</span> <span class="o">+</span> <span class="n">msg</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="CConnContext.is_detroying"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnContext.is_detroying">[docs]</a>    <span class="k">def</span> <span class="nf">is_detroying</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        is context being destroyed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="n">is_destryoing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_destroying</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">is_destryoing</span>
+</div>
+<div class="viewcode-block" id="CConnContext.set_conn_man"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnContext.set_conn_man">[docs]</a>    <span class="k">def</span> <span class="nf">set_conn_man</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set conn for context</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;set conn:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">conn</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span> <span class="o">=</span> <span class="n">conn</span>
+</div>
+<div class="viewcode-block" id="CConnContext.set_sock"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnContext.set_sock">[docs]</a>    <span class="k">def</span> <span class="nf">set_sock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sock</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        associate socket</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sock</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">sock</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="CConnContext.get_sock"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnContext.get_sock">[docs]</a>    <span class="k">def</span> <span class="nf">get_sock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return associated socket</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">misc</span><span class="o">.</span><span class="n">check_not_none</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sock</span><span class="p">)</span>
+        <span class="n">sock</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sock</span>
+        <span class="k">return</span> <span class="n">sock</span>
+</div>
+<div class="viewcode-block" id="CConnContext.do_recv_data"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnContext.do_recv_data">[docs]</a>    <span class="k">def</span> <span class="nf">do_recv_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_len</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        push data into the recving_msg queue</span>
+<span class="sd">        network read should be in 1 thread only.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recving_msg</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">cup</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">NotInitialized</span><span class="p">(</span><span class="s">&#39;self._recving_msg&#39;</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recving_msg</span><span class="o">.</span><span class="n">push_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="c">#  cup.log.debug(&#39;pushed data length: %d&#39; % ret)</span>
+        <span class="k">if</span> <span class="n">data_len</span> <span class="o">&gt;=</span> <span class="n">ret</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recving_msg</span><span class="o">.</span><span class="n">is_recvmsg_complete</span><span class="p">():</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s">&#39;get a msg: msg_type:ACK, msg_len:</span><span class="si">%d</span><span class="s">, msg_flag:</span><span class="si">%d</span><span class="s">,&#39;</span>
+                    <span class="s">&#39;msg_src:</span><span class="si">%s</span><span class="s">, msg_dest:</span><span class="si">%s</span><span class="s">, uniqid:</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span>
+                    <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_recving_msg</span><span class="o">.</span><span class="n">get_msg_len</span><span class="p">(),</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_recving_msg</span><span class="o">.</span><span class="n">get_flag</span><span class="p">(),</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recving_msg</span><span class="o">.</span><span class="n">get_from_addr</span><span class="p">()),</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recving_msg</span><span class="o">.</span><span class="n">get_to_addr</span><span class="p">()),</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_recving_msg</span><span class="o">.</span><span class="n">get_uniq_id</span><span class="p">()</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">get_recv_queue</span><span class="p">()</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recving_msg</span><span class="o">.</span><span class="n">get_flag</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recving_msg</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_recving_msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_recving_msg</span><span class="p">()</span>
+            <span class="c">#  the pushed data should span on two msg datas</span>
+            <span class="k">if</span> <span class="n">data_len</span> <span class="o">&gt;</span> <span class="n">ret</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_recv_data</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">ret</span><span class="p">:],</span> <span class="p">(</span><span class="n">data_len</span> <span class="o">-</span> <span class="n">ret</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                <span class="s">&#39;Socket error. We cannot get more than pushed data length&#39;</span>
+            <span class="p">)</span>
+            <span class="k">assert</span> <span class="bp">False</span>
+        <span class="k">return</span>
+</div>
+<div class="viewcode-block" id="CConnContext.get_recving_msg"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnContext.get_recving_msg">[docs]</a>    <span class="k">def</span> <span class="nf">get_recving_msg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get the net msg being received</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;to get recving_msg&#39;</span><span class="p">)</span>
+        <span class="c">#  if no recving msg pending there, create one.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recving_msg</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recving_msg</span> <span class="o">=</span> <span class="n">async_msg</span><span class="o">.</span><span class="n">CNetMsg</span><span class="p">(</span><span class="n">is_postmsg</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recving_msg</span><span class="o">.</span><span class="n">is_recvmsg_complete</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recving_msg</span> <span class="o">=</span> <span class="n">async_msg</span><span class="o">.</span><span class="n">CNetMsg</span><span class="p">(</span><span class="n">is_postmsg</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_1st_recv_msg</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recving_msg</span><span class="o">.</span><span class="n">set_need_head</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_is_1st_recv_msg</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recving_msg</span><span class="o">.</span><span class="n">set_need_head</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+
+        <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recving_msg</span>
+        <span class="k">return</span> <span class="n">msg</span>
+</div>
+<div class="viewcode-block" id="CConnContext.try_move2next_sending_msg"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnContext.try_move2next_sending_msg">[docs]</a>    <span class="k">def</span> <span class="nf">try_move2next_sending_msg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        move to next msg that will be sent</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sending_msg</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">_sending_msg</span><span class="o">.</span><span class="n">is_msg_already_sent</span><span class="p">():</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;to move2next_sending_msg&#39;</span><span class="p">)</span>
+            <span class="c"># if self._sending_msg is not None:</span>
+            <span class="c">#     # del self._sending_msg</span>
+            <span class="c">#     pass</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_send_queue</span><span class="o">.</span><span class="n">get_nowait</span><span class="p">()</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">except</span> <span class="n">queue</span><span class="o">.</span><span class="n">Empty</span><span class="p">:</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;The send queue is empty&#39;</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="s">&#39;Catch a error that I cannot handle, err_msg:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+                <span class="c"># self._lock.release()</span>
+                <span class="k">raise</span> <span class="n">CConnectionManager</span><span class="o">.</span><span class="n">QueueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sending_msg</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s">&#39;No need to move to next msg since the current one&#39;</span>
+                <span class="s">&#39;is not sent out yet&#39;</span>
+            <span class="p">)</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sending_msg</span>
+        <span class="k">return</span> <span class="n">temp</span>
+</div>
+<div class="viewcode-block" id="CConnContext.put_msg"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnContext.put_msg">[docs]</a>    <span class="k">def</span> <span class="nf">put_msg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Put msg into the sending queue.</span>
+
+<span class="sd">        :param flag:</span>
+<span class="sd">            flag determines the priority of the msg.</span>
+
+<span class="sd">            Msg with higher priority will have bigger chance to be</span>
+
+<span class="sd">            sent out soon.</span>
+
+<span class="sd">        :TODO:</span>
+<span class="sd">            If the msg queue is too big, consider close the network link</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_1st_send_msg</span><span class="p">:</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">set_need_head</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+            <span class="c"># pylint: disable=W0212</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">_set_msg_len</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_is_1st_send_msg</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">set_need_head</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s">&#39;put msg into context, msg_type:ACK, msg_flag:</span><span class="si">%d</span><span class="s">,&#39;</span>
+                <span class="s">&#39;msg_src:</span><span class="si">%s</span><span class="s">, msg_dest:</span><span class="si">%s</span><span class="s">, uniqid:</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span>
+                <span class="p">(</span>
+                    <span class="n">msg</span><span class="o">.</span><span class="n">get_flag</span><span class="p">(),</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">get_from_addr</span><span class="p">()),</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">get_to_addr</span><span class="p">()),</span>
+                    <span class="n">msg</span><span class="o">.</span><span class="n">get_uniq_id</span><span class="p">()</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="c"># pylint: disable=W0212</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">_set_msg_len</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_send_queue</span><span class="o">.</span><span class="n">put</span><span class="p">((</span><span class="n">flag</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_msgind_in_sendque</span><span class="p">,</span> <span class="n">msg</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_msgind_in_sendque</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="CConnContext.get_context_info"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnContext.get_context_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get context info</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">peerinfo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_peerinfo</span><span class="p">()</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Peer socket(</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">).&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">peerinfo</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">peerinfo</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">msg</span>
+</div>
+<div class="viewcode-block" id="CConnContext.set_reading"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnContext.set_reading">[docs]</a>    <span class="k">def</span> <span class="nf">set_reading</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_reading</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set reading status</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_reading</span> <span class="o">=</span> <span class="n">is_reading</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="CConnContext.is_reading"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnContext.is_reading">[docs]</a>    <span class="k">def</span> <span class="nf">is_reading</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get if it is reading</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="n">is_reading</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_reading</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">is_reading</span>
+</div>
+<div class="viewcode-block" id="CConnContext.try_readlock"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnContext.try_readlock">[docs]</a>    <span class="k">def</span> <span class="nf">try_readlock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        try to acquire readlock</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            True if succeed. False, otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readlock</span><span class="o">.</span><span class="n">acquire</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CConnContext.release_readlock"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnContext.release_readlock">[docs]</a>    <span class="k">def</span> <span class="nf">release_readlock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        release the readlock</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_readlock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="CConnContext.try_writelock"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnContext.try_writelock">[docs]</a>    <span class="k">def</span> <span class="nf">try_writelock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return:</span>
+<span class="sd">            True if succeed. False, otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writelock</span><span class="o">.</span><span class="n">acquire</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CConnContext.release_writelock"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnContext.release_writelock">[docs]</a>    <span class="k">def</span> <span class="nf">release_writelock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        release the writelock</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writelock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="CConnContext.set_peerinfo"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnContext.set_peerinfo">[docs]</a>    <span class="k">def</span> <span class="nf">set_peerinfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">peer</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set peerinfo</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">peer</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">tuple</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;peer is not a tuple&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_peerinfo</span> <span class="o">=</span> <span class="n">peer</span>
+</div>
+<div class="viewcode-block" id="CConnContext.get_peerinfo"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnContext.get_peerinfo">[docs]</a>    <span class="k">def</span> <span class="nf">get_peerinfo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get peerinfo</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_peerinfo</span>
+
+
+<span class="c"># pylint: disable=R0902</span></div></div>
+<div class="viewcode-block" id="CConnectionManager"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnectionManager">[docs]</a><span class="k">class</span> <span class="nc">CConnectionManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        connaddr. Convert ip:port  into a 64-bit hex.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">NET_RW_SIZE</span> <span class="o">=</span> <span class="mi">131072</span>
+
+<div class="viewcode-block" id="CConnectionManager.QueueError"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnectionManager.QueueError">[docs]</a>    <span class="k">class</span> <span class="nc">QueueError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        internal queue error for CConnectionManager class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+            <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_msg</span> <span class="o">=</span> <span class="n">msg</span>
+
+        <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_msg</span>
+</div>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="n">bindport</span><span class="p">,</span> <span class="n">thdpool_param</span><span class="p">):</span>
+        <span class="c">#  TODO: Close idle socket after 30 mins with no data sent or received.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_conns</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bind_port</span> <span class="o">=</span> <span class="n">bindport</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bind_ip</span> <span class="o">=</span> <span class="n">ip</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_epoll</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">epoll</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stopsign</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bind_sock</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fileno2context</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_context2fileno_peer</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_peer2context</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c">#  self._kp_params = keepalive_params</span>
+
+        <span class="n">min_thds</span><span class="p">,</span> <span class="n">max_thds</span> <span class="o">=</span> <span class="n">thdpool_param</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_thdpool</span> <span class="o">=</span> <span class="n">threadpool</span><span class="o">.</span><span class="n">ThreadPool</span><span class="p">(</span><span class="n">min_thds</span><span class="p">,</span> <span class="n">max_thds</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recv_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">PriorityQueue</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stopsign</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recv_msg_ind</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_set_sock_params</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">sock</span><span class="p">):</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">set_sock_keepalive_linux</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">set_sock_linger</span><span class="p">(</span><span class="n">sock</span><span class="p">)</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">set_sock_quickack</span><span class="p">(</span><span class="n">sock</span><span class="p">)</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">set_sock_reusable</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_set_sock_nonblocking</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">sock</span><span class="p">):</span>
+        <span class="n">sock</span><span class="o">.</span><span class="n">setblocking</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_epoll_write_params</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">select</span><span class="o">.</span><span class="n">EPOLLET</span> <span class="o">|</span> <span class="n">select</span><span class="o">.</span><span class="n">EPOLLOUT</span> <span class="o">|</span> <span class="n">select</span><span class="o">.</span><span class="n">EPOLLERR</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_epoll_read_params</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">select</span><span class="o">.</span><span class="n">EPOLLET</span> <span class="o">|</span> <span class="n">select</span><span class="o">.</span><span class="n">EPOLLIN</span> <span class="o">|</span> <span class="n">select</span><span class="o">.</span><span class="n">EPOLLERR</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CConnectionManager.bind"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnectionManager.bind">[docs]</a>    <span class="k">def</span> <span class="nf">bind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        bind the ip:port</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_sock_params</span><span class="p">(</span><span class="n">sock</span><span class="p">)</span>
+        <span class="n">sock</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_bind_ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bind_port</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_sock_nonblocking</span><span class="p">(</span><span class="n">sock</span><span class="p">)</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s">&#39;bind info:(ip:</span><span class="si">%s</span><span class="s">, port:</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_bind_ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bind_port</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_epoll</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
+            <span class="n">sock</span><span class="o">.</span><span class="n">fileno</span><span class="p">(),</span>
+            <span class="n">select</span><span class="o">.</span><span class="n">EPOLLIN</span> <span class="o">|</span> <span class="n">select</span><span class="o">.</span><span class="n">EPOLLET</span> <span class="o">|</span> <span class="n">select</span><span class="o">.</span><span class="n">EPOLLOUT</span> <span class="o">|</span> <span class="n">select</span><span class="o">.</span><span class="n">EPOLLERR</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bind_sock</span> <span class="o">=</span> <span class="n">sock</span>
+</div>
+<div class="viewcode-block" id="CConnectionManager.push_msg2sendqueue"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnectionManager.push_msg2sendqueue">[docs]</a>    <span class="k">def</span> <span class="nf">push_msg2sendqueue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        push msg into the send queue</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">msg</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;put a None into msg send queue. return&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">flag</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">get_flag</span><span class="p">()</span>
+        <span class="c">#  cup.log.debug(&#39;to put flag and msg into the queue. flag:%d&#39; % flag)</span>
+        <span class="c">#  self._send_queue.put( (flag, msg) )</span>
+        <span class="n">peer</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">get_to_addr</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">new_created</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">peer</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_peer2context</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;To create a new context for the sock&#39;</span><span class="p">)</span>
+            <span class="c"># if the connection has not been established</span>
+            <span class="n">sock</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">peer</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sock</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">context</span> <span class="o">=</span> <span class="n">CConnContext</span><span class="p">()</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">set_conn_man</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">set_sock</span><span class="p">(</span><span class="n">sock</span><span class="p">)</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">set_peerinfo</span><span class="p">(</span><span class="n">peer</span><span class="p">)</span>
+                <span class="n">fileno</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_peer2context</span><span class="p">[</span><span class="n">peer</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fileno2context</span><span class="p">[</span><span class="n">fileno</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_context2fileno_peer</span><span class="p">[</span><span class="n">context</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">fileno</span><span class="p">,</span> <span class="n">peer</span><span class="p">)</span>
+                <span class="n">new_created</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;created context for the new sock&#39;</span><span class="p">)</span>
+                <span class="n">new_created</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                    <span class="s">&#39;failed to post msg as the socket.connect failed&#39;</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_peer2context</span><span class="p">[</span><span class="n">peer</span><span class="p">]</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">put_msg</span><span class="p">(</span><span class="n">flag</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">new_created</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_epoll</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">sock</span><span class="o">.</span><span class="n">fileno</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epoll_write_params</span><span class="p">())</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c"># pylint: disable=W0703</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s">&#39;failed to register the socket fileno, err_msg:</span><span class="si">%s</span><span class="s">,&#39;</span>
+                    <span class="s">&#39;perinfo:</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">. To epoll modify it&#39;</span> <span class="o">%</span>
+                    <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">peer</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">peer</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_epoll</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span><span class="n">sock</span><span class="o">.</span><span class="n">fileno</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epoll_write_params</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_new_send</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CConnectionManager.connect"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnectionManager.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">peer</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param peer:</span>
+<span class="sd">            ip:port</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_sock_params</span><span class="p">(</span><span class="n">sock</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sock</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">peer</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_sock_nonblocking</span><span class="p">(</span><span class="n">sock</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">sock</span>
+        <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s">&#39;failed to connect to </span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">. Error:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                <span class="p">(</span><span class="n">peer</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">peer</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+</div>
+    <span class="k">def</span> <span class="nf">_handle_new_conn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newsock</span><span class="p">,</span> <span class="n">peer</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_sock_params</span><span class="p">(</span><span class="n">newsock</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_sock_nonblocking</span><span class="p">(</span><span class="n">newsock</span><span class="p">)</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">CConnContext</span><span class="p">()</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">set_sock</span><span class="p">(</span><span class="n">newsock</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">set_conn_man</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">set_peerinfo</span><span class="p">(</span><span class="n">peer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_epoll</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
+            <span class="n">newsock</span><span class="o">.</span><span class="n">fileno</span><span class="p">(),</span> <span class="n">select</span><span class="o">.</span><span class="n">EPOLLIN</span> <span class="o">|</span> <span class="n">select</span><span class="o">.</span><span class="n">EPOLLET</span> <span class="o">|</span> <span class="n">select</span><span class="o">.</span><span class="n">EPOLLERR</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fileno2context</span><span class="p">[</span><span class="n">newsock</span><span class="o">.</span><span class="n">fileno</span><span class="p">()]</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_peer2context</span><span class="p">[</span><span class="n">peer</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_context2fileno_peer</span><span class="p">[</span><span class="n">context</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">newsock</span><span class="o">.</span><span class="n">fileno</span><span class="p">(),</span> <span class="n">peer</span><span class="p">)</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;a new connection: </span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">peer</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">peer</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+    <span class="k">def</span> <span class="nf">_handle_error_del_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="n">peerinfo</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_peerinfo</span><span class="p">()</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s">&#39;handle socket error, to close the socket:</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+            <span class="p">(</span><span class="n">peerinfo</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">peerinfo</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="n">fileno_peer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context2fileno_peer</span><span class="p">[</span><span class="n">context</span><span class="p">]</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;socket info: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">fileno_peer</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sock</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_sock</span><span class="p">()</span>
+            <span class="n">sock</span><span class="o">.</span><span class="n">shutdown</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SHUT_RDWR</span><span class="p">)</span>
+            <span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">set_sock</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s">&#39;Failed to shutdown/close the socket, err_msg:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_epoll</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="n">fileno_peer</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c"># pylint: disable=W0703</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s">&#39;epoll unregister error:</span><span class="si">%s</span><span class="s">, peerinfo:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">fileno_peer</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="p">)</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Socket closed&#39;</span><span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fileno2context</span><span class="p">[</span><span class="n">fileno_peer</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_peer2context</span><span class="p">[</span><span class="n">fileno_peer</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context2fileno_peer</span><span class="p">[</span><span class="n">context</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">context</span>
+
+<div class="viewcode-block" id="CConnectionManager.poll"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnectionManager.poll">[docs]</a>    <span class="k">def</span> <span class="nf">poll</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        start to poll</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_thdpool</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">misc</span><span class="o">.</span><span class="n">check_not_none</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bind_sock</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bind_sock</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stopsign</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epoll</span><span class="o">.</span><span class="n">poll</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">EINTR</span><span class="p">:</span>
+                    <span class="k">return</span>
+                <span class="k">raise</span> <span class="n">err</span>
+            <span class="c"># cup.log.debug(&#39;start to poll&#39;)</span>
+            <span class="k">for</span> <span class="n">fileno</span><span class="p">,</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+                <span class="c"># if it comes from the listen port, new conn</span>
+                <span class="k">if</span> <span class="n">fileno</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bind_sock</span><span class="o">.</span><span class="n">fileno</span><span class="p">():</span>
+                    <span class="n">newsock</span><span class="p">,</span> <span class="n">addr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bind_sock</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+                    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s">&#39;epoll catch a new connection: </span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                        <span class="p">(</span><span class="n">addr</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">addr</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_handle_new_conn</span><span class="p">(</span><span class="n">newsock</span><span class="p">,</span> <span class="n">addr</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">event</span> <span class="o">&amp;</span> <span class="n">select</span><span class="o">.</span><span class="n">EPOLLIN</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_new_recv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fileno2context</span><span class="p">[</span><span class="n">fileno</span><span class="p">])</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;socket already closed&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">event</span> <span class="o">&amp;</span> <span class="n">select</span><span class="o">.</span><span class="n">EPOLLOUT</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_new_send</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fileno2context</span><span class="p">[</span><span class="n">fileno</span><span class="p">])</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;socket already closed&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">event</span> <span class="o">&amp;</span> <span class="n">select</span><span class="o">.</span><span class="n">EPOLLHUP</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">event</span> <span class="o">&amp;</span> <span class="n">select</span><span class="o">.</span><span class="n">EPOLLERR</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">event</span> <span class="o">&amp;</span> <span class="n">select</span><span class="o">.</span><span class="n">EPOLLHUP</span><span class="p">:</span>
+                        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;--EPOLLHUP--&#39;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;--EPOLLERR--&#39;</span><span class="p">)</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error_del_context</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_fileno2context</span><span class="p">[</span><span class="n">fileno</span><span class="p">]</span>
+                        <span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;socket already closed&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CConnectionManager.dump_stats"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnectionManager.dump_stats">[docs]</a>    <span class="k">def</span> <span class="nf">dump_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        dump stats</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_thdpool</span><span class="o">.</span><span class="n">dump_stats</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="CConnectionManager.stop"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnectionManager.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        stop the connection manager</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;to stop the connection manager&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stopsign</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_thdpool</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;connection manager stopped&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CConnectionManager.get_recv_msg_ind"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnectionManager.get_recv_msg_ind">[docs]</a>    <span class="k">def</span> <span class="nf">get_recv_msg_ind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get recv msg ind</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recv_msg_ind</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recv_msg_ind</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">tmp</span>
+</div>
+<div class="viewcode-block" id="CConnectionManager.get_recv_queue"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnectionManager.get_recv_queue">[docs]</a>    <span class="k">def</span> <span class="nf">get_recv_queue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get recving_msg queue</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recv_queue</span>
+</div>
+<div class="viewcode-block" id="CConnectionManager.get_recv_msg"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnectionManager.get_recv_msg">[docs]</a>    <span class="k">def</span> <span class="nf">get_recv_msg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get recv msg from queue</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;to fetch a msg from recv_queue for handle function&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recv_queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span> <span class="mi">2</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">except</span> <span class="n">queue</span><span class="o">.</span><span class="n">Empty</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;The recv queue is empty&#39;</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Catch a error that I cannot handle, err_msg:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">CConnectionManager</span><span class="o">.</span><span class="n">QueueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">msg</span>
+</div>
+    <span class="k">def</span> <span class="nf">_handle_new_recv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_finish_read_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">succ</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s">&#39;context:</span><span class="si">%s</span><span class="s">, succ:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">get_context_info</span><span class="p">(),</span> <span class="n">succ</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">is_detroying</span><span class="p">():</span>
+            <span class="c"># destroy the context and socket</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">release_readlock</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error_del_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_epoll</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">get_sock</span><span class="p">()</span><span class="o">.</span><span class="n">fileno</span><span class="p">(),</span> <span class="n">select</span><span class="o">.</span><span class="n">EPOLLIN</span> <span class="o">|</span> <span class="n">select</span><span class="o">.</span><span class="n">EPOLLET</span>
+            <span class="p">)</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">release_readlock</span><span class="p">()</span>
+
+<div class="viewcode-block" id="CConnectionManager.read"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnectionManager.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        read with conn context</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">is_detroying</span><span class="p">():</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;The context is being destroyed. return&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">context</span><span class="o">.</span><span class="n">try_readlock</span><span class="p">():</span>
+            <span class="k">return</span>
+
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s">&#39;succeed to acquire readlock, to add the </span><span class="se">\</span>
+<span class="s">            readjob into the threadpool&#39;</span>
+        <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_do_read</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_finish_read_callback</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_finish_read_callback</span><span class="p">(</span><span class="bp">False</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">_do_read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="c"># cup.log.debug(&#39;enter _do_read&#39;)</span>
+        <span class="n">sock</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_sock</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">get_recving_msg</span><span class="p">()</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stopsign</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NET_RW_SIZE</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="n">error</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">err</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">EAGAIN</span><span class="p">:</span>
+                    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="s">&#39;EAGAIN happend, peer info </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                        <span class="n">context</span><span class="o">.</span><span class="n">get_context_info</span><span class="p">()</span>
+                    <span class="p">)</span>
+                    <span class="k">return</span> <span class="n">context</span>
+                <span class="k">elif</span> <span class="n">err</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">EWOULDBLOCK</span><span class="p">:</span>
+                    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="s">&#39;EWOULDBLOCK happend, context info </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                        <span class="n">context</span><span class="o">.</span><span class="n">get_context_info</span><span class="p">()</span>
+                    <span class="p">)</span>
+                    <span class="k">return</span> <span class="n">context</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="s">&#39;Socket error happend, error:</span><span class="si">%s</span><span class="s">,  peer info </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                        <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">context</span><span class="o">.</span><span class="n">get_context_info</span><span class="p">())</span>
+                    <span class="p">)</span>
+                    <span class="n">context</span><span class="o">.</span><span class="n">to_destroy</span><span class="p">()</span>
+                    <span class="k">return</span> <span class="n">context</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                    <span class="s">&#39;Socket error happend, error:</span><span class="si">%s</span><span class="s">,  peer info </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                    <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">context</span><span class="o">.</span><span class="n">get_context_info</span><span class="p">())</span>
+                <span class="p">)</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">to_destroy</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">context</span>
+            <span class="n">data_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">data_len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c"># socket closed by peer</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">to_destroy</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">context</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">do_recv_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">data_len</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_finish_write_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">succ</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s">&#39;context:</span><span class="si">%s</span><span class="s">, succ:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">get_context_info</span><span class="p">(),</span> <span class="n">succ</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="c"># You cannot do things below as getpeername will block if the conn</span>
+        <span class="c"># has problem!!!!!   - Guannan</span>
+        <span class="c"># try:</span>
+        <span class="c">#     context.get_sock().getpeername()</span>
+        <span class="c"># except socket.error as error:</span>
+        <span class="c">#   cup.log.debug(&#39;Seems socket failed to getpeername:%s&#39; % str(error))</span>
+        <span class="c">#   context.to_destroy()</span>
+        <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">is_detroying</span><span class="p">():</span>
+            <span class="c"># destroy the context and socket</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">release_writelock</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handle_error_del_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;to epoll modify&#39;</span><span class="p">)</span>
+            <span class="n">epoll_write_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epoll_write_params</span><span class="p">()</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">release_writelock</span><span class="p">()</span>
+
+    <span class="c"># context hash locked the writing.</span>
+    <span class="c"># guarantee there&#39;s only 1 thread for context reading.</span>
+    <span class="k">def</span> <span class="nf">_handle_new_send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_write_job</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="n">sock</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_sock</span><span class="p">()</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">try_move2next_sending_msg</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">msg</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;send queue is empty, quit the _do_write thread&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">context</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;To enter write loop until eagin&#39;</span><span class="p">)</span>
+        <span class="c"># pylint:disable=w0212</span>
+        <span class="c"># cup.log.debug(&#39;This msg _need_head:%s&#39; % msg._need_head)</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stopsign</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">get_write_bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NET_RW_SIZE</span><span class="p">)</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;get_write_bytes_len: </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">succ_len</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="c"># cup.log.debug(&#39;succeed to send length:%d&#39; % succ_len)</span>
+                <span class="n">msg</span><span class="o">.</span><span class="n">seek_write</span><span class="p">(</span><span class="n">succ_len</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="n">error</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">err</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">EAGAIN</span><span class="p">:</span>
+                    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s">&#39;EAGAIN happend, context info </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                        <span class="n">context</span><span class="o">.</span><span class="n">get_context_info</span><span class="p">()</span>
+                    <span class="p">)</span>
+                    <span class="k">return</span> <span class="n">context</span>
+                <span class="k">elif</span> <span class="n">err</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">EWOULDBLOCK</span><span class="p">:</span>
+                    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s">&#39;EWOULDBLOCK happend, context info </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                        <span class="n">context</span><span class="o">.</span><span class="n">get_context_info</span><span class="p">()</span>
+                    <span class="p">)</span>
+                    <span class="k">return</span> <span class="n">context</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="s">&#39;Socket error happend. But its not eagin,error:</span><span class="si">%s</span><span class="s">,</span><span class="se">\</span>
+<span class="s">                        context info </span><span class="si">%s</span><span class="s">, errno:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                        <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">context</span><span class="o">.</span><span class="n">get_context_info</span><span class="p">(),</span> <span class="n">err</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">context</span><span class="o">.</span><span class="n">to_destroy</span><span class="p">()</span>
+                    <span class="k">break</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                    <span class="s">&#39;Socket error happend, error:</span><span class="si">%s</span><span class="s">,  context info </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                    <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">context</span><span class="o">.</span><span class="n">get_context_info</span><span class="p">())</span>
+                <span class="p">)</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">to_destroy</span><span class="p">()</span>
+                <span class="k">break</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%d</span><span class="s"> bytes has been sent&#39;</span> <span class="o">%</span> <span class="n">succ_len</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">is_msg_already_sent</span><span class="p">():</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s">&#39;send out a msg: msg_type:ACK, msg_len:</span><span class="si">%d</span><span class="s">, msg_flag:</span><span class="si">%d</span><span class="s">, </span><span class="se">\</span>
+<span class="s">                    msg_src:</span><span class="si">%s</span><span class="s">, msg_dest:</span><span class="si">%s</span><span class="s">, uniqid:</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span>
+                    <span class="p">(</span>
+                        <span class="n">msg</span><span class="o">.</span><span class="n">get_msg_len</span><span class="p">(),</span>
+                        <span class="n">msg</span><span class="o">.</span><span class="n">get_flag</span><span class="p">(),</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">get_from_addr</span><span class="p">()),</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">get_to_addr</span><span class="p">()),</span>
+                        <span class="n">msg</span><span class="o">.</span><span class="n">get_uniq_id</span><span class="p">()</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">del</span> <span class="n">msg</span>
+                <span class="c"># if we have successfully send out a msg. Then move to next one</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">try_move2next_sending_msg</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">msg</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="k">break</span>
+        <span class="k">return</span> <span class="n">context</span>
+
+<div class="viewcode-block" id="CConnectionManager.add_write_job"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.conn.CConnectionManager.add_write_job">[docs]</a>    <span class="k">def</span> <span class="nf">add_write_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        add network write into queue</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">peerinfo</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_peerinfo</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">context</span><span class="o">.</span><span class="n">try_writelock</span><span class="p">():</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s">&#39;Another thread is reading the context. Peerinfo:</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                <span class="p">(</span><span class="n">peerinfo</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">peerinfo</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">is_detroying</span><span class="p">():</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s">&#39;The context is being destroyed, i will do nothing. &#39;</span>
+                <span class="s">&#39;Peerinfo:</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                <span class="p">(</span><span class="n">peerinfo</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">peerinfo</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_do_write</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_finish_write_callback</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+        <span class="c"># pylint: disable=W0703</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s">&#39;seems error happend for context:</span><span class="si">%s</span><span class="s"> Peerinfo:</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">peerinfo</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">peerinfo</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_finish_write_callback</span><span class="p">(</span><span class="bp">False</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+
+<span class="c"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../net.html" >cup.net</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

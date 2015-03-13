@@ -1,0 +1,30 @@
+cup.thirdp package
+==================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    cup.thirdp.MySQLdb
+    cup.thirdp.httplib2
+
+Submodules
+----------
+
+cup.thirdp.pexpect module
+-------------------------
+
+.. automodule:: cup.thirdp.pexpect
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: cup.thirdp
+    :members:
+    :undoc-members:
+    :show-inheritance:

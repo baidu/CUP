@@ -1,0 +1,311 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.shell.expect &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../../index.html" />
+    <link rel="up" title="cup.shell" href="../shell.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../shell.html" accesskey="U">cup.shell</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.shell.expect</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/python</span>
+<span class="c"># -*- coding: utf-8 -*</span>
+<span class="c"># #############################################################################</span>
+<span class="c">#</span>
+<span class="c">#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved</span>
+<span class="c">#</span>
+<span class="c"># #############################################################################</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:author:</span>
+<span class="sd">    Guannan Ma</span>
+<span class="sd">:create_date:</span>
+<span class="sd">    2013</span>
+<span class="sd">:last_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:descrition:</span>
+<span class="sd">    **Guannan just made a wraper out of pexpect.**</span>
+<span class="sd">    The original copyright belongs to the author of pexpect module.</span>
+<span class="sd">    See it at http://pexpect.sourceforge.net/pexpect.html</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">cup</span>
+<span class="kn">from</span> <span class="nn">cup.thirdp</span> <span class="kn">import</span> <span class="n">pexpect</span>
+
+
+<span class="k">def</span> <span class="nf">_do_expect_ex</span><span class="p">(</span><span class="n">passwd</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">b_print_stdout</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="c"># ret 0 success 1 timeout others -1</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">pobj</span> <span class="o">=</span> <span class="n">pexpect</span><span class="o">.</span><span class="n">spawn</span><span class="p">(</span><span class="s">&#39;/bin/bash&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;-c&#39;</span><span class="p">,</span> <span class="n">command</span><span class="p">],</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">b_print_stdout</span><span class="p">:</span>
+            <span class="n">pobj</span><span class="o">.</span><span class="n">logfile</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">pobj</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span>
+            <span class="p">[</span><span class="s">&#39;password:&#39;</span><span class="p">,</span> <span class="s">&#39;continue connecting (yes/no)?&#39;</span><span class="p">],</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pobj</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">passwd</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">pobj</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s">&quot;yes&quot;</span><span class="p">)</span>
+            <span class="n">pobj</span><span class="o">.</span><span class="n">expect</span><span class="p">([</span><span class="s">&#39;password:&#39;</span><span class="p">])</span>
+            <span class="n">pobj</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">passwd</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">pobj</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span><span class="n">pexpect</span><span class="o">.</span><span class="n">EOF</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">pexpect</span><span class="o">.</span><span class="n">TIMEOUT</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&#39;Connection timeout&#39;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">except</span> <span class="n">pexpect</span><span class="o">.</span><span class="n">EOF</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&#39;Connection exit&#39;</span>
+        <span class="n">pobj</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">pobj</span><span class="o">.</span><span class="n">exitstatus</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;Connection close&quot;</span><span class="p">,</span> <span class="n">error</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;exitstatus&#39;</span><span class="p">:</span> <span class="n">ret</span><span class="p">,</span>
+        <span class="s">&#39;remote_exitstatus&#39;</span><span class="p">:</span> <span class="n">pobj</span><span class="o">.</span><span class="n">exitstatus</span><span class="p">,</span>
+        <span class="s">&#39;result&#39;</span><span class="p">:</span> <span class="n">pobj</span><span class="o">.</span><span class="n">before</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="s">&#39;exitstatus&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="s">&#39;remote_exitstatus&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">ret</span><span class="p">[</span><span class="s">&#39;remote_exitstatus&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s">&#39;exitstatus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s">&#39;exitstatus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[</span><span class="s">&#39;remote_exitstatus&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="s">&#39;remote_exitstatus&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="s">&#39;exitstatus&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">ret</span><span class="p">[</span><span class="s">&#39;exitstatus&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s">&#39;remote_exitstatus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s">&#39;remote_exitstatus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[</span><span class="s">&#39;exitstatus&#39;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">ret</span>
+
+
+<span class="k">def</span> <span class="nf">_do_expect</span><span class="p">(</span><span class="n">passwd</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">b_print_stdout</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">_do_expect_ex</span><span class="p">(</span><span class="n">passwd</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">b_print_stdout</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="s">&#39;exitstatus&#39;</span><span class="p">],</span> <span class="n">ret</span><span class="p">[</span><span class="s">&#39;result&#39;</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="checkssh"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.expect.checkssh">[docs]</a><span class="k">def</span> <span class="nf">checkssh</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">passwd</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    判断ssh的连通性， 成功的话返回True, 否则False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ret</span><span class="p">,</span> <span class="n">rev</span> <span class="o">=</span> <span class="n">go</span><span class="p">(</span>
+        <span class="n">hostname</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">passwd</span><span class="p">,</span> <span class="s">&#39;echo &quot;testSSH&quot;&#39;</span><span class="p">,</span>
+        <span class="n">timeout</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">b_print_stdout</span><span class="o">=</span><span class="bp">False</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">rev</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;testSSH&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+
+</div>
+<div class="viewcode-block" id="go"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.expect.go">[docs]</a><span class="k">def</span> <span class="nf">go</span><span class="p">(</span>
+    <span class="n">hostname</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">passwd</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">b_print_stdout</span><span class="o">=</span><span class="bp">True</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    回返在hostname机器上执行的shell命令结果信息</span>
+<span class="sd">    历史兼容函数。 推荐使用go_ex</span>
+<span class="sd">    command 有较多转义字符的，不推荐使用go，推荐使用go_witch_scp</span>
+
+<span class="sd">    :return:</span>
+<span class="sd">        类型tuple:  (ret, return_string)</span>
+<span class="sd">        ret 是本机执行远程命令的返回值</span>
+<span class="sd">        return_string 是远程执行这条shell的输出值</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;ssh </span><span class="si">%s</span><span class="s">@</span><span class="si">%s</span><span class="s"> &#39;</span><span class="si">%s</span><span class="s">&#39;&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="n">command</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_do_expect</span><span class="p">(</span><span class="n">passwd</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">b_print_stdout</span><span class="p">)</span>
+
+</div>
+<span class="k">def</span> <span class="nf">_judge_ret</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="k">print</span> <span class="n">ret</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="s">&#39;exitstatus&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">ret</span><span class="p">[</span><span class="s">&#39;remote_exitstatus&#39;</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    <span class="n">ret</span><span class="p">[</span><span class="s">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span> <span class="o">+</span> <span class="s">&#39; </span><span class="se">\n</span><span class="s"> &#39;</span> <span class="o">+</span> <span class="n">ret</span><span class="p">[</span><span class="s">&#39;result&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="bp">False</span>
+
+
+<div class="viewcode-block" id="go_witch_scp"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.expect.go_witch_scp">[docs]</a><span class="k">def</span> <span class="nf">go_witch_scp</span><span class="p">(</span>
+    <span class="n">hostname</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">passwd</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+    <span class="n">host_tmp</span><span class="o">=</span><span class="s">&#39;/tmp/&#39;</span><span class="p">,</span> <span class="n">remote_tmp</span><span class="o">=</span><span class="s">&#39;/tmp/&#39;</span><span class="p">,</span>
+    <span class="n">timeout</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span> <span class="n">b_print_stdout</span><span class="o">=</span><span class="bp">True</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    回返在hostname机器上执行的shell命令结果信息,</span>
+<span class="sd">    方式是：把command 写入本机文件，然后scp到远端机器，然后到远端执行此文件</span>
+<span class="sd">    相比go_ex 和 go 而言，多了如下参数</span>
+
+<span class="sd">    :param host_tmp:</span>
+<span class="sd">        本次保存command内容的文件目录</span>
+<span class="sd">    :param remote_tmp:</span>
+<span class="sd">        远端保持command内容的文件目录</span>
+
+<span class="sd">    :return:</span>
+<span class="sd">        dict.有 &#39;exitstatus&#39; &#39;remote_exitstatus&#39; &#39;result&#39; 三项输出内容</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;exitstatus&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="s">&#39;remote_exitstatus&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="s">&#39;result&#39;</span><span class="p">:</span> <span class="s">&#39;write host file fail&#39;</span>
+    <span class="p">}</span>
+    <span class="n">tmp_filename</span> <span class="o">=</span> <span class="n">cup</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">CGeneratorMan</span><span class="p">()</span><span class="o">.</span><span class="n">get_uniqname</span><span class="p">()</span>
+    <span class="n">host_file</span> <span class="o">=</span> <span class="n">host_tmp</span> <span class="o">+</span> <span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">tmp_filename</span>
+    <span class="n">remote_file</span> <span class="o">=</span> <span class="n">remote_tmp</span> <span class="o">+</span> <span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">tmp_filename</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">host_file</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+        <span class="n">fd</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">host_file</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ret</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">lscp</span><span class="p">(</span><span class="n">host_file</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">passwd</span><span class="p">,</span> <span class="n">remote_file</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_judge_ret</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="s">&#39;scp ret:&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ret</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39; sh </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">remote_file</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">go_ex</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">passwd</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">b_print_stdout</span><span class="p">)</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39; rm </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">host_file</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">cup</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">execshell</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">res</span><span class="p">:</span>
+        <span class="n">ret</span><span class="p">[</span><span class="s">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;rm host_file fail, ret:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">res</span>
+        <span class="k">return</span> <span class="n">ret</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39; rm </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="n">remote_file</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">go_ex</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">passwd</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_judge_ret</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="s">&#39;rm remote_file ret:&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">res</span>
+    <span class="k">return</span> <span class="n">ret</span>
+
+</div>
+<div class="viewcode-block" id="go_ex"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.expect.go_ex">[docs]</a><span class="k">def</span> <span class="nf">go_ex</span><span class="p">(</span>
+    <span class="n">hostname</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">passwd</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">b_print_stdout</span><span class="o">=</span><span class="bp">True</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    回返在hostname机器上执行的shell命令结果信息,</span>
+<span class="sd">    相比go而言， 回返信息更丰富，且按照dict方式回返.</span>
+<span class="sd">    command 有较多转义字符的，不推荐使用go，推荐使用go_witch_scp</span>
+
+<span class="sd">    :return:</span>
+<span class="sd">        dict.有 &#39;exitstatus&#39; &#39;remote_exitstatus&#39; &#39;result&#39; 三项输出内容</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;ssh </span><span class="si">%s</span><span class="s">@</span><span class="si">%s</span><span class="s"> &#39;</span><span class="si">%s</span><span class="s">&#39;&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="n">command</span><span class="p">)</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">_do_expect_ex</span><span class="p">(</span><span class="n">passwd</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">b_print_stdout</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ret</span>
+
+</div>
+<div class="viewcode-block" id="lscp"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.expect.lscp">[docs]</a><span class="k">def</span> <span class="nf">lscp</span><span class="p">(</span>
+    <span class="n">src</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">passwd</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span>
+    <span class="n">timeout</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">b_print_stdout</span><span class="o">=</span><span class="bp">True</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    拷贝src到hostname的dst目录下。</span>
+
+<span class="sd">    :return:</span>
+<span class="sd">        dict.有 &#39;exitstatus&#39; &#39;remote_exitstatus&#39; &#39;result&#39; 三项输出内容</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;scp -r </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">@</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_do_expect_ex</span><span class="p">(</span><span class="n">passwd</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">b_print_stdout</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="lscp_prod"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.expect.lscp_prod">[docs]</a><span class="k">def</span> <span class="nf">lscp_prod</span><span class="p">(</span><span class="n">scpstr</span><span class="p">,</span> <span class="n">passwd</span><span class="p">,</span> <span class="n">dst_path</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">b_print_stdout</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    兼容过去版本函数， 不推荐使用。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;scp -r &#39;</span> <span class="o">+</span> <span class="n">scpstr</span> <span class="o">+</span> <span class="s">&#39; &#39;</span> <span class="o">+</span> <span class="n">dst_path</span>
+    <span class="k">return</span> <span class="n">_do_expect</span><span class="p">(</span><span class="n">passwd</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">b_print_stdout</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="dscp"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.expect.dscp">[docs]</a><span class="k">def</span> <span class="nf">dscp</span><span class="p">(</span>
+    <span class="n">hostname</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">passwd</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">9000</span><span class="p">,</span> <span class="n">b_print_stdout</span><span class="o">=</span><span class="bp">False</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    拷贝hostname, src目录到本地的dst目录。 采取scp -r的模式。</span>
+
+<span class="sd">    :return:</span>
+<span class="sd">        dict.有 &#39;exitstatus&#39; &#39;remote_exitstatus&#39; &#39;result&#39; 三项输出内容</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;scp -r </span><span class="si">%s</span><span class="s">@</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_do_expect_ex</span><span class="p">(</span><span class="n">passwd</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">b_print_stdout</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../shell.html" >cup.shell</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

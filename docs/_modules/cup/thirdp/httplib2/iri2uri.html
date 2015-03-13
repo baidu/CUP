@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.thirdp.httplib2.iri2uri &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../../../index.html" />
+    <link rel="up" title="cup.thirdp.httplib2" href="../httplib2.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../httplib2.html" accesskey="U">cup.thirdp.httplib2</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.thirdp.httplib2.iri2uri</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">iri2uri</span>
+
+<span class="sd">Converts an IRI to a URI.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s">&quot;Joe Gregorio (joe@bitworking.org)&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s">&quot;Copyright 2006, Joe Gregorio&quot;</span>
+<span class="n">__contributors__</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&quot;1.0.0&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s">&quot;MIT&quot;</span>
+<span class="n">__history__</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">urlparse</span>
+
+
+<span class="c"># Convert an IRI to a URI following the rules in RFC 3987</span>
+<span class="c">#</span>
+<span class="c"># The characters we need to enocde and escape are defined in the spec:</span>
+<span class="c">#</span>
+<span class="c"># iprivate =  %xE000-F8FF / %xF0000-FFFFD / %x100000-10FFFD</span>
+<span class="c"># ucschar = %xA0-D7FF / %xF900-FDCF / %xFDF0-FFEF</span>
+<span class="c">#         / %x10000-1FFFD / %x20000-2FFFD / %x30000-3FFFD</span>
+<span class="c">#         / %x40000-4FFFD / %x50000-5FFFD / %x60000-6FFFD</span>
+<span class="c">#         / %x70000-7FFFD / %x80000-8FFFD / %x90000-9FFFD</span>
+<span class="c">#         / %xA0000-AFFFD / %xB0000-BFFFD / %xC0000-CFFFD</span>
+<span class="c">#         / %xD0000-DFFFD / %xE1000-EFFFD</span>
+
+<span class="n">escape_range</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mh">0xA0</span><span class="p">,</span> <span class="mh">0xD7FF</span><span class="p">),</span>
+    <span class="p">(</span><span class="mh">0xE000</span><span class="p">,</span> <span class="mh">0xF8FF</span><span class="p">),</span>
+    <span class="p">(</span><span class="mh">0xF900</span><span class="p">,</span> <span class="mh">0xFDCF</span><span class="p">),</span>
+    <span class="p">(</span><span class="mh">0xFDF0</span><span class="p">,</span> <span class="mh">0xFFEF</span><span class="p">),</span>
+    <span class="p">(</span><span class="mh">0x10000</span><span class="p">,</span> <span class="mh">0x1FFFD</span><span class="p">),</span>
+    <span class="p">(</span><span class="mh">0x20000</span><span class="p">,</span> <span class="mh">0x2FFFD</span><span class="p">),</span>
+    <span class="p">(</span><span class="mh">0x30000</span><span class="p">,</span> <span class="mh">0x3FFFD</span><span class="p">),</span>
+    <span class="p">(</span><span class="mh">0x40000</span><span class="p">,</span> <span class="mh">0x4FFFD</span><span class="p">),</span>
+    <span class="p">(</span><span class="mh">0x50000</span><span class="p">,</span> <span class="mh">0x5FFFD</span><span class="p">),</span>
+    <span class="p">(</span><span class="mh">0x60000</span><span class="p">,</span> <span class="mh">0x6FFFD</span><span class="p">),</span>
+    <span class="p">(</span><span class="mh">0x70000</span><span class="p">,</span> <span class="mh">0x7FFFD</span><span class="p">),</span>
+    <span class="p">(</span><span class="mh">0x80000</span><span class="p">,</span> <span class="mh">0x8FFFD</span><span class="p">),</span>
+    <span class="p">(</span><span class="mh">0x90000</span><span class="p">,</span> <span class="mh">0x9FFFD</span><span class="p">),</span>
+    <span class="p">(</span><span class="mh">0xA0000</span><span class="p">,</span> <span class="mh">0xAFFFD</span><span class="p">),</span>
+    <span class="p">(</span><span class="mh">0xB0000</span><span class="p">,</span> <span class="mh">0xBFFFD</span><span class="p">),</span>
+    <span class="p">(</span><span class="mh">0xC0000</span><span class="p">,</span> <span class="mh">0xCFFFD</span><span class="p">),</span>
+    <span class="p">(</span><span class="mh">0xD0000</span><span class="p">,</span> <span class="mh">0xDFFFD</span><span class="p">),</span>
+    <span class="p">(</span><span class="mh">0xE1000</span><span class="p">,</span> <span class="mh">0xEFFFD</span><span class="p">),</span>
+    <span class="p">(</span><span class="mh">0xF0000</span><span class="p">,</span> <span class="mh">0xFFFFD</span><span class="p">),</span>
+    <span class="p">(</span><span class="mh">0x100000</span><span class="p">,</span> <span class="mh">0x10FFFD</span><span class="p">),</span>
+<span class="p">]</span>
+
+<div class="viewcode-block" id="encode"><a class="viewcode-back" href="../../../../cup.thirdp.httplib2.html#cup.thirdp.httplib2.iri2uri.encode">[docs]</a><span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    <span class="n">retval</span> <span class="o">=</span> <span class="n">c</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="ow">in</span> <span class="n">escape_range</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">low</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">low</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">high</span><span class="p">:</span>
+            <span class="n">retval</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&quot;</span><span class="si">%%%2X</span><span class="s">&quot;</span> <span class="o">%</span> <span class="nb">ord</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">)])</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="n">retval</span>
+
+</div>
+<div class="viewcode-block" id="iri2uri"><a class="viewcode-back" href="../../../../cup.thirdp.httplib2.html#cup.thirdp.httplib2.iri2uri.iri2uri">[docs]</a><span class="k">def</span> <span class="nf">iri2uri</span><span class="p">(</span><span class="n">uri</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert an IRI to a URI. Note that IRIs must be</span>
+<span class="sd">    passed in a unicode strings. That is, do not utf-8 encode</span>
+<span class="sd">    the IRI before passing it into the function.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">uri</span> <span class="p">,</span><span class="nb">unicode</span><span class="p">):</span>
+        <span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="n">authority</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">fragment</span><span class="p">)</span> <span class="o">=</span> <span class="n">urlparse</span><span class="o">.</span><span class="n">urlsplit</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+        <span class="n">authority</span> <span class="o">=</span> <span class="n">authority</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;idna&#39;</span><span class="p">)</span>
+        <span class="c"># For each character in &#39;ucschar&#39; or &#39;iprivate&#39;</span>
+        <span class="c">#  1. encode as utf-8</span>
+        <span class="c">#  2. then %-encode each octet of that utf-8</span>
+        <span class="n">uri</span> <span class="o">=</span> <span class="n">urlparse</span><span class="o">.</span><span class="n">urlunsplit</span><span class="p">((</span><span class="n">scheme</span><span class="p">,</span> <span class="n">authority</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">fragment</span><span class="p">))</span>
+        <span class="n">uri</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">encode</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">uri</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">uri</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">unittest</span>
+
+    <span class="k">class</span> <span class="nc">Test</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+        <span class="k">def</span> <span class="nf">test_uris</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Test that URIs are invariant under the transformation.&quot;&quot;&quot;</span>
+            <span class="n">invariant</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s">u&quot;ftp://ftp.is.co.za/rfc/rfc1808.txt&quot;</span><span class="p">,</span>
+                <span class="s">u&quot;http://www.ietf.org/rfc/rfc2396.txt&quot;</span><span class="p">,</span>
+                <span class="s">u&quot;ldap://[2001:db8::7]/c=GB?objectClass?one&quot;</span><span class="p">,</span>
+                <span class="s">u&quot;mailto:John.Doe@example.com&quot;</span><span class="p">,</span>
+                <span class="s">u&quot;news:comp.infosystems.www.servers.unix&quot;</span><span class="p">,</span>
+                <span class="s">u&quot;tel:+1-816-555-1212&quot;</span><span class="p">,</span>
+                <span class="s">u&quot;telnet://192.0.2.16:80/&quot;</span><span class="p">,</span>
+                <span class="s">u&quot;urn:oasis:names:specification:docbook:dtd:xml:4.1.2&quot;</span> <span class="p">]</span>
+            <span class="k">for</span> <span class="n">uri</span> <span class="ow">in</span> <span class="n">invariant</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">iri2uri</span><span class="p">(</span><span class="n">uri</span><span class="p">))</span>
+
+        <span class="k">def</span> <span class="nf">test_iri</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot; Test that the right type of escaping is done for each part of the URI.&quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">&quot;http://xn--o3h.com/</span><span class="si">%E</span><span class="s">2</span><span class="si">%98%</span><span class="s">84&quot;</span><span class="p">,</span> <span class="n">iri2uri</span><span class="p">(</span><span class="s">u&quot;http://</span><span class="se">\N{COMET}</span><span class="s">.com/</span><span class="se">\N{COMET}</span><span class="s">&quot;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">&quot;http://bitworking.org/?fred=</span><span class="si">%E</span><span class="s">2</span><span class="si">%98%</span><span class="s">84&quot;</span><span class="p">,</span> <span class="n">iri2uri</span><span class="p">(</span><span class="s">u&quot;http://bitworking.org/?fred=</span><span class="se">\N{COMET}</span><span class="s">&quot;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">&quot;http://bitworking.org/#</span><span class="si">%E</span><span class="s">2</span><span class="si">%98%</span><span class="s">84&quot;</span><span class="p">,</span> <span class="n">iri2uri</span><span class="p">(</span><span class="s">u&quot;http://bitworking.org/#</span><span class="se">\N{COMET}</span><span class="s">&quot;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">&quot;#</span><span class="si">%E</span><span class="s">2</span><span class="si">%98%</span><span class="s">84&quot;</span><span class="p">,</span> <span class="n">iri2uri</span><span class="p">(</span><span class="s">u&quot;#</span><span class="se">\N{COMET}</span><span class="s">&quot;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">&quot;/fred?bar=</span><span class="si">%E</span><span class="s">2</span><span class="si">%98%</span><span class="s">9A#</span><span class="si">%E</span><span class="s">2</span><span class="si">%98%</span><span class="s">84&quot;</span><span class="p">,</span> <span class="n">iri2uri</span><span class="p">(</span><span class="s">u&quot;/fred?bar=</span><span class="se">\N{BLACK LEFT POINTING INDEX}</span><span class="s">#</span><span class="se">\N{COMET}</span><span class="s">&quot;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">&quot;/fred?bar=</span><span class="si">%E</span><span class="s">2</span><span class="si">%98%</span><span class="s">9A#</span><span class="si">%E</span><span class="s">2</span><span class="si">%98%</span><span class="s">84&quot;</span><span class="p">,</span> <span class="n">iri2uri</span><span class="p">(</span><span class="n">iri2uri</span><span class="p">(</span><span class="s">u&quot;/fred?bar=</span><span class="se">\N{BLACK LEFT POINTING INDEX}</span><span class="s">#</span><span class="se">\N{COMET}</span><span class="s">&quot;</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="s">&quot;/fred?bar=</span><span class="si">%E</span><span class="s">2</span><span class="si">%98%</span><span class="s">9A#</span><span class="si">%E</span><span class="s">2</span><span class="si">%98%</span><span class="s">84&quot;</span><span class="p">,</span> <span class="n">iri2uri</span><span class="p">(</span><span class="s">u&quot;/fred?bar=</span><span class="se">\N{BLACK LEFT POINTING INDEX}</span><span class="s">#</span><span class="se">\N{COMET}</span><span class="s">&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">)))</span>
+
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../httplib2.html" >cup.thirdp.httplib2</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

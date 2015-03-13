@@ -1,0 +1,377 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.net.route &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../../index.html" />
+    <link rel="up" title="cup.net" href="../net.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../net.html" accesskey="U">cup.net</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.net.route</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/python</span>
+<span class="c"># -*- coding: utf-8 -*</span>
+<span class="c"># #############################################################################</span>
+<span class="c">#</span>
+<span class="c">#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved</span>
+<span class="c">#</span>
+<span class="c"># #############################################################################</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:author:</span>
+<span class="sd">    YangGuang yangguang07@baidu.com</span>
+<span class="sd">:create_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:last_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:descrition:</span>
+<span class="sd">    host route info related module</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;RouteInfo&#39;</span><span class="p">]</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+
+<div class="viewcode-block" id="RouteInfo"><a class="viewcode-back" href="../../../cup.net.html#cup.net.route.RouteInfo">[docs]</a><span class="k">class</span> <span class="nc">RouteInfo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Handler of Route Info for Linux system, for ipv4 only.</span>
+
+<span class="sd">    *E.g.*</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        from cup.net import route</span>
+<span class="sd">        ri = route.RouteInfo()</span>
+<span class="sd">        print json.dumps(ri.get_route_by_ip(&#39;10.32.19.92&#39;), indent=1)</span>
+<span class="sd">        print json.dumps(ri.get_routes(), indent=1)</span>
+
+
+<span class="sd">    *Return*</span>
+<span class="sd">    ::</span>
+<span class="sd">        {</span>
+<span class="sd">         &quot;Use&quot;: &quot;0&quot;,</span>
+<span class="sd">         &quot;Iface&quot;: &quot;eth1&quot;,</span>
+<span class="sd">         &quot;Metric&quot;: &quot;0&quot;,</span>
+<span class="sd">         &quot;Destination&quot;: &quot;10.0.0.0&quot;,</span>
+<span class="sd">         &quot;Mask&quot;: &quot;255.0.0.0&quot;,</span>
+<span class="sd">         &quot;RefCnt&quot;: &quot;0&quot;,</span>
+<span class="sd">         &quot;MTU&quot;: &quot;0&quot;,</span>
+<span class="sd">         &quot;Window&quot;: &quot;0&quot;,</span>
+<span class="sd">         &quot;Gateway&quot;: &quot;10.226.71.1&quot;,</span>
+<span class="sd">         &quot;Flags&quot;: &quot;0003&quot;,</span>
+<span class="sd">         &quot;IRTT&quot;: &quot;0&quot;</span>
+<span class="sd">        }</span>
+<span class="sd">        [</span>
+<span class="sd">         {</span>
+<span class="sd">          &quot;Use&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;Iface&quot;: &quot;eth1&quot;,</span>
+<span class="sd">          &quot;Metric&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;Destination&quot;: &quot;10.226.71.0&quot;,</span>
+<span class="sd">          &quot;Mask&quot;: &quot;255.255.255.0&quot;,</span>
+<span class="sd">          &quot;RefCnt&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;MTU&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;Window&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;Gateway&quot;: &quot;0.0.0.0&quot;,</span>
+<span class="sd">          &quot;Flags&quot;: &quot;0001&quot;,</span>
+<span class="sd">          &quot;IRTT&quot;: &quot;0&quot;</span>
+<span class="sd">         },</span>
+<span class="sd">         {</span>
+<span class="sd">          &quot;Use&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;Iface&quot;: &quot;eth1&quot;,</span>
+<span class="sd">          &quot;Metric&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;Destination&quot;: &quot;169.254.0.0&quot;,</span>
+<span class="sd">          &quot;Mask&quot;: &quot;255.255.0.0&quot;,</span>
+<span class="sd">          &quot;RefCnt&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;MTU&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;Window&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;Gateway&quot;: &quot;0.0.0.0&quot;,</span>
+<span class="sd">          &quot;Flags&quot;: &quot;0001&quot;,</span>
+<span class="sd">          &quot;IRTT&quot;: &quot;0&quot;</span>
+<span class="sd">         },</span>
+<span class="sd">         {</span>
+<span class="sd">          &quot;Use&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;Iface&quot;: &quot;eth1&quot;,</span>
+<span class="sd">          &quot;Metric&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;Destination&quot;: &quot;192.168.0.0&quot;,</span>
+<span class="sd">          &quot;Mask&quot;: &quot;255.255.0.0&quot;,</span>
+<span class="sd">          &quot;RefCnt&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;MTU&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;Window&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;Gateway&quot;: &quot;10.226.71.1&quot;,</span>
+<span class="sd">          &quot;Flags&quot;: &quot;0003&quot;,</span>
+<span class="sd">          &quot;IRTT&quot;: &quot;0&quot;</span>
+<span class="sd">         },</span>
+<span class="sd">         {</span>
+<span class="sd">          &quot;Use&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;Iface&quot;: &quot;eth1&quot;,</span>
+<span class="sd">          &quot;Metric&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;Destination&quot;: &quot;172.16.0.0&quot;,</span>
+<span class="sd">          &quot;Mask&quot;: &quot;255.240.0.0&quot;,</span>
+<span class="sd">          &quot;RefCnt&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;MTU&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;Window&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;Gateway&quot;: &quot;10.226.71.1&quot;,</span>
+<span class="sd">          &quot;Flags&quot;: &quot;0003&quot;,</span>
+<span class="sd">          &quot;IRTT&quot;: &quot;0&quot;</span>
+<span class="sd">         },</span>
+<span class="sd">         {</span>
+<span class="sd">          &quot;Use&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;Iface&quot;: &quot;eth1&quot;,</span>
+<span class="sd">          &quot;Metric&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;Destination&quot;: &quot;10.0.0.0&quot;,</span>
+<span class="sd">          &quot;Mask&quot;: &quot;255.0.0.0&quot;,</span>
+<span class="sd">          &quot;RefCnt&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;MTU&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;Window&quot;: &quot;0&quot;,</span>
+<span class="sd">          &quot;Gateway&quot;: &quot;10.226.71.1&quot;,</span>
+<span class="sd">          &quot;Flags&quot;: &quot;0003&quot;,</span>
+<span class="sd">          &quot;IRTT&quot;: &quot;0&quot;</span>
+<span class="sd">         }</span>
+<span class="sd">        ]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ROUTE_FILE</span> <span class="o">=</span> <span class="s">&#39;/proc/net/route&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raw</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_proc_info</span><span class="p">()</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_ip2int</span><span class="p">(</span><span class="n">ip</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        change ip address to integer</span>
+<span class="sd">        :param ip: ip address in type of string</span>
+<span class="sd">        :return: decimal integer in type of string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&quot;!I&quot;</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_aton</span><span class="p">(</span><span class="n">ip</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_int2ip</span><span class="p">(</span><span class="n">dec</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        change integer to ip address</span>
+<span class="sd">        :param dec: decimal integer in type fo string</span>
+<span class="sd">        :return: ip address</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_ntoa</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s">&quot;!I&quot;</span><span class="p">,</span> <span class="n">dec</span><span class="p">))</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_ip_check</span><span class="p">(</span><span class="n">ipaddr</span><span class="p">):</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">ipaddr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="mi">255</span><span class="p">,</span>
+            <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">isdigit</span><span class="p">(),</span> <span class="n">q</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_init_proc_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        read routeinfo from /proc/net/route, and parse it to dict</span>
+<span class="sd">        this fun will be called when __init__</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">route_info</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ROUTE_FILE</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fd</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;Iface</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="n">d_item</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">items</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">11</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">d_item</span><span class="p">[</span><span class="s">&#39;Iface&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">d_item</span><span class="p">[</span><span class="s">&#39;Destination&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">d_item</span><span class="p">[</span><span class="s">&#39;Gateway&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">d_item</span><span class="p">[</span><span class="s">&#39;Flags&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+                <span class="n">d_item</span><span class="p">[</span><span class="s">&#39;RefCnt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+                <span class="n">d_item</span><span class="p">[</span><span class="s">&#39;Use&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+                <span class="n">d_item</span><span class="p">[</span><span class="s">&#39;Metric&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+                <span class="n">d_item</span><span class="p">[</span><span class="s">&#39;Mask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+                <span class="n">d_item</span><span class="p">[</span><span class="s">&#39;MTU&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span>
+                <span class="n">d_item</span><span class="p">[</span><span class="s">&#39;Window&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span>
+                <span class="n">d_item</span><span class="p">[</span><span class="s">&#39;IRTT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+                <span class="n">route_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">d_item</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raw</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">route_info</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_raw2view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        change raw route_info to be readable</span>
+<span class="sd">        :param r:</span>
+<span class="sd">            raw route_info</span>
+<span class="sd">        :return:</span>
+<span class="sd">            readable route_info</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">res</span><span class="p">[</span><span class="s">&#39;Destination&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_int2ip</span><span class="p">(</span>
+            <span class="n">socket</span><span class="o">.</span><span class="n">ntohl</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s">&#39;Destination&#39;</span><span class="p">],</span> <span class="mi">16</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="n">res</span><span class="p">[</span><span class="s">&#39;Gateway&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_int2ip</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">ntohl</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s">&#39;Gateway&#39;</span><span class="p">],</span> <span class="mi">16</span><span class="p">)))</span>
+        <span class="n">res</span><span class="p">[</span><span class="s">&#39;Mask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_int2ip</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">ntohl</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s">&#39;Mask&#39;</span><span class="p">],</span> <span class="mi">16</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">res</span>
+
+<div class="viewcode-block" id="RouteInfo.get_routes"><a class="viewcode-back" href="../../../cup.net.html#cup.net.route.RouteInfo.get_routes">[docs]</a>    <span class="k">def</span> <span class="nf">get_routes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get all the route_info of this host</span>
+<span class="sd">        :return: all the readable route_info of this host</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res_l</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw</span><span class="p">:</span>
+            <span class="n">res_l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_raw2view</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">res_l</span>
+</div>
+<div class="viewcode-block" id="RouteInfo.get_interface_by_ip"><a class="viewcode-back" href="../../../cup.net.html#cup.net.route.RouteInfo.get_interface_by_ip">[docs]</a>    <span class="k">def</span> <span class="nf">get_interface_by_ip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get the interface which can reach to the ip</span>
+<span class="sd">        :param ip:</span>
+<span class="sd">            destination ip</span>
+<span class="sd">        :return:</span>
+<span class="sd">            interface name which can reach to the ip.</span>
+<span class="sd">            None if failed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ip_check</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="n">route_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_route_by_ip</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">route_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">route_info</span><span class="p">[</span><span class="s">&#39;Iface&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="RouteInfo.get_route_by_ip"><a class="viewcode-back" href="../../../cup.net.html#cup.net.route.RouteInfo.get_route_by_ip">[docs]</a>    <span class="k">def</span> <span class="nf">get_route_by_ip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get the route_info which can reach to the ip address</span>
+<span class="sd">        :param ip:</span>
+<span class="sd">            destination ip address</span>
+<span class="sd">        :return:</span>
+<span class="sd">            route_info in type of dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ip_check</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="n">i_ip</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">ntohl</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ip2int</span><span class="p">(</span><span class="n">ip</span><span class="p">)))</span>
+        <span class="n">raw_route</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">raw_route</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s">&#39;Destination&#39;</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span> <span class="o">==</span> <span class="n">i_ip</span> <span class="o">&amp;</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s">&#39;Mask&#39;</span><span class="p">],</span> <span class="mi">16</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">ret</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="n">r</span>
+                    <span class="k">continue</span>
+
+                <span class="n">old</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="s">&#39;Destination&#39;</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">int</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="s">&#39;Mask&#39;</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span>
+                <span class="n">new</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s">&#39;Destination&#39;</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s">&#39;Mask&#39;</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">old</span> <span class="o">&lt;</span> <span class="n">new</span><span class="p">:</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="n">r</span>
+                <span class="k">elif</span> <span class="n">old</span> <span class="o">==</span> <span class="n">new</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="s">&#39;Metric&#39;</span><span class="p">])</span> <span class="o">&lt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s">&#39;Metric&#39;</span><span class="p">]):</span>
+                        <span class="n">ret</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw2view</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="RouteInfo.get_interfaces"><a class="viewcode-back" href="../../../cup.net.html#cup.net.route.RouteInfo.get_interfaces">[docs]</a>    <span class="k">def</span> <span class="nf">get_interfaces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get all the interface of this host&quot;&quot;&quot;</span>
+        <span class="n">itfs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw</span><span class="p">:</span>
+            <span class="n">itfs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s">&#39;Iface&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">itfs</span><span class="p">)</span>
+
+</div></div>
+<span class="k">def</span> <span class="nf">_test</span><span class="p">():</span>
+    <span class="n">ri</span> <span class="o">=</span> <span class="n">RouteInfo</span><span class="p">()</span>
+    <span class="c"># print ri._ip2int(&#39;1.0.0.0&#39;)</span>
+    <span class="c"># print ri._raw_info</span>
+    <span class="c"># print</span>
+    <span class="c"># print json.dumps(ri.route, indent=1)</span>
+    <span class="k">print</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">ri</span><span class="o">.</span><span class="n">get_route_by_ip</span><span class="p">(</span><span class="s">&#39;10.32.19.92&#39;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">ri</span><span class="o">.</span><span class="n">get_routes</span><span class="p">(),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c"># print json.dumps(ri.get_routes(), indent=1)</span>
+    <span class="c"># print ri.get_interfaces()</span>
+    <span class="c"># print &#39;10.32.19.1:&#39;,ri._dot_decimal_to_hex(&#39;10.32.19.1&#39;)</span>
+    <span class="c"># print &#39;255.255.255.0:&#39;,ri._dot_decimal_to_hex(&#39;255.255.255.0&#39;)</span>
+    <span class="c"># print &#39;0113200A:&#39;,ri._hex_to_dot_decimal(&#39;0113200A&#39;)</span>
+    <span class="c"># print ri._get_net()</span>
+    <span class="c"># print json.dumps(ri.route,indent=1)</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">_test</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../net.html" >cup.net</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

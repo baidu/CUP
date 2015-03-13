@@ -1,0 +1,61 @@
+cup.thirdp.MySQLdb package
+==========================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    cup.thirdp.MySQLdb.constants
+
+Submodules
+----------
+
+cup.thirdp.MySQLdb.connections module
+-------------------------------------
+
+.. automodule:: cup.thirdp.MySQLdb.connections
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cup.thirdp.MySQLdb.converters module
+------------------------------------
+
+.. automodule:: cup.thirdp.MySQLdb.converters
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cup.thirdp.MySQLdb.cursors module
+---------------------------------
+
+.. automodule:: cup.thirdp.MySQLdb.cursors
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cup.thirdp.MySQLdb.release module
+---------------------------------
+
+.. automodule:: cup.thirdp.MySQLdb.release
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cup.thirdp.MySQLdb.times module
+-------------------------------
+
+.. automodule:: cup.thirdp.MySQLdb.times
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: cup.thirdp.MySQLdb
+    :members:
+    :undoc-members:
+    :show-inheritance:

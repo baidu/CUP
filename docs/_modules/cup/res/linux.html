@@ -1,0 +1,1369 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.res.linux &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.res.linux</h1><div class="highlight"><pre>
+<span class="c">#!/bin/env python  pylint: disable=C0302</span>
+<span class="c"># -*- coding: utf-8 -*</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:author:</span>
+<span class="sd">    Giampaolo Rodola of psutil</span>
+<span class="sd">:descrition:</span>
+<span class="sd">    The class [Process] is back ported from python open-source project</span>
+<span class="sd">    [psutil]. Guannan finished porting in early 2014.</span>
+<span class="sd">    Here is the original license applied.</span>
+<span class="sd">:copyright:</span>
+<span class="sd">    Psutil.</span>
+<span class="sd">    Copyright (c) 2009, Giampaolo Rodola&#39;. All rights reserved.</span>
+<span class="sd">    Use of this source code is governed by a BSD-style license</span>
+<span class="sd">    that can be found in the LICENSE file.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="kn">import</span> <span class="nn">cup</span>
+
+<span class="n">_CLOCK_TICKS</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">sysconf</span><span class="p">(</span><span class="s">&quot;SC_CLK_TCK&quot;</span><span class="p">)</span>
+<span class="n">_PAGESIZE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">sysconf</span><span class="p">(</span><span class="s">&quot;SC_PAGE_SIZE&quot;</span><span class="p">)</span>
+<span class="n">_PROC_STATUSES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;R&quot;</span><span class="p">:</span> <span class="s">&#39;STATUS_RUNNING&#39;</span><span class="p">,</span>
+    <span class="s">&quot;S&quot;</span><span class="p">:</span> <span class="s">&#39;STATUS_SLEEPING&#39;</span><span class="p">,</span>
+    <span class="s">&quot;D&quot;</span><span class="p">:</span> <span class="s">&#39;STATUS_DISK_SLEEP&#39;</span><span class="p">,</span>
+    <span class="s">&quot;T&quot;</span><span class="p">:</span> <span class="s">&#39;STATUS_STOPPED&#39;</span><span class="p">,</span>
+    <span class="s">&quot;t&quot;</span><span class="p">:</span> <span class="s">&#39;STATUS_TRACING_STOP&#39;</span><span class="p">,</span>
+    <span class="s">&quot;Z&quot;</span><span class="p">:</span> <span class="s">&#39;STATUS_ZOMBIE&#39;</span><span class="p">,</span>
+    <span class="s">&quot;X&quot;</span><span class="p">:</span> <span class="s">&#39;STATUS_DEAD&#39;</span><span class="p">,</span>
+    <span class="s">&quot;x&quot;</span><span class="p">:</span> <span class="s">&#39;STATUS_DEAD&#39;</span><span class="p">,</span>
+    <span class="s">&quot;K&quot;</span><span class="p">:</span> <span class="s">&#39;STATUS_WAKE_KILL&#39;</span><span class="p">,</span>
+    <span class="s">&quot;W&quot;</span><span class="p">:</span> <span class="s">&#39;STATUS_WAKING&#39;</span>
+<span class="p">}</span>
+<span class="n">_CONN_NONE</span> <span class="o">=</span> <span class="s">&#39;CONN_NONE&#39;</span>
+<span class="n">_TCP_STATUSES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;01&quot;</span><span class="p">:</span> <span class="s">&#39;CONN_ESTABLISHED&#39;</span><span class="p">,</span>
+    <span class="s">&quot;02&quot;</span><span class="p">:</span> <span class="s">&#39;CONN_SYN_SENT&#39;</span><span class="p">,</span>
+    <span class="s">&quot;03&quot;</span><span class="p">:</span> <span class="s">&#39;CONN_SYN_RECV&#39;</span><span class="p">,</span>
+    <span class="s">&quot;04&quot;</span><span class="p">:</span> <span class="s">&#39;CONN_FIN_WAIT1&#39;</span><span class="p">,</span>
+    <span class="s">&quot;05&quot;</span><span class="p">:</span> <span class="s">&#39;CONN_FIN_WAIT2&#39;</span><span class="p">,</span>
+    <span class="s">&quot;06&quot;</span><span class="p">:</span> <span class="s">&#39;CONN_TIME_WAIT&#39;</span><span class="p">,</span>
+    <span class="s">&quot;07&quot;</span><span class="p">:</span> <span class="s">&#39;CONN_CLOSE&#39;</span><span class="p">,</span>
+    <span class="s">&quot;08&quot;</span><span class="p">:</span> <span class="s">&#39;CONN_CLOSE_WAIT&#39;</span><span class="p">,</span>
+    <span class="s">&quot;09&quot;</span><span class="p">:</span> <span class="s">&#39;CONN_LAST_ACK&#39;</span><span class="p">,</span>
+    <span class="s">&quot;0A&quot;</span><span class="p">:</span> <span class="s">&#39;CONN_LISTEN&#39;</span><span class="p">,</span>
+    <span class="s">&quot;0B&quot;</span><span class="p">:</span> <span class="s">&#39;CONN_CLOSING&#39;</span>
+<span class="p">}</span>
+
+
+<span class="c"># # # # begin system infos # # # #</span>
+<span class="nd">@cup.decorators.needlinux</span>
+<div class="viewcode-block" id="get_boottime_since_epoch"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.get_boottime_since_epoch">[docs]</a><span class="k">def</span> <span class="nf">get_boottime_since_epoch</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :return:</span>
+<span class="sd">        回返自从epoch以来的时间。 以秒记.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;/proc/stat&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;btime&#39;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&quot;line &#39;btime&#39; not found&quot;</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+</div>
+<span class="nd">@cup.decorators.needlinux</span>
+<div class="viewcode-block" id="get_kernel_version"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.get_kernel_version">[docs]</a><span class="k">def</span> <span class="nf">get_kernel_version</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    拿到Linux系统的kernel信息， 回返是一个三元组</span>
+<span class="sd">    e.g.(&#39;2&#39;, &#39;6&#39;, &#39;32&#39;):</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">reg</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&#39;\d{1}\.\d{1,2}\.\d{1,3}&#39;</span><span class="p">)</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;/bin/uname -a&#39;</span>
+    <span class="n">versions</span> <span class="o">=</span> <span class="n">cup</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">execshell_withpipe_str</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">versions</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">))</span>
+
+</div>
+<span class="nd">@cup.decorators.needlinux</span>
+<div class="viewcode-block" id="get_cpu_nums"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.get_cpu_nums">[docs]</a><span class="k">def</span> <span class="nf">get_cpu_nums</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    回返机器的CPU个数信息</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">sysconf</span><span class="p">(</span><span class="s">&quot;SC_NPROCESSORS_ONLN&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="c"># as a second fallback we try to parse /proc/cpuinfo</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;/proc/cpuinfo&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;processor&#39;</span><span class="p">):</span>
+                <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c"># unknown format (e.g. amrel/sparc architectures), see:</span>
+    <span class="c"># http://code.google.com/p/psutil/issues/detail?id=200</span>
+    <span class="c"># try to parse /proc/stat as a last resort</span>
+    <span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;/proc/stat&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">search</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&#39;cpu\d&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">search</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+                <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&quot;couldn&#39;t determine platform&#39;s NUM_CPUS&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">num</span>
+
+</div>
+<div class="viewcode-block" id="MemInfo"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.MemInfo">[docs]</a><span class="k">class</span> <span class="nc">MemInfo</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s">&#39;vmem&#39;</span><span class="p">,</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+        <span class="c"># all platforms</span>
+        <span class="s">&#39;total&#39;</span><span class="p">,</span> <span class="s">&#39;available&#39;</span><span class="p">,</span> <span class="s">&#39;percent&#39;</span><span class="p">,</span> <span class="s">&#39;used&#39;</span><span class="p">,</span> <span class="s">&#39;free&#39;</span><span class="p">,</span>
+        <span class="c"># linux specific</span>
+        <span class="s">&#39;active&#39;</span><span class="p">,</span>
+        <span class="s">&#39;inactive&#39;</span><span class="p">,</span>
+        <span class="s">&#39;buffers&#39;</span><span class="p">,</span>
+        <span class="s">&#39;cached&#39;</span><span class="p">]))):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get_meminfo函数取得系统Mem信息的回返信息。 是个namedtuple</span>
+<span class="sd">        total, available, percent, used, free,</span>
+<span class="sd">        active,</span>
+<span class="sd">        inactive,</span>
+<span class="sd">        buffers,</span>
+<span class="sd">        cached是她的属性</span>
+
+<span class="sd">    E.g.:</span>
+<span class="sd">    ::</span>
+<span class="sd">        import cup</span>
+<span class="sd">        meminfo = cup.res.linux.get_meminfo()</span>
+<span class="sd">        print meminfo.total</span>
+<span class="sd">        print meminfo.available</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<span class="c">#    user</span>
+<span class="c">#       (1) Time spent in user mode.</span>
+<span class="c">#    nice</span>
+<span class="c">#       (2) Time spent in user mode with low priority (nice).</span>
+<span class="c">#    system</span>
+<span class="c">#       (3) Time spent in system mode.</span>
+<span class="c">#    idle</span>
+<span class="c">#       (4) Time spent in the idle task.</span>
+<span class="c">#           This value should be USER_HZ times the</span>
+<span class="c">#           second entry in the /proc/uptime pseudo-file.</span>
+<span class="c">#    iowait (since Linux 2.5.41)</span>
+<span class="c">#       (5) Time waiting for I/O to complete.</span>
+<span class="c">#    irq (since Linux 2.6.0-test4)</span>
+<span class="c">#       (6) Time servicing interrupts.</span>
+<span class="c">#    softirq (since Linux 2.6.0-test4)</span>
+<span class="c">#       (7) Time servicing softirqs.</span>
+<span class="c">#    steal (since Linux 2.6.11)</span>
+<span class="c">#       (8) Stolen time, which is the time spent in other</span>
+<span class="c">#            operating systems when</span>
+<span class="c">#        running in a virtualized environment</span>
+<span class="c">#    guest (since Linux 2.6.24)</span>
+<span class="c">#       (9) Time spent running a virtual CPU for</span>
+<span class="c">#           guest operating systems under the</span>
+<span class="c">#           control of the Linux kernel.</span>
+<span class="c">#    guest_nice (since Linux 2.6.33)</span>
+<span class="c">#       (10) Time spent running a niced guest</span>
+<span class="c">#            (virtual CPU for guest operating systems under the</span>
+<span class="c">#            control of the Linux kernel).</span></div>
+<span class="n">_CPU_COLUMNS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&#39;usr&#39;</span><span class="p">,</span>
+    <span class="s">&#39;nice&#39;</span><span class="p">,</span>
+    <span class="s">&#39;system&#39;</span><span class="p">,</span>
+    <span class="s">&#39;idle&#39;</span><span class="p">,</span>
+    <span class="s">&#39;iowait&#39;</span><span class="p">,</span>
+    <span class="s">&#39;irq&#39;</span><span class="p">,</span>
+    <span class="s">&#39;softirq&#39;</span><span class="p">,</span>
+    <span class="s">&#39;steal&#39;</span><span class="p">,</span>
+    <span class="s">&#39;guest&#39;</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_get_cpu_columns</span><span class="p">():</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">get_kernel_version</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">33</span><span class="p">):</span>
+        <span class="n">_CPU_COLUMNS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;guest_nice&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="CPUInfo"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.CPUInfo">[docs]</a><span class="k">class</span> <span class="nc">CPUInfo</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s">&#39;CPUInfo&#39;</span><span class="p">,</span> <span class="n">_CPU_COLUMNS</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        CPUInfo是在调用get_cpu_usage返回的python namedtuple.</span>
+<span class="sd">        返回值中的如下属性可以直接访问:</span>
+<span class="sd">        usr,</span>
+<span class="sd">        nice,</span>
+<span class="sd">        system,</span>
+<span class="sd">        idle,</span>
+<span class="sd">        iowait,</span>
+<span class="sd">        irq,</span>
+<span class="sd">        softirq,</span>
+<span class="sd">        steal,</span>
+<span class="sd">        guest</span>
+
+<span class="sd">        I.g.</span>
+<span class="sd">        ::</span>
+<span class="sd">            import cup</span>
+<span class="sd">            # 计算60内cpu的使用情况。</span>
+<span class="sd">            cpuinfo = cup.res.linux.get_cpu_usage(intvl_in_sec=60)</span>
+<span class="sd">            print cpuinfo.usr</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+</div>
+<span class="k">def</span> <span class="nf">_get_cput_by_stat</span><span class="p">():</span>
+    <span class="n">usr</span> <span class="o">=</span> <span class="n">nice</span> <span class="o">=</span> <span class="n">system</span> <span class="o">=</span> <span class="n">idle</span> <span class="o">=</span> <span class="n">iowait</span> <span class="o">=</span> <span class="n">irq</span> <span class="o">=</span> <span class="n">softirq</span> <span class="o">=</span> <span class="n">steal</span> <span class="o">=</span> \
+        <span class="n">guest</span> <span class="o">=</span> <span class="n">guest_nice</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;/proc/stat&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;cpu&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">_CPU_COLUMNS</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;guest_nice&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="n">nice</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">idle</span><span class="p">,</span> <span class="n">iowait</span><span class="p">,</span> <span class="n">irq</span><span class="p">,</span>
+                        <span class="n">softirq</span><span class="p">,</span> <span class="n">steal</span><span class="p">,</span> <span class="n">guest</span><span class="p">,</span> <span class="n">guest_nice</span><span class="p">)</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="p">(</span><span class="n">usr</span><span class="p">,</span> <span class="n">nice</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">idle</span><span class="p">,</span> <span class="n">iowait</span><span class="p">,</span> <span class="n">irq</span><span class="p">,</span>
+                        <span class="n">softirq</span><span class="p">,</span> <span class="n">steal</span><span class="p">,</span> <span class="n">guest</span><span class="p">)</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="k">break</span>
+    <span class="c"># pylint: disable=W0703</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;Get cpuinfo failed&#39;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">_CPU_COLUMNS</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;guest_nice&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">CPUInfo</span><span class="p">(</span>
+            <span class="n">usr</span><span class="p">,</span> <span class="n">nice</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">idle</span><span class="p">,</span> <span class="n">iowait</span><span class="p">,</span> <span class="n">irq</span><span class="p">,</span>
+            <span class="n">softirq</span><span class="p">,</span> <span class="n">steal</span><span class="p">,</span> <span class="n">guest</span><span class="p">,</span> <span class="n">guest_nice</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">CPUInfo</span><span class="p">(</span>
+            <span class="n">usr</span><span class="p">,</span> <span class="n">nice</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">idle</span><span class="p">,</span> <span class="n">iowait</span><span class="p">,</span> <span class="n">irq</span><span class="p">,</span>
+            <span class="n">softirq</span><span class="p">,</span> <span class="n">steal</span><span class="p">,</span> <span class="n">guest</span>
+        <span class="p">)</span>
+
+
+<span class="nd">@cup.decorators.needlinux</span>
+<div class="viewcode-block" id="get_cpu_usage"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.get_cpu_usage">[docs]</a><span class="k">def</span> <span class="nf">get_cpu_usage</span><span class="p">(</span><span class="n">intvl_in_sec</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    取得下个intvl_in_sec时间内的CPU使用率信息</span>
+<span class="sd">    回返CPUInfo</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cup</span><span class="o">.</span><span class="n">unittest</span><span class="o">.</span><span class="n">assert_ge</span><span class="p">(</span><span class="n">intvl_in_sec</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">_CPU_COLUMNS</span><span class="p">)):</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">cpu_info0</span> <span class="o">=</span> <span class="n">_get_cput_by_stat</span><span class="p">()</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">intvl_in_sec</span><span class="p">)</span>
+    <span class="n">cpu_info1</span> <span class="o">=</span> <span class="n">_get_cput_by_stat</span><span class="p">()</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cpu_info1</span><span class="p">)):</span>
+        <span class="n">minus</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cpu_info1</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">cpu_info0</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">minus</span>
+        <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">minus</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="p">)):</span>
+        <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">/</span> <span class="n">total</span>
+
+    <span class="c"># pylint: disable=W0142</span>
+    <span class="k">return</span> <span class="n">CPUInfo</span><span class="p">(</span><span class="o">*</span><span class="n">ret</span><span class="p">)</span>
+
+</div>
+<span class="nd">@cup.decorators.needlinux</span>
+<div class="viewcode-block" id="get_meminfo"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.get_meminfo">[docs]</a><span class="k">def</span> <span class="nf">get_meminfo</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获得当前系统的内存信息， 回返MemInfo数据结构。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">free</span> <span class="o">=</span> <span class="n">buffers</span> <span class="o">=</span> <span class="n">cached</span> <span class="o">=</span> <span class="n">active</span> <span class="o">=</span> <span class="n">inactive</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;/proc/meminfo&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;MemTotal&#39;</span><span class="p">):</span>
+                <span class="n">total</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mi">1024</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;MemFree&#39;</span><span class="p">):</span>
+                <span class="n">free</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mi">1024</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;Buffers&#39;</span><span class="p">):</span>
+                <span class="n">buffers</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mi">1024</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;Cached:&#39;</span><span class="p">):</span>
+                <span class="n">cached</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mi">1024</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;Active:&#39;</span><span class="p">):</span>
+                <span class="n">active</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mi">1024</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;Inactive:&#39;</span><span class="p">):</span>
+                <span class="n">inactive</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mi">1024</span>
+            <span class="k">if</span> <span class="n">cached</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> \
+                <span class="ow">and</span> <span class="n">active</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> \
+                    <span class="ow">and</span> <span class="n">inactive</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># we might get here when dealing with exotic Linux flavors, see:</span>
+            <span class="c"># http://code.google.com/p/psutil/issues/detail?id=313</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;&#39;cached&#39;, &#39;active&#39; and &#39;inactive&#39; memory stats couldn&#39;t &quot;</span> \
+                  <span class="s">&quot;be determined and were set to 0&quot;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="n">free</span> <span class="o">=</span> <span class="n">buffers</span> <span class="o">=</span> <span class="n">cached</span> <span class="o">=</span> <span class="n">active</span> <span class="o">=</span> <span class="n">inactive</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">avail</span> <span class="o">=</span> <span class="n">free</span> <span class="o">+</span> <span class="n">buffers</span> <span class="o">+</span> <span class="n">cached</span>
+    <span class="n">used</span> <span class="o">=</span> <span class="n">total</span> <span class="o">-</span> <span class="n">free</span>
+    <span class="n">percent</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">total</span> <span class="o">-</span> <span class="n">avail</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">/</span> <span class="n">total</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">MemInfo</span><span class="p">(</span>
+        <span class="n">total</span><span class="p">,</span>
+        <span class="n">avail</span><span class="p">,</span>
+        <span class="n">percent</span><span class="p">,</span>
+        <span class="n">used</span><span class="p">,</span>
+        <span class="n">free</span><span class="p">,</span>
+        <span class="n">active</span><span class="p">,</span>
+        <span class="n">inactive</span><span class="p">,</span>
+        <span class="n">buffers</span><span class="p">,</span>
+        <span class="n">cached</span>
+    <span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="SWAPINFO"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.SWAPINFO">[docs]</a><span class="k">class</span> <span class="nc">SWAPINFO</span><span class="p">(</span>
+    <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+        <span class="s">&#39;SwapInfo&#39;</span><span class="p">,</span>
+        <span class="p">[</span>
+            <span class="s">&#39;total&#39;</span><span class="p">,</span>
+            <span class="s">&#39;free&#39;</span><span class="p">,</span>
+            <span class="s">&#39;used&#39;</span><span class="p">,</span>
+            <span class="s">&#39;sin&#39;</span><span class="p">,</span>
+            <span class="s">&#39;sout&#39;</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get_swapinfo函数回返的数据结构信息。 total,free,used,sin,sout是她的属性</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+</div>
+<span class="nd">@cup.decorators.needlinux</span>
+<div class="viewcode-block" id="get_swapinfo"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.get_swapinfo">[docs]</a><span class="k">def</span> <span class="nf">get_swapinfo</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获得当前系统的swap信息</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;/proc/swaps&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">reg</span> <span class="o">=</span> <span class="s">&#39;([</span><span class="se">\\</span><span class="s">/A-Za-z0-9]+)[</span><span class="se">\\</span><span class="s">s]+([a-z]+)[</span><span class="se">\\</span><span class="s">s]+([0-9]+)&#39;</span>\
+        <span class="s">&#39;[</span><span class="se">\\</span><span class="s">s]+([0-9]+)[</span><span class="se">\\</span><span class="s">s]+([</span><span class="se">\\</span><span class="s">-0-9]+).*&#39;</span>
+    <span class="n">regobj</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">used</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">regobj</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">sp</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="n">total</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sp</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                <span class="n">used</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sp</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">total</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="n">used</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Failed to get total from /proc/swaps or &#39;</span>\
+            <span class="s">&#39;the system does not have swap mounted.&#39;</span> \
+            <span class="s">&#39; Total and used were set to 0&#39;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+
+    <span class="n">sin</span> <span class="o">=</span> <span class="n">sout</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;/proc/vmstat&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="c"># values are expressed in 4 kilo bytes, we want bytes instead</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;pswpin&#39;</span><span class="p">):</span>
+                <span class="n">sin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">1024</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;pswpout&#39;</span><span class="p">):</span>
+                <span class="n">sout</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">1024</span>
+            <span class="k">if</span> <span class="n">sin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">sout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># we might get here when dealing with exotic Linux flavors, see:</span>
+            <span class="c"># http://code.google.com/p/psutil/issues/detail?id=313</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;&#39;sin&#39; and &#39;sout&#39; swap memory stats couldn&#39;t &quot;</span> \
+                  <span class="s">&quot;be determined and were set to 0&quot;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="n">sin</span> <span class="o">=</span> <span class="n">sout</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">free</span> <span class="o">=</span> <span class="n">total</span> <span class="o">-</span> <span class="n">used</span>
+
+    <span class="k">return</span> <span class="n">SWAPINFO</span><span class="p">(</span><span class="n">total</span><span class="p">,</span> <span class="n">free</span><span class="p">,</span> <span class="n">used</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">sout</span><span class="p">)</span>
+
+</div>
+<span class="nd">@cup.decorators.needlinux</span>
+<div class="viewcode-block" id="net_io_counters"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.net_io_counters">[docs]</a><span class="k">def</span> <span class="nf">net_io_counters</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    回返系统中每一个（包括回环lo）网络使用统计信息。</span>
+<span class="sd">    其中每个网卡list的信息包含</span>
+<span class="sd">    (bytes_sent, bytes_recv, packets_sent, packets_recv,</span>
+<span class="sd">                         errin, errout, dropin, dropout)</span>
+<span class="sd">    回返信息示例</span>
+<span class="sd">    ::</span>
+<span class="sd">       {</span>
+<span class="sd">           &#39;lo&#39;:</span>
+<span class="sd">            (</span>
+<span class="sd">                235805206817, 235805206817, 315060887, 315060887, 0, 0, 0, 0</span>
+<span class="sd">            ),</span>
+<span class="sd">            &#39;eth1&#39;:</span>
+<span class="sd">            (</span>
+<span class="sd">                18508976300272, 8079464483699, 32776530804,</span>
+<span class="sd">                32719666038, 0, 0, 708015, 0</span>
+<span class="sd">            ),</span>
+<span class="sd">            &#39;eth0&#39;:</span>
+<span class="sd">            (</span>
+<span class="sd">                0, 0, 0, 0, 0, 0, 0, 0</span>
+<span class="sd">            )</span>
+<span class="sd">        }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fhandle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;/proc/net/dev&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">fhandle</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">fhandle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">retdict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="mi">2</span><span class="p">:]:</span>
+        <span class="n">colon</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">colon</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="n">colon</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">colon</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">bytes_recv</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">packets_recv</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">errin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">dropin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">bytes_sent</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span>
+        <span class="n">packets_sent</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">9</span><span class="p">])</span>
+        <span class="n">errout</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
+        <span class="n">dropout</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">11</span><span class="p">])</span>
+        <span class="n">retdict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">bytes_sent</span><span class="p">,</span> <span class="n">bytes_recv</span><span class="p">,</span> <span class="n">packets_sent</span><span class="p">,</span> <span class="n">packets_recv</span><span class="p">,</span>
+                         <span class="n">errin</span><span class="p">,</span> <span class="n">errout</span><span class="p">,</span> <span class="n">dropin</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">retdict</span>
+
+</div>
+<span class="nd">@cup.decorators.needlinux</span>
+<div class="viewcode-block" id="get_net_through"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.get_net_through">[docs]</a><span class="k">def</span> <span class="nf">get_net_through</span><span class="p">(</span><span class="n">str_interface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取网卡的收发包的统计信息。 回返结果为(rx_bytes, tx_bytes)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rx_bytes</span> <span class="o">=</span> <span class="n">tx_bytes</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;/proc/net/dev&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">str_interface</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:&#39;</span> <span class="o">%</span> <span class="n">str_interface</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="n">rx_bytes</span><span class="p">,</span> <span class="n">tx_bytes</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">rx_bytes</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">tx_bytes</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Failed to parse /proc/net/dev&#39;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+    <span class="n">cup</span><span class="o">.</span><span class="n">unittest</span><span class="o">.</span><span class="n">assert_ge</span><span class="p">(</span><span class="n">rx_bytes</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">cup</span><span class="o">.</span><span class="n">unittest</span><span class="o">.</span><span class="n">assert_ge</span><span class="p">(</span><span class="n">tx_bytes</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">rx_bytes</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">tx_bytes</span><span class="p">))</span>
+
+</div>
+<span class="nd">@cup.decorators.needlinux</span>
+<div class="viewcode-block" id="get_net_transmit_speed"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.get_net_transmit_speed">[docs]</a><span class="k">def</span> <span class="nf">get_net_transmit_speed</span><span class="p">(</span><span class="n">str_interface</span><span class="p">,</span> <span class="n">intvl_in_sec</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获得网卡在intvl_in_sec时间内的网络发包速度</span>
+
+<span class="sd">    E.g.</span>
+<span class="sd">    ::</span>
+<span class="sd">        import cup</span>
+<span class="sd">        print cup.res.linux.get_net_transmit_speed(&#39;eth1&#39;, 5)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cup</span><span class="o">.</span><span class="n">unittest</span><span class="o">.</span><span class="n">assert_gt</span><span class="p">(</span><span class="n">intvl_in_sec</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">rx_bytes0</span> <span class="o">=</span> <span class="n">get_net_through</span><span class="p">(</span><span class="n">str_interface</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">intvl_in_sec</span><span class="p">)</span>
+    <span class="n">rx_bytes1</span> <span class="o">=</span> <span class="n">get_net_through</span><span class="p">(</span><span class="n">str_interface</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">rx_bytes1</span> <span class="o">-</span> <span class="n">rx_bytes0</span><span class="p">)</span> <span class="o">/</span> <span class="n">intvl_in_sec</span>
+
+</div>
+<span class="nd">@cup.decorators.needlinux</span>
+<div class="viewcode-block" id="get_net_recv_speed"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.get_net_recv_speed">[docs]</a><span class="k">def</span> <span class="nf">get_net_recv_speed</span><span class="p">(</span><span class="n">str_interface</span><span class="p">,</span> <span class="n">intvl_in_sec</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获得某个网卡在intvl_in_sec时间内的收包速度</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cup</span><span class="o">.</span><span class="n">unittest</span><span class="o">.</span><span class="n">assert_gt</span><span class="p">(</span><span class="n">intvl_in_sec</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">tx_bytes0</span> <span class="o">=</span> <span class="n">get_net_through</span><span class="p">(</span><span class="n">str_interface</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">intvl_in_sec</span><span class="p">)</span>
+    <span class="n">tx_bytes1</span> <span class="o">=</span> <span class="n">get_net_through</span><span class="p">(</span><span class="n">str_interface</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">tx_bytes1</span> <span class="o">-</span> <span class="n">tx_bytes0</span><span class="p">)</span> <span class="o">/</span> <span class="n">intvl_in_sec</span>
+
+</div>
+<div class="viewcode-block" id="wrap_exceptions"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.wrap_exceptions">[docs]</a><span class="k">def</span> <span class="nf">wrap_exceptions</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    内部使用函数， 普通使用者可忽略</span>
+<span class="sd">    Decorator which translates bare OSError and IOError exceptions</span>
+<span class="sd">    into cup.err.NoSuchProcess and cup.err.AccessDenied.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        internal wrapper for wrap_exceptions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fun</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">EnvironmentError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="c"># ENOENT (no such file or directory) gets raised on open().</span>
+            <span class="c"># ESRCH (no such process) can get raised on read() if</span>
+            <span class="c"># process is gone in meantime.</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="ow">in</span> <span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">ENOENT</span><span class="p">,</span> <span class="n">errno</span><span class="o">.</span><span class="n">ESRCH</span><span class="p">):</span>
+                <span class="c"># pylint: disable=W0212</span>
+                <span class="k">raise</span> <span class="n">cup</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">NoSuchProcess</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="ow">in</span> <span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">EPERM</span><span class="p">,</span> <span class="n">errno</span><span class="o">.</span><span class="n">EACCES</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">cup</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">ResException</span><span class="p">(</span><span class="s">&#39;EPERM or EACCES&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">error</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+
+
+<span class="c"># pylint: disable=R0904</span></div>
+<div class="viewcode-block" id="Process"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process">[docs]</a><span class="k">class</span> <span class="nc">Process</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Linux中进程的抽象类， 可以进行进程的信息获取。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;_pid&quot;</span><span class="p">,</span> <span class="s">&quot;_process_name&quot;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pid</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span> <span class="o">=</span> <span class="n">pid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process_name</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="nd">@wrap_exceptions</span>
+<div class="viewcode-block" id="Process.get_process_name"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_process_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_process_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获得进程名. 取自proc目录的stat文件</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fhandle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/stat&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">fhandle</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;(&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                <span class="s">&#39;)&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span>
+            <span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">fhandle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">name</span>
+</div>
+<div class="viewcode-block" id="Process.get_process_exe"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_process_exe">[docs]</a>    <span class="k">def</span> <span class="nf">get_process_exe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获得进程的Exe信息。 如果这个进程是个daemon，请使用get_process_name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">exe</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">readlink</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/exe&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">)</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">ENOENT</span><span class="p">:</span>
+                <span class="c"># no such file error; might be raised also if the</span>
+                <span class="c"># path actually exists for system processes with</span>
+                <span class="c"># low pids (about 0-20)</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">lexists</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/exe&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="s">&quot;&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c"># ok, it is a process which has gone away</span>
+                    <span class="k">raise</span> <span class="n">cup</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">NoSuchProcess</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="ow">in</span> <span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">EPERM</span><span class="p">,</span> <span class="n">errno</span><span class="o">.</span><span class="n">EACCES</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">cup</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">AccessDenied</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_name</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">error</span>
+
+        <span class="c"># readlink() might return paths containing null bytes causing</span>
+        <span class="c"># problems when used with other fs-related functions (os.*,</span>
+        <span class="c"># open(), ...)</span>
+        <span class="n">exe</span> <span class="o">=</span> <span class="n">exe</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\x00</span><span class="s">&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+        <span class="c"># Certain names have &#39; (deleted)&#39; appended. Usually this is</span>
+        <span class="c"># bogus as the file actually exists. Either way that&#39;s not</span>
+        <span class="c"># important as we don&#39;t want to discriminate executables which</span>
+        <span class="c"># have been deleted.</span>
+        <span class="k">if</span> <span class="n">exe</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&quot; (deleted)&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">exe</span><span class="p">):</span>
+            <span class="n">exe</span> <span class="o">=</span> <span class="n">exe</span><span class="p">[:</span><span class="o">-</span><span class="mi">10</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">exe</span>
+</div>
+    <span class="nd">@wrap_exceptions</span>
+<div class="viewcode-block" id="Process.get_process_cmdline"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_process_cmdline">[docs]</a>    <span class="k">def</span> <span class="nf">get_process_cmdline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获得进程的cmdline. 取自proc目录cmdline文件</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fhandle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/cmdline&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c"># return the args as a list</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">fhandle</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\x00</span><span class="s">&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="p">]</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">fhandle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+    <span class="n">__nt_io</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+        <span class="s">&#39;nt_io&#39;</span><span class="p">,</span>
+        <span class="p">[</span>
+            <span class="s">&#39;rcount&#39;</span><span class="p">,</span>
+            <span class="s">&#39;wcount&#39;</span><span class="p">,</span>
+            <span class="s">&#39;rbytes&#39;</span><span class="p">,</span>
+            <span class="s">&#39;wbytes&#39;</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="nd">@wrap_exceptions</span>
+<div class="viewcode-block" id="Process.get_process_io_counters"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_process_io_counters">[docs]</a>    <span class="k">def</span> <span class="nf">get_process_io_counters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获得进程在各个网卡上的网络传输统计信息.</span>
+<span class="sd">        回返数据结构参考net_io_counters函数</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s">&#39;/proc/</span><span class="si">%s</span><span class="s">/io&#39;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()):</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;couldn&#39;t find /proc/</span><span class="si">%s</span><span class="s">/io (kernel &quot;</span>
+                                      <span class="s">&quot;too old?)&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/io&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span>
+        <span class="c"># pylint: disable=c0103</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rcount</span> <span class="o">=</span> <span class="n">wcount</span> <span class="o">=</span> <span class="n">rbytes</span> <span class="o">=</span> <span class="n">wbytes</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">rcount</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;syscr&quot;</span><span class="p">):</span>
+                    <span class="n">rcount</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="n">wcount</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;syscw&quot;</span><span class="p">):</span>
+                    <span class="n">wcount</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="n">rbytes</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;read_bytes&quot;</span><span class="p">):</span>
+                    <span class="n">rbytes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="n">wbytes</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;write_bytes&quot;</span><span class="p">):</span>
+                    <span class="n">wbytes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="p">(</span><span class="n">rcount</span><span class="p">,</span> <span class="n">wcount</span><span class="p">,</span> <span class="n">rbytes</span><span class="p">,</span> <span class="n">wbytes</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">_</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                        <span class="s">&quot;couldn&#39;t read all necessary info from </span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">fname</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nt_io</span><span class="p">(</span><span class="n">rcount</span><span class="p">,</span> <span class="n">wcount</span><span class="p">,</span> <span class="n">rbytes</span><span class="p">,</span> <span class="n">wbytes</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+    <span class="n">_nt_cputimes</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+        <span class="s">&#39;nt_cputimes&#39;</span><span class="p">,</span>
+        <span class="p">[</span>
+            <span class="s">&#39;utime&#39;</span><span class="p">,</span>
+            <span class="s">&#39;stime&#39;</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="nd">@wrap_exceptions</span>
+<div class="viewcode-block" id="Process.get_cpu_times"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_cpu_times">[docs]</a>    <span class="k">def</span> <span class="nf">get_cpu_times</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获得进程的utime和stime. 回返一个含有utime和stime属性的数据结构</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/stat&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">st</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="c"># ignore the first two values (&quot;pid (exe)&quot;)</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">st</span><span class="p">[</span><span class="n">st</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;)&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">:]</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+        <span class="n">utime</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">11</span><span class="p">])</span> <span class="o">/</span> <span class="n">_CLOCK_TICKS</span>
+        <span class="n">stime</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">12</span><span class="p">])</span> <span class="o">/</span> <span class="n">_CLOCK_TICKS</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nt_cputimes</span><span class="p">(</span><span class="n">utime</span><span class="p">,</span> <span class="n">stime</span><span class="p">)</span>
+</div>
+    <span class="nd">@wrap_exceptions</span>
+<div class="viewcode-block" id="Process.get_process_create_time"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_process_create_time">[docs]</a>    <span class="k">def</span> <span class="nf">get_process_create_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获得进程创建时间</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/stat&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">st</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="c"># ignore the first two values (&quot;pid (exe)&quot;)</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">st</span><span class="p">[</span><span class="n">st</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s">&#39;)&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">:]</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+        <span class="c"># According to documentation, starttime is in field 21 and the</span>
+        <span class="c"># unit is jiffies (clock ticks).</span>
+        <span class="c"># We first divide it for clock ticks and then add uptime returning</span>
+        <span class="c"># seconds since the epoch, in UTC.</span>
+        <span class="n">starttime</span> <span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">19</span><span class="p">])</span> <span class="o">/</span> <span class="n">_CLOCK_TICKS</span><span class="p">)</span> <span class="o">+</span> \
+            <span class="n">get_boottime_since_epoch</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">starttime</span>
+</div>
+    <span class="n">_nt_meminfo</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+        <span class="s">&#39;nt_meminfo&#39;</span><span class="p">,</span>
+        <span class="p">[</span>
+            <span class="s">&#39;rss&#39;</span><span class="p">,</span>
+            <span class="s">&#39;vms&#39;</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="nd">@wrap_exceptions</span>
+<div class="viewcode-block" id="Process.get_memory_info"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_memory_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_memory_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获得进程的meminfo. 回返数据结构包含 rss vms shared text lib data dirty</span>
+<span class="sd">        的属性。 可以进行 return_obj.rss方式获取。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/statm&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">vms</span><span class="p">,</span> <span class="n">rss</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nt_meminfo</span><span class="p">(</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">rss</span><span class="p">)</span> <span class="o">*</span> <span class="n">_PAGESIZE</span><span class="p">,</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">vms</span><span class="p">)</span> <span class="o">*</span> <span class="n">_PAGESIZE</span>
+            <span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+    <span class="n">_nt_ext_mem</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+        <span class="s">&#39;meminfo&#39;</span><span class="p">,</span>
+        <span class="s">&#39;rss vms shared text lib data dirty&#39;</span>
+    <span class="p">)</span>
+
+    <span class="nd">@wrap_exceptions</span>
+<div class="viewcode-block" id="Process.get_ext_memory_info"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_ext_memory_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_ext_memory_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        #  ============================================================</span>
+<span class="sd">        # | FIELD  | DESCRIPTION                         | AKA  | TOP  |</span>
+<span class="sd">        #  ============================================================</span>
+<span class="sd">        # | rss    | resident set size                   |      | RES  |</span>
+<span class="sd">        # | vms    | total program size                  | size | VIRT |</span>
+<span class="sd">        # | shared | shared pages (from shared mappings) |      | SHR  |</span>
+<span class="sd">        # | text   | text (&#39;code&#39;)                       | trs  | CODE |</span>
+<span class="sd">        # | lib    | library (unused in Linux 2.6)       | lrs  |      |</span>
+<span class="sd">        # | data   | data + stack                        | drs  | DATA |</span>
+<span class="sd">        # | dirty  | dirty pages (unused in Linux 2.6)   | dt   |      |</span>
+<span class="sd">        #  ============================================================</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/statm&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">vms</span><span class="p">,</span> <span class="n">rss</span><span class="p">,</span> <span class="n">shared</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">lib</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dirty</span> <span class="o">=</span> \
+                <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">_PAGESIZE</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">7</span><span class="p">]]</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nt_ext_mem</span><span class="p">(</span><span class="n">rss</span><span class="p">,</span> <span class="n">vms</span><span class="p">,</span> <span class="n">shared</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">lib</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dirty</span><span class="p">)</span>
+</div>
+    <span class="n">_mmap_base_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">,</span> <span class="s">&#39;rss&#39;</span><span class="p">,</span> <span class="s">&#39;size&#39;</span><span class="p">,</span> <span class="s">&#39;pss&#39;</span><span class="p">,</span> <span class="s">&#39;shared_clean&#39;</span><span class="p">,</span>
+                         <span class="s">&#39;shared_dirty&#39;</span><span class="p">,</span> <span class="s">&#39;private_clean&#39;</span><span class="p">,</span> <span class="s">&#39;private_dirty&#39;</span><span class="p">,</span>
+                         <span class="s">&#39;referenced&#39;</span><span class="p">,</span> <span class="s">&#39;anonymous&#39;</span><span class="p">,</span> <span class="s">&#39;swap&#39;</span><span class="p">,</span> <span class="p">]</span>
+    <span class="n">nt_mmap_grouped</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+        <span class="s">&#39;mmap&#39;</span><span class="p">,</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_mmap_base_fields</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">nt_mmap_ext</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+        <span class="s">&#39;mmap&#39;</span><span class="p">,</span> <span class="s">&#39;addr perms &#39;</span> <span class="o">+</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_mmap_base_fields</span><span class="p">)</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="Process.get_memory_maps"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_memory_maps">[docs]</a>    <span class="k">def</span> <span class="nf">get_memory_maps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获取memory map的信息。 取自proc目录的smaps</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Return process&#39;s mapped memory regions as a list of nameduples.</span>
+        <span class="c"># Fields are explained in &#39;man proc&#39;; here is an updated (Apr 2012)</span>
+        <span class="c"># version: http://goo.gl/fmebo</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s">&#39;/proc/</span><span class="si">%s</span><span class="s">/smaps&#39;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;couldn&#39;t find /proc/</span><span class="si">%s</span><span class="s">/smaps; kernel &lt; 2.6.14 or CONFIG_MMU &quot;</span> \
+                  <span class="s">&quot;kernel configuration option is not enabled&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/smaps&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+            <span class="n">first_line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="n">current_block</span> <span class="o">=</span> <span class="p">[</span><span class="n">first_line</span><span class="p">]</span>
+
+            <span class="k">def</span> <span class="nf">get_blocks</span><span class="p">():</span>
+                <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                internal get blocks  for get_memory_maps</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">fields</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">):</span>
+                        <span class="c"># new block section</span>
+                        <span class="k">yield</span> <span class="p">(</span><span class="n">current_block</span><span class="o">.</span><span class="n">pop</span><span class="p">(),</span> <span class="n">data</span><span class="p">)</span>
+                        <span class="n">current_block</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">data</span><span class="p">[</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mi">1024</span>
+                        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;VmFlags:&#39;</span><span class="p">):</span>
+                                <span class="c"># see issue # 369</span>
+                                <span class="k">continue</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;don&#39;t know how to interpret&quot;</span>
+                                                 <span class="s">&quot; line </span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">line</span><span class="p">)</span>
+                <span class="k">yield</span> <span class="p">(</span><span class="n">current_block</span><span class="o">.</span><span class="n">pop</span><span class="p">(),</span> <span class="n">data</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">first_line</span><span class="p">:</span>  <span class="c"># smaps file can be empty</span>
+                <span class="k">for</span> <span class="n">header</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">get_blocks</span><span class="p">():</span>
+                    <span class="n">hfields</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">addr</span><span class="p">,</span> <span class="n">perms</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">inode</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="n">hfields</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="n">addr</span><span class="p">,</span> <span class="n">perms</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">inode</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="n">hfields</span> <span class="o">+</span> <span class="p">[</span><span class="s">&#39;&#39;</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="p">:</span>
+                        <span class="n">path</span> <span class="o">=</span> <span class="s">&#39;[anon]&#39;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="k">yield</span> <span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="n">perms</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span>
+                           <span class="n">data</span><span class="p">[</span><span class="s">&#39;Rss:&#39;</span><span class="p">],</span>
+                           <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;Size:&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                           <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;Pss:&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                           <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;Shared_Clean:&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                           <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;Shared_Dirty:&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                           <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;Private_Clean:&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                           <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;Private_Dirty:&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                           <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;Referenced:&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                           <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;Anonymous:&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                           <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;Swap:&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">EnvironmentError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="c"># XXX - Can&#39;t use wrap_exceptions decorator as we&#39;re</span>
+            <span class="c"># returning a generator;  this probably needs some</span>
+            <span class="c"># refactoring in order to avoid this code duplication.</span>
+            <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="ow">in</span> <span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">ENOENT</span><span class="p">,</span> <span class="n">errno</span><span class="o">.</span><span class="n">ESRCH</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">cup</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">NoSuchProcess</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="ow">in</span> <span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">EPERM</span><span class="p">,</span> <span class="n">errno</span><span class="o">.</span><span class="n">EACCES</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">cup</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">AccessDenied</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_name</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">error</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">error</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+    <span class="nd">@wrap_exceptions</span>
+<div class="viewcode-block" id="Process.get_process_cwd"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_process_cwd">[docs]</a>    <span class="k">def</span> <span class="nf">get_process_cwd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获得进程的cwd</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">readlink</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/cwd&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\x00</span><span class="s">&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+</div>
+    <span class="n">_nt_ctxsw</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+        <span class="s">&#39;voluntary_ctxt_switches&#39;</span><span class="p">,</span>
+        <span class="p">[</span>
+            <span class="s">&#39;vol&#39;</span><span class="p">,</span>
+            <span class="s">&#39;unvol&#39;</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="nd">@wrap_exceptions</span>
+<div class="viewcode-block" id="Process.get_num_ctx_switches"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_num_ctx_switches">[docs]</a>    <span class="k">def</span> <span class="nf">get_num_ctx_switches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获取进程的context 切换信息。 取自proc目录的status文件。</span>
+<span class="sd">        voluntary_ctxt_switches和nonvoluntary_ctxt_switches</span>
+<span class="sd">        回返一个含有vol, unvol属性的namedtuple</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vol</span> <span class="o">=</span> <span class="n">unvol</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/status&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;voluntary_ctxt_switches&quot;</span><span class="p">):</span>
+                    <span class="n">vol</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;nonvoluntary_ctxt_switches&quot;</span><span class="p">):</span>
+                    <span class="n">unvol</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">vol</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">unvol</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nt_ctxsw</span><span class="p">(</span><span class="n">vol</span><span class="p">,</span> <span class="n">unvol</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s">&quot;&#39;voluntary_ctxt_switches&#39; and &#39;nonvoluntary_ctxt_switches&#39;&quot;</span>
+                <span class="s">&quot;fields were not found in /proc/</span><span class="si">%s</span><span class="s">/status; the kernel is &quot;</span>
+                <span class="s">&quot;probably older than 2.6.23&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+    <span class="nd">@wrap_exceptions</span>
+<div class="viewcode-block" id="Process.get_process_num_threads"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_process_num_threads">[docs]</a>    <span class="k">def</span> <span class="nf">get_process_num_threads</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获得进程运行线程数目</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/status&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;Threads:&quot;</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;line not found&quot;</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+    <span class="n">_thread_tuple</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+        <span class="s">&#39;ntuple&#39;</span><span class="p">,</span>
+        <span class="p">[</span>
+            <span class="s">&#39;thread_id&#39;</span><span class="p">,</span>
+            <span class="s">&#39;utime&#39;</span><span class="p">,</span>
+            <span class="s">&#39;stime&#39;</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="nd">@wrap_exceptions</span>
+<div class="viewcode-block" id="Process.get_process_threads"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_process_threads">[docs]</a>    <span class="k">def</span> <span class="nf">get_process_threads</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获得线程详细信息， 返回一个list</span>
+<span class="sd">        每个list包含一个含有thread_id, utime, stime属性的namedtuple</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">thread_ids</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/task&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="n">thread_ids</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="n">retlist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">hit_enoent</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">for</span> <span class="n">thread_id</span> <span class="ow">in</span> <span class="n">thread_ids</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/task/</span><span class="si">%s</span><span class="s">/stat&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">,</span> <span class="n">thread_id</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">EnvironmentError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">ENOENT</span><span class="p">:</span>
+                    <span class="c"># no such file or directory; it means thread</span>
+                    <span class="c"># disappeared on us</span>
+                    <span class="n">hit_enoent</span> <span class="o">=</span> <span class="bp">True</span>
+                    <span class="k">continue</span>
+                <span class="k">raise</span> <span class="n">error</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">st</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="c"># ignore the first two values (&quot;pid (exe)&quot;)</span>
+            <span class="n">st</span> <span class="o">=</span> <span class="n">st</span><span class="p">[</span><span class="n">st</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;)&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">:]</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+            <span class="n">utime</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">11</span><span class="p">])</span> <span class="o">/</span> <span class="n">_CLOCK_TICKS</span>
+            <span class="n">stime</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">12</span><span class="p">])</span> <span class="o">/</span> <span class="n">_CLOCK_TICKS</span>
+            <span class="n">ntuple</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thread_tuple</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">thread_id</span><span class="p">),</span> <span class="n">utime</span><span class="p">,</span> <span class="n">stime</span><span class="p">)</span>
+            <span class="n">retlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ntuple</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">hit_enoent</span><span class="p">:</span>
+            <span class="c"># raise NSP if the process disappeared on us</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="s">&#39;/proc/</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">retlist</span>
+</div>
+    <span class="nd">@wrap_exceptions</span>
+<div class="viewcode-block" id="Process.get_process_nice"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_process_nice">[docs]</a>    <span class="k">def</span> <span class="nf">get_process_nice</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get process nice</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;/proc/</span><span class="si">%s</span><span class="s">/stat&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">18</span><span class="p">])</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+    <span class="nd">@wrap_exceptions</span>
+<div class="viewcode-block" id="Process.get_process_status"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_process_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_process_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获得当前process的status信息. 取自proc目录status文件的State</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/status&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;State:&quot;</span><span class="p">):</span>
+                    <span class="n">letter</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="c"># XXX is &#39;?&#39; legit? (we&#39;re not supposed to return</span>
+                    <span class="c"># it anyway)</span>
+                    <span class="k">return</span> <span class="n">_PROC_STATUSES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">letter</span><span class="p">,</span> <span class="s">&#39;?&#39;</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+    <span class="n">_nt_openfile</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+        <span class="s">&#39;nt_openfile&#39;</span><span class="p">,</span>
+        <span class="p">[</span>
+            <span class="s">&#39;file&#39;</span><span class="p">,</span>
+            <span class="s">&#39;fd&#39;</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="nd">@wrap_exceptions</span>
+<div class="viewcode-block" id="Process.get_open_files"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_open_files">[docs]</a>    <span class="k">def</span> <span class="nf">get_open_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获得opened file信息。</span>
+<span class="sd">              &quot;&quot;&quot;</span>
+        <span class="n">retlist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/fd&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="n">hit_enoent</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">for</span> <span class="n">fd</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="nb">file</span> <span class="o">=</span> <span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/fd/</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">,</span> <span class="n">fd</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="nb">file</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="nb">file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">readlink</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                    <span class="c"># ENOENT == file which is gone in the meantime</span>
+                    <span class="n">err</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">ENOENT</span><span class="p">:</span>
+                        <span class="n">hit_enoent</span> <span class="o">=</span> <span class="bp">True</span>
+                        <span class="k">continue</span>
+                    <span class="k">raise</span> <span class="n">error</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c"># If file is not an absolute path there&#39;s no way</span>
+                    <span class="c"># to tell whether it&#39;s a regular file or not,</span>
+                    <span class="c"># so we skip it. A regular file is always supposed</span>
+                    <span class="c"># to be absolutized though.</span>
+                    <span class="k">if</span> <span class="nb">file</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="nb">file</span><span class="p">):</span>
+                        <span class="n">ntuple</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nt_openfile</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">fd</span><span class="p">))</span>
+                        <span class="n">retlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ntuple</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">hit_enoent</span><span class="p">:</span>
+            <span class="c"># raise NSP if the process disappeared on us</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="s">&#39;/proc/</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">retlist</span>
+</div>
+    <span class="n">_nt_connection</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+        <span class="s">&#39;nt_connection&#39;</span><span class="p">,</span>
+        <span class="p">[</span>
+            <span class="s">&#39;fd&#39;</span><span class="p">,</span>
+            <span class="s">&#39;family&#39;</span><span class="p">,</span>
+            <span class="s">&#39;type&#39;</span><span class="p">,</span>
+            <span class="s">&#39;laddr&#39;</span><span class="p">,</span>
+            <span class="s">&#39;raddr&#39;</span><span class="p">,</span>
+            <span class="s">&#39;status&#39;</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_process_for_connections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inodes</span><span class="p">,</span> <span class="nb">file</span><span class="p">,</span> <span class="n">family</span><span class="p">,</span> <span class="n">type_</span><span class="p">):</span>
+        <span class="n">retlist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="c"># IPv6 not supported on this platform</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">ENOENT</span> <span class="ow">and</span> <span class="nb">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;6&#39;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">[]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">error</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c"># skip the first line</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="c"># IPv4 / IPv6</span>
+                <span class="k">if</span> <span class="n">family</span> <span class="ow">in</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">AF_INET6</span><span class="p">):</span>
+                    <span class="n">_</span><span class="p">,</span> <span class="n">laddr</span><span class="p">,</span> <span class="n">raddr</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">inode</span> <span class="o">=</span> \
+                        <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">10</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">inode</span> <span class="ow">in</span> <span class="n">inodes</span><span class="p">:</span>
+                        <span class="n">laddr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decode_address</span><span class="p">(</span><span class="n">laddr</span><span class="p">,</span> <span class="n">family</span><span class="p">)</span>
+                        <span class="n">raddr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decode_address</span><span class="p">(</span><span class="n">raddr</span><span class="p">,</span> <span class="n">family</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">type_</span> <span class="o">==</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">:</span>
+                            <span class="n">status</span> <span class="o">=</span> <span class="n">_TCP_STATUSES</span><span class="p">[</span><span class="n">status</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">status</span> <span class="o">=</span> <span class="n">_CONN_NONE</span>
+                        <span class="n">fd</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">inodes</span><span class="p">[</span><span class="n">inode</span><span class="p">])</span>
+                        <span class="n">conn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nt_connection</span><span class="p">(</span>
+                            <span class="n">fd</span><span class="p">,</span> <span class="n">family</span><span class="p">,</span> <span class="n">type_</span><span class="p">,</span> <span class="n">laddr</span><span class="p">,</span>
+                            <span class="n">raddr</span><span class="p">,</span> <span class="n">status</span>
+                        <span class="p">)</span>
+                        <span class="n">retlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">family</span> <span class="o">==</span> <span class="n">socket</span><span class="o">.</span><span class="n">AF_UNIX</span><span class="p">:</span>
+                    <span class="n">tokens</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">type_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">inode</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">inode</span> <span class="ow">in</span> <span class="n">inodes</span><span class="p">:</span>
+
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+                            <span class="n">path</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">path</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+                        <span class="n">fd</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">inodes</span><span class="p">[</span><span class="n">inode</span><span class="p">])</span>
+                        <span class="n">type_</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">type_</span><span class="p">)</span>
+                        <span class="n">conn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nt_connection</span><span class="p">(</span>
+                            <span class="n">fd</span><span class="p">,</span> <span class="n">family</span><span class="p">,</span> <span class="n">type_</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span>
+                            <span class="bp">None</span><span class="p">,</span> <span class="n">_CONN_NONE</span>
+                        <span class="p">)</span>
+                        <span class="n">retlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">family</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">retlist</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="nd">@wrap_exceptions</span>
+<div class="viewcode-block" id="Process.get_connections"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_connections">[docs]</a>    <span class="k">def</span> <span class="nf">get_connections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s">&#39;inet&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        回返进程的网络链接信息， 回返信息为list, 每个list item为含有</span>
+<span class="sd">        fd family type laddr raddr status属性的namedtuple</span>
+
+<span class="sd">        :param kind:</span>
+<span class="sd">            默认kind=&#39;inet&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># Return connections opened by process as a list of namedtuples.</span>
+        <span class="c"># The kind parameter filters for connections that fit the following</span>
+        <span class="c"># criteria:</span>
+
+        <span class="c"># Kind Value      Number of connections using</span>
+        <span class="c"># inet            IPv4 and IPv6</span>
+        <span class="c"># inet4           IPv4</span>
+        <span class="c"># inet6           IPv6</span>
+        <span class="c"># tcp             TCP</span>
+        <span class="c"># tcp4            TCP over IPv4</span>
+        <span class="c"># tcp6            TCP over IPv6</span>
+        <span class="c"># udp             UDP</span>
+        <span class="c"># udp4            UDP over IPv4</span>
+        <span class="c"># udp6            UDP over IPv6</span>
+        <span class="c"># all             the sum of all the possible families and protocols</span>
+        <span class="c"># Note: in case of UNIX sockets we&#39;re only able to determine the</span>
+        <span class="c"># local bound path while the remote endpoint is not retrievable:</span>
+        <span class="c"># http://goo.gl/R3GHM</span>
+        <span class="n">inodes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c"># os.listdir() is gonna raise a lot of access denied</span>
+        <span class="c"># exceptions in case of unprivileged user; that&#39;s fine:</span>
+        <span class="c"># lsof does the same so it&#39;s unlikely that we can to better.</span>
+        <span class="k">for</span> <span class="n">fd</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/fd&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">inode</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">readlink</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/fd/</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">,</span> <span class="n">fd</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">inode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;socket:[&#39;</span><span class="p">):</span>
+                <span class="c"># the process is using a socket</span>
+                <span class="n">inode</span> <span class="o">=</span> <span class="n">inode</span><span class="p">[</span><span class="mi">8</span><span class="p">:][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">inodes</span><span class="p">[</span><span class="n">inode</span><span class="p">]</span> <span class="o">=</span> <span class="n">fd</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">inodes</span><span class="p">:</span>
+            <span class="c"># no connections for this process</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">tcp4</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;tcp&quot;</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+        <span class="n">tcp6</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;tcp6&quot;</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">AF_INET6</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+        <span class="n">udp4</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;udp&quot;</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span>
+        <span class="n">udp6</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;udp6&quot;</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">AF_INET6</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span>
+        <span class="n">unix</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;unix&quot;</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">AF_UNIX</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+
+        <span class="n">tmap</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&quot;all&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">tcp4</span><span class="p">,</span> <span class="n">tcp6</span><span class="p">,</span> <span class="n">udp4</span><span class="p">,</span> <span class="n">udp6</span><span class="p">,</span> <span class="n">unix</span><span class="p">),</span>
+            <span class="s">&quot;tcp&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">tcp4</span><span class="p">,</span> <span class="n">tcp6</span><span class="p">),</span>
+            <span class="s">&quot;tcp4&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">tcp4</span><span class="p">,</span> <span class="p">),</span>
+            <span class="s">&quot;tcp6&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">tcp6</span><span class="p">,</span> <span class="p">),</span>
+            <span class="s">&quot;udp&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">udp4</span><span class="p">,</span> <span class="n">udp6</span><span class="p">),</span>
+            <span class="s">&quot;udp4&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">udp4</span><span class="p">,</span> <span class="p">),</span>
+            <span class="s">&quot;udp6&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">udp6</span><span class="p">,</span> <span class="p">),</span>
+            <span class="s">&quot;unix&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">unix</span><span class="p">,</span> <span class="p">),</span>
+            <span class="s">&quot;inet&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">tcp4</span><span class="p">,</span> <span class="n">tcp6</span><span class="p">,</span> <span class="n">udp4</span><span class="p">,</span> <span class="n">udp6</span><span class="p">),</span>
+            <span class="s">&quot;inet4&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">tcp4</span><span class="p">,</span> <span class="n">udp4</span><span class="p">),</span>
+            <span class="s">&quot;inet6&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">tcp6</span><span class="p">,</span> <span class="n">udp6</span><span class="p">),</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tmap</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;invalid </span><span class="si">%r</span><span class="s"> kind argument; choose between </span><span class="si">%s</span><span class="s">&quot;</span>
+                             <span class="o">%</span> <span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">repr</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tmap</span><span class="p">])))</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">family</span><span class="p">,</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">tmap</span><span class="p">[</span><span class="n">kind</span><span class="p">]:</span>
+            <span class="n">ret</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_for_connections</span><span class="p">(</span>
+                <span class="n">inodes</span><span class="p">,</span> <span class="s">&quot;/proc/net/</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">f</span><span class="p">,</span> <span class="n">family</span><span class="p">,</span> <span class="n">type_</span>
+            <span class="p">)</span>
+        <span class="c"># raise NSP if the process disappeared on us</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="s">&#39;/proc/</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span>
+</div>
+    <span class="nd">@wrap_exceptions</span>
+<div class="viewcode-block" id="Process.get_num_fds"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_num_fds">[docs]</a>    <span class="k">def</span> <span class="nf">get_num_fds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获得opened fd的数量</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/fd&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">))</span>
+</div>
+    <span class="nd">@wrap_exceptions</span>
+<div class="viewcode-block" id="Process.get_process_ppid"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_process_ppid">[docs]</a>    <span class="k">def</span> <span class="nf">get_process_ppid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        进程的父进程pid</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/status&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;PPid:&quot;</span><span class="p">):</span>
+                    <span class="c"># PPid: nnnn</span>
+                    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;line not found&quot;</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+    <span class="n">_nt_uids</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+        <span class="s">&#39;nt_uids&#39;</span><span class="p">,</span>
+        <span class="p">[</span>
+            <span class="s">&#39;real&#39;</span><span class="p">,</span>
+            <span class="s">&#39;effective&#39;</span><span class="p">,</span>
+            <span class="s">&#39;saved&#39;</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="nd">@wrap_exceptions</span>
+<div class="viewcode-block" id="Process.get_process_uids"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_process_uids">[docs]</a>    <span class="k">def</span> <span class="nf">get_process_uids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        拿到进程的uid信息。回返数据结构为包含real, effective, saved的namedtuple</span>
+<span class="sd">        对含有sticky bit的进程非常有用。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/status&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;Uid:&#39;</span><span class="p">):</span>
+                    <span class="n">_</span><span class="p">,</span> <span class="n">real</span><span class="p">,</span> <span class="n">effective</span><span class="p">,</span> <span class="n">saved</span><span class="p">,</span> <span class="n">fs</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nt_uids</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">real</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">effective</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">saved</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;line not found&quot;</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+    <span class="n">_nt_gids</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+        <span class="s">&#39;nt_gids&#39;</span><span class="p">,</span>
+        <span class="p">[</span>
+            <span class="s">&#39;real&#39;</span><span class="p">,</span>
+            <span class="s">&#39;effective&#39;</span><span class="p">,</span>
+            <span class="s">&#39;saved&#39;</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="nd">@wrap_exceptions</span>
+<div class="viewcode-block" id="Process.get_process_gids"><a class="viewcode-back" href="../../../cup.res.html#cup.res.linux.Process.get_process_gids">[docs]</a>    <span class="k">def</span> <span class="nf">get_process_gids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        获得进程的gid信息. namedtuple, 含有real, effective, saved属性.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&quot;/proc/</span><span class="si">%s</span><span class="s">/status&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;Gid:&#39;</span><span class="p">):</span>
+                    <span class="n">_</span><span class="p">,</span> <span class="n">real</span><span class="p">,</span> <span class="n">effective</span><span class="p">,</span> <span class="n">saved</span><span class="p">,</span> <span class="n">fs</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nt_gids</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">real</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">effective</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">saved</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;line not found&quot;</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_decode_address</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="n">family</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Accept an &quot;ip:port&quot; address as displayed in /proc/net/*</span>
+<span class="sd">        and convert it into a human readable form, like:</span>
+
+<span class="sd">        &quot;0500000A:0016&quot; -&gt; (&quot;10.0.0.5&quot;, 22)</span>
+<span class="sd">        &quot;0000000000000000FFFF00000100007F:9E49&quot; -&gt; (&quot;::ffff:127.0.0.1&quot;, 40521)</span>
+
+<span class="sd">        The IP address portion is a little or big endian four-byte</span>
+<span class="sd">        hexadecimal number; that is, the least significant byte is listed</span>
+<span class="sd">        first, so we need to reverse the order of the bytes to convert it</span>
+<span class="sd">        to an IP address.</span>
+<span class="sd">        The port is represented as a two-byte hexadecimal number.</span>
+
+<span class="sd">        Reference:</span>
+<span class="sd">        http://linuxdevcenter.com/pub/a/linux/2000/11/16/LinuxAdmin.html</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ip</span><span class="p">,</span> <span class="n">port</span> <span class="o">=</span> <span class="n">addr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">ip</span> <span class="o">=</span> <span class="n">ip</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;ascii&#39;</span><span class="p">)</span>
+        <span class="c"># this usually refers to a local socket in listen mode with</span>
+        <span class="c"># no end-points connected</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">port</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">()</span>
+        <span class="k">if</span> <span class="n">family</span> <span class="o">==</span> <span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">:</span>
+            <span class="c"># see: http://code.google.com/p/psutil/issues/detail?id=201</span>
+            <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">byteorder</span> <span class="o">==</span> <span class="s">&#39;little&#39;</span><span class="p">:</span>
+                <span class="n">ip</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_ntop</span><span class="p">(</span><span class="n">family</span><span class="p">,</span> <span class="n">base64</span><span class="o">.</span><span class="n">b16decode</span><span class="p">(</span><span class="n">ip</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ip</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_ntop</span><span class="p">(</span><span class="n">family</span><span class="p">,</span> <span class="n">base64</span><span class="o">.</span><span class="n">b16decode</span><span class="p">(</span><span class="n">ip</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c"># IPv6</span>
+            <span class="c"># old version - let&#39;s keep it, just in case...</span>
+            <span class="c"># ip = ip.decode(&#39;hex&#39;)</span>
+            <span class="c"># return socket.inet_ntop(socket.AF_INET6,</span>
+            <span class="c">#          &#39;&#39;.join(ip[i:i+4][::-1] for i in xrange(0, 16, 4)))</span>
+            <span class="n">ip</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b16decode</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span>
+            <span class="c"># see: http://code.google.com/p/psutil/issues/detail?id=201</span>
+            <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">byteorder</span> <span class="o">==</span> <span class="s">&#39;little&#39;</span><span class="p">:</span>
+                <span class="n">ip</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_ntop</span><span class="p">(</span>
+                    <span class="n">socket</span><span class="o">.</span><span class="n">AF_INET6</span><span class="p">,</span>
+                    <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s">&#39;&gt;4I&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;&lt;4I&#39;</span><span class="p">,</span> <span class="n">ip</span><span class="p">)))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ip</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_ntop</span><span class="p">(</span>
+                    <span class="n">socket</span><span class="o">.</span><span class="n">AF_INET6</span><span class="p">,</span>
+                    <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s">&#39;&lt;4I&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;&lt;4I&#39;</span><span class="p">,</span> <span class="n">ip</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+</div>
+<span class="k">if</span> <span class="s">&#39;__main__&#39;</span> <span class="o">==</span> <span class="n">__name__</span><span class="p">:</span>
+    <span class="c"># system info</span>
+    <span class="k">print</span> <span class="n">get_boottime_since_epoch</span><span class="p">()</span>
+    <span class="k">print</span> <span class="n">get_cpu_nums</span><span class="p">()</span>
+    <span class="k">print</span> <span class="n">get_kernel_version</span><span class="p">()</span>
+
+    <span class="c"># resouce info</span>
+    <span class="k">print</span> <span class="n">get_cpu_usage</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">get_meminfo</span><span class="p">()</span>
+    <span class="k">print</span> <span class="n">get_swapinfo</span><span class="p">()</span>
+    <span class="k">print</span> <span class="n">get_net_through</span><span class="p">(</span><span class="s">&#39;eth1&#39;</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">get_net_transmit_speed</span><span class="p">(</span><span class="s">&#39;eth1&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">get_net_recv_speed</span><span class="p">(</span><span class="s">&#39;eth1&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">net_io_counters</span><span class="p">()</span>
+
+<span class="c"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

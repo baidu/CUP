@@ -1,0 +1,22 @@
+cup.shell package
+=================
+
+Submodules
+----------
+
+cup.shell.expect module
+-----------------------
+
+.. automodule:: cup.shell.expect
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: cup.shell
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,427 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.thirdp.MySQLdb.connections &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../../../index.html" />
+    <link rel="up" title="cup.thirdp.MySQLdb" href="../MySQLdb.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../MySQLdb.html" accesskey="U">cup.thirdp.MySQLdb</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.thirdp.MySQLdb.connections</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">This module implements connections for MySQLdb. Presently there is</span>
+<span class="sd">only one class: Connection. Others are unlikely. However, you might</span>
+<span class="sd">want to make your own subclasses. In most cases, you will probably</span>
+<span class="sd">override Connection.default_cursor with a non-standard Cursor class.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">cursors</span>
+<span class="kn">from</span> <span class="nn">_mysql_exceptions</span> <span class="kn">import</span> <span class="ne">Warning</span><span class="p">,</span> <span class="n">Error</span><span class="p">,</span> <span class="n">InterfaceError</span><span class="p">,</span> <span class="n">DataError</span><span class="p">,</span> \
+     <span class="n">DatabaseError</span><span class="p">,</span> <span class="n">OperationalError</span><span class="p">,</span> <span class="n">IntegrityError</span><span class="p">,</span> <span class="n">InternalError</span><span class="p">,</span> \
+     <span class="n">NotSupportedError</span><span class="p">,</span> <span class="n">ProgrammingError</span>
+<span class="kn">import</span> <span class="nn">types</span><span class="o">,</span> <span class="nn">_mysql</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+
+<div class="viewcode-block" id="defaulterrorhandler"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.connections.defaulterrorhandler">[docs]</a><span class="k">def</span> <span class="nf">defaulterrorhandler</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">cursor</span><span class="p">,</span> <span class="n">errorclass</span><span class="p">,</span> <span class="n">errorvalue</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    If cursor is not None, (errorclass, errorvalue) is appended to</span>
+<span class="sd">    cursor.messages; otherwise it is appended to</span>
+<span class="sd">    connection.messages. Then errorclass is raised with errorvalue as</span>
+<span class="sd">    the value.</span>
+
+<span class="sd">    You can override this with your own error handler by assigning it</span>
+<span class="sd">    to the instance.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="n">errorclass</span><span class="p">,</span> <span class="n">errorvalue</span>
+    <span class="k">if</span> <span class="n">cursor</span><span class="p">:</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">cursor</span>
+    <span class="k">del</span> <span class="n">connection</span>
+    <span class="k">raise</span> <span class="n">errorclass</span><span class="p">,</span> <span class="n">errorvalue</span>
+</div>
+<span class="n">re_numeric_part</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;^(\d+)&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="numeric_part"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.connections.numeric_part">[docs]</a><span class="k">def</span> <span class="nf">numeric_part</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the leading numeric part of a string.</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; numeric_part(&quot;20-alpha&quot;)</span>
+<span class="sd">    20</span>
+<span class="sd">    &gt;&gt;&gt; numeric_part(&quot;foo&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; numeric_part(&quot;16b&quot;)</span>
+<span class="sd">    16</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">m</span> <span class="o">=</span> <span class="n">re_numeric_part</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="bp">None</span>
+
+</div>
+<div class="viewcode-block" id="Connection"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.connections.Connection">[docs]</a><span class="k">class</span> <span class="nc">Connection</span><span class="p">(</span><span class="n">_mysql</span><span class="o">.</span><span class="n">connection</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;MySQL Database Connection Object&quot;&quot;&quot;</span>
+
+    <span class="n">default_cursor</span> <span class="o">=</span> <span class="n">cursors</span><span class="o">.</span><span class="n">Cursor</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Create a connection to the database. It is strongly recommended</span>
+<span class="sd">        that you only use keyword parameters. Consult the MySQL C API</span>
+<span class="sd">        documentation for more information.</span>
+
+<span class="sd">        host</span>
+<span class="sd">          string, host to connect</span>
+<span class="sd">          </span>
+<span class="sd">        user</span>
+<span class="sd">          string, user to connect as</span>
+
+<span class="sd">        passwd</span>
+<span class="sd">          string, password to use</span>
+
+<span class="sd">        db</span>
+<span class="sd">          string, database to use</span>
+
+<span class="sd">        port</span>
+<span class="sd">          integer, TCP/IP port to connect to</span>
+
+<span class="sd">        unix_socket</span>
+<span class="sd">          string, location of unix_socket to use</span>
+
+<span class="sd">        conv</span>
+<span class="sd">          conversion dictionary, see MySQLdb.converters</span>
+
+<span class="sd">        connect_timeout</span>
+<span class="sd">          number of seconds to wait before the connection attempt</span>
+<span class="sd">          fails.</span>
+
+<span class="sd">        compress</span>
+<span class="sd">          if set, compression is enabled</span>
+
+<span class="sd">        named_pipe</span>
+<span class="sd">          if set, a named pipe is used to connect (Windows only)</span>
+
+<span class="sd">        init_command</span>
+<span class="sd">          command which is run once the connection is created</span>
+
+<span class="sd">        read_default_file</span>
+<span class="sd">          file from which default client values are read</span>
+
+<span class="sd">        read_default_group</span>
+<span class="sd">          configuration group to use from the default file</span>
+
+<span class="sd">        cursorclass</span>
+<span class="sd">          class object, used to create cursors (keyword only)</span>
+
+<span class="sd">        use_unicode</span>
+<span class="sd">          If True, text-like columns are returned as unicode objects</span>
+<span class="sd">          using the connection&#39;s character set.  Otherwise, text-like</span>
+<span class="sd">          columns are returned as strings.  columns are returned as</span>
+<span class="sd">          normal strings. Unicode objects will always be encoded to</span>
+<span class="sd">          the connection&#39;s character set regardless of this setting.</span>
+
+<span class="sd">        charset</span>
+<span class="sd">          If supplied, the connection character set will be changed</span>
+<span class="sd">          to this character set (MySQL-4.1 and newer). This implies</span>
+<span class="sd">          use_unicode=True.</span>
+
+<span class="sd">        sql_mode</span>
+<span class="sd">          If supplied, the session SQL mode will be changed to this</span>
+<span class="sd">          setting (MySQL-4.1 and newer). For more details and legal</span>
+<span class="sd">          values, see the MySQL documentation.</span>
+<span class="sd">          </span>
+<span class="sd">        client_flag</span>
+<span class="sd">          integer, flags to use or 0</span>
+<span class="sd">          (see MySQL docs or constants/CLIENTS.py)</span>
+
+<span class="sd">        ssl</span>
+<span class="sd">          dictionary or mapping, contains SSL connection parameters;</span>
+<span class="sd">          see the MySQL documentation for more details</span>
+<span class="sd">          (mysql_ssl_set()).  If this is set, and the client does not</span>
+<span class="sd">          support SSL, NotSupportedError will be raised.</span>
+
+<span class="sd">        local_infile</span>
+<span class="sd">          integer, non-zero enables LOAD LOCAL INFILE; zero disables</span>
+<span class="sd">    </span>
+<span class="sd">        There are a number of undocumented, non-standard methods. See the</span>
+<span class="sd">        documentation for the MySQL C API for some hints on what they do.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">constants</span> <span class="kn">import</span> <span class="n">CLIENT</span><span class="p">,</span> <span class="n">FIELD_TYPE</span>
+        <span class="kn">from</span> <span class="nn">converters</span> <span class="kn">import</span> <span class="n">conversions</span>
+        <span class="kn">from</span> <span class="nn">weakref</span> <span class="kn">import</span> <span class="n">proxy</span><span class="p">,</span> <span class="n">WeakValueDictionary</span>
+        
+        <span class="kn">import</span> <span class="nn">types</span>
+
+        <span class="n">kwargs2</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="s">&#39;conv&#39;</span><span class="p">):</span>
+            <span class="n">conv</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;conv&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">conv</span> <span class="o">=</span> <span class="n">conversions</span>
+
+        <span class="n">conv2</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">conv</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">conv2</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[:]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">conv2</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="n">kwargs2</span><span class="p">[</span><span class="s">&#39;conv&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">conv2</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cursorclass</span> <span class="o">=</span> <span class="n">kwargs2</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;cursorclass&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_cursor</span><span class="p">)</span>
+        <span class="n">charset</span> <span class="o">=</span> <span class="n">kwargs2</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;charset&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">charset</span><span class="p">:</span>
+            <span class="n">use_unicode</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">use_unicode</span> <span class="o">=</span> <span class="bp">False</span>
+            
+        <span class="n">use_unicode</span> <span class="o">=</span> <span class="n">kwargs2</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;use_unicode&#39;</span><span class="p">,</span> <span class="n">use_unicode</span><span class="p">)</span>
+        <span class="n">sql_mode</span> <span class="o">=</span> <span class="n">kwargs2</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;sql_mode&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="n">client_flag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;client_flag&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">client_version</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span> <span class="n">numeric_part</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">_mysql</span><span class="o">.</span><span class="n">get_client_info</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span> <span class="p">])</span>
+        <span class="k">if</span> <span class="n">client_version</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">client_flag</span> <span class="o">|=</span> <span class="n">CLIENT</span><span class="o">.</span><span class="n">MULTI_STATEMENTS</span>
+        <span class="k">if</span> <span class="n">client_version</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">client_flag</span> <span class="o">|=</span> <span class="n">CLIENT</span><span class="o">.</span><span class="n">MULTI_RESULTS</span>
+            
+        <span class="n">kwargs2</span><span class="p">[</span><span class="s">&#39;client_flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">client_flag</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">Connection</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs2</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoders</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">conv</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                               <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span> <span class="p">])</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_server_version</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span> <span class="n">numeric_part</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_server_info</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span> <span class="p">])</span>
+
+        <span class="n">db</span> <span class="o">=</span> <span class="n">proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">_get_string_literal</span><span class="p">():</span>
+            <span class="k">def</span> <span class="nf">string_literal</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">dummy</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">string_literal</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">string_literal</span>
+
+        <span class="k">def</span> <span class="nf">_get_unicode_literal</span><span class="p">():</span>
+            <span class="k">def</span> <span class="nf">unicode_literal</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">dummy</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">literal</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">unicode_literal</span><span class="o">.</span><span class="n">charset</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">unicode_literal</span>
+
+        <span class="k">def</span> <span class="nf">_get_string_decoder</span><span class="p">():</span>
+            <span class="k">def</span> <span class="nf">string_decoder</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">string_decoder</span><span class="o">.</span><span class="n">charset</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">string_decoder</span>
+        
+        <span class="n">string_literal</span> <span class="o">=</span> <span class="n">_get_string_literal</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unicode_literal</span> <span class="o">=</span> <span class="n">unicode_literal</span> <span class="o">=</span> <span class="n">_get_unicode_literal</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">string_decoder</span> <span class="o">=</span> <span class="n">string_decoder</span> <span class="o">=</span> <span class="n">_get_string_decoder</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">charset</span><span class="p">:</span>
+            <span class="n">charset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">character_set_name</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_character_set</span><span class="p">(</span><span class="n">charset</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">sql_mode</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_sql_mode</span><span class="p">(</span><span class="n">sql_mode</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">use_unicode</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">[</span><span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">STRING</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">None</span><span class="p">,</span> <span class="n">string_decoder</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">[</span><span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">VAR_STRING</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">None</span><span class="p">,</span> <span class="n">string_decoder</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">[</span><span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">VARCHAR</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">None</span><span class="p">,</span> <span class="n">string_decoder</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="p">[</span><span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">BLOB</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">None</span><span class="p">,</span> <span class="n">string_decoder</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoders</span><span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">StringType</span><span class="p">]</span> <span class="o">=</span> <span class="n">string_literal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoders</span><span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">UnicodeType</span><span class="p">]</span> <span class="o">=</span> <span class="n">unicode_literal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transactional</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_capabilities</span> <span class="o">&amp;</span> <span class="n">CLIENT</span><span class="o">.</span><span class="n">TRANSACTIONS</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transactional</span><span class="p">:</span>
+            <span class="c"># PEP-249 requires autocommit to be initially off</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">autocommit</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">messages</span> <span class="o">=</span> <span class="p">[]</span>
+        
+<div class="viewcode-block" id="Connection.cursor"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.connections.Connection.cursor">[docs]</a>    <span class="k">def</span> <span class="nf">cursor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cursorclass</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Create a cursor on which queries may be performed. The</span>
+<span class="sd">        optional cursorclass parameter is used to create the</span>
+<span class="sd">        Cursor. By default, self.cursorclass=cursors.Cursor is</span>
+<span class="sd">        used.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">cursorclass</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursorclass</span><span class="p">)(</span><span class="bp">self</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            
+<div class="viewcode-block" id="Connection.literal"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.connections.Connection.literal">[docs]</a>    <span class="k">def</span> <span class="nf">literal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        If o is a single object, returns an SQL literal as a string.</span>
+<span class="sd">        If o is a non-string sequence, the items of the sequence are</span>
+<span class="sd">        converted and returned as a sequence.</span>
+
+<span class="sd">        Non-standard. For internal use; do not use this in your</span>
+<span class="sd">        applications.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoders</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Connection.begin"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.connections.Connection.begin">[docs]</a>    <span class="k">def</span> <span class="nf">begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Explicitly begin a connection. Non-standard.</span>
+<span class="sd">        DEPRECATED: Will be removed in 1.3.</span>
+<span class="sd">        Use an SQL BEGIN statement instead.&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s">&quot;begin() is non-standard and will be removed in 1.3&quot;</span><span class="p">,</span>
+             <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;BEGIN&quot;</span><span class="p">)</span>
+        </div>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">_mysql</span><span class="o">.</span><span class="n">connection</span><span class="p">,</span> <span class="s">&#39;warning_count&#39;</span><span class="p">):</span>
+
+        <span class="k">def</span> <span class="nf">warning_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Return the number of warnings generated from the</span>
+<span class="sd">            last query. This is derived from the info() method.&quot;&quot;&quot;</span>
+            <span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">atoi</span>
+            <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">info</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">atoi</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="Connection.set_character_set"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.connections.Connection.set_character_set">[docs]</a>    <span class="k">def</span> <span class="nf">set_character_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">charset</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the connection character set to charset. The character</span>
+<span class="sd">        set can only be changed in MySQL-4.1 and newer. If you try</span>
+<span class="sd">        to change the character set from the current value in an</span>
+<span class="sd">        older version, NotSupportedError will be raised.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">character_set_name</span><span class="p">()</span> <span class="o">!=</span> <span class="n">charset</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">super</span><span class="p">(</span><span class="n">Connection</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">set_character_set</span><span class="p">(</span><span class="n">charset</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server_version</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="n">NotSupportedError</span><span class="p">(</span><span class="s">&quot;server is too old to set charset&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&#39;SET NAMES </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">charset</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">store_result</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">string_decoder</span><span class="o">.</span><span class="n">charset</span> <span class="o">=</span> <span class="n">charset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unicode_literal</span><span class="o">.</span><span class="n">charset</span> <span class="o">=</span> <span class="n">charset</span>
+</div>
+<div class="viewcode-block" id="Connection.set_sql_mode"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.connections.Connection.set_sql_mode">[docs]</a>    <span class="k">def</span> <span class="nf">set_sql_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql_mode</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the connection sql_mode. See MySQL documentation for</span>
+<span class="sd">        legal values.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server_version</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">NotSupportedError</span><span class="p">(</span><span class="s">&quot;server is too old to set sql_mode&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;SET SESSION sql_mode=&#39;</span><span class="si">%s</span><span class="s">&#39;&quot;</span> <span class="o">%</span> <span class="n">sql_mode</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store_result</span><span class="p">()</span>
+        </div>
+<div class="viewcode-block" id="Connection.show_warnings"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.connections.Connection.show_warnings">[docs]</a>    <span class="k">def</span> <span class="nf">show_warnings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return detailed information about warnings as a</span>
+<span class="sd">        sequence of tuples of (Level, Code, Message). This</span>
+<span class="sd">        is only supported in MySQL-4.1 and up. If your server</span>
+<span class="sd">        is an earlier version, an empty sequence is returned.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server_version</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">):</span> <span class="k">return</span> <span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;SHOW WARNINGS&quot;</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">store_result</span><span class="p">()</span>
+        <span class="n">warnings</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">fetch_row</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">warnings</span>
+    </div>
+    <span class="ne">Warning</span> <span class="o">=</span> <span class="ne">Warning</span>
+    <span class="n">Error</span> <span class="o">=</span> <span class="n">Error</span>
+    <span class="n">InterfaceError</span> <span class="o">=</span> <span class="n">InterfaceError</span>
+    <span class="n">DatabaseError</span> <span class="o">=</span> <span class="n">DatabaseError</span>
+    <span class="n">DataError</span> <span class="o">=</span> <span class="n">DataError</span>
+    <span class="n">OperationalError</span> <span class="o">=</span> <span class="n">OperationalError</span>
+    <span class="n">IntegrityError</span> <span class="o">=</span> <span class="n">IntegrityError</span>
+    <span class="n">InternalError</span> <span class="o">=</span> <span class="n">InternalError</span>
+    <span class="n">ProgrammingError</span> <span class="o">=</span> <span class="n">ProgrammingError</span>
+    <span class="n">NotSupportedError</span> <span class="o">=</span> <span class="n">NotSupportedError</span>
+
+    <span class="n">errorhandler</span> <span class="o">=</span> <span class="n">defaulterrorhandler</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../MySQLdb.html" >cup.thirdp.MySQLdb</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

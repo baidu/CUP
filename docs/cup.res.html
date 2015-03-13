@@ -1,0 +1,470 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.res package &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="index.html" />
+    <link rel="up" title="cup package" href="cup.html" />
+    <link rel="next" title="cup.services package" href="cup.services.html" />
+    <link rel="prev" title="cup.net.async package" href="cup.net.async.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cup.services.html" title="cup.services package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cup.net.async.html" title="cup.net.async package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="cup.html" accesskey="U">cup package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="cup-res-package">
+<h1>cup.res package<a class="headerlink" href="#cup-res-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cup.res.linux">
+<span id="cup-res-linux-module"></span><h2>cup.res.linux module<a class="headerlink" href="#module-cup.res.linux" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Giampaolo Rodola of psutil</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body">The class [Process] is back ported from python open-source project
+[psutil]. Guannan finished porting in early 2014.
+Here is the original license applied.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">copyright:</th><td class="field-body">Psutil.
+Copyright (c) 2009, Giampaolo Rodola&#8217;. All rights reserved.
+Use of this source code is governed by a BSD-style license
+that can be found in the LICENSE file.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="cup.res.linux.CPUInfo">
+<em class="property">class </em><tt class="descclassname">cup.res.linux.</tt><tt class="descname">CPUInfo</tt><a class="reference internal" href="_modules/cup/res/linux.html#CPUInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.CPUInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.res.linux.CPUInfo" title="cup.res.linux.CPUInfo"><tt class="xref py py-class docutils literal"><span class="pre">cup.res.linux.CPUInfo</span></tt></a></p>
+<p>CPUInfo是在调用get_cpu_usage返回的python namedtuple.
+返回值中的如下属性可以直接访问:
+usr,
+nice,
+system,
+idle,
+iowait,
+irq,
+softirq,
+steal,
+guest</p>
+<p>I.g.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">cup</span>
+<span class="c"># 计算60内cpu的使用情况。</span>
+<span class="n">cpuinfo</span> <span class="o">=</span> <span class="n">cup</span><span class="o">.</span><span class="n">res</span><span class="o">.</span><span class="n">linux</span><span class="o">.</span><span class="n">get_cpu_usage</span><span class="p">(</span><span class="n">intvl_in_sec</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">cpuinfo</span><span class="o">.</span><span class="n">usr</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.res.linux.MemInfo">
+<em class="property">class </em><tt class="descclassname">cup.res.linux.</tt><tt class="descname">MemInfo</tt><a class="reference internal" href="_modules/cup/res/linux.html#MemInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.MemInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">cup.res.linux.vmem</span></tt></p>
+<dl class="docutils">
+<dt>get_meminfo函数取得系统Mem信息的回返信息。 是个namedtuple</dt>
+<dd>total, available, percent, used, free,
+active,
+inactive,
+buffers,
+cached是她的属性</dd>
+</dl>
+<p>E.g.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">cup</span>
+<span class="n">meminfo</span> <span class="o">=</span> <span class="n">cup</span><span class="o">.</span><span class="n">res</span><span class="o">.</span><span class="n">linux</span><span class="o">.</span><span class="n">get_meminfo</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">meminfo</span><span class="o">.</span><span class="n">total</span>
+<span class="k">print</span> <span class="n">meminfo</span><span class="o">.</span><span class="n">available</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.res.linux.Process">
+<em class="property">class </em><tt class="descclassname">cup.res.linux.</tt><tt class="descname">Process</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Linux中进程的抽象类， 可以进行进程的信息获取。</p>
+<dl class="method">
+<dt id="cup.res.linux.Process.get_connections">
+<tt class="descname">get_connections</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_connections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal wrapper for wrap_exceptions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.res.linux.Process.get_cpu_times">
+<tt class="descname">get_cpu_times</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_cpu_times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_cpu_times" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal wrapper for wrap_exceptions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.res.linux.Process.get_ext_memory_info">
+<tt class="descname">get_ext_memory_info</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_ext_memory_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_ext_memory_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal wrapper for wrap_exceptions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.res.linux.Process.get_memory_info">
+<tt class="descname">get_memory_info</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_memory_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_memory_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal wrapper for wrap_exceptions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.res.linux.Process.get_memory_maps">
+<tt class="descname">get_memory_maps</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_memory_maps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_memory_maps" title="Permalink to this definition">¶</a></dt>
+<dd><p>获取memory map的信息。 取自proc目录的smaps</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.res.linux.Process.get_num_ctx_switches">
+<tt class="descname">get_num_ctx_switches</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_num_ctx_switches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_num_ctx_switches" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal wrapper for wrap_exceptions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.res.linux.Process.get_num_fds">
+<tt class="descname">get_num_fds</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_num_fds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_num_fds" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal wrapper for wrap_exceptions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.res.linux.Process.get_open_files">
+<tt class="descname">get_open_files</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_open_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_open_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal wrapper for wrap_exceptions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.res.linux.Process.get_process_cmdline">
+<tt class="descname">get_process_cmdline</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_cmdline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_cmdline" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal wrapper for wrap_exceptions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.res.linux.Process.get_process_create_time">
+<tt class="descname">get_process_create_time</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_create_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_create_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal wrapper for wrap_exceptions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.res.linux.Process.get_process_cwd">
+<tt class="descname">get_process_cwd</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_cwd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_cwd" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal wrapper for wrap_exceptions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.res.linux.Process.get_process_exe">
+<tt class="descname">get_process_exe</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_exe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_exe" title="Permalink to this definition">¶</a></dt>
+<dd><p>获得进程的Exe信息。 如果这个进程是个daemon，请使用get_process_name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.res.linux.Process.get_process_gids">
+<tt class="descname">get_process_gids</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_gids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_gids" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal wrapper for wrap_exceptions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.res.linux.Process.get_process_io_counters">
+<tt class="descname">get_process_io_counters</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_io_counters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_io_counters" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal wrapper for wrap_exceptions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.res.linux.Process.get_process_name">
+<tt class="descname">get_process_name</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal wrapper for wrap_exceptions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.res.linux.Process.get_process_nice">
+<tt class="descname">get_process_nice</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_nice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_nice" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal wrapper for wrap_exceptions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.res.linux.Process.get_process_num_threads">
+<tt class="descname">get_process_num_threads</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_num_threads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_num_threads" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal wrapper for wrap_exceptions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.res.linux.Process.get_process_ppid">
+<tt class="descname">get_process_ppid</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_ppid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_ppid" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal wrapper for wrap_exceptions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.res.linux.Process.get_process_status">
+<tt class="descname">get_process_status</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal wrapper for wrap_exceptions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.res.linux.Process.get_process_threads">
+<tt class="descname">get_process_threads</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_threads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_threads" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal wrapper for wrap_exceptions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.res.linux.Process.get_process_uids">
+<tt class="descname">get_process_uids</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_uids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_uids" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal wrapper for wrap_exceptions</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.res.linux.Process.nt_mmap_ext">
+<tt class="descname">nt_mmap_ext</tt><a class="headerlink" href="#cup.res.linux.Process.nt_mmap_ext" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">mmap</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.res.linux.Process.nt_mmap_grouped">
+<tt class="descname">nt_mmap_grouped</tt><a class="headerlink" href="#cup.res.linux.Process.nt_mmap_grouped" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">mmap</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.res.linux.SWAPINFO">
+<em class="property">class </em><tt class="descclassname">cup.res.linux.</tt><tt class="descname">SWAPINFO</tt><a class="reference internal" href="_modules/cup/res/linux.html#SWAPINFO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.SWAPINFO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">cup.res.linux.SwapInfo</span></tt></p>
+<p>get_swapinfo函数回返的数据结构信息。 total,free,used,sin,sout是她的属性</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.res.linux.get_boottime_since_epoch">
+<tt class="descclassname">cup.res.linux.</tt><tt class="descname">get_boottime_since_epoch</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#get_boottime_since_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.get_boottime_since_epoch" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">回返自从epoch以来的时间。 以秒记.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.res.linux.get_cpu_nums">
+<tt class="descclassname">cup.res.linux.</tt><tt class="descname">get_cpu_nums</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#get_cpu_nums"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.get_cpu_nums" title="Permalink to this definition">¶</a></dt>
+<dd><p>回返机器的CPU个数信息</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.res.linux.get_cpu_usage">
+<tt class="descclassname">cup.res.linux.</tt><tt class="descname">get_cpu_usage</tt><big>(</big><em>intvl_in_sec=1</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#get_cpu_usage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.get_cpu_usage" title="Permalink to this definition">¶</a></dt>
+<dd><p>取得下个intvl_in_sec时间内的CPU使用率信息
+回返CPUInfo</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.res.linux.get_kernel_version">
+<tt class="descclassname">cup.res.linux.</tt><tt class="descname">get_kernel_version</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#get_kernel_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.get_kernel_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>拿到Linux系统的kernel信息， 回返是一个三元组
+e.g.(&#8216;2&#8217;, &#8216;6&#8217;, &#8216;32&#8217;):</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.res.linux.get_meminfo">
+<tt class="descclassname">cup.res.linux.</tt><tt class="descname">get_meminfo</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#get_meminfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.get_meminfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>获得当前系统的内存信息， 回返MemInfo数据结构。</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.res.linux.get_net_recv_speed">
+<tt class="descclassname">cup.res.linux.</tt><tt class="descname">get_net_recv_speed</tt><big>(</big><em>str_interface</em>, <em>intvl_in_sec</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#get_net_recv_speed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.get_net_recv_speed" title="Permalink to this definition">¶</a></dt>
+<dd><p>获得某个网卡在intvl_in_sec时间内的收包速度</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.res.linux.get_net_through">
+<tt class="descclassname">cup.res.linux.</tt><tt class="descname">get_net_through</tt><big>(</big><em>str_interface</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#get_net_through"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.get_net_through" title="Permalink to this definition">¶</a></dt>
+<dd><p>获取网卡的收发包的统计信息。 回返结果为(rx_bytes, tx_bytes)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.res.linux.get_net_transmit_speed">
+<tt class="descclassname">cup.res.linux.</tt><tt class="descname">get_net_transmit_speed</tt><big>(</big><em>str_interface</em>, <em>intvl_in_sec=1</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#get_net_transmit_speed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.get_net_transmit_speed" title="Permalink to this definition">¶</a></dt>
+<dd><p>获得网卡在intvl_in_sec时间内的网络发包速度</p>
+<p>E.g.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">cup</span>
+<span class="k">print</span> <span class="n">cup</span><span class="o">.</span><span class="n">res</span><span class="o">.</span><span class="n">linux</span><span class="o">.</span><span class="n">get_net_transmit_speed</span><span class="p">(</span><span class="s">&#39;eth1&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.res.linux.get_swapinfo">
+<tt class="descclassname">cup.res.linux.</tt><tt class="descname">get_swapinfo</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#get_swapinfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.get_swapinfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>获得当前系统的swap信息</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.res.linux.net_io_counters">
+<tt class="descclassname">cup.res.linux.</tt><tt class="descname">net_io_counters</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#net_io_counters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.net_io_counters" title="Permalink to this definition">¶</a></dt>
+<dd><p>回返系统中每一个（包括回环lo）网络使用统计信息。
+其中每个网卡list的信息包含
+(bytes_sent, bytes_recv, packets_sent, packets_recv,</p>
+<blockquote>
+<div>errin, errout, dropin, dropout)</div></blockquote>
+<p>回返信息示例</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s">&#39;lo&#39;</span><span class="p">:</span>
+     <span class="p">(</span>
+         <span class="mi">235805206817</span><span class="p">,</span> <span class="mi">235805206817</span><span class="p">,</span> <span class="mi">315060887</span><span class="p">,</span> <span class="mi">315060887</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+     <span class="p">),</span>
+     <span class="s">&#39;eth1&#39;</span><span class="p">:</span>
+     <span class="p">(</span>
+         <span class="mi">18508976300272</span><span class="p">,</span> <span class="mi">8079464483699</span><span class="p">,</span> <span class="mi">32776530804</span><span class="p">,</span>
+         <span class="mi">32719666038</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">708015</span><span class="p">,</span> <span class="mi">0</span>
+     <span class="p">),</span>
+     <span class="s">&#39;eth0&#39;</span><span class="p">:</span>
+     <span class="p">(</span>
+         <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+     <span class="p">)</span>
+ <span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.res.linux.wrap_exceptions">
+<tt class="descclassname">cup.res.linux.</tt><tt class="descname">wrap_exceptions</tt><big>(</big><em>fun</em><big>)</big><a class="reference internal" href="_modules/cup/res/linux.html#wrap_exceptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.res.linux.wrap_exceptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>内部使用函数， 普通使用者可忽略
+Decorator which translates bare OSError and IOError exceptions
+into cup.err.NoSuchProcess and cup.err.AccessDenied.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.res">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cup.res" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body">resource related module</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">cup.res package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-cup.res.linux">cup.res.linux module</a></li>
+<li><a class="reference internal" href="#module-cup.res">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="cup.net.async.html"
+                        title="previous chapter">cup.net.async package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cup.services.html"
+                        title="next chapter">cup.services package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/cup.res.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cup.services.html" title="cup.services package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="cup.net.async.html" title="cup.net.async package"
+             >previous</a> |</li>
+        <li><a href="index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="cup.html" >cup package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

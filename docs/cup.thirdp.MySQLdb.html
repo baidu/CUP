@@ -1,0 +1,1123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.thirdp.MySQLdb package &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="index.html" />
+    <link rel="up" title="cup.thirdp package" href="cup.thirdp.html" />
+    <link rel="next" title="cup.thirdp.MySQLdb.constants package" href="cup.thirdp.MySQLdb.constants.html" />
+    <link rel="prev" title="cup.thirdp package" href="cup.thirdp.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cup.thirdp.MySQLdb.constants.html" title="cup.thirdp.MySQLdb.constants package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cup.thirdp.html" title="cup.thirdp package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="cup.html" >cup package</a> &raquo;</li>
+          <li><a href="cup.thirdp.html" accesskey="U">cup.thirdp package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="cup-thirdp-mysqldb-package">
+<h1>cup.thirdp.MySQLdb package<a class="headerlink" href="#cup-thirdp-mysqldb-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cup.thirdp.MySQLdb.constants.html">cup.thirdp.MySQLdb.constants package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cup.thirdp.MySQLdb.constants.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.thirdp.MySQLdb.constants.html#module-cup.thirdp.MySQLdb.constants.CLIENT">cup.thirdp.MySQLdb.constants.CLIENT module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.thirdp.MySQLdb.constants.html#module-cup.thirdp.MySQLdb.constants.CR">cup.thirdp.MySQLdb.constants.CR module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.thirdp.MySQLdb.constants.html#module-cup.thirdp.MySQLdb.constants.ER">cup.thirdp.MySQLdb.constants.ER module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.thirdp.MySQLdb.constants.html#module-cup.thirdp.MySQLdb.constants.FIELD_TYPE">cup.thirdp.MySQLdb.constants.FIELD_TYPE module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.thirdp.MySQLdb.constants.html#module-cup.thirdp.MySQLdb.constants.FLAG">cup.thirdp.MySQLdb.constants.FLAG module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.thirdp.MySQLdb.constants.html#module-cup.thirdp.MySQLdb.constants.REFRESH">cup.thirdp.MySQLdb.constants.REFRESH module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.thirdp.MySQLdb.constants.html#module-cup.thirdp.MySQLdb.constants">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cup.thirdp.MySQLdb.connections">
+<span id="cup-thirdp-mysqldb-connections-module"></span><h2>cup.thirdp.MySQLdb.connections module<a class="headerlink" href="#module-cup.thirdp.MySQLdb.connections" title="Permalink to this headline">¶</a></h2>
+<p>This module implements connections for MySQLdb. Presently there is
+only one class: Connection. Others are unlikely. However, you might
+want to make your own subclasses. In most cases, you will probably
+override Connection.default_cursor with a non-standard Cursor class.</p>
+<dl class="class">
+<dt id="cup.thirdp.MySQLdb.connections.Connection">
+<em class="property">class </em><tt class="descclassname">cup.thirdp.MySQLdb.connections.</tt><tt class="descname">Connection</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/connections.html#Connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.Connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql.connection</span></tt></p>
+<p>MySQL Database Connection Object</p>
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.connections.Connection.DataError">
+<em class="property">exception </em><tt class="descname">DataError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.Connection.DataError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.DatabaseError</span></tt></p>
+<p>Exception raised for errors that are due to problems with the
+processed data like division by zero, numeric value out of range,
+etc.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.connections.Connection.DatabaseError">
+<em class="property">exception </em><tt class="descclassname">Connection.</tt><tt class="descname">DatabaseError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.Connection.DatabaseError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.Error</span></tt></p>
+<p>Exception raised for errors that are related to the
+database.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.connections.Connection.Error">
+<em class="property">exception </em><tt class="descclassname">Connection.</tt><tt class="descname">Error</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.Connection.Error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.MySQLError</span></tt></p>
+<p>Exception that is the base class of all other error exceptions
+(not Warning).</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.connections.Connection.IntegrityError">
+<em class="property">exception </em><tt class="descclassname">Connection.</tt><tt class="descname">IntegrityError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.Connection.IntegrityError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.DatabaseError</span></tt></p>
+<p>Exception raised when the relational integrity of the database
+is affected, e.g. a foreign key check fails, duplicate key,
+etc.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.connections.Connection.InterfaceError">
+<em class="property">exception </em><tt class="descclassname">Connection.</tt><tt class="descname">InterfaceError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.Connection.InterfaceError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.Error</span></tt></p>
+<p>Exception raised for errors that are related to the database
+interface rather than the database itself.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.connections.Connection.InternalError">
+<em class="property">exception </em><tt class="descclassname">Connection.</tt><tt class="descname">InternalError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.Connection.InternalError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.DatabaseError</span></tt></p>
+<p>Exception raised when the database encounters an internal
+error, e.g. the cursor is not valid anymore, the transaction is
+out of sync, etc.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.connections.Connection.NotSupportedError">
+<em class="property">exception </em><tt class="descclassname">Connection.</tt><tt class="descname">NotSupportedError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.Connection.NotSupportedError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.DatabaseError</span></tt></p>
+<p>Exception raised in case a method or database API was used
+which is not supported by the database, e.g. requesting a
+.rollback() on a connection that does not support transaction or
+has transactions turned off.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.connections.Connection.OperationalError">
+<em class="property">exception </em><tt class="descclassname">Connection.</tt><tt class="descname">OperationalError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.Connection.OperationalError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.DatabaseError</span></tt></p>
+<p>Exception raised for errors that are related to the database&#8217;s
+operation and not necessarily under the control of the programmer,
+e.g. an unexpected disconnect occurs, the data source name is not
+found, a transaction could not be processed, a memory allocation
+error occurred during processing, etc.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.connections.Connection.ProgrammingError">
+<em class="property">exception </em><tt class="descclassname">Connection.</tt><tt class="descname">ProgrammingError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.Connection.ProgrammingError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.DatabaseError</span></tt></p>
+<p>Exception raised for programming errors, e.g. table not found
+or already exists, syntax error in the SQL statement, wrong number
+of parameters specified, etc.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.connections.Connection.Warning">
+<em class="property">exception </em><tt class="descclassname">Connection.</tt><tt class="descname">Warning</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.Connection.Warning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Warning</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.MySQLError</span></tt></p>
+<p>Exception raised for important warnings like data truncations
+while inserting, etc.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.connections.Connection.begin">
+<tt class="descclassname">Connection.</tt><tt class="descname">begin</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/connections.html#Connection.begin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.Connection.begin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Explicitly begin a connection. Non-standard.
+DEPRECATED: Will be removed in 1.3.
+Use an SQL BEGIN statement instead.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.connections.Connection.cursor">
+<tt class="descclassname">Connection.</tt><tt class="descname">cursor</tt><big>(</big><em>cursorclass=None</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/connections.html#Connection.cursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.Connection.cursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a cursor on which queries may be performed. The
+optional cursorclass parameter is used to create the
+Cursor. By default, self.cursorclass=cursors.Cursor is
+used.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.thirdp.MySQLdb.connections.Connection.default_cursor">
+<tt class="descclassname">Connection.</tt><tt class="descname">default_cursor</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.Connection.default_cursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">Cursor</span></tt></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.connections.Connection.errorhandler">
+<tt class="descclassname">Connection.</tt><tt class="descname">errorhandler</tt><big>(</big><em>connection</em>, <em>cursor</em>, <em>errorclass</em>, <em>errorvalue</em><big>)</big><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.Connection.errorhandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>If cursor is not None, (errorclass, errorvalue) is appended to
+cursor.messages; otherwise it is appended to
+connection.messages. Then errorclass is raised with errorvalue as
+the value.</p>
+<p>You can override this with your own error handler by assigning it
+to the instance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.connections.Connection.literal">
+<tt class="descclassname">Connection.</tt><tt class="descname">literal</tt><big>(</big><em>o</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/connections.html#Connection.literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.Connection.literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>If o is a single object, returns an SQL literal as a string.
+If o is a non-string sequence, the items of the sequence are
+converted and returned as a sequence.</p>
+<p>Non-standard. For internal use; do not use this in your
+applications.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.connections.Connection.set_character_set">
+<tt class="descclassname">Connection.</tt><tt class="descname">set_character_set</tt><big>(</big><em>charset</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/connections.html#Connection.set_character_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.Connection.set_character_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the connection character set to charset. The character
+set can only be changed in MySQL-4.1 and newer. If you try
+to change the character set from the current value in an
+older version, NotSupportedError will be raised.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.connections.Connection.set_sql_mode">
+<tt class="descclassname">Connection.</tt><tt class="descname">set_sql_mode</tt><big>(</big><em>sql_mode</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/connections.html#Connection.set_sql_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.Connection.set_sql_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the connection sql_mode. See MySQL documentation for
+legal values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.connections.Connection.show_warnings">
+<tt class="descclassname">Connection.</tt><tt class="descname">show_warnings</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/connections.html#Connection.show_warnings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.Connection.show_warnings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return detailed information about warnings as a
+sequence of tuples of (Level, Code, Message). This
+is only supported in MySQL-4.1 and up. If your server
+is an earlier version, an empty sequence is returned.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.connections.defaulterrorhandler">
+<tt class="descclassname">cup.thirdp.MySQLdb.connections.</tt><tt class="descname">defaulterrorhandler</tt><big>(</big><em>connection</em>, <em>cursor</em>, <em>errorclass</em>, <em>errorvalue</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/connections.html#defaulterrorhandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.defaulterrorhandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>If cursor is not None, (errorclass, errorvalue) is appended to
+cursor.messages; otherwise it is appended to
+connection.messages. Then errorclass is raised with errorvalue as
+the value.</p>
+<p>You can override this with your own error handler by assigning it
+to the instance.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.connections.numeric_part">
+<tt class="descclassname">cup.thirdp.MySQLdb.connections.</tt><tt class="descname">numeric_part</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/connections.html#numeric_part"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.connections.numeric_part" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the leading numeric part of a string.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">numeric_part</span><span class="p">(</span><span class="s">&quot;20-alpha&quot;</span><span class="p">)</span>
+<span class="go">20</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numeric_part</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numeric_part</span><span class="p">(</span><span class="s">&quot;16b&quot;</span><span class="p">)</span>
+<span class="go">16</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.thirdp.MySQLdb.converters">
+<span id="cup-thirdp-mysqldb-converters-module"></span><h2>cup.thirdp.MySQLdb.converters module<a class="headerlink" href="#module-cup.thirdp.MySQLdb.converters" title="Permalink to this headline">¶</a></h2>
+<p>MySQLdb type conversion module</p>
+<p>This module handles all the type conversions for MySQL. If the default
+type conversions aren&#8217;t what you need, you can make your own. The
+dictionary conversions maps some kind of type to a conversion function
+which returns the corresponding value:</p>
+<p>Key: FIELD_TYPE.* (from MySQLdb.constants)</p>
+<p>Conversion function:</p>
+<blockquote>
+<div><p>Arguments: string</p>
+<p>Returns: Python object</p>
+</div></blockquote>
+<p>Key: Python type object (from types) or class</p>
+<p>Conversion function:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Arguments: Python object of indicated type or class AND </dt>
+<dd>conversion dictionary</dd>
+</dl>
+<p>Returns: SQL literal value</p>
+<dl class="docutils">
+<dt>Notes: Most conversion functions can ignore the dictionary, but</dt>
+<dd>it is a required parameter. It is necessary for converting
+things like sequences and instances.</dd>
+</dl>
+</div></blockquote>
+<p>Don&#8217;t modify conversions if you can avoid it. Instead, make copies
+(with the copy() method), modify the copies, and then pass them to
+MySQL.connect().</p>
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.converters.Bool2Str">
+<tt class="descclassname">cup.thirdp.MySQLdb.converters.</tt><tt class="descname">Bool2Str</tt><big>(</big><em>s</em>, <em>d</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/converters.html#Bool2Str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.converters.Bool2Str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.converters.Float2Str">
+<tt class="descclassname">cup.thirdp.MySQLdb.converters.</tt><tt class="descname">Float2Str</tt><big>(</big><em>o</em>, <em>d</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/converters.html#Float2Str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.converters.Float2Str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.converters.Instance2Str">
+<tt class="descclassname">cup.thirdp.MySQLdb.converters.</tt><tt class="descname">Instance2Str</tt><big>(</big><em>o</em>, <em>d</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/converters.html#Instance2Str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.converters.Instance2Str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert an Instance to a string representation.  If the __str__()
+method produces acceptable output, then you don&#8217;t need to add the
+class to conversions; it will be handled by the default
+converter. If the exact class is not found in d, it will use the
+first class it can find for which o is an instance.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.converters.Long2Int">
+<tt class="descclassname">cup.thirdp.MySQLdb.converters.</tt><tt class="descname">Long2Int</tt><big>(</big><em>s</em>, <em>d</em><big>)</big><a class="headerlink" href="#cup.thirdp.MySQLdb.converters.Long2Int" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert something into a string via str().</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.converters.None2NULL">
+<tt class="descclassname">cup.thirdp.MySQLdb.converters.</tt><tt class="descname">None2NULL</tt><big>(</big><em>o</em>, <em>d</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/converters.html#None2NULL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.converters.None2NULL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert None to NULL.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.converters.Set2Str">
+<tt class="descclassname">cup.thirdp.MySQLdb.converters.</tt><tt class="descname">Set2Str</tt><big>(</big><em>s</em>, <em>d</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/converters.html#Set2Str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.converters.Set2Str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.converters.Str2Set">
+<tt class="descclassname">cup.thirdp.MySQLdb.converters.</tt><tt class="descname">Str2Set</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/converters.html#Str2Set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.converters.Str2Set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.converters.Thing2Literal">
+<tt class="descclassname">cup.thirdp.MySQLdb.converters.</tt><tt class="descname">Thing2Literal</tt><big>(</big><em>o</em>, <em>d</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/converters.html#Thing2Literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.converters.Thing2Literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert something into a SQL string literal.  If using
+MySQL-3.23 or newer, string_literal() is a method of the
+_mysql.MYSQL object, and this function will be overridden with
+that method when the connection is created.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.converters.Thing2Str">
+<tt class="descclassname">cup.thirdp.MySQLdb.converters.</tt><tt class="descname">Thing2Str</tt><big>(</big><em>s</em>, <em>d</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/converters.html#Thing2Str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.converters.Thing2Str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert something into a string via str().</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.converters.Unicode2Str">
+<tt class="descclassname">cup.thirdp.MySQLdb.converters.</tt><tt class="descname">Unicode2Str</tt><big>(</big><em>s</em>, <em>d</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/converters.html#Unicode2Str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.converters.Unicode2Str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a unicode object to a string using the default encoding.
+This is only used as a placeholder for the real function, which
+is connection-dependent.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.converters.array2Str">
+<tt class="descclassname">cup.thirdp.MySQLdb.converters.</tt><tt class="descname">array2Str</tt><big>(</big><em>o</em>, <em>d</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/converters.html#array2Str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.converters.array2Str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.converters.char_array">
+<tt class="descclassname">cup.thirdp.MySQLdb.converters.</tt><tt class="descname">char_array</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/converters.html#char_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.converters.char_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-cup.thirdp.MySQLdb.cursors">
+<span id="cup-thirdp-mysqldb-cursors-module"></span><h2>cup.thirdp.MySQLdb.cursors module<a class="headerlink" href="#module-cup.thirdp.MySQLdb.cursors" title="Permalink to this headline">¶</a></h2>
+<p>MySQLdb Cursors</p>
+<p>This module implements Cursors of various types for MySQLdb. By
+default, MySQLdb uses the Cursor class.</p>
+<dl class="class">
+<dt id="cup.thirdp.MySQLdb.cursors.BaseCursor">
+<em class="property">class </em><tt class="descclassname">cup.thirdp.MySQLdb.cursors.</tt><tt class="descname">BaseCursor</tt><big>(</big><em>connection</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#BaseCursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.BaseCursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>A base for Cursor classes. Useful attributes:</p>
+<dl class="docutils">
+<dt>description</dt>
+<dd>A tuple of DB API 7-tuples describing the columns in
+the last executed query; see PEP-249 for details.</dd>
+<dt>description_flags</dt>
+<dd>Tuple of column flags for last query, one entry per column
+in the result set. Values correspond to those in
+MySQLdb.constants.FLAG. See MySQL documentation (C API)
+for more information. Non-standard extension.</dd>
+<dt>arraysize</dt>
+<dd>default number of rows fetchmany() will fetch</dd>
+</dl>
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.cursors.BaseCursor.DataError">
+<em class="property">exception </em><tt class="descname">DataError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.BaseCursor.DataError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.DatabaseError</span></tt></p>
+<p>Exception raised for errors that are due to problems with the
+processed data like division by zero, numeric value out of range,
+etc.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.cursors.BaseCursor.DatabaseError">
+<em class="property">exception </em><tt class="descclassname">BaseCursor.</tt><tt class="descname">DatabaseError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.BaseCursor.DatabaseError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.Error</span></tt></p>
+<p>Exception raised for errors that are related to the
+database.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.cursors.BaseCursor.Error">
+<em class="property">exception </em><tt class="descclassname">BaseCursor.</tt><tt class="descname">Error</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.BaseCursor.Error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.MySQLError</span></tt></p>
+<p>Exception that is the base class of all other error exceptions
+(not Warning).</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.cursors.BaseCursor.IntegrityError">
+<em class="property">exception </em><tt class="descclassname">BaseCursor.</tt><tt class="descname">IntegrityError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.BaseCursor.IntegrityError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.DatabaseError</span></tt></p>
+<p>Exception raised when the relational integrity of the database
+is affected, e.g. a foreign key check fails, duplicate key,
+etc.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.cursors.BaseCursor.InterfaceError">
+<em class="property">exception </em><tt class="descclassname">BaseCursor.</tt><tt class="descname">InterfaceError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.BaseCursor.InterfaceError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.Error</span></tt></p>
+<p>Exception raised for errors that are related to the database
+interface rather than the database itself.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.cursors.BaseCursor.InternalError">
+<em class="property">exception </em><tt class="descclassname">BaseCursor.</tt><tt class="descname">InternalError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.BaseCursor.InternalError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.DatabaseError</span></tt></p>
+<p>Exception raised when the database encounters an internal
+error, e.g. the cursor is not valid anymore, the transaction is
+out of sync, etc.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.cursors.BaseCursor.MySQLError">
+<em class="property">exception </em><tt class="descclassname">BaseCursor.</tt><tt class="descname">MySQLError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.BaseCursor.MySQLError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.StandardError</span></tt></p>
+<p>Exception related to operation with MySQL.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.cursors.BaseCursor.NotSupportedError">
+<em class="property">exception </em><tt class="descclassname">BaseCursor.</tt><tt class="descname">NotSupportedError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.BaseCursor.NotSupportedError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.DatabaseError</span></tt></p>
+<p>Exception raised in case a method or database API was used
+which is not supported by the database, e.g. requesting a
+.rollback() on a connection that does not support transaction or
+has transactions turned off.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.cursors.BaseCursor.OperationalError">
+<em class="property">exception </em><tt class="descclassname">BaseCursor.</tt><tt class="descname">OperationalError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.BaseCursor.OperationalError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.DatabaseError</span></tt></p>
+<p>Exception raised for errors that are related to the database&#8217;s
+operation and not necessarily under the control of the programmer,
+e.g. an unexpected disconnect occurs, the data source name is not
+found, a transaction could not be processed, a memory allocation
+error occurred during processing, etc.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.cursors.BaseCursor.ProgrammingError">
+<em class="property">exception </em><tt class="descclassname">BaseCursor.</tt><tt class="descname">ProgrammingError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.BaseCursor.ProgrammingError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.DatabaseError</span></tt></p>
+<p>Exception raised for programming errors, e.g. table not found
+or already exists, syntax error in the SQL statement, wrong number
+of parameters specified, etc.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.cursors.BaseCursor.Warning">
+<em class="property">exception </em><tt class="descclassname">BaseCursor.</tt><tt class="descname">Warning</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.BaseCursor.Warning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Warning</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.MySQLError</span></tt></p>
+<p>Exception raised for important warnings like data truncations
+while inserting, etc.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.cursors.BaseCursor.callproc">
+<tt class="descclassname">BaseCursor.</tt><tt class="descname">callproc</tt><big>(</big><em>procname</em>, <em>args=()</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#BaseCursor.callproc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.BaseCursor.callproc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute stored procedure procname with args</p>
+<p>procname &#8211; string, name of procedure to execute on server</p>
+<p>args &#8211; Sequence of parameters to use with procedure</p>
+<p>Returns the original args.</p>
+<p>Compatibility warning: PEP-249 specifies that any modified
+parameters must be returned. This is currently impossible
+as they are only available by storing them in a server
+variable and then retrieved by a query. Since stored
+procedures return zero or more result sets, there is no
+reliable way to get at OUT or INOUT parameters via callproc.
+The server variables are named &#64;_procname_n, where procname
+is the parameter above and n is the position of the parameter
+(from zero). Once all result sets generated by the procedure
+have been fetched, you can issue a SELECT &#64;_procname_0, ...
+query using .execute() to get any OUT or INOUT values.</p>
+<p>Compatibility warning: The act of calling a stored procedure
+itself creates an empty result set. This appears after any
+result sets generated by the procedure. This is non-standard
+behavior with respect to the DB-API. Be sure to use nextset()
+to advance through all result sets; otherwise you may get
+disconnected.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.cursors.BaseCursor.close">
+<tt class="descclassname">BaseCursor.</tt><tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#BaseCursor.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.BaseCursor.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the cursor. No further queries will be possible.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.cursors.BaseCursor.execute">
+<tt class="descclassname">BaseCursor.</tt><tt class="descname">execute</tt><big>(</big><em>query</em>, <em>args=None</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#BaseCursor.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.BaseCursor.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a query.</p>
+<p>query &#8211; string, query to execute on server
+args &#8211; optional sequence or mapping, parameters to use with query.</p>
+<p>Note: If args is a sequence, then %s must be used as the
+parameter placeholder in the query. If a mapping is used,
+%(key)s must be used as the placeholder.</p>
+<p>Returns long integer rows affected, if any</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.cursors.BaseCursor.executemany">
+<tt class="descclassname">BaseCursor.</tt><tt class="descname">executemany</tt><big>(</big><em>query</em>, <em>args</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#BaseCursor.executemany"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.BaseCursor.executemany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a multi-row query.</p>
+<p>query &#8211; string, query to execute on server</p>
+<p>args</p>
+<blockquote>
+<div>Sequence of sequences or mappings, parameters to use with
+query.</div></blockquote>
+<p>Returns long integer rows affected, if any.</p>
+<p>This method improves performance on multiple-row INSERT and
+REPLACE. Otherwise it is equivalent to looping over args with
+execute().</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.cursors.BaseCursor.nextset">
+<tt class="descclassname">BaseCursor.</tt><tt class="descname">nextset</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#BaseCursor.nextset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.BaseCursor.nextset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Advance to the next result set.</p>
+<p>Returns None if there are no more result sets.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.cursors.BaseCursor.setinputsizes">
+<tt class="descclassname">BaseCursor.</tt><tt class="descname">setinputsizes</tt><big>(</big><em>*args</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#BaseCursor.setinputsizes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.BaseCursor.setinputsizes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does nothing, required by DB API.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.cursors.BaseCursor.setoutputsizes">
+<tt class="descclassname">BaseCursor.</tt><tt class="descname">setoutputsizes</tt><big>(</big><em>*args</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#BaseCursor.setoutputsizes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.BaseCursor.setoutputsizes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does nothing, required by DB API.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.thirdp.MySQLdb.cursors.Cursor">
+<em class="property">class </em><tt class="descclassname">cup.thirdp.MySQLdb.cursors.</tt><tt class="descname">Cursor</tt><big>(</big><em>connection</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#Cursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.Cursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn" title="cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn"><tt class="xref py py-class docutils literal"><span class="pre">cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn</span></tt></a>, <a class="reference internal" href="#cup.thirdp.MySQLdb.cursors.CursorTupleRowsMixIn" title="cup.thirdp.MySQLdb.cursors.CursorTupleRowsMixIn"><tt class="xref py py-class docutils literal"><span class="pre">cup.thirdp.MySQLdb.cursors.CursorTupleRowsMixIn</span></tt></a>, <a class="reference internal" href="#cup.thirdp.MySQLdb.cursors.BaseCursor" title="cup.thirdp.MySQLdb.cursors.BaseCursor"><tt class="xref py py-class docutils literal"><span class="pre">cup.thirdp.MySQLdb.cursors.BaseCursor</span></tt></a></p>
+<p>This is the standard Cursor class that returns rows as tuples
+and stores the result set in the client.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn">
+<em class="property">class </em><tt class="descclassname">cup.thirdp.MySQLdb.cursors.</tt><tt class="descname">CursorDictRowsMixIn</tt><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#CursorDictRowsMixIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This is a MixIn class that causes all rows to be returned as
+dictionaries. This is a non-standard feature.</p>
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn.fetchallDict">
+<tt class="descname">fetchallDict</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#CursorDictRowsMixIn.fetchallDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn.fetchallDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch all available rows as a list of dictionaries. Deprecated:
+Use fetchall() instead. Will be removed in 1.3.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn.fetchmanyDict">
+<tt class="descname">fetchmanyDict</tt><big>(</big><em>size=None</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#CursorDictRowsMixIn.fetchmanyDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn.fetchmanyDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch several rows as a list of dictionaries. Deprecated:
+Use fetchmany() instead. Will be removed in 1.3.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn.fetchoneDict">
+<tt class="descname">fetchoneDict</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#CursorDictRowsMixIn.fetchoneDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn.fetchoneDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch a single row as a dictionary. Deprecated:
+Use fetchone() instead. Will be removed in 1.3.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.thirdp.MySQLdb.cursors.CursorOldDictRowsMixIn">
+<em class="property">class </em><tt class="descclassname">cup.thirdp.MySQLdb.cursors.</tt><tt class="descname">CursorOldDictRowsMixIn</tt><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#CursorOldDictRowsMixIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.CursorOldDictRowsMixIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn" title="cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn"><tt class="xref py py-class docutils literal"><span class="pre">cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn</span></tt></a></p>
+<p>This is a MixIn class that returns rows as dictionaries with
+the same key convention as the old Mysqldb (MySQLmodule). Don&#8217;t
+use this.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn">
+<em class="property">class </em><tt class="descclassname">cup.thirdp.MySQLdb.cursors.</tt><tt class="descname">CursorStoreResultMixIn</tt><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#CursorStoreResultMixIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This is a MixIn class which causes the entire result set to be
+stored on the client side, i.e. it uses mysql_store_result(). If the
+result set can be very large, consider adding a LIMIT clause to your
+query, or using CursorUseResultMixIn instead.</p>
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn.fetchall">
+<tt class="descname">fetchall</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#CursorStoreResultMixIn.fetchall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn.fetchall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetchs all available rows from the cursor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn.fetchmany">
+<tt class="descname">fetchmany</tt><big>(</big><em>size=None</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#CursorStoreResultMixIn.fetchmany"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn.fetchmany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch up to size rows from the cursor. Result set may be smaller
+than size. If size is not defined, cursor.arraysize is used.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn.fetchone">
+<tt class="descname">fetchone</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#CursorStoreResultMixIn.fetchone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn.fetchone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches a single row from the cursor. None indicates that
+no more rows are available.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn.scroll">
+<tt class="descname">scroll</tt><big>(</big><em>value</em>, <em>mode='relative'</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#CursorStoreResultMixIn.scroll"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn.scroll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scroll the cursor in the result set to a new position according
+to mode.</p>
+<p>If mode is &#8216;relative&#8217; (default), value is taken as offset to
+the current position in the result set, if set to &#8216;absolute&#8217;,
+value states an absolute target position.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.thirdp.MySQLdb.cursors.CursorTupleRowsMixIn">
+<em class="property">class </em><tt class="descclassname">cup.thirdp.MySQLdb.cursors.</tt><tt class="descname">CursorTupleRowsMixIn</tt><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#CursorTupleRowsMixIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.CursorTupleRowsMixIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This is a MixIn class that causes all rows to be returned as tuples,
+which is the standard form required by DB API.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn">
+<em class="property">class </em><tt class="descclassname">cup.thirdp.MySQLdb.cursors.</tt><tt class="descname">CursorUseResultMixIn</tt><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#CursorUseResultMixIn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This is a MixIn class which causes the result set to be stored
+in the server and sent row-by-row to client side, i.e. it uses
+mysql_use_result(). You MUST retrieve the entire result set and
+close() the cursor before additional queries can be peformed on
+the connection.</p>
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn.fetchall">
+<tt class="descname">fetchall</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#CursorUseResultMixIn.fetchall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn.fetchall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetchs all available rows from the cursor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn.fetchmany">
+<tt class="descname">fetchmany</tt><big>(</big><em>size=None</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#CursorUseResultMixIn.fetchmany"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn.fetchmany" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch up to size rows from the cursor. Result set may be smaller
+than size. If size is not defined, cursor.arraysize is used.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn.fetchone">
+<tt class="descname">fetchone</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#CursorUseResultMixIn.fetchone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn.fetchone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches a single row from the cursor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn.next">
+<tt class="descname">next</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#CursorUseResultMixIn.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn.next" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.thirdp.MySQLdb.cursors.DictCursor">
+<em class="property">class </em><tt class="descclassname">cup.thirdp.MySQLdb.cursors.</tt><tt class="descname">DictCursor</tt><big>(</big><em>connection</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#DictCursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.DictCursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn" title="cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn"><tt class="xref py py-class docutils literal"><span class="pre">cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn</span></tt></a>, <a class="reference internal" href="#cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn" title="cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn"><tt class="xref py py-class docutils literal"><span class="pre">cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn</span></tt></a>, <a class="reference internal" href="#cup.thirdp.MySQLdb.cursors.BaseCursor" title="cup.thirdp.MySQLdb.cursors.BaseCursor"><tt class="xref py py-class docutils literal"><span class="pre">cup.thirdp.MySQLdb.cursors.BaseCursor</span></tt></a></p>
+<p>This is a Cursor class that returns rows as dictionaries and
+stores the result set in the client.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.thirdp.MySQLdb.cursors.SSCursor">
+<em class="property">class </em><tt class="descclassname">cup.thirdp.MySQLdb.cursors.</tt><tt class="descname">SSCursor</tt><big>(</big><em>connection</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#SSCursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.SSCursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn" title="cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn"><tt class="xref py py-class docutils literal"><span class="pre">cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn</span></tt></a>, <a class="reference internal" href="#cup.thirdp.MySQLdb.cursors.CursorTupleRowsMixIn" title="cup.thirdp.MySQLdb.cursors.CursorTupleRowsMixIn"><tt class="xref py py-class docutils literal"><span class="pre">cup.thirdp.MySQLdb.cursors.CursorTupleRowsMixIn</span></tt></a>, <a class="reference internal" href="#cup.thirdp.MySQLdb.cursors.BaseCursor" title="cup.thirdp.MySQLdb.cursors.BaseCursor"><tt class="xref py py-class docutils literal"><span class="pre">cup.thirdp.MySQLdb.cursors.BaseCursor</span></tt></a></p>
+<p>This is a Cursor class that returns rows as tuples and stores
+the result set in the server.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.thirdp.MySQLdb.cursors.SSDictCursor">
+<em class="property">class </em><tt class="descclassname">cup.thirdp.MySQLdb.cursors.</tt><tt class="descname">SSDictCursor</tt><big>(</big><em>connection</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/cursors.html#SSDictCursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.cursors.SSDictCursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn" title="cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn"><tt class="xref py py-class docutils literal"><span class="pre">cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn</span></tt></a>, <a class="reference internal" href="#cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn" title="cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn"><tt class="xref py py-class docutils literal"><span class="pre">cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn</span></tt></a>, <a class="reference internal" href="#cup.thirdp.MySQLdb.cursors.BaseCursor" title="cup.thirdp.MySQLdb.cursors.BaseCursor"><tt class="xref py py-class docutils literal"><span class="pre">cup.thirdp.MySQLdb.cursors.BaseCursor</span></tt></a></p>
+<p>This is a Cursor class that returns rows as dictionaries and
+stores the result set in the server.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.thirdp.MySQLdb.release">
+<span id="cup-thirdp-mysqldb-release-module"></span><h2>cup.thirdp.MySQLdb.release module<a class="headerlink" href="#module-cup.thirdp.MySQLdb.release" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cup.thirdp.MySQLdb.times">
+<span id="cup-thirdp-mysqldb-times-module"></span><h2>cup.thirdp.MySQLdb.times module<a class="headerlink" href="#module-cup.thirdp.MySQLdb.times" title="Permalink to this headline">¶</a></h2>
+<p>times module</p>
+<p>This module provides some Date and Time classes for dealing with MySQL data.</p>
+<p>Use Python datetime module to handle date and time columns.</p>
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.times.DateFromTicks">
+<tt class="descclassname">cup.thirdp.MySQLdb.times.</tt><tt class="descname">DateFromTicks</tt><big>(</big><em>ticks</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/times.html#DateFromTicks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.times.DateFromTicks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert UNIX ticks into a date instance.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.times.DateTime2literal">
+<tt class="descclassname">cup.thirdp.MySQLdb.times.</tt><tt class="descname">DateTime2literal</tt><big>(</big><em>d</em>, <em>c</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/times.html#DateTime2literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.times.DateTime2literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format a DateTime object as an ISO timestamp.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.times.DateTimeDelta2literal">
+<tt class="descclassname">cup.thirdp.MySQLdb.times.</tt><tt class="descname">DateTimeDelta2literal</tt><big>(</big><em>d</em>, <em>c</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/times.html#DateTimeDelta2literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.times.DateTimeDelta2literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format a DateTimeDelta object as a time.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.times.DateTime_or_None">
+<tt class="descclassname">cup.thirdp.MySQLdb.times.</tt><tt class="descname">DateTime_or_None</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/times.html#DateTime_or_None"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.times.DateTime_or_None" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.times.Date_or_None">
+<tt class="descclassname">cup.thirdp.MySQLdb.times.</tt><tt class="descname">Date_or_None</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/times.html#Date_or_None"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.times.Date_or_None" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.times.TimeDelta_or_None">
+<tt class="descclassname">cup.thirdp.MySQLdb.times.</tt><tt class="descname">TimeDelta_or_None</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/times.html#TimeDelta_or_None"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.times.TimeDelta_or_None" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.times.TimeFromTicks">
+<tt class="descclassname">cup.thirdp.MySQLdb.times.</tt><tt class="descname">TimeFromTicks</tt><big>(</big><em>ticks</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/times.html#TimeFromTicks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.times.TimeFromTicks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert UNIX ticks into a time instance.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.times.Time_or_None">
+<tt class="descclassname">cup.thirdp.MySQLdb.times.</tt><tt class="descname">Time_or_None</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/times.html#Time_or_None"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.times.Time_or_None" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.times.TimestampFromTicks">
+<tt class="descclassname">cup.thirdp.MySQLdb.times.</tt><tt class="descname">TimestampFromTicks</tt><big>(</big><em>ticks</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/times.html#TimestampFromTicks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.times.TimestampFromTicks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert UNIX ticks into a datetime instance.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.times.format_TIMEDELTA">
+<tt class="descclassname">cup.thirdp.MySQLdb.times.</tt><tt class="descname">format_TIMEDELTA</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/times.html#format_TIMEDELTA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.times.format_TIMEDELTA" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.times.format_TIMESTAMP">
+<tt class="descclassname">cup.thirdp.MySQLdb.times.</tt><tt class="descname">format_TIMESTAMP</tt><big>(</big><em>d</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/times.html#format_TIMESTAMP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.times.format_TIMESTAMP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.times.mysql_timestamp_converter">
+<tt class="descclassname">cup.thirdp.MySQLdb.times.</tt><tt class="descname">mysql_timestamp_converter</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb/times.html#mysql_timestamp_converter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.times.mysql_timestamp_converter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a MySQL TIMESTAMP to a Timestamp object.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.thirdp.MySQLdb">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cup.thirdp.MySQLdb" title="Permalink to this headline">¶</a></h2>
+<p>MySQLdb - A DB API v2.0 compatible interface to MySQL.</p>
+<p>This package is a wrapper around _mysql, which mostly implements the
+MySQL C API.</p>
+<p>connect() &#8211; connects to server</p>
+<p>See the C API specification and the MySQL documentation for more info
+on other items.</p>
+<p>For information on how MySQLdb handles type conversion, see the
+MySQLdb.converters module.</p>
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.Binary">
+<tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">Binary</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb.html#Binary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.Binary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.Connect">
+<tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">Connect</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/thirdp/MySQLdb.html#Connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.Connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory function for connections.Connection.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.Connection">
+<tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">Connection</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#cup.thirdp.MySQLdb.Connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory function for connections.Connection.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.thirdp.MySQLdb.Date">
+<tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">Date</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.Date" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">date</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.thirdp.MySQLdb.Time">
+<tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">Time</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.Time" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">time</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.thirdp.MySQLdb.Timestamp">
+<tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">Timestamp</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.Timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">datetime</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.DateFromTicks">
+<tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">DateFromTicks</tt><big>(</big><em>ticks</em><big>)</big><a class="headerlink" href="#cup.thirdp.MySQLdb.DateFromTicks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert UNIX ticks into a date instance.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.TimeFromTicks">
+<tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">TimeFromTicks</tt><big>(</big><em>ticks</em><big>)</big><a class="headerlink" href="#cup.thirdp.MySQLdb.TimeFromTicks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert UNIX ticks into a time instance.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.TimestampFromTicks">
+<tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">TimestampFromTicks</tt><big>(</big><em>ticks</em><big>)</big><a class="headerlink" href="#cup.thirdp.MySQLdb.TimestampFromTicks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert UNIX ticks into a datetime instance.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.DataError">
+<em class="property">exception </em><tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">DataError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.DataError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.DatabaseError</span></tt></p>
+<p>Exception raised for errors that are due to problems with the
+processed data like division by zero, numeric value out of range,
+etc.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.DatabaseError">
+<em class="property">exception </em><tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">DatabaseError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.DatabaseError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.Error</span></tt></p>
+<p>Exception raised for errors that are related to the
+database.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.Error">
+<em class="property">exception </em><tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">Error</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.Error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.MySQLError</span></tt></p>
+<p>Exception that is the base class of all other error exceptions
+(not Warning).</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.IntegrityError">
+<em class="property">exception </em><tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">IntegrityError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.IntegrityError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.DatabaseError</span></tt></p>
+<p>Exception raised when the relational integrity of the database
+is affected, e.g. a foreign key check fails, duplicate key,
+etc.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.InterfaceError">
+<em class="property">exception </em><tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">InterfaceError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.InterfaceError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.Error</span></tt></p>
+<p>Exception raised for errors that are related to the database
+interface rather than the database itself.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.InternalError">
+<em class="property">exception </em><tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">InternalError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.InternalError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.DatabaseError</span></tt></p>
+<p>Exception raised when the database encounters an internal
+error, e.g. the cursor is not valid anymore, the transaction is
+out of sync, etc.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.MySQLError">
+<em class="property">exception </em><tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">MySQLError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.MySQLError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.StandardError</span></tt></p>
+<p>Exception related to operation with MySQL.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.NotSupportedError">
+<em class="property">exception </em><tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">NotSupportedError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.NotSupportedError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.DatabaseError</span></tt></p>
+<p>Exception raised in case a method or database API was used
+which is not supported by the database, e.g. requesting a
+.rollback() on a connection that does not support transaction or
+has transactions turned off.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.thirdp.MySQLdb.DBAPISet">
+<em class="property">class </em><tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">DBAPISet</tt><a class="reference internal" href="_modules/cup/thirdp/MySQLdb.html#DBAPISet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.thirdp.MySQLdb.DBAPISet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">frozenset</span></tt></p>
+<p>A special type of set for which A == x is true if A is a
+DBAPISet and x is a member of that set.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.OperationalError">
+<em class="property">exception </em><tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">OperationalError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.OperationalError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.DatabaseError</span></tt></p>
+<p>Exception raised for errors that are related to the database&#8217;s
+operation and not necessarily under the control of the programmer,
+e.g. an unexpected disconnect occurs, the data source name is not
+found, a transaction could not be processed, a memory allocation
+error occurred during processing, etc.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.ProgrammingError">
+<em class="property">exception </em><tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">ProgrammingError</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.ProgrammingError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.DatabaseError</span></tt></p>
+<p>Exception raised for programming errors, e.g. table not found
+or already exists, syntax error in the SQL statement, wrong number
+of parameters specified, etc.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.thirdp.MySQLdb.Warning">
+<em class="property">exception </em><tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">Warning</tt><a class="headerlink" href="#cup.thirdp.MySQLdb.Warning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Warning</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">_mysql_exceptions.MySQLError</span></tt></p>
+<p>Exception raised for important warnings like data truncations
+while inserting, etc.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.connect">
+<tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">connect</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#cup.thirdp.MySQLdb.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory function for connections.Connection.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.debug">
+<tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">debug</tt><big>(</big><big>)</big><a class="headerlink" href="#cup.thirdp.MySQLdb.debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does a DBUG_PUSH with the given string.
+mysql_debug() uses the Fred Fish debug library.
+To use this function, you must compile the client library to
+support debugging.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.escape">
+<tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">escape</tt><big>(</big><big>)</big><a class="headerlink" href="#cup.thirdp.MySQLdb.escape" title="Permalink to this definition">¶</a></dt>
+<dd><p>escape(obj, dict) &#8211; escape any special characters in object obj
+using mapping dict to provide quoting functions for each type.
+Returns a SQL literal string.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.escape_dict">
+<tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">escape_dict</tt><big>(</big><big>)</big><a class="headerlink" href="#cup.thirdp.MySQLdb.escape_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>escape_sequence(d, dict) &#8211; escape any special characters in
+dictionary d using mapping dict to provide quoting functions for each type.
+Returns a dictionary of escaped items.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.escape_sequence">
+<tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">escape_sequence</tt><big>(</big><big>)</big><a class="headerlink" href="#cup.thirdp.MySQLdb.escape_sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>escape_sequence(seq, dict) &#8211; escape any special characters in sequence
+seq using mapping dict to provide quoting functions for each type.
+Returns a tuple of escaped items.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.escape_string">
+<tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">escape_string</tt><big>(</big><big>)</big><a class="headerlink" href="#cup.thirdp.MySQLdb.escape_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>escape_string(s) &#8211; quote any SQL-interpreted characters in string s.</p>
+<p>Use connection.escape_string(s), if you use it at all.
+_mysql.escape_string(s) cannot handle character sets. You are
+probably better off using connection.escape(o) instead, since
+it will escape entire sequences as well as strings.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.get_client_info">
+<tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">get_client_info</tt><big>(</big><big>)</big><a class="headerlink" href="#cup.thirdp.MySQLdb.get_client_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>get_client_info() &#8211; Returns a string that represents
+the client library version.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.thirdp.MySQLdb.string_literal">
+<tt class="descclassname">cup.thirdp.MySQLdb.</tt><tt class="descname">string_literal</tt><big>(</big><big>)</big><a class="headerlink" href="#cup.thirdp.MySQLdb.string_literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>string_literal(obj) &#8211; converts object obj into a SQL string literal.
+This means, any special SQL characters are escaped, and it is enclosed
+within single quotes. In other words, it performs:</p>
+<p>&#8220;&#8217;%s&#8217;&#8221; % escape_string(str(obj))</p>
+<p>Use connection.string_literal(obj), if you use it at all.
+_mysql.string_literal(obj) cannot handle character sets.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">cup.thirdp.MySQLdb package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-cup.thirdp.MySQLdb.connections">cup.thirdp.MySQLdb.connections module</a></li>
+<li><a class="reference internal" href="#module-cup.thirdp.MySQLdb.converters">cup.thirdp.MySQLdb.converters module</a></li>
+<li><a class="reference internal" href="#module-cup.thirdp.MySQLdb.cursors">cup.thirdp.MySQLdb.cursors module</a></li>
+<li><a class="reference internal" href="#module-cup.thirdp.MySQLdb.release">cup.thirdp.MySQLdb.release module</a></li>
+<li><a class="reference internal" href="#module-cup.thirdp.MySQLdb.times">cup.thirdp.MySQLdb.times module</a></li>
+<li><a class="reference internal" href="#module-cup.thirdp.MySQLdb">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="cup.thirdp.html"
+                        title="previous chapter">cup.thirdp package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cup.thirdp.MySQLdb.constants.html"
+                        title="next chapter">cup.thirdp.MySQLdb.constants package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/cup.thirdp.MySQLdb.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cup.thirdp.MySQLdb.constants.html" title="cup.thirdp.MySQLdb.constants package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="cup.thirdp.html" title="cup.thirdp package"
+             >previous</a> |</li>
+        <li><a href="index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="cup.html" >cup package</a> &raquo;</li>
+          <li><a href="cup.thirdp.html" >cup.thirdp package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

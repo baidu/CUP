@@ -1,0 +1,532 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.thirdp.httplib2.socks &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../../../index.html" />
+    <link rel="up" title="cup.thirdp.httplib2" href="../httplib2.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../httplib2.html" accesskey="U">cup.thirdp.httplib2</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.thirdp.httplib2.socks</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;SocksiPy - Python SOCKS module.</span>
+<span class="sd">Version 1.00</span>
+
+<span class="sd">Copyright 2006 Dan-Haim. All rights reserved.</span>
+
+<span class="sd">Redistribution and use in source and binary forms, with or without modification,</span>
+<span class="sd">are permitted provided that the following conditions are met:</span>
+<span class="sd">1. Redistributions of source code must retain the above copyright notice, this</span>
+<span class="sd">   list of conditions and the following disclaimer.</span>
+<span class="sd">2. Redistributions in binary form must reproduce the above copyright notice,</span>
+<span class="sd">   this list of conditions and the following disclaimer in the documentation</span>
+<span class="sd">   and/or other materials provided with the distribution.</span>
+<span class="sd">3. Neither the name of Dan Haim nor the names of his contributors may be used</span>
+<span class="sd">   to endorse or promote products derived from this software without specific</span>
+<span class="sd">   prior written permission.</span>
+
+<span class="sd">THIS SOFTWARE IS PROVIDED BY DAN HAIM &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED</span>
+<span class="sd">WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF</span>
+<span class="sd">MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO</span>
+<span class="sd">EVENT SHALL DAN HAIM OR HIS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,</span>
+<span class="sd">INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT</span>
+<span class="sd">LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA</span>
+<span class="sd">OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF</span>
+<span class="sd">LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT</span>
+<span class="sd">OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMANGE.</span>
+
+
+<span class="sd">This module provides a standard socket-like interface for Python</span>
+<span class="sd">for tunneling connections through SOCKS proxies.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">Minor modifications made by Christopher Gilbert (http://motomastyle.com/)</span>
+<span class="sd">for use in PyLoris (http://pyloris.sourceforge.net/)</span>
+
+<span class="sd">Minor modifications made by Mario Vilas (http://breakingcode.wordpress.com/)</span>
+<span class="sd">mainly to merge bug fixes found in Sourceforge</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="s">&#39;socket&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s">&#39;socket.socket missing, proxy support unusable&#39;</span><span class="p">)</span>
+
+<span class="n">PROXY_TYPE_SOCKS4</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">PROXY_TYPE_SOCKS5</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">PROXY_TYPE_HTTP</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">PROXY_TYPE_HTTP_NO_TUNNEL</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="n">_defaultproxy</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">_orgsocket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span>
+
+<div class="viewcode-block" id="ProxyError"><a class="viewcode-back" href="../../../../cup.thirdp.httplib2.html#cup.thirdp.httplib2.socks.ProxyError">[docs]</a><span class="k">class</span> <span class="nc">ProxyError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span> <span class="k">pass</span></div>
+<div class="viewcode-block" id="GeneralProxyError"><a class="viewcode-back" href="../../../../cup.thirdp.httplib2.html#cup.thirdp.httplib2.socks.GeneralProxyError">[docs]</a><span class="k">class</span> <span class="nc">GeneralProxyError</span><span class="p">(</span><span class="n">ProxyError</span><span class="p">):</span> <span class="k">pass</span></div>
+<div class="viewcode-block" id="Socks5AuthError"><a class="viewcode-back" href="../../../../cup.thirdp.httplib2.html#cup.thirdp.httplib2.socks.Socks5AuthError">[docs]</a><span class="k">class</span> <span class="nc">Socks5AuthError</span><span class="p">(</span><span class="n">ProxyError</span><span class="p">):</span> <span class="k">pass</span></div>
+<div class="viewcode-block" id="Socks5Error"><a class="viewcode-back" href="../../../../cup.thirdp.httplib2.html#cup.thirdp.httplib2.socks.Socks5Error">[docs]</a><span class="k">class</span> <span class="nc">Socks5Error</span><span class="p">(</span><span class="n">ProxyError</span><span class="p">):</span> <span class="k">pass</span></div>
+<div class="viewcode-block" id="Socks4Error"><a class="viewcode-back" href="../../../../cup.thirdp.httplib2.html#cup.thirdp.httplib2.socks.Socks4Error">[docs]</a><span class="k">class</span> <span class="nc">Socks4Error</span><span class="p">(</span><span class="n">ProxyError</span><span class="p">):</span> <span class="k">pass</span></div>
+<div class="viewcode-block" id="HTTPError"><a class="viewcode-back" href="../../../../cup.thirdp.httplib2.html#cup.thirdp.httplib2.socks.HTTPError">[docs]</a><span class="k">class</span> <span class="nc">HTTPError</span><span class="p">(</span><span class="n">ProxyError</span><span class="p">):</span> <span class="k">pass</span>
+</div>
+<span class="n">_generalerrors</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;success&quot;</span><span class="p">,</span>
+    <span class="s">&quot;invalid data&quot;</span><span class="p">,</span>
+    <span class="s">&quot;not connected&quot;</span><span class="p">,</span>
+    <span class="s">&quot;not available&quot;</span><span class="p">,</span>
+    <span class="s">&quot;bad proxy type&quot;</span><span class="p">,</span>
+    <span class="s">&quot;bad input&quot;</span><span class="p">)</span>
+
+<span class="n">_socks5errors</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;succeeded&quot;</span><span class="p">,</span>
+    <span class="s">&quot;general SOCKS server failure&quot;</span><span class="p">,</span>
+    <span class="s">&quot;connection not allowed by ruleset&quot;</span><span class="p">,</span>
+    <span class="s">&quot;Network unreachable&quot;</span><span class="p">,</span>
+    <span class="s">&quot;Host unreachable&quot;</span><span class="p">,</span>
+    <span class="s">&quot;Connection refused&quot;</span><span class="p">,</span>
+    <span class="s">&quot;TTL expired&quot;</span><span class="p">,</span>
+    <span class="s">&quot;Command not supported&quot;</span><span class="p">,</span>
+    <span class="s">&quot;Address type not supported&quot;</span><span class="p">,</span>
+    <span class="s">&quot;Unknown error&quot;</span><span class="p">)</span>
+
+<span class="n">_socks5autherrors</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;succeeded&quot;</span><span class="p">,</span>
+    <span class="s">&quot;authentication is required&quot;</span><span class="p">,</span>
+    <span class="s">&quot;all offered authentication methods were rejected&quot;</span><span class="p">,</span>
+    <span class="s">&quot;unknown username or invalid password&quot;</span><span class="p">,</span>
+    <span class="s">&quot;unknown error&quot;</span><span class="p">)</span>
+
+<span class="n">_socks4errors</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;request granted&quot;</span><span class="p">,</span>
+    <span class="s">&quot;request rejected or failed&quot;</span><span class="p">,</span>
+    <span class="s">&quot;request rejected because SOCKS server cannot connect to identd on the client&quot;</span><span class="p">,</span>
+    <span class="s">&quot;request rejected because the client program and identd report different user-ids&quot;</span><span class="p">,</span>
+    <span class="s">&quot;unknown error&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="setdefaultproxy"><a class="viewcode-back" href="../../../../cup.thirdp.httplib2.html#cup.thirdp.httplib2.socks.setdefaultproxy">[docs]</a><span class="k">def</span> <span class="nf">setdefaultproxy</span><span class="p">(</span><span class="n">proxytype</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">rdns</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;setdefaultproxy(proxytype, addr[, port[, rdns[, username[, password]]]])</span>
+<span class="sd">    Sets a default proxy which all further socksocket objects will use,</span>
+<span class="sd">    unless explicitly changed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">_defaultproxy</span>
+    <span class="n">_defaultproxy</span> <span class="o">=</span> <span class="p">(</span><span class="n">proxytype</span><span class="p">,</span> <span class="n">addr</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">rdns</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="wrapmodule"><a class="viewcode-back" href="../../../../cup.thirdp.httplib2.html#cup.thirdp.httplib2.socks.wrapmodule">[docs]</a><span class="k">def</span> <span class="nf">wrapmodule</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;wrapmodule(module)</span>
+<span class="sd">    Attempts to replace a module&#39;s socket library with a SOCKS socket. Must set</span>
+<span class="sd">    a default proxy using setdefaultproxy(...) first.</span>
+<span class="sd">    This will only work on modules that import socket directly into the namespace;</span>
+<span class="sd">    most of the Python Standard Library falls into this category.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">_defaultproxy</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">module</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">socket</span> <span class="o">=</span> <span class="n">socksocket</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">GeneralProxyError</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="s">&quot;no proxy specified&quot;</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="socksocket"><a class="viewcode-back" href="../../../../cup.thirdp.httplib2.html#cup.thirdp.httplib2.socks.socksocket">[docs]</a><span class="k">class</span> <span class="nc">socksocket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;socksocket([family[, type[, proto]]]) -&gt; socket object</span>
+<span class="sd">    Open a SOCKS enabled socket. The parameters are the same as</span>
+<span class="sd">    those of the standard socket init. In order for SOCKS to work,</span>
+<span class="sd">    you must specify family=AF_INET, type=SOCK_STREAM and proto=0.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="n">proto</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">_sock</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">_orgsocket</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">family</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">proto</span><span class="p">,</span> <span class="n">_sock</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_defaultproxy</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span> <span class="o">=</span> <span class="n">_defaultproxy</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__proxysockname</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__proxypeername</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__httptunnel</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="k">def</span> <span class="nf">__recvall</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;__recvall(count) -&gt; data</span>
+<span class="sd">        Receive EXACTLY the number of bytes requested from the socket.</span>
+<span class="sd">        Blocks until the required number of bytes have been received.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">count</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">count</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">d</span><span class="p">:</span> <span class="k">raise</span> <span class="n">GeneralProxyError</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="s">&quot;connection closed unexpectedly&quot;</span><span class="p">))</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span> <span class="o">+</span> <span class="n">d</span>
+        <span class="k">return</span> <span class="n">data</span>
+
+<div class="viewcode-block" id="socksocket.sendall"><a class="viewcode-back" href="../../../../cup.thirdp.httplib2.html#cup.thirdp.httplib2.socks.socksocket.sendall">[docs]</a>    <span class="k">def</span> <span class="nf">sendall</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; override socket.socket.sendall method to rewrite the header</span>
+<span class="sd">        for non-tunneling proxies if needed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__httptunnel</span><span class="p">:</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__rewriteproxy</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">socksocket</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">__rewriteproxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; rewrite HTTP request headers to support non-tunneling proxies</span>
+<span class="sd">        (i.e. those which do not support the CONNECT method).</span>
+<span class="sd">        This only works for HTTP (not HTTPS) since HTTPS requires tunneling.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">host</span><span class="p">,</span> <span class="n">endpt</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+        <span class="n">hdrs</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">hdr</span> <span class="ow">in</span> <span class="n">hdrs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">hdr</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;host:&quot;</span><span class="p">):</span>
+                <span class="n">host</span> <span class="o">=</span> <span class="n">hdr</span>
+            <span class="k">elif</span> <span class="n">hdr</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;get&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">hdr</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;post&quot;</span><span class="p">):</span>
+                <span class="n">endpt</span> <span class="o">=</span> <span class="n">hdr</span>
+        <span class="k">if</span> <span class="n">host</span> <span class="ow">and</span> <span class="n">endpt</span><span class="p">:</span>
+            <span class="n">hdrs</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+            <span class="n">hdrs</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">endpt</span><span class="p">)</span>
+            <span class="n">host</span> <span class="o">=</span> <span class="n">host</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">endpt</span> <span class="o">=</span> <span class="n">endpt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">):</span>
+                <span class="n">hdrs</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getauthheader</span><span class="p">())</span>
+            <span class="n">hdrs</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">&quot;Host: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">host</span><span class="p">)</span>
+            <span class="n">hdrs</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s"> http://</span><span class="si">%s%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">endpt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">host</span><span class="p">,</span> <span class="n">endpt</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">endpt</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="s">&quot;</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">hdrs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getauthheader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">auth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;:&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+        <span class="k">return</span> <span class="s">&quot;Proxy-Authorization: Basic &quot;</span> <span class="o">+</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+
+<div class="viewcode-block" id="socksocket.setproxy"><a class="viewcode-back" href="../../../../cup.thirdp.httplib2.html#cup.thirdp.httplib2.socks.socksocket.setproxy">[docs]</a>    <span class="k">def</span> <span class="nf">setproxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proxytype</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">rdns</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;setproxy(proxytype, addr[, port[, rdns[, username[, password]]]])</span>
+<span class="sd">        Sets the proxy to be used.</span>
+<span class="sd">        proxytype -    The type of the proxy to be used. Three types</span>
+<span class="sd">                are supported: PROXY_TYPE_SOCKS4 (including socks4a),</span>
+<span class="sd">                PROXY_TYPE_SOCKS5 and PROXY_TYPE_HTTP</span>
+<span class="sd">        addr -        The address of the server (IP or DNS).</span>
+<span class="sd">        port -        The port of the server. Defaults to 1080 for SOCKS</span>
+<span class="sd">                servers and 8080 for HTTP proxy servers.</span>
+<span class="sd">        rdns -        Should DNS queries be preformed on the remote side</span>
+<span class="sd">                (rather than the local side). The default is True.</span>
+<span class="sd">                Note: This has no effect with SOCKS4 servers.</span>
+<span class="sd">        username -    Username to authenticate with to the server.</span>
+<span class="sd">                The default is no authentication.</span>
+<span class="sd">        password -    Password to authenticate with to the server.</span>
+<span class="sd">                Only relevant when username is also provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span> <span class="o">=</span> <span class="p">(</span><span class="n">proxytype</span><span class="p">,</span> <span class="n">addr</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">rdns</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">__negotiatesocks5</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">destaddr</span><span class="p">,</span> <span class="n">destport</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;__negotiatesocks5(self,destaddr,destport)</span>
+<span class="sd">        Negotiates a connection through a SOCKS5 server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># First we&#39;ll send the authentication packages we support.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">!=</span><span class="bp">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">!=</span><span class="bp">None</span><span class="p">):</span>
+            <span class="c"># The username/password details were supplied to the</span>
+            <span class="c"># setproxy method so we support the USERNAME/PASSWORD</span>
+            <span class="c"># authentication (in addition to the standard none).</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s">&#39;BBBB&#39;</span><span class="p">,</span> <span class="mh">0x05</span><span class="p">,</span> <span class="mh">0x02</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x02</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># No username/password were entered, therefore we</span>
+            <span class="c"># only support connections with no authentication.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s">&#39;BBB&#39;</span><span class="p">,</span> <span class="mh">0x05</span><span class="p">,</span> <span class="mh">0x01</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">))</span>
+        <span class="c"># We&#39;ll receive the server&#39;s response to determine which</span>
+        <span class="c"># method was selected</span>
+        <span class="n">chosenauth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__recvall</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">chosenauth</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x05</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">GeneralProxyError</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">_generalerrors</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="c"># Check the chosen authentication method</span>
+        <span class="k">if</span> <span class="n">chosenauth</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x00</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">():</span>
+            <span class="c"># No authentication is required</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">chosenauth</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x02</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">():</span>
+            <span class="c"># Okay, we need to perform a basic username/password</span>
+            <span class="c"># authentication.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="mh">0x01</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="o">+</span> <span class="nb">chr</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="nb">chr</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">5</span><span class="p">]))</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+            <span class="n">authstat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__recvall</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">authstat</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x01</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">():</span>
+                <span class="c"># Bad response</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">raise</span> <span class="n">GeneralProxyError</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">_generalerrors</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="n">authstat</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x00</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">():</span>
+                <span class="c"># Authentication failed</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">raise</span> <span class="n">Socks5AuthError</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="n">_socks5autherrors</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+            <span class="c"># Authentication succeeded</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Reaching here is always bad</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">chosenauth</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0xFF</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="n">Socks5AuthError</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="n">_socks5autherrors</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">GeneralProxyError</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">_generalerrors</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="c"># Now we can request the actual connection</span>
+        <span class="n">req</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s">&#39;BBB&#39;</span><span class="p">,</span> <span class="mh">0x05</span><span class="p">,</span> <span class="mh">0x01</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">)</span>
+        <span class="c"># If the given destination address is an IP address, we&#39;ll</span>
+        <span class="c"># use the IPv4 address request even if remote resolving was specified.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ipaddr</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_aton</span><span class="p">(</span><span class="n">destaddr</span><span class="p">)</span>
+            <span class="n">req</span> <span class="o">=</span> <span class="n">req</span> <span class="o">+</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x01</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="o">+</span> <span class="n">ipaddr</span>
+        <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+            <span class="c"># Well it&#39;s not an IP number,  so it&#39;s probably a DNS name.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span>
+                <span class="c"># Resolve remotely</span>
+                <span class="n">ipaddr</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="n">req</span> <span class="o">=</span> <span class="n">req</span> <span class="o">+</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x03</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="o">+</span> <span class="nb">chr</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">destaddr</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="o">+</span> <span class="n">destaddr</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># Resolve locally</span>
+                <span class="n">ipaddr</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_aton</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">gethostbyname</span><span class="p">(</span><span class="n">destaddr</span><span class="p">))</span>
+                <span class="n">req</span> <span class="o">=</span> <span class="n">req</span> <span class="o">+</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x01</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="o">+</span> <span class="n">ipaddr</span>
+        <span class="n">req</span> <span class="o">=</span> <span class="n">req</span> <span class="o">+</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s">&quot;&gt;H&quot;</span><span class="p">,</span> <span class="n">destport</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+        <span class="c"># Get the response</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__recvall</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">resp</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x05</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">GeneralProxyError</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">_generalerrors</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">elif</span> <span class="n">resp</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x00</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">():</span>
+            <span class="c"># Connection failed</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">ord</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span><span class="o">&lt;=</span><span class="mi">8</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">Socks5Error</span><span class="p">((</span><span class="nb">ord</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]),</span> <span class="n">_socks5errors</span><span class="p">[</span><span class="nb">ord</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">])]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">Socks5Error</span><span class="p">((</span><span class="mi">9</span><span class="p">,</span> <span class="n">_socks5errors</span><span class="p">[</span><span class="mi">9</span><span class="p">]))</span>
+        <span class="c"># Get the bound address/port</span>
+        <span class="k">elif</span> <span class="n">resp</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x01</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">():</span>
+            <span class="n">boundaddr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__recvall</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">resp</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x03</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">():</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">resp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">boundaddr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__recvall</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">5</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">GeneralProxyError</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="n">_generalerrors</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">boundport</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&quot;&gt;H&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__recvall</span><span class="p">(</span><span class="mi">2</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__proxysockname</span> <span class="o">=</span> <span class="p">(</span><span class="n">boundaddr</span><span class="p">,</span> <span class="n">boundport</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ipaddr</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__proxypeername</span> <span class="o">=</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">inet_ntoa</span><span class="p">(</span><span class="n">ipaddr</span><span class="p">),</span> <span class="n">destport</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__proxypeername</span> <span class="o">=</span> <span class="p">(</span><span class="n">destaddr</span><span class="p">,</span> <span class="n">destport</span><span class="p">)</span>
+
+<div class="viewcode-block" id="socksocket.getproxysockname"><a class="viewcode-back" href="../../../../cup.thirdp.httplib2.html#cup.thirdp.httplib2.socks.socksocket.getproxysockname">[docs]</a>    <span class="k">def</span> <span class="nf">getproxysockname</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;getsockname() -&gt; address info</span>
+<span class="sd">        Returns the bound IP address and port number at the proxy.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxysockname</span>
+</div>
+<div class="viewcode-block" id="socksocket.getproxypeername"><a class="viewcode-back" href="../../../../cup.thirdp.httplib2.html#cup.thirdp.httplib2.socks.socksocket.getproxypeername">[docs]</a>    <span class="k">def</span> <span class="nf">getproxypeername</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;getproxypeername() -&gt; address info</span>
+<span class="sd">        Returns the IP and port number of the proxy.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_orgsocket</span><span class="o">.</span><span class="n">getpeername</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="socksocket.getpeername"><a class="viewcode-back" href="../../../../cup.thirdp.httplib2.html#cup.thirdp.httplib2.socks.socksocket.getpeername">[docs]</a>    <span class="k">def</span> <span class="nf">getpeername</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;getpeername() -&gt; address info</span>
+<span class="sd">        Returns the IP address and port number of the destination</span>
+<span class="sd">        machine (note: getproxypeername returns the proxy)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxypeername</span>
+</div>
+    <span class="k">def</span> <span class="nf">__negotiatesocks4</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">destaddr</span><span class="p">,</span><span class="n">destport</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;__negotiatesocks4(self,destaddr,destport)</span>
+<span class="sd">        Negotiates a connection through a SOCKS4 server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Check if the destination address provided is an IP address</span>
+        <span class="n">rmtrslv</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ipaddr</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_aton</span><span class="p">(</span><span class="n">destaddr</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+            <span class="c"># It&#39;s a DNS name. Check where it should be resolved.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span>
+                <span class="n">ipaddr</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s">&quot;BBBB&quot;</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x01</span><span class="p">)</span>
+                <span class="n">rmtrslv</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ipaddr</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_aton</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">gethostbyname</span><span class="p">(</span><span class="n">destaddr</span><span class="p">))</span>
+        <span class="c"># Construct the request packet</span>
+        <span class="n">req</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s">&quot;&gt;BBH&quot;</span><span class="p">,</span> <span class="mh">0x04</span><span class="p">,</span> <span class="mh">0x01</span><span class="p">,</span> <span class="n">destport</span><span class="p">)</span> <span class="o">+</span> <span class="n">ipaddr</span>
+        <span class="c"># The username parameter is considered userid for SOCKS4</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">req</span> <span class="o">=</span> <span class="n">req</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">req</span> <span class="o">=</span> <span class="n">req</span> <span class="o">+</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x00</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+        <span class="c"># DNS name if remote resolving is required</span>
+        <span class="c"># NOTE: This is actually an extension to the SOCKS4 protocol</span>
+        <span class="c"># called SOCKS4A and may not be supported in all cases.</span>
+        <span class="k">if</span> <span class="n">rmtrslv</span><span class="p">:</span>
+            <span class="n">req</span> <span class="o">=</span> <span class="n">req</span> <span class="o">+</span> <span class="n">destaddr</span> <span class="o">+</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x00</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+        <span class="c"># Get the response from the server</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__recvall</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">resp</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x00</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">():</span>
+            <span class="c"># Bad data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">GeneralProxyError</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="n">_generalerrors</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">resp</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">chr</span><span class="p">(</span><span class="mh">0x5A</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">():</span>
+            <span class="c"># Server returned an error</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">ord</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">91</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">93</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">raise</span> <span class="n">Socks4Error</span><span class="p">((</span><span class="nb">ord</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]),</span> <span class="n">_socks4errors</span><span class="p">[</span><span class="nb">ord</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span> <span class="o">-</span> <span class="mi">90</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">Socks4Error</span><span class="p">((</span><span class="mi">94</span><span class="p">,</span> <span class="n">_socks4errors</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span>
+        <span class="c"># Get the bound address/port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__proxysockname</span> <span class="o">=</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">inet_ntoa</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="mi">4</span><span class="p">:]),</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&quot;&gt;H&quot;</span><span class="p">,</span> <span class="n">resp</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">rmtrslv</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__proxypeername</span> <span class="o">=</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">inet_ntoa</span><span class="p">(</span><span class="n">ipaddr</span><span class="p">),</span> <span class="n">destport</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__proxypeername</span> <span class="o">=</span> <span class="p">(</span><span class="n">destaddr</span><span class="p">,</span> <span class="n">destport</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__negotiatehttp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">destaddr</span><span class="p">,</span> <span class="n">destport</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;__negotiatehttp(self,destaddr,destport)</span>
+<span class="sd">        Negotiates a connection through an HTTP server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># If we need to resolve locally, we do this now</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span>
+            <span class="n">addr</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostbyname</span><span class="p">(</span><span class="n">destaddr</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">addr</span> <span class="o">=</span> <span class="n">destaddr</span>
+        <span class="n">headers</span> <span class="o">=</span>  <span class="p">[</span><span class="s">&quot;CONNECT &quot;</span><span class="p">,</span> <span class="n">addr</span><span class="p">,</span> <span class="s">&quot;:&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">destport</span><span class="p">),</span> <span class="s">&quot; HTTP/1.1</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">]</span>
+        <span class="n">headers</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&quot;Host: &quot;</span><span class="p">,</span> <span class="n">destaddr</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">):</span>
+                <span class="n">headers</span> <span class="o">+=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__getauthheader</span><span class="p">(),</span> <span class="s">&quot;</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">]</span>
+        <span class="n">headers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+        <span class="c"># We read the response until we get the string &quot;\r\n\r\n&quot;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">resp</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\r\n\r\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">resp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c"># We just need the first line to check if the connection</span>
+        <span class="c"># was successful</span>
+        <span class="n">statusline</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">statusline</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;HTTP/1.0&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="s">&quot;HTTP/1.1&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">()):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">GeneralProxyError</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">_generalerrors</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">statuscode</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">statusline</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">GeneralProxyError</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">_generalerrors</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">statuscode</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">HTTPError</span><span class="p">((</span><span class="n">statuscode</span><span class="p">,</span> <span class="n">statusline</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__proxysockname</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__proxypeername</span> <span class="o">=</span> <span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="n">destport</span><span class="p">)</span>
+
+<div class="viewcode-block" id="socksocket.connect"><a class="viewcode-back" href="../../../../cup.thirdp.httplib2.html#cup.thirdp.httplib2.socks.socksocket.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">destpair</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;connect(self, despair)</span>
+<span class="sd">        Connects to the specified destination through a proxy.</span>
+<span class="sd">        destpar - A tuple of the IP/DNS address and the port number.</span>
+<span class="sd">        (identical to socket&#39;s connect).</span>
+<span class="sd">        To select the proxy server use setproxy().</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Do a minimal input check first</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="n">destpair</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span><span class="nb">tuple</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">destpair</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">destpair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">basestring</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">destpair</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">GeneralProxyError</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="n">_generalerrors</span><span class="p">[</span><span class="mi">5</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">PROXY_TYPE_SOCKS5</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">portnum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">portnum</span> <span class="o">=</span> <span class="mi">1080</span>
+            <span class="n">_orgsocket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">portnum</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__negotiatesocks5</span><span class="p">(</span><span class="n">destpair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">destpair</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">PROXY_TYPE_SOCKS4</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">portnum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">portnum</span> <span class="o">=</span> <span class="mi">1080</span>
+            <span class="n">_orgsocket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,(</span><span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">portnum</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__negotiatesocks4</span><span class="p">(</span><span class="n">destpair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">destpair</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">PROXY_TYPE_HTTP</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">portnum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">portnum</span> <span class="o">=</span> <span class="mi">8080</span>
+            <span class="n">_orgsocket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,(</span><span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">portnum</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__negotiatehttp</span><span class="p">(</span><span class="n">destpair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">destpair</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">PROXY_TYPE_HTTP_NO_TUNNEL</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">portnum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">portnum</span> <span class="o">=</span> <span class="mi">8080</span>
+            <span class="n">_orgsocket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,(</span><span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">portnum</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">destpair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">443</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__negotiatehttp</span><span class="p">(</span><span class="n">destpair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">destpair</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__httptunnel</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__proxy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">_orgsocket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">(</span><span class="n">destpair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">destpair</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">GeneralProxyError</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="n">_generalerrors</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../httplib2.html" >cup.thirdp.httplib2</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

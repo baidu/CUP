@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.thirdp.MySQLdb &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.thirdp.MySQLdb</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;MySQLdb - A DB API v2.0 compatible interface to MySQL.</span>
+
+<span class="sd">This package is a wrapper around _mysql, which mostly implements the</span>
+<span class="sd">MySQL C API.</span>
+
+<span class="sd">connect() -- connects to server</span>
+
+<span class="sd">See the C API specification and the MySQL documentation for more info</span>
+<span class="sd">on other items.</span>
+
+<span class="sd">For information on how MySQLdb handles type conversion, see the</span>
+<span class="sd">MySQLdb.converters module.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span> <span class="o">+</span> <span class="s">&#39;/../&#39;</span><span class="p">)</span>
+
+
+<span class="n">__revision__</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;$Revision: 603 $&quot;&quot;&quot;</span><span class="p">[</span><span class="mi">11</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+<span class="kn">from</span> <span class="nn">release</span> <span class="kn">import</span> <span class="n">__version__</span><span class="p">,</span> <span class="n">version_info</span><span class="p">,</span> <span class="n">__author__</span>
+
+<span class="kn">import</span> <span class="nn">_mysql</span>
+
+<span class="k">if</span> <span class="n">version_info</span> <span class="o">!=</span> <span class="n">_mysql</span><span class="o">.</span><span class="n">version_info</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s">&quot;this is MySQLdb version </span><span class="si">%s</span><span class="s">, but _mysql is version </span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span>
+                      <span class="p">(</span><span class="n">version_info</span><span class="p">,</span> <span class="n">_mysql</span><span class="o">.</span><span class="n">version_info</span><span class="p">))</span>
+
+<span class="n">threadsafety</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">apilevel</span> <span class="o">=</span> <span class="s">&quot;2.0&quot;</span>
+<span class="n">paramstyle</span> <span class="o">=</span> <span class="s">&quot;format&quot;</span>
+
+<span class="kn">from</span> <span class="nn">_mysql</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">MySQLdb.constants</span> <span class="kn">import</span> <span class="n">FIELD_TYPE</span>
+<span class="kn">from</span> <span class="nn">MySQLdb.times</span> <span class="kn">import</span> <span class="n">Date</span><span class="p">,</span> <span class="n">Time</span><span class="p">,</span> <span class="n">Timestamp</span><span class="p">,</span> \
+    <span class="n">DateFromTicks</span><span class="p">,</span> <span class="n">TimeFromTicks</span><span class="p">,</span> <span class="n">TimestampFromTicks</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="nb">frozenset</span>
+<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">sets</span> <span class="kn">import</span> <span class="n">ImmutableSet</span> <span class="k">as</span> <span class="nb">frozenset</span>
+
+<div class="viewcode-block" id="DBAPISet"><a class="viewcode-back" href="../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.DBAPISet">[docs]</a><span class="k">class</span> <span class="nc">DBAPISet</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;A special type of set for which A == x is true if A is a</span>
+<span class="sd">    DBAPISet and x is a member of that set.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">DBAPISet</span><span class="p">):</span>
+            <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">other</span> <span class="ow">in</span> <span class="bp">self</span>
+
+</div>
+<span class="n">STRING</span>    <span class="o">=</span> <span class="n">DBAPISet</span><span class="p">([</span><span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">ENUM</span><span class="p">,</span> <span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">STRING</span><span class="p">,</span>
+                     <span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">VAR_STRING</span><span class="p">])</span>
+<span class="n">BINARY</span>    <span class="o">=</span> <span class="n">DBAPISet</span><span class="p">([</span><span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">BLOB</span><span class="p">,</span> <span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">LONG_BLOB</span><span class="p">,</span>
+                     <span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">MEDIUM_BLOB</span><span class="p">,</span> <span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">TINY_BLOB</span><span class="p">])</span>
+<span class="n">NUMBER</span>    <span class="o">=</span> <span class="n">DBAPISet</span><span class="p">([</span><span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">DECIMAL</span><span class="p">,</span> <span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">DOUBLE</span><span class="p">,</span> <span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span>
+                     <span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">INT24</span><span class="p">,</span> <span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">LONG</span><span class="p">,</span> <span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">LONGLONG</span><span class="p">,</span>
+                     <span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">TINY</span><span class="p">,</span> <span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">YEAR</span><span class="p">])</span>
+<span class="n">DATE</span>      <span class="o">=</span> <span class="n">DBAPISet</span><span class="p">([</span><span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">DATE</span><span class="p">,</span> <span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">NEWDATE</span><span class="p">])</span>
+<span class="n">TIME</span>      <span class="o">=</span> <span class="n">DBAPISet</span><span class="p">([</span><span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">TIME</span><span class="p">])</span>
+<span class="n">TIMESTAMP</span> <span class="o">=</span> <span class="n">DBAPISet</span><span class="p">([</span><span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">TIMESTAMP</span><span class="p">,</span> <span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">DATETIME</span><span class="p">])</span>
+<span class="n">DATETIME</span>  <span class="o">=</span> <span class="n">TIMESTAMP</span>
+<span class="n">ROWID</span>     <span class="o">=</span> <span class="n">DBAPISet</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">test_DBAPISet_set_equality</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">STRING</span> <span class="o">==</span> <span class="n">STRING</span>
+
+<span class="k">def</span> <span class="nf">test_DBAPISet_set_inequality</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">STRING</span> <span class="o">!=</span> <span class="n">NUMBER</span>
+
+<span class="k">def</span> <span class="nf">test_DBAPISet_set_equality_membership</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">VAR_STRING</span> <span class="o">==</span> <span class="n">STRING</span>
+
+<span class="k">def</span> <span class="nf">test_DBAPISet_set_inequality_membership</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">FIELD_TYPE</span><span class="o">.</span><span class="n">DATE</span> <span class="o">!=</span> <span class="n">STRING</span>
+
+<div class="viewcode-block" id="Binary"><a class="viewcode-back" href="../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.Binary">[docs]</a><span class="k">def</span> <span class="nf">Binary</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Connect"><a class="viewcode-back" href="../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.Connect">[docs]</a><span class="k">def</span> <span class="nf">Connect</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Factory function for connections.Connection.&quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">connections</span> <span class="kn">import</span> <span class="n">Connection</span>
+    <span class="k">return</span> <span class="n">Connection</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+<span class="n">connect</span> <span class="o">=</span> <span class="n">Connection</span> <span class="o">=</span> <span class="n">Connect</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span> <span class="s">&#39;BINARY&#39;</span><span class="p">,</span> <span class="s">&#39;Binary&#39;</span><span class="p">,</span> <span class="s">&#39;Connect&#39;</span><span class="p">,</span> <span class="s">&#39;Connection&#39;</span><span class="p">,</span> <span class="s">&#39;DATE&#39;</span><span class="p">,</span>
+    <span class="s">&#39;Date&#39;</span><span class="p">,</span> <span class="s">&#39;Time&#39;</span><span class="p">,</span> <span class="s">&#39;Timestamp&#39;</span><span class="p">,</span> <span class="s">&#39;DateFromTicks&#39;</span><span class="p">,</span> <span class="s">&#39;TimeFromTicks&#39;</span><span class="p">,</span>
+    <span class="s">&#39;TimestampFromTicks&#39;</span><span class="p">,</span> <span class="s">&#39;DataError&#39;</span><span class="p">,</span> <span class="s">&#39;DatabaseError&#39;</span><span class="p">,</span> <span class="s">&#39;Error&#39;</span><span class="p">,</span>
+    <span class="s">&#39;FIELD_TYPE&#39;</span><span class="p">,</span> <span class="s">&#39;IntegrityError&#39;</span><span class="p">,</span> <span class="s">&#39;InterfaceError&#39;</span><span class="p">,</span> <span class="s">&#39;InternalError&#39;</span><span class="p">,</span>
+    <span class="s">&#39;MySQLError&#39;</span><span class="p">,</span> <span class="s">&#39;NULL&#39;</span><span class="p">,</span> <span class="s">&#39;NUMBER&#39;</span><span class="p">,</span> <span class="s">&#39;NotSupportedError&#39;</span><span class="p">,</span> <span class="s">&#39;DBAPISet&#39;</span><span class="p">,</span>
+    <span class="s">&#39;OperationalError&#39;</span><span class="p">,</span> <span class="s">&#39;ProgrammingError&#39;</span><span class="p">,</span> <span class="s">&#39;ROWID&#39;</span><span class="p">,</span> <span class="s">&#39;STRING&#39;</span><span class="p">,</span> <span class="s">&#39;TIME&#39;</span><span class="p">,</span>
+    <span class="s">&#39;TIMESTAMP&#39;</span><span class="p">,</span> <span class="s">&#39;Warning&#39;</span><span class="p">,</span> <span class="s">&#39;apilevel&#39;</span><span class="p">,</span> <span class="s">&#39;connect&#39;</span><span class="p">,</span> <span class="s">&#39;connections&#39;</span><span class="p">,</span>
+    <span class="s">&#39;constants&#39;</span><span class="p">,</span> <span class="s">&#39;converters&#39;</span><span class="p">,</span> <span class="s">&#39;cursors&#39;</span><span class="p">,</span> <span class="s">&#39;debug&#39;</span><span class="p">,</span> <span class="s">&#39;escape&#39;</span><span class="p">,</span> <span class="s">&#39;escape_dict&#39;</span><span class="p">,</span>
+    <span class="s">&#39;escape_sequence&#39;</span><span class="p">,</span> <span class="s">&#39;escape_string&#39;</span><span class="p">,</span> <span class="s">&#39;get_client_info&#39;</span><span class="p">,</span>
+    <span class="s">&#39;paramstyle&#39;</span><span class="p">,</span> <span class="s">&#39;string_literal&#39;</span><span class="p">,</span> <span class="s">&#39;threadsafety&#39;</span><span class="p">,</span> <span class="s">&#39;version_info&#39;</span><span class="p">]</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

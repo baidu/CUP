@@ -1,0 +1,1045 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.util package &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="index.html" />
+    <link rel="up" title="cup package" href="cup.html" />
+    <link rel="next" title="cup.web package" href="cup.web.html" />
+    <link rel="prev" title="cup.thirdp.httplib2 package" href="cup.thirdp.httplib2.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cup.web.html" title="cup.web package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cup.thirdp.httplib2.html" title="cup.thirdp.httplib2 package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="cup.html" accesskey="U">cup package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="cup-util-package">
+<h1>cup.util package<a class="headerlink" href="#cup-util-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cup.util.conf">
+<span id="cup-util-conf-module"></span><h2>cup.util.conf module<a class="headerlink" href="#module-cup.util.conf" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Liu.Jia Guannan Ma</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body">Complex conf support</td>
+</tr>
+</tbody>
+</table>
+<dl class="exception">
+<dt id="cup.util.conf.ArrayFormatError">
+<em class="property">exception </em><tt class="descclassname">cup.util.conf.</tt><tt class="descname">ArrayFormatError</tt><big>(</big><em>errmsg</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#ArrayFormatError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.ArrayFormatError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="cup.html#cup.err.BaseCupException" title="cup.err.BaseCupException"><tt class="xref py py-class docutils literal"><span class="pre">cup.err.BaseCupException</span></tt></a></p>
+<p>数组类型错误</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.util.conf.CConf">
+<em class="property">class </em><tt class="descclassname">cup.util.conf.</tt><tt class="descname">CConf</tt><big>(</big><em>path</em>, <em>name</em>, <em>revert_version=''</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#CConf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.CConf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Depreciated class. Please do not use it. Use python configparser instead.</p>
+<dl class="method">
+<dt id="cup.util.conf.CConf.revert">
+<tt class="descname">revert</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#CConf.revert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.CConf.revert" title="Permalink to this definition">¶</a></dt>
+<dd><p>revert the conf</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.conf.CConf.update">
+<tt class="descname">update</tt><big>(</big><em>kvs</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#CConf.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.CConf.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>update conf with a dict.</p>
+<p>dict = {&#8216;key&#8217; : &#8216;value&#8217;, &#8216;key1&#8217;: &#8216;value&#8217;}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.conf.CConf.write_kv_into_conf">
+<tt class="descname">write_kv_into_conf</tt><big>(</big><em>kvkvs</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#CConf.write_kv_into_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.CConf.write_kv_into_conf" title="Permalink to this definition">¶</a></dt>
+<dd><p>将key-value写进conf</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.util.conf.CConfModer">
+<em class="property">class </em><tt class="descclassname">cup.util.conf.</tt><tt class="descname">CConfModer</tt><big>(</big><em>toolpath</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#CConfModer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.CConfModer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>历史遗留类. 请忽略.
+操作我厂configure公共库conf的类。
+主要调用cfmod这个工具进行.
+推荐使用Configure2Dict转换成dict,在使用Dict2Configure类来操作conf文件.
+如果只是简单的更新某个key, 可以使用此类.</p>
+<dl class="method">
+<dt id="cup.util.conf.CConfModer.addkv">
+<tt class="descname">addkv</tt><big>(</big><em>confpath</em>, <em>key</em>, <em>val</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#CConfModer.addkv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.CConfModer.addkv" title="Permalink to this definition">¶</a></dt>
+<dd><p>增加某个key/value到confpath</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.conf.CConfModer.delkv">
+<tt class="descname">delkv</tt><big>(</big><em>confpath</em>, <em>key</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#CConfModer.delkv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.CConfModer.delkv" title="Permalink to this definition">¶</a></dt>
+<dd><p>删除confpath文件中的某个key</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.conf.CConfModer.updatekv">
+<tt class="descname">updatekv</tt><big>(</big><em>confpath</em>, <em>key</em>, <em>val</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#CConfModer.updatekv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.CConfModer.updatekv" title="Permalink to this definition">¶</a></dt>
+<dd><p>update key with value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.conf.CConfModer.updatekvlist">
+<tt class="descname">updatekvlist</tt><big>(</big><em>confpath</em>, <em>kvlist</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#CConfModer.updatekvlist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.CConfModer.updatekvlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>更新confpath文件里的内容。 kvlist是一个list.
+list里面每一个item是一个dict { &#8216;key&#8217; : &#8216;xxx:xx:xx&#8217;, &#8216;value&#8217; : &#8216;updated&#8217;}</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.util.conf.ConfDict">
+<em class="property">class </em><tt class="descclassname">cup.util.conf.</tt><tt class="descname">ConfDict</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#ConfDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.ConfDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">dict</span></tt></p>
+<p>ConfDict that Configure2Dict and Dict2Configure can use.</p>
+<dl class="method">
+<dt id="cup.util.conf.ConfDict.get_ex">
+<tt class="descname">get_ex</tt><big>(</big><em>key</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#ConfDict.get_ex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.ConfDict.get_ex" title="Permalink to this definition">¶</a></dt>
+<dd><p>get (value, comments) with key, comments is a list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.conf.ConfDict.get_ordered_keys">
+<tt class="descname">get_ordered_keys</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#ConfDict.get_ordered_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.ConfDict.get_ordered_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>get keys in order</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.conf.ConfDict.set_ex">
+<tt class="descname">set_ex</tt><big>(</big><em>key</em>, <em>value</em>, <em>comments</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#ConfDict.set_ex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.ConfDict.set_ex" title="Permalink to this definition">¶</a></dt>
+<dd><p>In addtion to dict[&#8216;key&#8217;] = value, set_ex also set comments along with
+the key.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.util.conf.ConfDictSetItemError">
+<em class="property">exception </em><tt class="descclassname">cup.util.conf.</tt><tt class="descname">ConfDictSetItemError</tt><big>(</big><em>errmsg</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#ConfDictSetItemError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.ConfDictSetItemError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="cup.html#cup.err.BaseCupException" title="cup.err.BaseCupException"><tt class="xref py py-class docutils literal"><span class="pre">cup.err.BaseCupException</span></tt></a></p>
+<p>ConfDict Error</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.util.conf.ConfList">
+<em class="property">class </em><tt class="descclassname">cup.util.conf.</tt><tt class="descname">ConfList</tt><a class="reference internal" href="_modules/cup/util/conf.html#ConfList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.ConfList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt></p>
+<p>增加一个conf的数组属性. 以ConfList的数据方式表现</p>
+<p>e.g.</p>
+<p>&#64;disk: /home/disk1
+&#64;disk: /home/disk2</p>
+<dl class="method">
+<dt id="cup.util.conf.ConfList.append">
+<tt class="descname">append</tt><big>(</big><em>item</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#ConfList.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.ConfList.append" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cup.util.conf.ConfList.append_ex">
+<tt class="descname">append_ex</tt><big>(</big><em>item</em>, <em>comments</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#ConfList.append_ex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.ConfList.append_ex" title="Permalink to this definition">¶</a></dt>
+<dd><p>append a item with conf comments</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.conf.ConfList.extend">
+<tt class="descname">extend</tt><big>(</big><em>seqs</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#ConfList.extend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.ConfList.extend" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cup.util.conf.ConfList.get_ex">
+<tt class="descname">get_ex</tt><big>(</big><em>ind</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#ConfList.get_ex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.ConfList.get_ex" title="Permalink to this definition">¶</a></dt>
+<dd><p>get conf list item with its comments</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.conf.ConfList.insert">
+<tt class="descname">insert</tt><big>(</big><em>ind</em>, <em>item</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#ConfList.insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.ConfList.insert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.util.conf.ConfListSetItemError">
+<em class="property">exception </em><tt class="descclassname">cup.util.conf.</tt><tt class="descname">ConfListSetItemError</tt><big>(</big><em>errmsg</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#ConfListSetItemError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.ConfListSetItemError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="cup.html#cup.err.BaseCupException" title="cup.err.BaseCupException"><tt class="xref py py-class docutils literal"><span class="pre">cup.err.BaseCupException</span></tt></a></p>
+<p>ConfList Error</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.util.conf.Configure2Dict">
+<em class="property">class </em><tt class="descclassname">cup.util.conf.</tt><tt class="descname">Configure2Dict</tt><big>(</big><em>configure_file</em>, <em>remove_comments=True</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#Configure2Dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.Configure2Dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Configure2Dict support conf features below:</p>
+<ol class="arabic">
+<li><dl class="first docutils">
+<dt>comments</dt>
+<dd><p class="first">As we support access/modify comments in a conf file, you should obey
+rules below:</p>
+<p>Comment closely above the object you want to comment.
+Do NOT comment after the line.</p>
+<p class="last">Otherwise, you might get/set a wrong comment above the object.</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">sections</p>
+</li>
+</ol>
+<p>2.1 global section</p>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt>if key:value is not under any [section], it is under the global layer</dt>
+<dd><p class="first last">by default</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">global section is the 0th layer section</p>
+</li>
+</ul>
+<p>e.g.
+test.conf:</p>
+<blockquote>
+<div># test.conf
+global-key: value
+global-key1: value1</div></blockquote>
+</div></blockquote>
+<dl class="docutils">
+<dt>2.2 child section</dt>
+<dd><ul class="first">
+<li><dl class="first docutils">
+<dt>[section1] means a child section under Global. And it&#8217;s the</dt>
+<dd><p class="first last">1st layer section</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>[.section2] means a child section under the nearest section</dt>
+<dd><p class="first last">above. It&#8217;s the 2nd layer section.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>[..section3] means a child section under the nearest section</dt>
+<dd><p class="first last">above. And the prefix .. means it is the 3rd layer section</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>e.g.:
+test.conf:</p>
+<p>global-key: value
+[section]</p>
+<blockquote class="last">
+<div><p>host:  abc.com
+port:  8080
+[.section_child]</p>
+<blockquote>
+<div><p>child_key: child_value
+[..section_child_child]</p>
+<blockquote>
+<div><p>control: ssh
+[...section_child_child_child]</p>
+<blockquote>
+<div>wow_key:  wow_value</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</dd>
+<dt>2.3 section access method</dt>
+<dd><p class="first">get_dict method will convert conf into a ConfDict which is derived</p>
+<p>from python dict.</p>
+<ul class="last">
+<li><p class="first">Access the section with confdict[&#8216;section&#8217;][&#8216;section-child&#8217;].</p>
+</li>
+<li><dl class="first docutils">
+<dt>Access the section with confdict.get_ex(&#8216;section&#8217;) with (value,</dt>
+<dd><p class="first last">comments)</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<ol class="arabic simple" start="3">
+<li>key:value and key:value array</li>
+</ol>
+<dl class="docutils">
+<dt>3.1 key:value</dt>
+<dd><p class="first">key:value can be set under Global section which is closely after the
+1st line with no [section] above.</p>
+<p>key:value can also be set under sections.</p>
+<dl class="last docutils">
+<dt>E.g.</dt>
+<dd><p class="first"># test.conf
+key1: value1
+[section]</p>
+<blockquote class="last">
+<div><p>key_section: value_in_section
+[.seciton]</p>
+<blockquote>
+<div>key_section_child: value_section_child</div></blockquote>
+</div></blockquote>
+</dd>
+</dl>
+</dd>
+<dt>3.2 key:value arrays</dt>
+<dd><p class="first">key:value arrays can be access with confdict[&#8216;section&#8217;][&#8216;disk&#8217;].</p>
+<p>You will get a ConfList derived from python list.</p>
+<p># test.conf
+# Global layer, key:value
+host: abc.com
+port: 12345
+# 1st layer [monitor]
+&#64;disk: /home/data0
+&#64;disk: /home/data1
+[section]</p>
+<blockquote class="last">
+<div>&#64;disk: /home/disk/disk1
+&#64;disk: /home/disk/disk2</div></blockquote>
+</dd>
+</dl>
+<ol class="arabic" start="4">
+<li><dl class="first docutils">
+<dt>Example</dt>
+<dd><p class="first"># test.conf
+# Global layer, key:value
+host: abc.com
+port: 12345
+# 1st layer [monitor]
+&#64;disk: /home/data0
+&#64;disk: /home/data1
+[section]</p>
+<blockquote>
+<div><p>&#64;disk: /home/disk/disk1
+&#64;disk: /home/disk/disk2</p>
+</div></blockquote>
+<dl class="last docutils">
+<dt>[monitor]</dt>
+<dd><p class="first">timeout: 100
+regex:  sshd
+# 2nd layer that belongs to [monitor]
+[.timeout]</p>
+<blockquote class="last">
+<div><p># key:value in timeout
+max: 100
+# 3rd layer that belongs to [monitor] [timeout]
+[..handler]</p>
+<blockquote>
+<div><p>default: exit</p>
+</div></blockquote>
+</div></blockquote>
+</dd>
+</dl>
+</dd>
+</dl>
+</li>
+</ol>
+<dl class="method">
+<dt id="cup.util.conf.Configure2Dict.get_dict">
+<tt class="descname">get_dict</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#Configure2Dict.get_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.Configure2Dict.get_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>get conf_dict which you can use to access conf info</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.util.conf.Dict2Configure">
+<em class="property">class </em><tt class="descclassname">cup.util.conf.</tt><tt class="descname">Dict2Configure</tt><big>(</big><em>conf_dict</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#Dict2Configure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.Dict2Configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Convert Dict into Configure.
+You can convert a ConfDict or python dict into a conf file.</p>
+<dl class="method">
+<dt id="cup.util.conf.Dict2Configure.set_dict">
+<tt class="descname">set_dict</tt><big>(</big><em>conf_dict</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#Dict2Configure.set_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.Dict2Configure.set_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>set a new conf_dict</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.conf.Dict2Configure.write_conf">
+<tt class="descname">write_conf</tt><big>(</big><em>conf_file</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#Dict2Configure.write_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.Dict2Configure.write_conf" title="Permalink to this definition">¶</a></dt>
+<dd><p>write the conf into of the dict into a conf_file</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.util.conf.KeyFormatError">
+<em class="property">exception </em><tt class="descclassname">cup.util.conf.</tt><tt class="descname">KeyFormatError</tt><big>(</big><em>errmsg</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#KeyFormatError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.KeyFormatError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="cup.html#cup.err.BaseCupException" title="cup.err.BaseCupException"><tt class="xref py py-class docutils literal"><span class="pre">cup.err.BaseCupException</span></tt></a></p>
+<p>Key error class</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.util.conf.LineFormatError">
+<em class="property">exception </em><tt class="descclassname">cup.util.conf.</tt><tt class="descname">LineFormatError</tt><big>(</big><em>errmsg</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#LineFormatError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.LineFormatError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="cup.html#cup.err.BaseCupException" title="cup.err.BaseCupException"><tt class="xref py py-class docutils literal"><span class="pre">cup.err.BaseCupException</span></tt></a></p>
+<p>Line error class</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.util.conf.UnknowConfError">
+<em class="property">exception </em><tt class="descclassname">cup.util.conf.</tt><tt class="descname">UnknowConfError</tt><big>(</big><em>errmsg</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#UnknowConfError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.UnknowConfError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="cup.html#cup.err.BaseCupException" title="cup.err.BaseCupException"><tt class="xref py py-class docutils literal"><span class="pre">cup.err.BaseCupException</span></tt></a></p>
+<p>unkown error class</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.util.conf.ValueFormatError">
+<em class="property">exception </em><tt class="descclassname">cup.util.conf.</tt><tt class="descname">ValueFormatError</tt><big>(</big><em>errmsg</em><big>)</big><a class="reference internal" href="_modules/cup/util/conf.html#ValueFormatError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.conf.ValueFormatError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="cup.html#cup.err.BaseCupException" title="cup.err.BaseCupException"><tt class="xref py py-class docutils literal"><span class="pre">cup.err.BaseCupException</span></tt></a></p>
+<p>value error class</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.util.constants">
+<span id="cup-util-constants-module"></span><h2>cup.util.constants module<a class="headerlink" href="#module-cup.util.constants" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">descrition:</th><td class="field-body">heartbeat related module
+<em>test-case-name: twisted.python.test.test_constants</em>
+Copyright (c) Twisted Matrix Laboratories.
+See LICENSE for details.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">license:</th><td class="field-body">CUP dev team modified and redistrbuted this module,
+according to MIT license(<a class="reference external" href="http://opensource.org/licenses/mit-license.php">http://opensource.org/licenses/mit-license.php</a>)
+that Twisted lib obeys.
+If any concern, plz contact <a class="reference external" href="mailto:mythmgn&#37;&#52;&#48;gmail&#46;com">mythmgn<span>&#64;</span>gmail<span>&#46;</span>com</a>.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="cup.util.constants.NamedConstant">
+<em class="property">class </em><tt class="descclassname">cup.util.constants.</tt><tt class="descname">NamedConstant</tt><a class="reference internal" href="_modules/cup/util/constants.html#NamedConstant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.constants.NamedConstant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">cup.util.constants._Constant</span></tt></p>
+<p>L{NamedConstant} defines an attribute to be a named constant within a
+collection defined by a L{Names} subclass.</p>
+<p>L{NamedConstant} is only for use in the definition of L{Names}
+subclasses.  Do not instantiate L{NamedConstant} elsewhere and do not
+subclass it.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.util.constants.ValueConstant">
+<em class="property">class </em><tt class="descclassname">cup.util.constants.</tt><tt class="descname">ValueConstant</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="_modules/cup/util/constants.html#ValueConstant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.constants.ValueConstant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">cup.util.constants._Constant</span></tt></p>
+<p>L{ValueConstant} defines an attribute to be a named constant within a
+collection defined by a L{Values} subclass.</p>
+<p>L{ValueConstant} is only for use in the definition of L{Values} subclasses.
+Do not instantiate L{ValueConstant} elsewhere and do not subclass it.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.util.constants.FlagConstant">
+<em class="property">class </em><tt class="descclassname">cup.util.constants.</tt><tt class="descname">FlagConstant</tt><big>(</big><em>value=None</em><big>)</big><a class="reference internal" href="_modules/cup/util/constants.html#FlagConstant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.constants.FlagConstant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">cup.util.constants._Constant</span></tt></p>
+<p>L{FlagConstant} defines an attribute to be a flag constant within a
+collection defined by a L{Flags} subclass.</p>
+<p>L{FlagConstant} is only for use in the definition of L{Flags} subclasses.
+Do not instantiate L{FlagConstant} elsewhere and do not subclass it.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.util.constants.Names">
+<em class="property">class </em><tt class="descclassname">cup.util.constants.</tt><tt class="descname">Names</tt><a class="reference internal" href="_modules/cup/util/constants.html#Names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.constants.Names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">cup.util.constants._ConstantsContainer</span></tt></p>
+<p>A L{Names} subclass contains constants which differ only in their names and
+identities.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.util.constants.Values">
+<em class="property">class </em><tt class="descclassname">cup.util.constants.</tt><tt class="descname">Values</tt><a class="reference internal" href="_modules/cup/util/constants.html#Values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.constants.Values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">cup.util.constants._ConstantsContainer</span></tt></p>
+<p>A L{Values} subclass contains constants which are associated with arbitrary
+values.</p>
+<dl class="classmethod">
+<dt id="cup.util.constants.Values.lookupByValue">
+<em class="property">classmethod </em><tt class="descname">lookupByValue</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="_modules/cup/util/constants.html#Values.lookupByValue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.constants.Values.lookupByValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve a constant by its value or raise a C{ValueError} if there is
+no constant associated with that value.</p>
+<p>&#64;param value: The value of one of the constants defined by C{cls}.</p>
+<dl class="docutils">
+<dt>&#64;raise ValueError: If C{value} is not the value of one of the constants</dt>
+<dd>defined by C{cls}.</dd>
+</dl>
+<p>&#64;return: The L{ValueConstant} associated with C{value}.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.util.constants.Flags">
+<em class="property">class </em><tt class="descclassname">cup.util.constants.</tt><tt class="descname">Flags</tt><a class="reference internal" href="_modules/cup/util/constants.html#Flags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.constants.Flags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.util.constants.Values" title="cup.util.constants.Values"><tt class="xref py py-class docutils literal"><span class="pre">cup.util.constants.Values</span></tt></a></p>
+<p>A L{Flags} subclass contains constants which can be combined using the
+common bitwise operators (C{|}, C{&amp;}, etc) similar to a I{bitvector} from a
+language like C.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.util.context">
+<span id="cup-util-context-module"></span><h2>cup.util.context module<a class="headerlink" href="#module-cup.util.context" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body">context for threadpool</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="cup.util.context.ContextManager">
+<em class="property">class </em><tt class="descclassname">cup.util.context.</tt><tt class="descname">ContextManager</tt><a class="reference internal" href="_modules/cup/util/context.html#ContextManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.context.ContextManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>函数调用上下文相关类。</p>
+<dl class="method">
+<dt id="cup.util.context.ContextManager.call_with_context">
+<tt class="descname">call_with_context</tt><big>(</big><em>new_context</em>, <em>func</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/util/context.html#ContextManager.call_with_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.context.ContextManager.call_with_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>context is a {}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.context.ContextManager.get_context">
+<tt class="descname">get_context</tt><big>(</big><em>key</em><big>)</big><a class="reference internal" href="_modules/cup/util/context.html#ContextManager.get_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.context.ContextManager.get_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the context that has the key</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.util.context.ContextTracker4Thread">
+<em class="property">class </em><tt class="descclassname">cup.util.context.</tt><tt class="descname">ContextTracker4Thread</tt><a class="reference internal" href="_modules/cup/util/context.html#ContextTracker4Thread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.context.ContextTracker4Thread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>进行线程的上下文切换相关class.</p>
+<dl class="method">
+<dt id="cup.util.context.ContextTracker4Thread.call_with_context">
+<tt class="descname">call_with_context</tt><big>(</big><em>context</em>, <em>func</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/util/context.html#ContextTracker4Thread.call_with_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.context.ContextTracker4Thread.call_with_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>调用函数func, 并使用当前context</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.context.ContextTracker4Thread.current_context">
+<tt class="descname">current_context</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/util/context.html#ContextTracker4Thread.current_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.context.ContextTracker4Thread.current_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>get current context</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.context.ContextTracker4Thread.get_context">
+<tt class="descname">get_context</tt><big>(</big><em>key</em><big>)</big><a class="reference internal" href="_modules/cup/util/context.html#ContextTracker4Thread.get_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.context.ContextTracker4Thread.get_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>获得某个key的对应的context</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.util.generator">
+<span id="cup-util-generator-module"></span><h2>cup.util.generator module<a class="headerlink" href="#module-cup.util.generator" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="class-cgeneratorman-object">
+<h3>class CGeneratorMan(object)<a class="headerlink" href="#class-cgeneratorman-object" title="Permalink to this headline">¶</a></h3>
+<p>用来生成各类唯一数，字符集，线程安全的自增uint的类。
+目前生成函数较少， 欢迎大家贡献ci.
+Singleton类。初始化需要传入一个用来生成字符集的string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">初始化函数:</th><td class="field-body"><dl class="first docutils">
+<dt>__init__(self, str_prefix=get_local_hostname())</dt>
+<dd><p class="first last">默认传入当前自己的hostname</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">成员函数:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>get_uniqname()</strong></dt>
+<dd><p class="first last">获得一个以传入的初始化string为base, 加上pid, threadid等组合的host级别的
+unique string.</p>
+</dd>
+<dt><strong>get_next_uniq_num()</strong></dt>
+<dd><p class="first last">获得当前进程唯一的自增非负整数。线程安全.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="module-cup.util.misc">
+<span id="cup-util-misc-module"></span><h2>cup.util.misc module<a class="headerlink" href="#module-cup.util.misc" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body">misc functions</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="cup.util.misc.CAck">
+<em class="property">class </em><tt class="descclassname">cup.util.misc.</tt><tt class="descname">CAck</tt><big>(</big><em>binit=False</em><big>)</big><a class="reference internal" href="_modules/cup/util/misc.html#CAck"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.misc.CAck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Ack, 可设置bool值并获取</p>
+<dl class="method">
+<dt id="cup.util.misc.CAck.getack_infobool">
+<tt class="descname">getack_infobool</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/util/misc.html#CAck.getack_infobool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.misc.CAck.getack_infobool" title="Permalink to this definition">¶</a></dt>
+<dd><p>取得ack的bool返回值</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.misc.CAck.setack_infobool">
+<tt class="descname">setack_infobool</tt><big>(</big><em>binit=False</em><big>)</big><a class="reference internal" href="_modules/cup/util/misc.html#CAck.setack_infobool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.misc.CAck.setack_infobool" title="Permalink to this definition">¶</a></dt>
+<dd><p>设置ack的bool值</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.util.misc.check_not_none">
+<tt class="descclassname">cup.util.misc.</tt><tt class="descname">check_not_none</tt><big>(</big><em>param</em><big>)</big><a class="reference internal" href="_modules/cup/util/misc.html#check_not_none"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.misc.check_not_none" title="Permalink to this definition">¶</a></dt>
+<dd><p>检查param不是None, 如果是None, raise NameError</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.util.misc.check_type">
+<tt class="descclassname">cup.util.misc.</tt><tt class="descname">check_type</tt><big>(</big><em>param</em>, <em>expect</em><big>)</big><a class="reference internal" href="_modules/cup/util/misc.html#check_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.misc.check_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>检查param是否和expect一样的类型。如果不一样raise TypeError</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.util.misc.get_filename">
+<tt class="descclassname">cup.util.misc.</tt><tt class="descname">get_filename</tt><big>(</big><em>backstep=0</em><big>)</big><a class="reference internal" href="_modules/cup/util/misc.html#get_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.misc.get_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>获得调用该函数的代码行所在的文件名。 backstep代表是否将调用栈增/减.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.util.misc.get_funcname">
+<tt class="descclassname">cup.util.misc.</tt><tt class="descname">get_funcname</tt><big>(</big><em>backstep=0</em><big>)</big><a class="reference internal" href="_modules/cup/util/misc.html#get_funcname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.misc.get_funcname" title="Permalink to this definition">¶</a></dt>
+<dd><p>获得调用该函数的代码行所在的函数名。 backstep代表是否将调用栈增/减.
+backstep默认0</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.util.misc.get_lineno">
+<tt class="descclassname">cup.util.misc.</tt><tt class="descname">get_lineno</tt><big>(</big><em>backstep=0</em><big>)</big><a class="reference internal" href="_modules/cup/util/misc.html#get_lineno"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.misc.get_lineno" title="Permalink to this definition">¶</a></dt>
+<dd><p>获得调用该函数的代码行.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.util.thread">
+<span id="cup-util-thread-module"></span><h2>cup.util.thread module<a class="headerlink" href="#module-cup.util.thread" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Zhaominghao Guannan Ma</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body">cup thread module</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="cup.util.thread.async_raise">
+<tt class="descclassname">cup.util.thread.</tt><tt class="descname">async_raise</tt><big>(</big><em>tid</em>, <em>exctype</em><big>)</big><a class="reference internal" href="_modules/cup/util/thread.html#async_raise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.thread.async_raise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raises an exception in the threads with id tid</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.util.thread.CupThread">
+<em class="property">class </em><tt class="descclassname">cup.util.thread.</tt><tt class="descname">CupThread</tt><big>(</big><em>group=None</em>, <em>target=None</em>, <em>name=None</em>, <em>args=()</em>, <em>kwargs=None</em>, <em>verbose=None</em><big>)</big><a class="reference internal" href="_modules/cup/util/thread.html#CupThread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.thread.CupThread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></tt></p>
+<p>CupThread继承threading.Thread, 支持threading.Thread所有功能和特性,
+CupThread扩展了三个功能,raise_exc给线程发送raise信号,get_my_tid返回线程id，
+terminate同步中止线程</p>
+<dl class="method">
+<dt id="cup.util.thread.CupThread.get_my_tid">
+<tt class="descname">get_my_tid</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/util/thread.html#CupThread.get_my_tid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.thread.CupThread.get_my_tid" title="Permalink to this definition">¶</a></dt>
+<dd><p>返回线程id</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.thread.CupThread.raise_exc">
+<tt class="descname">raise_exc</tt><big>(</big><em>exctype</em><big>)</big><a class="reference internal" href="_modules/cup/util/thread.html#CupThread.raise_exc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.thread.CupThread.raise_exc" title="Permalink to this definition">¶</a></dt>
+<dd><p>异步给线程发送raise，发送成功返回1，线程已经停止返回0，其他错误返回!=1
+:param exctype:</p>
+<blockquote>
+<div>raise Exception, exctype type is class</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.thread.CupThread.terminate">
+<tt class="descname">terminate</tt><big>(</big><em>times=15</em><big>)</big><a class="reference internal" href="_modules/cup/util/thread.html#CupThread.terminate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.thread.CupThread.terminate" title="Permalink to this definition">¶</a></dt>
+<dd><p>异步raise线程，尝试中止线程
+中止成功返回True，
+线程已经停止返回True，
+停止失败返回False。
+(在返回True的时候，表示线程已经被中止,
+在中止失败的过程中，会重试times次)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.util.thread.RWLock">
+<em class="property">class </em><tt class="descclassname">cup.util.thread.</tt><tt class="descname">RWLock</tt><a class="reference internal" href="_modules/cup/util/thread.html#RWLock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.thread.RWLock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>读写锁类</p>
+<dl class="method">
+<dt id="cup.util.thread.RWLock.acquire_readlock">
+<tt class="descname">acquire_readlock</tt><big>(</big><em>wait_time=None</em><big>)</big><a class="reference internal" href="_modules/cup/util/thread.html#RWLock.acquire_readlock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.thread.RWLock.acquire_readlock" title="Permalink to this definition">¶</a></dt>
+<dd><p>获取读锁， 如果wait_time赋值且!=None的数，会等待wait_time.
+如果之后还没拿到锁， 将raise RuntimeError</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.thread.RWLock.acquire_writelock">
+<tt class="descname">acquire_writelock</tt><big>(</big><em>wait_time=None</em><big>)</big><a class="reference internal" href="_modules/cup/util/thread.html#RWLock.acquire_writelock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.thread.RWLock.acquire_writelock" title="Permalink to this definition">¶</a></dt>
+<dd><p>获取写锁， 如果wait_time赋值且!=None的数，会等待wait_time.
+如果之后还没拿到锁， 将raise RuntimeError</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.thread.RWLock.release_readlock">
+<tt class="descname">release_readlock</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/util/thread.html#RWLock.release_readlock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.thread.RWLock.release_readlock" title="Permalink to this definition">¶</a></dt>
+<dd><p>释放读锁</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.thread.RWLock.release_writelock">
+<tt class="descname">release_writelock</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/util/thread.html#RWLock.release_writelock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.thread.RWLock.release_writelock" title="Permalink to this definition">¶</a></dt>
+<dd><p>释放写锁</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.util.threadpool">
+<span id="cup-util-threadpool-module"></span><h2>cup.util.threadpool module<a class="headerlink" href="#module-cup.util.threadpool" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body">Guannan ported threadpool from twisted.python.
+Mit License applied for twisted.
+<a class="reference external" href="http://www.opensource.org/licenses/mit-license.php">http://www.opensource.org/licenses/mit-license.php</a>
+if any concern, plz contact <a class="reference external" href="mailto:mythmgn&#37;&#52;&#48;gmail&#46;com">mythmgn<span>&#64;</span>gmail<span>&#46;</span>com</a></td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="cup.util.threadpool.ThreadPool">
+<em class="property">class </em><tt class="descclassname">cup.util.threadpool.</tt><tt class="descname">ThreadPool</tt><big>(</big><em>minthreads=5</em>, <em>maxthreads=20</em>, <em>name=None</em><big>)</big><a class="reference internal" href="_modules/cup/util/threadpool.html#ThreadPool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.threadpool.ThreadPool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Threadpool class</p>
+<dl class="method">
+<dt id="cup.util.threadpool.ThreadPool.add_1job">
+<tt class="descname">add_1job</tt><big>(</big><em>func</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/util/threadpool.html#ThreadPool.add_1job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.threadpool.ThreadPool.add_1job" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>func</strong> &#8211; 会被线程池调度的函数</li>
+<li><strong>*args</strong> &#8211; <p>func函数需要的参数</p>
+</li>
+<li><strong>**kw</strong> &#8211; <p>func函数需要的kwargs参数</p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.threadpool.ThreadPool.add_1job_with_callback">
+<tt class="descname">add_1job_with_callback</tt><big>(</big><em>result_callback</em>, <em>func</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/cup/util/threadpool.html#ThreadPool.add_1job_with_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.threadpool.ThreadPool.add_1job_with_callback" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>result_callback</strong> &#8211; <p>func作业处理函数被线程池调用后，无论成功与否都会
+执行result_callback.</p>
+<p>result_callback函数需要有两个参数
+(ret_in_bool, result), 成功的话为(True, result), 失败的话
+为(False, result)</p>
+<p>如果func raise exception, result_callback会收到(False, failure)</p>
+</li>
+<li><strong>func</strong> &#8211; 同add_1job, 被调度的作业函数</li>
+<li><strong>*args</strong> &#8211; <p>同add_1job, func的参数</p>
+</li>
+<li><strong>**kwargs</strong> &#8211; <p>同add_1job, func的kwargs参数</p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.threadpool.ThreadPool.adjust_poolsize">
+<tt class="descname">adjust_poolsize</tt><big>(</big><em>minthreads=None</em>, <em>maxthreads=None</em><big>)</big><a class="reference internal" href="_modules/cup/util/threadpool.html#ThreadPool.adjust_poolsize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.threadpool.ThreadPool.adjust_poolsize" title="Permalink to this definition">¶</a></dt>
+<dd><p>调整线程池的线程最少和最多运行线程个数</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.threadpool.ThreadPool.dump_stats">
+<tt class="descname">dump_stats</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/util/threadpool.html#ThreadPool.dump_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.threadpool.ThreadPool.dump_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>打印当前threadpool的状态信息到log 和stdout
+其中状态信息来自于get_stats函数</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.threadpool.ThreadPool.get_stats">
+<tt class="descname">get_stats</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/util/threadpool.html#ThreadPool.get_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.threadpool.ThreadPool.get_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>回返当前threadpool的状态信息.
+其中queue_len为当前threadpool排队的作业长度
+waiters_num为当前空闲的thread num
+working_num为当前正在工作的thread num
+thread_num为当前一共可以使用的thread num:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">stat</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">stat</span><span class="p">[</span><span class="s">&#39;queue_len&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jobqueue</span><span class="o">.</span><span class="n">qsize</span><span class="p">()</span>
+<span class="n">stat</span><span class="p">[</span><span class="s">&#39;waiters_num&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_waiters</span><span class="p">)</span>
+<span class="n">stat</span><span class="p">[</span><span class="s">&#39;working_num&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_working</span><span class="p">)</span>
+<span class="n">stat</span><span class="p">[</span><span class="s">&#39;thread_num&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.threadpool.ThreadPool.start">
+<tt class="descname">start</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/util/threadpool.html#ThreadPool.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.threadpool.ThreadPool.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>启动线程池</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.threadpool.ThreadPool.start1worker">
+<tt class="descname">start1worker</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/util/threadpool.html#ThreadPool.start1worker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.threadpool.ThreadPool.start1worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>为线程池增加一个线程。</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.threadpool.ThreadPool.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/util/threadpool.html#ThreadPool.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.threadpool.ThreadPool.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>停止线程池， 该操作是同步操作， 会夯住一直等到线程池所有线程退出。</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.threadpool.ThreadPool.stop1worker">
+<tt class="descname">stop1worker</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/util/threadpool.html#ThreadPool.stop1worker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.threadpool.ThreadPool.stop1worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>为线程池减少一个线程。</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.util.threadpool.ThreadPool.try_stop">
+<tt class="descname">try_stop</tt><big>(</big><em>check_interval=0.1</em><big>)</big><a class="reference internal" href="_modules/cup/util/threadpool.html#ThreadPool.try_stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.threadpool.ThreadPool.try_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>发送停止线程池命令， 并尝试查看是否stop了。 如果没停止，返回False</p>
+<p>try_stop不会夯住， 会回返。 属于nonblocking模式下</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.util">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cup.util" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma <a class="reference external" href="mailto:maguannan&#37;&#52;&#48;baidu&#46;com">maguannan<span>&#64;</span>baidu<span>&#46;</span>com</a> &#64;mythmgn</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body">utilization related module</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="cup.util.check_not_none">
+<tt class="descclassname">cup.util.</tt><tt class="descname">check_not_none</tt><big>(</big><em>param</em><big>)</big><a class="reference internal" href="_modules/cup/util.html#check_not_none"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.check_not_none" title="Permalink to this definition">¶</a></dt>
+<dd><p>同cup.util.misc.check_type. 请使用前者</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.util.check_type">
+<tt class="descclassname">cup.util.</tt><tt class="descname">check_type</tt><big>(</big><em>param</em>, <em>expect</em><big>)</big><a class="reference internal" href="_modules/cup/util.html#check_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.util.check_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>同cup.util.misc.check_type. 请使用前者</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">cup.util package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-cup.util.conf">cup.util.conf module</a></li>
+<li><a class="reference internal" href="#module-cup.util.constants">cup.util.constants module</a></li>
+<li><a class="reference internal" href="#module-cup.util.context">cup.util.context module</a></li>
+<li><a class="reference internal" href="#module-cup.util.generator">cup.util.generator module</a><ul>
+<li><a class="reference internal" href="#class-cgeneratorman-object">class CGeneratorMan(object)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-cup.util.misc">cup.util.misc module</a></li>
+<li><a class="reference internal" href="#module-cup.util.thread">cup.util.thread module</a></li>
+<li><a class="reference internal" href="#module-cup.util.threadpool">cup.util.threadpool module</a></li>
+<li><a class="reference internal" href="#module-cup.util">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="cup.thirdp.httplib2.html"
+                        title="previous chapter">cup.thirdp.httplib2 package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cup.web.html"
+                        title="next chapter">cup.web package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/cup.util.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cup.web.html" title="cup.web package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="cup.thirdp.httplib2.html" title="cup.thirdp.httplib2 package"
+             >previous</a> |</li>
+        <li><a href="index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="cup.html" >cup package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

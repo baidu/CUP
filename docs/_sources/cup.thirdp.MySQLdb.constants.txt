@@ -1,0 +1,62 @@
+cup.thirdp.MySQLdb.constants package
+====================================
+
+Submodules
+----------
+
+cup.thirdp.MySQLdb.constants.CLIENT module
+------------------------------------------
+
+.. automodule:: cup.thirdp.MySQLdb.constants.CLIENT
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cup.thirdp.MySQLdb.constants.CR module
+--------------------------------------
+
+.. automodule:: cup.thirdp.MySQLdb.constants.CR
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cup.thirdp.MySQLdb.constants.ER module
+--------------------------------------
+
+.. automodule:: cup.thirdp.MySQLdb.constants.ER
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cup.thirdp.MySQLdb.constants.FIELD_TYPE module
+----------------------------------------------
+
+.. automodule:: cup.thirdp.MySQLdb.constants.FIELD_TYPE
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cup.thirdp.MySQLdb.constants.FLAG module
+----------------------------------------
+
+.. automodule:: cup.thirdp.MySQLdb.constants.FLAG
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cup.thirdp.MySQLdb.constants.REFRESH module
+-------------------------------------------
+
+.. automodule:: cup.thirdp.MySQLdb.constants.REFRESH
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: cup.thirdp.MySQLdb.constants
+    :members:
+    :undoc-members:
+    :show-inheritance:

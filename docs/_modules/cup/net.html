@@ -1,0 +1,266 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.net &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.net</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/python</span>
+<span class="c"># -*- coding: utf-8 -*</span>
+<span class="c"># #############################################################################</span>
+<span class="c">#</span>
+<span class="c">#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved</span>
+<span class="c">#</span>
+<span class="c"># #############################################################################</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:author:</span>
+<span class="sd">    Guannan Ma</span>
+<span class="sd">:create_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:last_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:descrition:</span>
+<span class="sd">    network related module</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">fcntl</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+    <span class="c"># &#39;Seems run on non-linux machine&#39;</span>
+    <span class="k">pass</span>
+
+<span class="kn">from</span> <span class="nn">cup.net</span> <span class="kn">import</span> <span class="n">async</span>
+<span class="kn">from</span> <span class="nn">cup</span> <span class="kn">import</span> <span class="n">platforms</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&#39;get_local_hostname&#39;</span><span class="p">,</span>
+    <span class="s">&#39;get_hostip&#39;</span><span class="p">,</span>
+    <span class="s">&#39;getip_byinterface&#39;</span><span class="p">,</span>
+    <span class="s">&#39;set_sock_keepalive_linux&#39;</span><span class="p">,</span>
+    <span class="s">&#39;set_sock_reusable&#39;</span><span class="p">,</span>
+    <span class="s">&#39;set_sock_linger&#39;</span><span class="p">,</span>
+    <span class="s">&#39;set_sock_quickack&#39;</span><span class="p">,</span>
+    <span class="s">&#39;async&#39;</span>
+<span class="p">]</span>
+
+
+<span class="k">if</span> <span class="n">platforms</span><span class="o">.</span><span class="n">is_linux</span><span class="p">():</span>
+    <span class="n">_SOCK</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+    <span class="n">_SOCKFD</span> <span class="o">=</span> <span class="n">_SOCK</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
+    <span class="n">_SIOCGIFADDR</span> <span class="o">=</span> <span class="mh">0x8915</span>
+
+
+<div class="viewcode-block" id="getip_byinterface"><a class="viewcode-back" href="../../cup.net.html#cup.net.getip_byinterface">[docs]</a><span class="k">def</span> <span class="nf">getip_byinterface</span><span class="p">(</span><span class="n">iface</span><span class="o">=</span><span class="s">&#39;eth0&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    @platform:</span>
+<span class="sd">        Linux/Unix</span>
+<span class="sd">    获得某个网卡的ip地址</span>
+<span class="sd">    E.g.</span>
+<span class="sd">    ::</span>
+<span class="sd">        import cup</span>
+<span class="sd">        print cup.net.getip_byinterface(&#39;eth0&#39;)</span>
+<span class="sd">        print cup.net.getip_byinterface(&#39;eth1&#39;)</span>
+<span class="sd">        print cup.net.getip_byinterface(&#39;xgbe0&#39;)   # 万兆网卡</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">platforms</span><span class="o">.</span><span class="n">is_linux</span><span class="p">():</span>
+        <span class="n">ifreq</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s">&#39;16sH14s&#39;</span><span class="p">,</span> <span class="n">iface</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="s">&#39;</span><span class="se">\x00</span><span class="s">&#39;</span> <span class="o">*</span> <span class="mi">14</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">fcntl</span><span class="o">.</span><span class="n">ioctl</span><span class="p">(</span><span class="n">_SOCKFD</span><span class="p">,</span> <span class="n">_SIOCGIFADDR</span><span class="p">,</span> <span class="n">ifreq</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c"># pylint: disable=W0703,W0612</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="n">ipaddr</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&#39;16sH2x4s8x&#39;</span><span class="p">,</span> <span class="n">res</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_ntoa</span><span class="p">(</span><span class="n">ipaddr</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&#39;Not implemented on this platform&#39;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="get_local_hostname"><a class="viewcode-back" href="../../cup.net.html#cup.net.get_local_hostname">[docs]</a><span class="k">def</span> <span class="nf">get_local_hostname</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获得当前机器的hostname</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">())</span>
+
+</div>
+<div class="viewcode-block" id="get_hostip"><a class="viewcode-back" href="../../cup.net.html#cup.net.get_hostip">[docs]</a><span class="k">def</span> <span class="nf">get_hostip</span><span class="p">(</span><span class="n">hostname</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    拿到某hostname的ip地址.</span>
+
+<span class="sd">    :param hostname:</span>
+<span class="sd">        机器的hostname, 默认为None代表不传值， 函数将自动获取当前机器的ip</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">hostname</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">hostname</span> <span class="o">=</span> <span class="n">get_local_hostname</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">gethostbyname</span><span class="p">(</span><span class="n">hostname</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="set_sock_keepalive_linux"><a class="viewcode-back" href="../../cup.net.html#cup.net.set_sock_keepalive_linux">[docs]</a><span class="k">def</span> <span class="nf">set_sock_keepalive_linux</span><span class="p">(</span>
+        <span class="n">sock</span><span class="p">,</span> <span class="n">after_idle_sec</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">interval_sec</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">max_fails</span><span class="o">=</span><span class="mi">5</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set TCP keepalive on an open socket.</span>
+<span class="sd">    It activates after 1 second (after_idle_sec) of idleness,</span>
+<span class="sd">    then sends a keepalive ping once every 3 seconds (interval_sec),</span>
+<span class="sd">    and closes the connection after 5 failed ping (max_fails), or 15 seconds</span>
+
+<span class="sd">    :param sock:</span>
+<span class="sd">        socket</span>
+<span class="sd">    :param after_idle_sec:</span>
+<span class="sd">        for TCP_KEEPIDLE</span>
+<span class="sd">    :param interval_sec:</span>
+<span class="sd">        for TCP_KEEPINTVL</span>
+<span class="sd">    :param max_fails:</span>
+<span class="sd">        for TCP_KEEPCNT</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_KEEPALIVE</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">TCP_KEEPIDLE</span><span class="p">,</span> <span class="n">after_idle_sec</span><span class="p">)</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">TCP_KEEPINTVL</span><span class="p">,</span> <span class="n">interval_sec</span><span class="p">)</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">TCP_KEEPCNT</span><span class="p">,</span> <span class="n">max_fails</span><span class="p">)</span>
+
+
+<span class="c"># pylint: disable=W0613</span></div>
+<span class="k">def</span> <span class="nf">set_keepalive_osx</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">after_idle_sec</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">interval_sec</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">max_fails</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set TCP keepalive on an open socket.</span>
+<span class="sd">    Sends a keepalive ping once every 3 seconds (interval_sec)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># scraped from /usr/include, not exported by python&#39;s socket module</span>
+    <span class="c"># pylint: disable=C0103</span>
+    <span class="n">TCP_KEEPALIVE</span> <span class="o">=</span> <span class="mh">0x10</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_KEEPALIVE</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">TCP_KEEPALIVE</span><span class="p">,</span> <span class="n">interval_sec</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="set_sock_reusable"><a class="viewcode-back" href="../../cup.net.html#cup.net.set_sock_reusable">[docs]</a><span class="k">def</span> <span class="nf">set_sock_reusable</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">resuable</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    设置socket的端口是否可被重复使用， 默认resuable==True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">resuable</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="set_sock_linger"><a class="viewcode-back" href="../../cup.net.html#cup.net.set_sock_linger">[docs]</a><span class="k">def</span> <span class="nf">set_sock_linger</span><span class="p">(</span><span class="n">sock</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    关闭socket的linger参数。</span>
+<span class="sd">    实际产生的效果如下:</span>
+
+<span class="sd">    I.g.</span>
+<span class="sd">    ::</span>
+<span class="sd">        sock.setsockopt(</span>
+<span class="sd">            socket.SOL_SOCKET, socket.SO_LINGER,</span>
+<span class="sd">            struct.pack(&#39;ii&#39;, 0, 0)</span>
+<span class="sd">        )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">l_onoff</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">l_linger</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span>
+        <span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_LINGER</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span>
+            <span class="s">&#39;ii&#39;</span><span class="p">,</span> <span class="n">l_onoff</span><span class="p">,</span> <span class="n">l_linger</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="set_sock_quickack"><a class="viewcode-back" href="../../cup.net.html#cup.net.set_sock_quickack">[docs]</a><span class="k">def</span> <span class="nf">set_sock_quickack</span><span class="p">(</span><span class="n">sock</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    打开socket的quickack功能:</span>
+
+<span class="sd">    I.g.</span>
+<span class="sd">    ::</span>
+<span class="sd">        sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)</span>
+<span class="sd">        sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_QUICKACK, 1)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">TCP_NODELAY</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">TCP_QUICKACK</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

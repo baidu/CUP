@@ -1,0 +1,632 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.net.async.msg &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../../../index.html" />
+    <link rel="up" title="cup.net" href="../../net.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../net.html" accesskey="U">cup.net</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.net.async.msg</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/python</span>
+<span class="c"># -*- coding: utf-8 -*</span>
+<span class="c"># #############################################################################</span>
+<span class="c">#</span>
+<span class="c">#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved</span>
+<span class="c">#</span>
+<span class="c"># #############################################################################</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:author:</span>
+<span class="sd">    Guannan Ma</span>
+<span class="sd">:create_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:last_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:descrition:</span>
+<span class="sd">    netmsg related module</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">import</span> <span class="nn">cup</span>
+<span class="kn">from</span> <span class="nn">cup.util</span> <span class="kn">import</span> <span class="n">misc</span>
+<span class="kn">from</span> <span class="nn">cup.net.async</span> <span class="kn">import</span> <span class="n">common</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;CMsgType&#39;</span><span class="p">,</span> <span class="s">&#39;CMsgFlag&#39;</span><span class="p">,</span> <span class="s">&#39;CNetMsg&#39;</span><span class="p">,</span> <span class="s">&#39;CAckMsg&#39;</span><span class="p">]</span>
+
+
+<span class="nd">@cup.decorators.Singleton</span>
+<span class="k">class</span> <span class="nc">CMsgType</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    for netmsg types</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_type2number</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_number2type</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">register_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kvs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        register types</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key_value</span> <span class="ow">in</span> <span class="n">kvs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_type2number</span><span class="p">[</span><span class="n">key_value</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">key_value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_number2type</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">key_value</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">=</span> <span class="n">key_value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">gettype_bynumber</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get type by number</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_number2type</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">number</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">getnumber_bytype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">str_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get number by type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type2number</span><span class="p">[</span><span class="n">str_type</span><span class="p">]</span>
+
+
+<span class="nd">@cup.decorators.Singleton</span>
+<span class="k">class</span> <span class="nc">CMsgFlag</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    msg flag class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flag2number</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_number2flag</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">register_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kvs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        register flags</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key_value</span> <span class="ow">in</span> <span class="n">kvs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_flag2number</span><span class="p">[</span><span class="n">key_value</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">key_value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_number2flag</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">key_value</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">=</span> <span class="n">key_value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">getflag_bynumber</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get flag by number</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_number2flag</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">number</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">getnumber_byflag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">str_flag</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get number by flag</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag2number</span><span class="p">[</span><span class="n">str_flag</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="CNetMsg"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg">[docs]</a><span class="k">class</span> <span class="nc">CNetMsg</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    CNetMsg</span>
+<span class="sd">        flag: System use only.</span>
+<span class="sd">        type: System will use type &gt; 65535. Users will use type &lt;=65535</span>
+
+<span class="sd">        #head 0, \SAGIT\0\1 for building connection</span>
+<span class="sd">        #len - uint64</span>
+<span class="sd">        #fromip,port, stub -uint64</span>
+<span class="sd">        #toip,port, stub   -uint64</span>
+<span class="sd">        #msg_type          -uint32</span>
+<span class="sd">        #uniqid            -uint64</span>
+<span class="sd">        #body           -no limit (length:uint64)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c"># length 8</span>
+    <span class="n">MSG_SIGN</span> <span class="o">=</span> <span class="s">r&#39;SAGIT0\1&#39;</span>
+
+    <span class="n">_ORDER</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s">&#39;head&#39;</span><span class="p">,</span> <span class="s">&#39;flag&#39;</span><span class="p">,</span> <span class="s">&#39;len&#39;</span><span class="p">,</span> <span class="s">&#39;from&#39;</span><span class="p">,</span> <span class="s">&#39;to&#39;</span><span class="p">,</span> <span class="s">&#39;type&#39;</span><span class="p">,</span> <span class="s">&#39;uniq_id&#39;</span><span class="p">,</span> <span class="s">&#39;body&#39;</span>
+    <span class="p">]</span>
+    <span class="n">_ORDER_BYTES</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">_SIZE_EXCEPT_BODY</span> <span class="o">=</span> <span class="mi">64</span>
+    <span class="n">_SIZE_EXCEPT_HEAD_BODY</span> <span class="o">=</span> <span class="mi">56</span>
+    <span class="n">_ORDER_COUNTS</span> <span class="o">=</span> <span class="mi">8</span>
+
+    <span class="c"># Default flags</span>
+    <span class="n">MSG_FLAG_MAN</span> <span class="o">=</span> <span class="n">CMsgFlag</span><span class="p">()</span>
+    <span class="n">_MSG_FLAGS</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;URGENT&#39;</span><span class="p">:</span> <span class="mh">0x00000001</span><span class="p">,</span>
+        <span class="s">&#39;NORMAL&#39;</span><span class="p">:</span> <span class="mh">0X00000002</span>
+    <span class="p">}</span>
+    <span class="n">MSG_FLAG_MAN</span><span class="o">.</span><span class="n">register_flags</span><span class="p">(</span><span class="n">_MSG_FLAGS</span><span class="p">)</span>
+
+    <span class="c"># Default types.</span>
+    <span class="n">MSGTYPE</span> <span class="o">=</span> <span class="n">CMsgType</span><span class="p">()</span>
+    <span class="n">_SYS_MSG_TYPES</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;ACK&#39;</span><span class="p">:</span> <span class="mi">65536</span>
+    <span class="p">}</span>
+    <span class="n">MSGTYPE</span><span class="o">.</span><span class="n">register_types</span><span class="p">(</span><span class="n">_SYS_MSG_TYPES</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_postmsg</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_postmsg</span> <span class="o">=</span> <span class="n">is_postmsg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_need_head</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_readindex</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writeindex</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_msg_finish</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_msglen</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bodylen</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flag</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_uniqid</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fromaddr</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_toaddr</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dumpdata</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+
+<div class="viewcode-block" id="CNetMsg.get_order_counts"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.get_order_counts">[docs]</a>    <span class="k">def</span> <span class="nf">get_order_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get order counts</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ORDER_COUNTS</span>
+</div>
+    <span class="k">def</span> <span class="nf">_get_msg_order_ind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_need_head</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">ind</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ind</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ORDER_BYTES</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">ind</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">ind</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ORDER_BYTES</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_asign_uint2byte_bybits</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">bits</span><span class="p">):</span>
+        <span class="n">asign_len</span> <span class="o">=</span> <span class="n">bits</span> <span class="o">/</span> <span class="mi">8</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">quotient</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num</span> <span class="o">/</span> <span class="mi">256</span><span class="p">)</span>
+            <span class="n">remainder</span> <span class="o">=</span> <span class="n">num</span> <span class="o">%</span> <span class="mi">256</span>
+            <span class="n">tmp</span> <span class="o">+=</span> <span class="nb">chr</span><span class="p">(</span><span class="n">remainder</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">quotient</span> <span class="o">&lt;</span> <span class="mi">256</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">+=</span> <span class="nb">chr</span><span class="p">(</span><span class="n">quotient</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">num</span> <span class="o">=</span> <span class="n">quotient</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">length</span> <span class="o">&lt;</span> <span class="n">asign_len</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">asign_len</span> <span class="o">-</span> <span class="n">length</span><span class="p">):</span>
+                <span class="n">tmp</span> <span class="o">+=</span> <span class="nb">chr</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tmp</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_convert_bytes2uint</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">str_data</span><span class="p">):</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="il">0L</span>
+        <span class="n">b_ind</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">str_data</span><span class="p">:</span>
+            <span class="n">num</span> <span class="o">+=</span> <span class="nb">pow</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="n">b_ind</span><span class="p">)</span> <span class="o">*</span> <span class="nb">ord</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">b_ind</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">num</span>
+
+    <span class="c"># TODO Check if the msg is valid especially the first one</span>
+    <span class="c"># maguannan $2015.1.1$</span>
+<div class="viewcode-block" id="CNetMsg.push_data"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.push_data">[docs]</a>    <span class="k">def</span> <span class="nf">push_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        push data into the msg</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_msg_finish</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;The CNetMsg has already been pushed enough data&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s">&#39;You just pushed into the msg with a zero-length data&#39;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="n">sign</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">data_ind</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">data_max</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">order</span><span class="p">,</span> <span class="n">offsite</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_msg_order_ind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_readindex</span><span class="p">)</span>
+        <span class="n">msg_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ORDER</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+        <span class="k">while</span> <span class="n">sign</span><span class="p">:</span>
+            <span class="n">msg_data_loop_end</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="c"># One loop handle one msg_type until there all the data is handled.</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">msg_type</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">msg_type</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+            <span class="n">loop_data_max</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ORDER_BYTES</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">msg_type</span><span class="p">])</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">data_max</span> <span class="o">-</span> <span class="n">data_ind</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">loop_data_max</span><span class="p">:</span>
+                <span class="c"># can fill up the msg</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">msg_type</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">data_ind</span><span class="p">:</span> <span class="n">loop_data_max</span> <span class="o">+</span> <span class="n">data_ind</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">data_ind</span> <span class="o">+=</span> <span class="n">loop_data_max</span>
+                <span class="n">msg_data_loop_end</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_readindex</span> <span class="o">+=</span> <span class="n">loop_data_max</span>
+                <span class="k">if</span> <span class="n">msg_type</span> <span class="o">!=</span> <span class="s">&#39;body&#39;</span><span class="p">:</span>
+                    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s">&#39;msg_type:</span><span class="si">%s</span><span class="s"> full filled. data:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                            <span class="n">msg_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">msg_type</span><span class="p">]</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;body_len:</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;body&#39;</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># cannot fill up the msg in this round</span>
+                <span class="n">sign</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="n">push_bytes</span> <span class="o">=</span> <span class="n">data_max</span> <span class="o">-</span> <span class="n">data_ind</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">msg_type</span><span class="p">]</span> <span class="o">+=</span> <span class="n">data</span><span class="p">[</span><span class="n">data_ind</span><span class="p">:</span> <span class="n">data_max</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_readindex</span> <span class="o">+=</span> <span class="n">push_bytes</span>
+                <span class="n">data_ind</span> <span class="o">+=</span> <span class="n">push_bytes</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">msg_type</span> <span class="o">==</span> <span class="s">&#39;len&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">msg_data_loop_end</span><span class="p">):</span>
+                <span class="c"># set up the length of the body</span>
+                <span class="n">total_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_bytes2uint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;len&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_need_head</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ORDER_BYTES</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_len</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SIZE_EXCEPT_BODY</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ORDER_BYTES</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">total_len</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SIZE_EXCEPT_HEAD_BODY</span>
+                    <span class="p">)</span>
+
+                <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;total len </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">total_len</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">msg_data_loop_end</span> <span class="ow">and</span> <span class="p">(</span><span class="n">order</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ORDER_COUNTS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_msg_finish</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="n">sign</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;congratulations. This msg has been fullfilled&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">msg_data_loop_end</span> <span class="ow">and</span> <span class="n">order</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ORDER_COUNTS</span><span class="p">:</span>
+                <span class="n">order</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">msg_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ORDER</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;This round has finished&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data_ind</span>
+</div>
+    <span class="k">def</span> <span class="nf">_addr2pack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip_port</span><span class="p">,</span> <span class="n">stub_future</span><span class="p">):</span>
+        <span class="n">misc</span><span class="o">.</span><span class="n">check_type</span><span class="p">(</span><span class="n">ip_port</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+        <span class="n">misc</span><span class="o">.</span><span class="n">check_type</span><span class="p">(</span><span class="n">stub_future</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+        <span class="n">pack</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">ip_port2connaddr</span><span class="p">(</span><span class="n">ip_port</span><span class="p">)</span>
+        <span class="n">pack</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">add_stub2connaddr</span><span class="p">(</span><span class="n">pack</span><span class="p">,</span> <span class="n">stub_future</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">pack</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">add_future2connaddr</span><span class="p">(</span><span class="n">pack</span><span class="p">,</span> <span class="n">stub_future</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">pack</span>
+
+<div class="viewcode-block" id="CNetMsg.set_flag"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.set_flag">[docs]</a>    <span class="k">def</span> <span class="nf">set_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set flag for the msg</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># misc.check_type(flag, int)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asign_uint2byte_bybits</span><span class="p">(</span><span class="n">flag</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flag</span> <span class="o">=</span> <span class="n">flag</span>
+</div>
+<div class="viewcode-block" id="CNetMsg.set_need_head"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.set_need_head">[docs]</a>    <span class="k">def</span> <span class="nf">set_need_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b_need</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :note:</span>
+<span class="sd">            By default, the msg does not need to have a head unless</span>
+<span class="sd">            it&#39;s the first msg that posted/received.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_need_head</span> <span class="o">=</span> <span class="n">b_need</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_postmsg</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_need_head</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;head&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSG_SIGN</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;to set msg need head:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_need_head</span><span class="p">))</span>
+</div>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_check_addr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">ip_port</span><span class="p">,</span> <span class="n">stub_future</span><span class="p">):</span>
+        <span class="n">ip</span><span class="p">,</span> <span class="n">port</span> <span class="o">=</span> <span class="n">ip_port</span>
+        <span class="n">stub</span><span class="p">,</span> <span class="n">future</span> <span class="o">=</span> <span class="n">stub_future</span>
+        <span class="n">misc</span><span class="o">.</span><span class="n">check_type</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set_msg_len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_need_head</span><span class="p">:</span>
+            <span class="n">size_except_body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SIZE_EXCEPT_BODY</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">size_except_body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SIZE_EXCEPT_HEAD_BODY</span>
+        <span class="n">body_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;body&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ORDER_BYTES</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="n">body_len</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_msglen</span> <span class="o">=</span> <span class="n">body_len</span> <span class="o">+</span> <span class="n">size_except_body</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;len&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asign_uint2byte_bybits</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_msglen</span><span class="p">,</span> <span class="mi">64</span>
+        <span class="p">)</span>
+        <span class="n">tempstr</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ORDER_COUNTS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_need_head</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">tempstr</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ORDER</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dumpdata</span> <span class="o">=</span> <span class="n">tempstr</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;body&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="CNetMsg.set_from_addr"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.set_from_addr">[docs]</a>    <span class="k">def</span> <span class="nf">set_from_addr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip_port</span><span class="p">,</span> <span class="n">stub_future</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set msg from addr</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_addr</span><span class="p">(</span><span class="n">ip_port</span><span class="p">,</span> <span class="n">stub_future</span><span class="p">)</span>
+        <span class="n">pack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addr2pack</span><span class="p">(</span><span class="n">ip_port</span><span class="p">,</span> <span class="n">stub_future</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;from&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asign_uint2byte_bybits</span><span class="p">(</span><span class="n">pack</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fromaddr</span> <span class="o">=</span> <span class="p">(</span><span class="n">ip_port</span><span class="p">,</span> <span class="n">stub_future</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CNetMsg.set_to_addr"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.set_to_addr">[docs]</a>    <span class="k">def</span> <span class="nf">set_to_addr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip_port</span><span class="p">,</span> <span class="n">stub_future</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set msg to addr</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_addr</span><span class="p">(</span><span class="n">ip_port</span><span class="p">,</span> <span class="n">stub_future</span><span class="p">)</span>
+        <span class="n">pack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addr2pack</span><span class="p">(</span><span class="n">ip_port</span><span class="p">,</span> <span class="n">stub_future</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;to&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asign_uint2byte_bybits</span><span class="p">(</span><span class="n">pack</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_toaddr</span> <span class="o">=</span> <span class="p">(</span><span class="n">ip_port</span><span class="p">,</span> <span class="n">stub_future</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CNetMsg.set_msg_type"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.set_msg_type">[docs]</a>    <span class="k">def</span> <span class="nf">set_msg_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set msg type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">misc</span><span class="o">.</span><span class="n">check_type</span><span class="p">(</span><span class="n">msg_type</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asign_uint2byte_bybits</span><span class="p">(</span><span class="n">msg_type</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="n">msg_type</span>
+</div>
+<div class="viewcode-block" id="CNetMsg.set_uniq_id"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.set_uniq_id">[docs]</a>    <span class="k">def</span> <span class="nf">set_uniq_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uniq_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set msg unique id</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># misc.check_type(uniq_id, int)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;uniq_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asign_uint2byte_bybits</span><span class="p">(</span><span class="n">uniq_id</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_uniqid</span> <span class="o">=</span> <span class="n">uniq_id</span>
+</div>
+<div class="viewcode-block" id="CNetMsg.set_body"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.set_body">[docs]</a>    <span class="k">def</span> <span class="nf">set_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set msg body</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">misc</span><span class="o">.</span><span class="n">check_type</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;body&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">body</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bodylen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">_pack_toaddr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pack</span><span class="p">):</span>
+        <span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">get_ip_and_port_connaddr</span><span class="p">(</span><span class="n">pack</span><span class="p">)</span>
+        <span class="n">stub</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">getstub_connaddr</span><span class="p">(</span><span class="n">pack</span><span class="p">)</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">getfuture_connaddr</span><span class="p">(</span><span class="n">pack</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">((</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">),</span> <span class="p">(</span><span class="n">stub</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
+
+<div class="viewcode-block" id="CNetMsg.get_flag"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.get_flag">[docs]</a>    <span class="k">def</span> <span class="nf">get_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get msg flag</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_bytes2uint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;flag&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag</span>
+</div>
+<div class="viewcode-block" id="CNetMsg.get_to_addr"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.get_to_addr">[docs]</a>    <span class="k">def</span> <span class="nf">get_to_addr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get to addr</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toaddr</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">pack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_bytes2uint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;to&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_toaddr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pack_toaddr</span><span class="p">(</span><span class="n">pack</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toaddr</span>
+</div>
+<div class="viewcode-block" id="CNetMsg.get_from_addr"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.get_from_addr">[docs]</a>    <span class="k">def</span> <span class="nf">get_from_addr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get from addr</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fromaddr</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">pack</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_bytes2uint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;from&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fromaddr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pack_toaddr</span><span class="p">(</span><span class="n">pack</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fromaddr</span>
+</div>
+<div class="viewcode-block" id="CNetMsg.get_msg_type"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.get_msg_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_msg_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get msg type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_bytes2uint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;type&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span>
+</div>
+<div class="viewcode-block" id="CNetMsg.get_msg_len"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.get_msg_len">[docs]</a>    <span class="k">def</span> <span class="nf">get_msg_len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get msg len</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_msglen</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_msglen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_bytes2uint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;len&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_msglen</span>
+</div>
+<div class="viewcode-block" id="CNetMsg.get_uniq_id"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.get_uniq_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_uniq_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get unique msg id</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uniqid</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_uniqid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_bytes2uint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;uniq_id&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uniqid</span>
+</div>
+<div class="viewcode-block" id="CNetMsg.get_body"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.get_body">[docs]</a>    <span class="k">def</span> <span class="nf">get_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get msg body</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s">&#39;body&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s">&#39;Body not set yet&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;body&#39;</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="CNetMsg.get_bodylen"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.get_bodylen">[docs]</a>    <span class="k">def</span> <span class="nf">get_bodylen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get body length</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bodylen</span>
+</div>
+<div class="viewcode-block" id="CNetMsg.is_a_sendmsg"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.is_a_sendmsg">[docs]</a>    <span class="k">def</span> <span class="nf">is_a_sendmsg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        is a msg being sent</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_postmsg</span>
+</div>
+<div class="viewcode-block" id="CNetMsg.is_a_recvmsg"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.is_a_recvmsg">[docs]</a>    <span class="k">def</span> <span class="nf">is_a_recvmsg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        is a msg being received</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_postmsg</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CNetMsg.is_recvmsg_complete"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.is_recvmsg_complete">[docs]</a>    <span class="k">def</span> <span class="nf">is_recvmsg_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        is msg received already</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_postmsg</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_msg_finish</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+    <span class="c"># the head in self._data should be set before sent.</span>
+    <span class="c"># Thus, the self._data.keys will be 1 less than</span>
+    <span class="c"># self.get_order_counts()</span></div>
+<div class="viewcode-block" id="CNetMsg.is_sendmsg_complete"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.is_sendmsg_complete">[docs]</a>    <span class="k">def</span> <span class="nf">is_sendmsg_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        is msg sent complete</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bodylen</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SIZE_EXCEPT_BODY</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_msglen</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+</div>
+<div class="viewcode-block" id="CNetMsg.get_write_bytes"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.get_write_bytes">[docs]</a>    <span class="k">def</span> <span class="nf">get_write_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get write bytes from the msg</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">length</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dumpdata</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_writeindex</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writeindex</span> <span class="o">+</span> <span class="n">length</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="CNetMsg.seek_write"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.seek_write">[docs]</a>    <span class="k">def</span> <span class="nf">seek_write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length_ahead</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        seek foreward by length</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writeindex</span> <span class="o">+=</span> <span class="n">length_ahead</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writeindex</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_msg_len</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">cup</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">AsyncMsgError</span><span class="p">(</span>
+                <span class="s">&#39;You have seek_write out of the msg length&#39;</span>
+            <span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CNetMsg.is_msg_already_sent"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CNetMsg.is_msg_already_sent">[docs]</a>    <span class="k">def</span> <span class="nf">is_msg_already_sent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        is msg already sent</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writeindex</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_msg_len</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+
+<span class="c"># pylint: disable=R0904</span></div></div>
+<div class="viewcode-block" id="CAckMsg"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CAckMsg">[docs]</a><span class="k">class</span> <span class="nc">CAckMsg</span><span class="p">(</span><span class="n">CNetMsg</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ack msg example</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_postmsg</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">is_postmsg</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CAckMsg.set_body"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CAckMsg.set_body">[docs]</a>    <span class="k">def</span> <span class="nf">set_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_ack</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set body</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">map_ack</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;body&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">body</span>
+</div>
+<div class="viewcode-block" id="CAckMsg.set_ack"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CAckMsg.set_ack">[docs]</a>    <span class="k">def</span> <span class="nf">set_ack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param status:</span>
+<span class="sd">            status of the msg</span>
+<span class="sd">        :param msg:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ack</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">ack</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">status</span>
+        <span class="n">ack</span><span class="p">[</span><span class="s">&#39;msg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_body</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">ack</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="CAckMsg.get_ack"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.msg.CAckMsg.get_ack">[docs]</a>    <span class="k">def</span> <span class="nf">get_ack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get ack</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s">&#39;body&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">body</span>
+
+<span class="c"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../net.html" >cup.net</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>
