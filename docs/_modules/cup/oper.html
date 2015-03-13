@@ -1,0 +1,287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.oper &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.oper</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/python</span>
+<span class="c"># -*- coding: utf-8 -*</span>
+<span class="c"># #############################################################################</span>
+<span class="c">#</span>
+<span class="c">#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved</span>
+<span class="c">#</span>
+<span class="c"># #############################################################################</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:author:</span>
+<span class="sd">    Zhao Minghao</span>
+<span class="sd">:create_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:last_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:descrition:</span>
+<span class="sd">    operations related module</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+
+<span class="kn">import</span> <span class="nn">cup</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;rm&#39;</span><span class="p">,</span> <span class="s">&#39;rmrf&#39;</span><span class="p">,</span> <span class="s">&#39;is_proc_exist&#39;</span><span class="p">,</span> <span class="s">&#39;kill&#39;</span><span class="p">,</span> <span class="s">&#39;backup_file&#39;</span><span class="p">]</span>
+
+
+<span class="c"># pylint: disable=C0103</span>
+<div class="viewcode-block" id="rm"><a class="viewcode-back" href="../../cup.html#cup.oper.rm">[docs]</a><span class="k">def</span> <span class="nf">rm</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    rm the file if no exception happens.</span>
+<span class="sd">    Will not raise exception if it fails</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;rm oserror&quot;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="rmrf"><a class="viewcode-back" href="../../cup.html#cup.oper.rmrf">[docs]</a><span class="k">def</span> <span class="nf">rmrf</span><span class="p">(</span><span class="n">fpath</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    可使用pythn自带的shutil.rmtree 不推荐使用这个函数</span>
+<span class="sd">    :param fpath:</span>
+<span class="sd">        删除的路径</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+    <span class="c"># &quot;&quot;&quot;</span>
+    <span class="c"># rmrf一个path目录。 遇到symlink, 不Follow symlink.</span>
+    <span class="c"># &quot;&quot;&quot;</span>
+    <span class="c"># try:</span>
+    <span class="c">#     # os.removedirs(name)</span>
+    <span class="c">#     if os.path.isdir(fpath):</span>
+    <span class="c">#         for root, dirs, files in os.walk(fpath, topdown=False):</span>
+    <span class="c">#             for name in files:</span>
+    <span class="c">#                 os.remove(os.path.join(root, name))</span>
+    <span class="c">#                 print  os.path.join(root, name)</span>
+    <span class="c">#             for name in dirs:</span>
+    <span class="c">#                 os.rmdir(os.path.join(root, name))</span>
+    <span class="c">#                 print &quot;delete %s&quot; % (os.path.join(root, name))</span>
+    <span class="c">#         os.rmdir(fpath)</span>
+    <span class="c">#     else:</span>
+    <span class="c">#         os.remove(fpath)</span>
+    <span class="c"># except OSError as e:</span>
+    <span class="c">#     print &#39;OSError:%s&#39; % e</span>
+
+</div>
+<div class="viewcode-block" id="is_proc_exist"><a class="viewcode-back" href="../../cup.html#cup.oper.is_proc_exist">[docs]</a><span class="k">def</span> <span class="nf">is_proc_exist</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    通过name找到该进程的pid. 之后通过传入的path匹配/proc进程目录底下的cwd文件，</span>
+<span class="sd">    如果cwd也包含该path目录。 则认为proc进程存在， return True, 否则False</span>
+<span class="sd">    :param path:</span>
+<span class="sd">        源程序运行启动的路径</span>
+<span class="sd">    :param name:</span>
+<span class="sd">        源程序名称</span>
+<span class="sd">    :return:</span>
+<span class="sd">        存在返回True， 不存在返回False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+    <span class="c"># path = os.path.realpath(</span>
+    <span class="c">#   os.popen(&#39;cd &#39; + path + &#39; &amp;&amp; pwd&#39;).read().strip()</span>
+    <span class="c"># )</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;ps -ef|grep </span><span class="si">%s</span><span class="s">|grep -v grep|awk </span><span class="se">\&#39;</span><span class="s">{print $2}</span><span class="se">\&#39;</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">cup</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">ShellExec</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">pids</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[</span><span class="s">&#39;stdout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pids</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">pids</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">pids</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">pids</span><span class="p">:</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;ls -l /proc/</span><span class="si">%s</span><span class="s">/cwd|awk </span><span class="se">\&#39;</span><span class="s">{print $11}</span><span class="se">\&#39;</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pid</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">cup</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">ShellExec</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">pid_path</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[</span><span class="s">&#39;stdout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">pid_path</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c"># print &#39;%s is exist: %s&#39; % (name, path)</span>
+            <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="bp">False</span>
+
+</div>
+<span class="k">def</span> <span class="nf">_kill_child</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">sign</span><span class="p">):</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;ps -ef|grep </span><span class="si">%s</span><span class="s">|grep -v grep|awk </span><span class="se">\&#39;</span><span class="s">{print $2,$3}</span><span class="se">\&#39;</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pid</span><span class="p">)</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">cup</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">ShellExec</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">pids</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[</span><span class="s">&#39;stdout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">pids</span><span class="p">:</span>
+        <span class="n">p_id</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">p_id</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">pid</span><span class="p">:</span>
+            <span class="n">_kill_child</span><span class="p">(</span><span class="n">p_id</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sign</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">p_id</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">pid</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sign</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">execshell</span><span class="p">(</span><span class="s">&#39;kill </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">pid</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">sign</span> <span class="o">==</span> <span class="s">&#39;9&#39;</span> <span class="ow">or</span> <span class="n">sign</span> <span class="o">==</span> <span class="s">&#39;-9&#39;</span><span class="p">:</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">execshell</span><span class="p">(</span><span class="s">&#39;kill -9 </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">pid</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">sign</span> <span class="o">==</span> <span class="s">&#39;SIGSTOP&#39;</span> <span class="ow">or</span> <span class="n">sign</span> <span class="o">==</span> <span class="s">&#39;19&#39;</span> <span class="ow">or</span> <span class="n">sign</span> <span class="o">==</span> <span class="s">&#39;-19&#39;</span><span class="p">:</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">execshell</span><span class="p">(</span><span class="s">&#39;kill -19 </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">pid</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">sign</span> <span class="o">==</span> <span class="s">&#39;SIGCONT&#39;</span> <span class="ow">or</span> <span class="n">sign</span> <span class="o">==</span> <span class="s">&#39;18&#39;</span> <span class="ow">or</span> <span class="n">sign</span> <span class="o">==</span> <span class="s">&#39;-18&#39;</span><span class="p">:</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">execshell</span><span class="p">(</span><span class="s">&#39;kill -18 </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">pid</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;sign error&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="kill"><a class="viewcode-back" href="../../cup.html#cup.oper.kill">[docs]</a><span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sign</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">b_kill_child</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    通过和is_proc_exist一样的检查顺序找到这个进程， 然后根据向该进程发送sign.</span>
+<span class="sd">    sign不赋值， 默认 kill pid, 赋值 kill -sign pid.</span>
+<span class="sd">    b_kill_child  是否递归删除子进程</span>
+<span class="sd">    :param path:</span>
+<span class="sd">        源程序运行启动的路径</span>
+<span class="sd">    :param name:</span>
+<span class="sd">        源程序名称</span>
+<span class="sd">    :param sign:</span>
+<span class="sd">        kill 程序发送的信号量， 支持空、9,、18、19</span>
+<span class="sd">    :b_kill_child:</span>
+<span class="sd">        杀死当前进程的时候是否递归删除子进程</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+    <span class="c"># path = os.path.abspath(path)</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;ps -ef|grep </span><span class="si">%s</span><span class="s">|grep -v grep|awk </span><span class="se">\&#39;</span><span class="s">{print $2}</span><span class="se">\&#39;</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">cup</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">ShellExec</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">pids</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[</span><span class="s">&#39;stdout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">pids</span><span class="p">:</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;ls -l /proc/</span><span class="si">%s</span><span class="s">/cwd|awk </span><span class="se">\&#39;</span><span class="s">{print $11}</span><span class="se">\&#39;</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pid</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">cup</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">ShellExec</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="s">&#39;returncode&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="n">pid_path</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[</span><span class="s">&#39;stdout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">pid_path</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">path</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">pid_path</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">b_kill_child</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+                <span class="n">_kill_child</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">sign</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sign</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">execshell</span><span class="p">(</span><span class="s">&#39;kill </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">pid</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">sign</span> <span class="o">==</span> <span class="s">&#39;9&#39;</span> <span class="ow">or</span> <span class="n">sign</span> <span class="o">==</span> <span class="s">&#39;-9&#39;</span><span class="p">:</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">execshell</span><span class="p">(</span><span class="s">&#39;kill -9 </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">pid</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">sign</span> <span class="o">==</span> <span class="s">&#39;SIGSTOP&#39;</span> <span class="ow">or</span> <span class="n">sign</span> <span class="o">==</span> <span class="s">&#39;19&#39;</span> <span class="ow">or</span> <span class="n">sign</span> <span class="o">==</span> <span class="s">&#39;-19&#39;</span><span class="p">:</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">execshell</span><span class="p">(</span><span class="s">&#39;kill -19 </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">pid</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">sign</span> <span class="o">==</span> <span class="s">&#39;SIGCONT&#39;</span> <span class="ow">or</span> <span class="n">sign</span> <span class="o">==</span> <span class="s">&#39;18&#39;</span> <span class="ow">or</span> <span class="n">sign</span> <span class="o">==</span> <span class="s">&#39;-18&#39;</span><span class="p">:</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">execshell</span><span class="p">(</span><span class="s">&#39;kill -18 </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">pid</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;sign error&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">True</span>
+
+</div>
+<div class="viewcode-block" id="backup_file"><a class="viewcode-back" href="../../cup.html#cup.oper.backup_file">[docs]</a><span class="k">def</span> <span class="nf">backup_file</span><span class="p">(</span><span class="n">srcpath</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dstpath</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    把srcpath目录下的filename文件备份到dstpath目录下。 备份名字变为</span>
+<span class="sd">    dstpath/filename.label   label默认是(None), 可不传入，函数自动</span>
+<span class="sd">    把label变成当前时间.</span>
+<span class="sd">    如果dstpath不存在， 函数会尝试创建目录。如果创建失败， raise IOError</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&#39;%H:%M:%S&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dstpath</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dstpath</span><span class="p">)</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span>
+        <span class="n">srcpath</span> <span class="o">+</span> <span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dstpath</span> <span class="o">+</span> <span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s">&#39;.&#39;</span> <span class="o">+</span> <span class="n">label</span>
+    <span class="p">)</span>
+
+</div>
+<span class="k">def</span> <span class="nf">backup_folder</span><span class="p">(</span><span class="n">srcpath</span><span class="p">,</span> <span class="n">foldername</span><span class="p">,</span> <span class="n">dstpath</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    把srcpath目录下的folder文件夹备份到dstpath目录下。 备份名字变为</span>
+<span class="sd">    dstpath/foldername.label   label默认是(None), 可不传入，函数自动</span>
+<span class="sd">    把label变成当前时间.</span>
+<span class="sd">    如果dstpath不存在， 函数会尝试创建目录。如果创建失败， raise IOError</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&#39;%H:%M:%S&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dstpath</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dstpath</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+        <span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">srcpath</span><span class="p">,</span> <span class="n">foldername</span><span class="p">),</span>
+        <span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dstpath</span><span class="p">,</span> <span class="n">foldername</span> <span class="o">+</span> <span class="s">&#39;.&#39;</span> <span class="o">+</span> <span class="n">label</span><span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="c"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

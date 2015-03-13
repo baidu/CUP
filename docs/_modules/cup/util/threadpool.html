@@ -1,0 +1,428 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.util.threadpool &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../../index.html" />
+    <link rel="up" title="cup.util" href="../util.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../util.html" accesskey="U">cup.util</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.util.threadpool</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/python</span>
+<span class="c"># -*- coding: utf-8 -*</span>
+<span class="c"># #############################################################################</span>
+<span class="c">#</span>
+<span class="c">#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved</span>
+<span class="c">#</span>
+<span class="c"># #############################################################################</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:author:</span>
+<span class="sd">    Guannan Ma</span>
+<span class="sd">:create_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:last_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:descrition:</span>
+<span class="sd">    Guannan ported threadpool from twisted.python.</span>
+<span class="sd">    Mit License applied for twisted.</span>
+<span class="sd">    http://www.opensource.org/licenses/mit-license.php</span>
+<span class="sd">    if any concern, plz contact mythmgn@gmail.com</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">Queue</span> <span class="kn">as</span> <span class="nn">queue</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="c"># pylint: disable=F0401</span>
+    <span class="kn">import</span> <span class="nn">queue</span>
+<span class="kn">import</span> <span class="nn">contextlib</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+
+<span class="kn">import</span> <span class="nn">cup</span>
+<span class="kn">from</span> <span class="nn">cup.util</span> <span class="kn">import</span> <span class="n">context</span>
+
+<span class="n">_CONTEXT_TRACKER</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">ContextTracker4Thread</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="ThreadPool"><a class="viewcode-back" href="../../../cup.util.html#cup.util.threadpool.ThreadPool">[docs]</a><span class="k">class</span> <span class="nc">ThreadPool</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Threadpool class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_THREAD_FACTORY</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span>
+    <span class="n">_CURRENT_THREAD</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">)</span>
+    <span class="n">_WORKER_STOP_SIGN</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">minthreads</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">maxthreads</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        创建一个线程池。</span>
+<span class="sd">        :param minthreads:</span>
+<span class="sd">            最少多少个线程在工作。</span>
+<span class="sd">        :param maxthreads:</span>
+<span class="sd">            最多多少个线程在工作</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">minthreads</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&#39;minimum must be &gt;= 0 &#39;</span>
+        <span class="k">assert</span> <span class="n">minthreads</span> <span class="o">&lt;=</span> <span class="n">maxthreads</span><span class="p">,</span> <span class="s">&#39;minimum is greater than maximum&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max</span> <span class="o">=</span> <span class="mi">20</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_joined</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_started</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c"># Queue is a thread-safe queue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_jobqueue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min</span> <span class="o">=</span> <span class="n">minthreads</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max</span> <span class="o">=</span> <span class="n">maxthreads</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_waiters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_working</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="ThreadPool.start"><a class="viewcode-back" href="../../../cup.util.html#cup.util.threadpool.ThreadPool.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        启动线程池</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_joined</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_started</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="c"># Start some threads.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adjust_poolsize</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="ThreadPool.start1worker"><a class="viewcode-back" href="../../../cup.util.html#cup.util.threadpool.ThreadPool.start1worker">[docs]</a>    <span class="k">def</span> <span class="nf">start1worker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        为线程池增加一个线程。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;PoolThread-</span><span class="si">%s</span><span class="s">-</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="ow">or</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">)</span>
+        <span class="n">new_thd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_THREAD_FACTORY</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_worker</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_thd</span><span class="p">)</span>
+        <span class="n">new_thd</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="ThreadPool.stop1worker"><a class="viewcode-back" href="../../../cup.util.html#cup.util.threadpool.ThreadPool.stop1worker">[docs]</a>    <span class="k">def</span> <span class="nf">stop1worker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        为线程池减少一个线程。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_jobqueue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_WORKER_STOP_SIGN</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span> <span class="o">-=</span> <span class="mi">1</span>
+</div>
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        For pickling an instance from a serilized string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span> <span class="o">=</span> <span class="n">state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">state</span><span class="p">[</span><span class="s">&#39;min&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min</span>
+        <span class="n">state</span><span class="p">[</span><span class="s">&#39;max&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max</span>
+        <span class="k">return</span> <span class="n">state</span>
+
+    <span class="k">def</span> <span class="nf">_start_decent_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">need_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jobqueue</span><span class="o">.</span><span class="n">qsize</span><span class="p">()</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_working</span><span class="p">)</span>
+        <span class="c"># Create enough, but not too many</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span> <span class="o">&lt;</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_max</span><span class="p">,</span> <span class="n">need_size</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start1worker</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ThreadPool.add_1job"><a class="viewcode-back" href="../../../cup.util.html#cup.util.threadpool.ThreadPool.add_1job">[docs]</a>    <span class="k">def</span> <span class="nf">add_1job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param func:</span>
+<span class="sd">            会被线程池调度的函数</span>
+
+<span class="sd">        :param *args:</span>
+<span class="sd">            func函数需要的参数</span>
+
+<span class="sd">        :param **kw:</span>
+<span class="sd">            func函数需要的kwargs参数</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_1job_with_callback</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ThreadPool.add_1job_with_callback"><a class="viewcode-back" href="../../../cup.util.html#cup.util.threadpool.ThreadPool.add_1job_with_callback">[docs]</a>    <span class="k">def</span> <span class="nf">add_1job_with_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result_callback</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param result_callback:</span>
+<span class="sd">            func作业处理函数被线程池调用后，无论成功与否都会</span>
+<span class="sd">            执行result_callback.</span>
+
+<span class="sd">            result_callback函数需要有两个参数</span>
+<span class="sd">            (ret_in_bool, result), 成功的话为(True, result), 失败的话</span>
+<span class="sd">            为(False, result)</span>
+
+<span class="sd">            如果func raise exception, result_callback会收到(False, failure)</span>
+
+<span class="sd">        :param func:</span>
+<span class="sd">            同add_1job, 被调度的作业函数</span>
+
+<span class="sd">        :param *args:</span>
+<span class="sd">            同add_1job, func的参数</span>
+
+<span class="sd">        :param **kwargs:</span>
+<span class="sd">            同add_1job, func的kwargs参数</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joined</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c"># pylint: disable=W0621</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">_CONTEXT_TRACKER</span><span class="o">.</span><span class="n">current_context</span><span class="p">()</span><span class="o">.</span><span class="n">contexts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">result_callback</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_jobqueue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_started</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_start_decent_workers</span><span class="p">()</span>
+</div>
+    <span class="nd">@contextlib.contextmanager</span>
+    <span class="k">def</span> <span class="nf">_worker_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_list</span><span class="p">,</span> <span class="n">worker_thread</span><span class="p">):</span>
+        <span class="n">state_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">worker_thread</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">yield</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">state_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">worker_thread</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_log_err_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s">&#39;Seems a call with context failed. See the context info&#39;</span>
+        <span class="p">)</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_worker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        worker func to handle jobs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">current_thd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_CURRENT_THREAD</span><span class="p">()</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_worker_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_waiters</span><span class="p">,</span> <span class="n">current_thd</span><span class="p">):</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jobqueue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+        <span class="k">while</span> <span class="n">job</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_WORKER_STOP_SIGN</span><span class="p">:</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_worker_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_working</span><span class="p">,</span> <span class="n">current_thd</span><span class="p">):</span>
+                <span class="c"># pylint: disable=W0621</span>
+                <span class="n">context</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">result_callback</span> <span class="o">=</span> <span class="n">job</span>
+                <span class="k">del</span> <span class="n">job</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="c"># pylint: disable=W0142</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">_CONTEXT_TRACKER</span><span class="o">.</span><span class="n">call_with_context</span><span class="p">(</span>
+                        <span class="n">context</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                    <span class="p">)</span>
+                    <span class="n">success</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                    <span class="n">success</span> <span class="o">=</span> <span class="bp">False</span>
+                    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="s">&#39;Func failed, func:</span><span class="si">%s</span><span class="s">, error_msg: </span><span class="si">%s</span><span class="s">, traceback:</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span>
+                        <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">function</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">result_callback</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;This func does not have callback.&#39;</span><span class="p">)</span>
+                        <span class="n">_CONTEXT_TRACKER</span><span class="o">.</span><span class="n">call_with_context</span><span class="p">(</span>
+                            <span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_err_context</span><span class="p">,</span> <span class="n">context</span>
+                        <span class="p">)</span>
+                        <span class="n">result</span> <span class="o">=</span> <span class="bp">None</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">result</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+
+                <span class="k">del</span> <span class="n">function</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span>
+            <span class="c"># when out of  &quot;with scope&quot;,</span>
+            <span class="c"># the self._working will remove the thread from</span>
+            <span class="c"># its self._working list</span>
+
+            <span class="k">if</span> <span class="n">result_callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">_CONTEXT_TRACKER</span><span class="o">.</span><span class="n">call_with_context</span><span class="p">(</span>
+                        <span class="n">context</span><span class="p">,</span> <span class="n">result_callback</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">result</span>
+                    <span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+                    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="s">&#39;result_callback func failed, callback func:</span><span class="si">%s</span><span class="s">,&#39;</span>
+                        <span class="s">&#39;err_msg:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">result_callback</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                    <span class="p">)</span>
+                    <span class="n">_CONTEXT_TRACKER</span><span class="o">.</span><span class="n">call_with_context</span><span class="p">(</span>
+                        <span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_err_context</span><span class="p">,</span> <span class="n">context</span>
+                    <span class="p">)</span>
+
+            <span class="k">del</span> <span class="n">context</span><span class="p">,</span> <span class="n">result_callback</span><span class="p">,</span> <span class="n">result</span>
+
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_worker_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_waiters</span><span class="p">,</span> <span class="n">current_thd</span><span class="p">):</span>
+                <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jobqueue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="c"># after with statements, self._waiters will remove current_thd</span>
+
+        <span class="c"># remove this thread from the list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">current_thd</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ThreadPool.stop"><a class="viewcode-back" href="../../../cup.util.html#cup.util.threadpool.ThreadPool.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        停止线程池， 该操作是同步操作， 会夯住一直等到线程池所有线程退出。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_joined</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">threads</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">)</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_jobqueue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_WORKER_STOP_SIGN</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span> <span class="o">-=</span> <span class="mi">1</span>
+
+        <span class="c"># and let&#39;s just make sure</span>
+        <span class="c"># FIXME: threads that have died before calling stop() are not joined.</span>
+        <span class="k">for</span> <span class="n">thread</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
+            <span class="n">thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="ThreadPool.try_stop"><a class="viewcode-back" href="../../../cup.util.html#cup.util.threadpool.ThreadPool.try_stop">[docs]</a>    <span class="k">def</span> <span class="nf">try_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_interval</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        发送停止线程池命令， 并尝试查看是否stop了。 如果没停止，返回False</span>
+
+<span class="sd">        try_stop不会夯住， 会回返。 属于nonblocking模式下</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_joined</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">threads</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">)</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_jobqueue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_WORKER_STOP_SIGN</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span> <span class="o">-=</span> <span class="mi">1</span>
+
+        <span class="k">for</span> <span class="n">thread</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
+            <span class="n">thread</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">check_interval</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">thread</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">thread</span><span class="o">.</span><span class="n">isAlive</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="k">return</span> <span class="bp">True</span>
+</div>
+<div class="viewcode-block" id="ThreadPool.adjust_poolsize"><a class="viewcode-back" href="../../../cup.util.html#cup.util.threadpool.ThreadPool.adjust_poolsize">[docs]</a>    <span class="k">def</span> <span class="nf">adjust_poolsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">minthreads</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">maxthreads</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        调整线程池的线程最少和最多运行线程个数</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">minthreads</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">minthreads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min</span>
+        <span class="k">if</span> <span class="n">maxthreads</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">maxthreads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max</span>
+
+        <span class="k">assert</span> <span class="n">minthreads</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&#39;minimum is negative&#39;</span>
+        <span class="k">assert</span> <span class="n">minthreads</span> <span class="o">&lt;=</span> <span class="n">maxthreads</span><span class="p">,</span> <span class="s">&#39;minimum is greater than maximum&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min</span> <span class="o">=</span> <span class="n">minthreads</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max</span> <span class="o">=</span> <span class="n">maxthreads</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_started</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c"># Kill of some threads if we have too many.</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop1worker</span><span class="p">()</span>
+        <span class="c"># Start some threads if we have too few.</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start1worker</span><span class="p">()</span>
+        <span class="c"># Start some threads if there is a need.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_decent_workers</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="ThreadPool.get_stats"><a class="viewcode-back" href="../../../cup.util.html#cup.util.threadpool.ThreadPool.get_stats">[docs]</a>    <span class="k">def</span> <span class="nf">get_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        回返当前threadpool的状态信息.</span>
+<span class="sd">        其中queue_len为当前threadpool排队的作业长度</span>
+<span class="sd">        waiters_num为当前空闲的thread num</span>
+<span class="sd">        working_num为当前正在工作的thread num</span>
+<span class="sd">        thread_num为当前一共可以使用的thread num::</span>
+<span class="sd">            stat = {}</span>
+<span class="sd">            stat[&#39;queue_len&#39;] = self._jobqueue.qsize()</span>
+<span class="sd">            stat[&#39;waiters_num&#39;] = len(self._waiters)</span>
+<span class="sd">            stat[&#39;working_num&#39;] = len(self._working)</span>
+<span class="sd">            stat[&#39;thread_num&#39;] = len(self._threads)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stat</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">stat</span><span class="p">[</span><span class="s">&#39;queue_len&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jobqueue</span><span class="o">.</span><span class="n">qsize</span><span class="p">()</span>
+        <span class="n">stat</span><span class="p">[</span><span class="s">&#39;waiters_num&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_waiters</span><span class="p">)</span>
+        <span class="n">stat</span><span class="p">[</span><span class="s">&#39;working_num&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_working</span><span class="p">)</span>
+        <span class="n">stat</span><span class="p">[</span><span class="s">&#39;thread_num&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">stat</span>
+</div>
+<div class="viewcode-block" id="ThreadPool.dump_stats"><a class="viewcode-back" href="../../../cup.util.html#cup.util.threadpool.ThreadPool.dump_stats">[docs]</a>    <span class="k">def</span> <span class="nf">dump_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        打印当前threadpool的状态信息到log 和stdout</span>
+<span class="sd">        其中状态信息来自于get_stats函数</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
+        <span class="k">print</span> <span class="n">stat</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Threadpool stat: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">stat</span><span class="p">)</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;queue: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jobqueue</span><span class="o">.</span><span class="n">queue</span><span class="p">)</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;waiters: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_waiters</span><span class="p">)</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;workers: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_working</span><span class="p">)</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;total: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">stat</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../util.html" >cup.util</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

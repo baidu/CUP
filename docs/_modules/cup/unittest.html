@@ -1,0 +1,499 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.unittest &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.unittest</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/python</span>
+<span class="c"># -*- coding: utf-8 -*</span>
+<span class="c"># #############################################################################</span>
+<span class="c">#</span>
+<span class="c">#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved</span>
+<span class="c">#</span>
+<span class="c"># #############################################################################</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:author:</span>
+<span class="sd">    Guannan Ma maguannan@baidu.com @mythmgn</span>
+<span class="sd">:create_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:last_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:descrition:</span>
+<span class="sd">    Null</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">import</span> <span class="nn">cup</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&#39;assert_true&#39;</span><span class="p">,</span>
+    <span class="s">&#39;assert_false&#39;</span><span class="p">,</span>
+    <span class="s">&#39;assert_eq&#39;</span><span class="p">,</span>
+    <span class="s">&#39;assert_not_eq&#39;</span><span class="p">,</span>
+    <span class="s">&#39;assert_eq_one&#39;</span><span class="p">,</span>
+    <span class="s">&#39;assert_lt&#39;</span><span class="p">,</span>
+    <span class="s">&#39;assert_gt&#39;</span><span class="p">,</span>
+    <span class="s">&#39;assert_ge&#39;</span><span class="p">,</span>
+    <span class="s">&#39;assert_le&#39;</span><span class="p">,</span>
+    <span class="s">&#39;assert_ne&#39;</span><span class="p">,</span>
+    <span class="s">&#39;CUTCase&#39;</span><span class="p">,</span>
+    <span class="s">&#39;CCaseExecutor&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_assert_bool</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">errmsg</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">exp</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;got </span><span class="si">%s</span><span class="s">, expect </span><span class="si">%s</span><span class="se">\n</span><span class="s">User ErrMsg: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c"># pylint: disable=W0703</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">assert</span> <span class="bp">False</span><span class="p">,</span> <span class="n">msg</span>
+
+
+<div class="viewcode-block" id="assert_true"><a class="viewcode-back" href="../../cup.html#cup.unittest.assert_true">[docs]</a><span class="k">def</span> <span class="nf">assert_true</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">errmsg</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    如果val is not True， assert并打印到stdout.</span>
+<span class="sd">    errmsg参数为assert后提示到stderr的调用者错误信息</span>
+<span class="sd">    如果开启过leo.log.init_comlog的log， 同时打印critical log到log文件</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;The type of val is not bool&#39;</span><span class="p">)</span>
+    <span class="n">_assert_bool</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="assert_false"><a class="viewcode-back" href="../../cup.html#cup.unittest.assert_false">[docs]</a><span class="k">def</span> <span class="nf">assert_false</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">errmsg</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    如果val is not False， assert并打印到stdout.</span>
+<span class="sd">    errmsg参数为assert后提示到stderr的调用者错误信息</span>
+<span class="sd">    如果开启过leo.log.init_comlog的log， 同时打印critical log到log文件</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;The type of val is not bool&#39;</span><span class="p">)</span>
+    <span class="n">_assert_bool</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="assert_eq"><a class="viewcode-back" href="../../cup.html#cup.unittest.assert_eq">[docs]</a><span class="k">def</span> <span class="nf">assert_eq</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">errmsg</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    assert_eq， 如果val!=exp， assert并打印到stdout.</span>
+<span class="sd">    errmsg参数为assert后提示到stderr的调用者错误信息</span>
+<span class="sd">    如果开启过leo.log.init_comlog的log， 同时打印critical log到log文件</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">val</span> <span class="o">!=</span> <span class="n">exp</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;got </span><span class="si">%s</span><span class="s">, expect </span><span class="si">%s</span><span class="se">\n</span><span class="s">User ErrMsg: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c"># pylint: disable=W0703</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">assert</span> <span class="bp">False</span><span class="p">,</span> <span class="n">msg</span>
+
+</div>
+<div class="viewcode-block" id="assert_not_eq"><a class="viewcode-back" href="../../cup.html#cup.unittest.assert_not_eq">[docs]</a><span class="k">def</span> <span class="nf">assert_not_eq</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">errmsg</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    assert_not_eq. val不能等于exp, 如果等于则assert</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">val</span> <span class="o">==</span> <span class="n">exp</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;got </span><span class="si">%s</span><span class="s"> which is equal, expect not equal </span><span class="se">\n</span><span class="s">User ErrMsg: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">val</span><span class="p">,</span> <span class="n">errmsg</span>
+        <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c"># pylint: disable=W0703</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">assert</span> <span class="bp">False</span><span class="p">,</span> <span class="n">msg</span>
+
+</div>
+<div class="viewcode-block" id="assert_eq_one"><a class="viewcode-back" href="../../cup.html#cup.unittest.assert_eq_one">[docs]</a><span class="k">def</span> <span class="nf">assert_eq_one</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">errmsg</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    assert_eq_one, 如果val!=array(可遍历类型)里面的任何item, assert</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">equal</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">str_arr</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">array</span><span class="p">:</span>
+        <span class="n">str_arr</span> <span class="o">+=</span> <span class="s">&#39;|&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;|&#39;</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">val</span><span class="p">:</span>
+            <span class="n">equal</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">break</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">equal</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;got </span><span class="si">%s</span><span class="s">, expect one in the array: </span><span class="si">%s</span><span class="se">\n</span><span class="s">User ErrMsg: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">val</span><span class="p">,</span> <span class="n">str_arr</span><span class="p">,</span> <span class="n">errmsg</span>
+        <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c"># pylint: disable=W0703</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">assert</span> <span class="bp">False</span><span class="p">,</span> <span class="n">msg</span>
+
+</div>
+<span class="k">def</span> <span class="nf">assert_in</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">errmsg</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    同assert_eq_one, 如果val不在可遍历array里面， assert</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">assert_eq_one</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">assert_not_in</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">iteratables</span><span class="p">,</span> <span class="n">errmsg</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    如果val不存在于iteratables中，则assert</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">iteratables</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="bp">False</span><span class="p">,</span> <span class="s">&#39;val :</span><span class="si">%s</span><span class="s"> in iteratables. ErrMsg:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="assert_lt"><a class="viewcode-back" href="../../cup.html#cup.unittest.assert_lt">[docs]</a><span class="k">def</span> <span class="nf">assert_lt</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">errmsg</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    assert_lt, expect val &lt; exp</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="n">exp</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;got </span><span class="si">%s</span><span class="s">, expect less than </span><span class="si">%s</span><span class="se">\n</span><span class="s">User ErrMsg: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">val</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">errmsg</span>
+        <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c"># pylint: disable=W0703</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">assert</span> <span class="bp">False</span><span class="p">,</span> <span class="n">msg</span>
+
+</div>
+<div class="viewcode-block" id="assert_gt"><a class="viewcode-back" href="../../cup.html#cup.unittest.assert_gt">[docs]</a><span class="k">def</span> <span class="nf">assert_gt</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">errmsg</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    assert_gt, expect val &gt; exp</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;=</span> <span class="n">exp</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;got </span><span class="si">%s</span><span class="s">, expect greater than </span><span class="si">%s</span><span class="se">\n</span><span class="s">User ErrMsg: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">val</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">errmsg</span>
+        <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">assert</span> <span class="bp">False</span><span class="p">,</span> <span class="n">msg</span>
+
+</div>
+<div class="viewcode-block" id="assert_ge"><a class="viewcode-back" href="../../cup.html#cup.unittest.assert_ge">[docs]</a><span class="k">def</span> <span class="nf">assert_ge</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">errmsg</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    expect val &gt;= exp</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="n">exp</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;got </span><span class="si">%s</span><span class="s">, expect greater than (or equal to) </span><span class="si">%s</span><span class="se">\n</span><span class="s"> User ErrMsg:</span><span class="si">%s</span><span class="s">&#39;</span>\
+            <span class="o">%</span> <span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c"># pylint: disable=W0703</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">assert</span> <span class="bp">False</span>
+
+</div>
+<div class="viewcode-block" id="assert_le"><a class="viewcode-back" href="../../cup.html#cup.unittest.assert_le">[docs]</a><span class="k">def</span> <span class="nf">assert_le</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">errmsg</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    expect val &lt;= exp</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="n">exp</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;got </span><span class="si">%s</span><span class="s">, expect less than (or equal to) </span><span class="si">%s</span><span class="se">\n</span><span class="s">User ErrMsg: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">val</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">errmsg</span>
+        <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c"># pylint: disable=W0703</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">assert</span> <span class="bp">False</span><span class="p">,</span> <span class="n">msg</span>
+
+</div>
+<div class="viewcode-block" id="assert_ne"><a class="viewcode-back" href="../../cup.html#cup.unittest.assert_ne">[docs]</a><span class="k">def</span> <span class="nf">assert_ne</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">errmsg</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    expect val != exp</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="n">exp</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Expect non-equal, got two equal values </span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="se">\n</span><span class="s">User Errmsg: </span><span class="si">%s</span><span class="s">&#39;</span> \
+            <span class="o">%</span> <span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c"># pylint: disable=W0703</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">assert</span> <span class="bp">False</span><span class="p">,</span> <span class="n">errmsg</span>
+
+</div>
+<div class="viewcode-block" id="CUTCase"><a class="viewcode-back" href="../../cup.html#cup.unittest.CUTCase">[docs]</a><span class="k">class</span> <span class="nc">CUTCase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    leo库拥有的测试class. 支持nosetests. 可派生此类来实现测试class.</span>
+<span class="sd">    其中set_result函数会在nosetests执行case后设置，case成功则设置True,</span>
+<span class="sd">    case fail设置False. 在teardown阶段可调用get_result函数</span>
+<span class="sd">    来获得case是否执行成功。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="s">&#39;./test.log&#39;</span><span class="p">,</span> <span class="n">b_logstd</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">b_debug</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param logfile:</span>
+<span class="sd">            调用leo.log.init_comlog来进行log文件的初始化，case可直接调用</span>
+<span class="sd">            cup.log.[info|debug|critical|warn]来打印日志。</span>
+<span class="sd">        :param b_logstd:</span>
+<span class="sd">            是否打印日志到logfile的同时还打印stdout, 默认不打印</span>
+<span class="sd">        :param b_debug:</span>
+<span class="sd">            是否开启DEBUG Level的日志打印， 默认是INFO Level</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="n">b_debug</span><span class="p">:</span>
+            <span class="n">debuglevel</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">debuglevel</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span>
+
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">init_comlog</span><span class="p">(</span>
+            <span class="s">&#39;test_case&#39;</span><span class="p">,</span> <span class="n">debuglevel</span><span class="p">,</span>
+            <span class="n">logfile</span><span class="p">,</span> <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">ROTATION</span><span class="p">,</span> <span class="mi">5242880</span><span class="p">,</span> <span class="n">b_logstd</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="CUTCase.setup"><a class="viewcode-back" href="../../cup.html#cup.unittest.CUTCase.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Case的setup虚函数, 实际case需事先该函数</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="CUTCase.test_run"><a class="viewcode-back" href="../../cup.html#cup.unittest.CUTCase.test_run">[docs]</a>    <span class="k">def</span> <span class="nf">test_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Case的setup虚函数, 实际case需事先该函数</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="CUTCase.set_result"><a class="viewcode-back" href="../../cup.html#cup.unittest.CUTCase.set_result">[docs]</a>    <span class="k">def</span> <span class="nf">set_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b_result</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        cup ut 类用来设置case是否失败的函数。 一般不需要显示调用，</span>
+<span class="sd">        内部自动处理。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="n">b_result</span>
+</div>
+<div class="viewcode-block" id="CUTCase.get_result"><a class="viewcode-back" href="../../cup.html#cup.unittest.CUTCase.get_result">[docs]</a>    <span class="k">def</span> <span class="nf">get_result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        在teardown或者fail_teardown阶段获得是否case执行成功</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span>
+</div>
+<div class="viewcode-block" id="CUTCase.teardown"><a class="viewcode-back" href="../../cup.html#cup.unittest.CUTCase.teardown">[docs]</a>    <span class="k">def</span> <span class="nf">teardown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Case的setup虚函数, 实际case需实现该函数</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+    <span class="c"># def fail_teardown(self):</span>
+    <span class="c">#     &quot;&quot;&quot;</span>
+    <span class="c">#     Case的setup虚函数, 实际case需实现该函数</span>
+    <span class="c">#     &quot;&quot;&quot;</span>
+    <span class="c">#     pass</span>
+
+
+<span class="c"># pylint: disable=R0903</span></div></div>
+<div class="viewcode-block" id="CCaseExecutor"><a class="viewcode-back" href="../../cup.html#cup.unittest.CCaseExecutor">[docs]</a><span class="k">class</span> <span class="nc">CCaseExecutor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    可调用CCaseExecutor类来执行leo.unittest.CUTCase的派生类case.</span>
+<span class="sd">    代码示例, 可nosetests执行， 也可python test_xxx.py执行的例子</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        #!/usr/bin/env python</span>
+
+<span class="sd">        import sys</span>
+<span class="sd">        import os</span>
+<span class="sd">        import logging</span>
+
+<span class="sd">        import cup</span>
+<span class="sd">        import sb_global</span>
+
+<span class="sd">        from nfsinit import CClearMan</span>
+<span class="sd">        from nfs import CNfs</span>
+<span class="sd">        from cli import CCli</span>
+
+<span class="sd">        class TestMyCase(cup.unittest.CUTCase):</span>
+<span class="sd">            def __init__(self):</span>
+<span class="sd">                super(self.__class__, self).__init__(</span>
+<span class="sd">                    logfile=sb_global.G_CASE_RUN_LOG,</span>
+<span class="sd">                    b_logstd=False</span>
+<span class="sd">                )</span>
+<span class="sd">                cup.log.info( &#39;Start to run &#39; + str(__file__ ) )</span>
+<span class="sd">                self._cli = CCli()</span>
+<span class="sd">                self._nfs = CNfs()</span>
+<span class="sd">                self._uniq_strman = cup.util.CGeneratorMan()</span>
+<span class="sd">                self._clearman = CClearMan()</span>
+
+<span class="sd">            def setup(self):</span>
+<span class="sd">                str_uniq = self._uniq_strman.get_uniqname()</span>
+<span class="sd">                self._workfolder = os.path.abspath(os.getcwd()) \</span>
+<span class="sd">                    + &#39;/&#39; + str_uniq</span>
+<span class="sd">                self._work_remote_folder = \</span>
+<span class="sd">                    self._nfs.translate_path_into_remote_under_rw_folder(</span>
+<span class="sd">                    str_uniq</span>
+<span class="sd">                    )</span>
+<span class="sd">                os.mkdir(self._workfolder)</span>
+<span class="sd">                self._clearman.addfolder(self._workfolder)</span>
+
+<span class="sd">            def _check_filemd5(self, src, dst):</span>
+<span class="sd">                ret = os.system(&#39;/usr/bin/diff --brief %s %s&#39; % (src, dst) )</span>
+<span class="sd">                cup.unittest.assert_eq( 0, ret )</span>
+
+<span class="sd">            def test_run(self):</span>
+<span class="sd">                #</span>
+<span class="sd">                # @author: maguannan</span>
+<span class="sd">                #</span>
+<span class="sd">                inited_bigfile = sb_global.G_NFS_DISK_RD + \</span>
+<span class="sd">                    sb_global.G_TEST_BIGFILE</span>
+<span class="sd">                bigfile = self._workfolder + \</span>
+<span class="sd">                    &#39;/test_big_file_offsite_write_random_write&#39;</span>
+<span class="sd">                self.tmpfile = sb_global.G_TMP4USE + \</span>
+<span class="sd">                    &#39;/test_big_file_offsite_write_random_write&#39;</span>
+<span class="sd">                os.system( &#39;cp %s %s&#39; % (inited_bigfile, bigfile) )</span>
+<span class="sd">                os.system( &#39;cp %s %s&#39; % (bigfile, self.tmpfile) )</span>
+<span class="sd">                times = 50</span>
+<span class="sd">                baseOffsite = 1000</span>
+<span class="sd">                fp0 = open(bigfile, &#39;r+b&#39;)</span>
+<span class="sd">                fp1 = open(self.tmpfile, &#39;rb+&#39;)</span>
+<span class="sd">                for i in xrange( 0, times ):</span>
+<span class="sd">                    fp0.seek(baseOffsite)</span>
+<span class="sd">                    fp1.seek(baseOffsite)</span>
+<span class="sd">                    fp0.write( &#39;a&#39; * 100 )</span>
+<span class="sd">                    fp1.write( &#39;a&#39; * 100 )</span>
+<span class="sd">                    baseOffsite += 1000</span>
+<span class="sd">                fp0.close()</span>
+<span class="sd">                fp1.close()</span>
+
+<span class="sd">                self._check_filemd5(bigfile, self.tmpfile)</span>
+
+<span class="sd">            def teardown(self):</span>
+<span class="sd">                if self.get_result():</span>
+<span class="sd">                    # if case succeeded, do sth</span>
+<span class="sd">                    os.unlink(self.tmpfile)</span>
+<span class="sd">                    self._clearman.teardown()</span>
+<span class="sd">                else:</span>
+<span class="sd">                    # if case failed, do sth else.</span>
+<span class="sd">                    print &#39;failed&#39;</span>
+<span class="sd">                cup.log.info( &#39;End running &#39; + str(__file__ ) )</span>
+
+<span class="sd">        if __name__ == &#39;__main__&#39;:</span>
+<span class="sd">            cup.unittest.CCaseExecutor().runcase(TestMyCase())</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="CCaseExecutor.runcase"><a class="viewcode-back" href="../../cup.html#cup.unittest.CCaseExecutor.runcase">[docs]</a>    <span class="k">def</span> <span class="nf">runcase</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">case</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        run the case</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">failed</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">case</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+            <span class="n">case</span><span class="o">.</span><span class="n">test_run</span><span class="p">()</span>
+            <span class="n">case</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        <span class="c"># pylint: disable=W0703</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+            <span class="n">case</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+            <span class="n">failed</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="c"># case.teardown()</span>
+        <span class="k">if</span> <span class="n">failed</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">case</span><span class="o">.</span><span class="n">fail_teardown</span><span class="p">()</span>
+            <span class="c"># pylint: disable=W0703</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">print</span> <span class="s">&#39;========================&#39;</span>
+            <span class="k">print</span> <span class="s">&#39;======== Failed ========&#39;</span>
+            <span class="k">print</span> <span class="s">&#39;========================&#39;</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">case</span><span class="o">.</span><span class="n">teardown</span><span class="p">()</span>
+        <span class="k">print</span> <span class="s">&#39;========================&#39;</span>
+        <span class="k">print</span> <span class="s">&#39;======== Passed ========&#39;</span>
+        <span class="k">print</span> <span class="s">&#39;========================&#39;</span>
+
+<span class="c"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

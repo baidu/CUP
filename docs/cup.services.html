@@ -1,0 +1,347 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.services package &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="index.html" />
+    <link rel="up" title="cup package" href="cup.html" />
+    <link rel="next" title="cup.shell package" href="cup.shell.html" />
+    <link rel="prev" title="cup.res package" href="cup.res.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cup.shell.html" title="cup.shell package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cup.res.html" title="cup.res package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="cup.html" accesskey="U">cup package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="cup-services-package">
+<h1>cup.services package<a class="headerlink" href="#cup-services-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cup.services.heartbeat">
+<span id="cup-services-heartbeat-module"></span><h2>cup.services.heartbeat module<a class="headerlink" href="#module-cup.services.heartbeat" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma <a class="reference external" href="mailto:maguannan&#37;&#52;&#48;baidu&#46;com">maguannan<span>&#64;</span>baidu<span>&#46;</span>com</a> &#64;mythmgn</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body">heartbeat related module</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="cup.services.heartbeat.Device">
+<em class="property">class </em><tt class="descclassname">cup.services.heartbeat.</tt><tt class="descname">Device</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#Device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.Device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Base class for all devices in heartbeat service</p>
+<dl class="method">
+<dt id="cup.services.heartbeat.Device.get_last_healthy">
+<tt class="descname">get_last_healthy</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#Device.get_last_healthy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.Device.get_last_healthy" title="Permalink to this definition">¶</a></dt>
+<dd><p>get last_healthy time of the device</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.Device.get_name">
+<tt class="descname">get_name</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#Device.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.Device.get_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>get name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.Device.serilize">
+<tt class="descname">serilize</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#Device.serilize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.Device.serilize" title="Permalink to this definition">¶</a></dt>
+<dd><p>serilize device info</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.Device.set_last_healthy">
+<tt class="descname">set_last_healthy</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#Device.set_last_healthy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.Device.set_last_healthy" title="Permalink to this definition">¶</a></dt>
+<dd><p>set last_healthy time</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.services.heartbeat.HeartbeatService">
+<em class="property">class </em><tt class="descclassname">cup.services.heartbeat.</tt><tt class="descname">HeartbeatService</tt><big>(</big><em>judge_lost_in_sec</em>, <em>keep_lost=False</em><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#HeartbeatService"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.HeartbeatService" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>HeartBeat service</p>
+<dl class="method">
+<dt id="cup.services.heartbeat.HeartbeatService.activate">
+<tt class="descname">activate</tt><big>(</big><em>key</em>, <em>device</em><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#HeartbeatService.activate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.HeartbeatService.activate" title="Permalink to this definition">¶</a></dt>
+<dd><p>activate a device in HeartBeat Service.
+Add one if it&#8217;s new to hbs.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.HeartbeatService.adjust_judge_lost_time">
+<tt class="descname">adjust_judge_lost_time</tt><big>(</big><em>time_in_sec</em><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#HeartbeatService.adjust_judge_lost_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.HeartbeatService.adjust_judge_lost_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>adjust judge_lost_in_sec</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.HeartbeatService.cleanup_oldlost">
+<tt class="descname">cleanup_oldlost</tt><big>(</big><em>dump_file=None</em><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#HeartbeatService.cleanup_oldlost"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.HeartbeatService.cleanup_oldlost" title="Permalink to this definition">¶</a></dt>
+<dd><p>cleanup old lost devices.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dump_file</strong> &#8211; if dump_file is not None, we will store devices info into dump_file
+Otherwise, we will cleanup the lost devices only.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.HeartbeatService.get_lost">
+<tt class="descname">get_lost</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#HeartbeatService.get_lost"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.HeartbeatService.get_lost" title="Permalink to this definition">¶</a></dt>
+<dd><p>get lost devices</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.HeartbeatService.refresh">
+<tt class="descname">refresh</tt><big>(</big><em>key</em><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#HeartbeatService.refresh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.HeartbeatService.refresh" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> &#8211; refresh the device by key</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">if key does not exist, return False
+else, fresh the last_healthy time of the device</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.services.heartbeat.LinuxHost">
+<em class="property">class </em><tt class="descclassname">cup.services.heartbeat.</tt><tt class="descname">LinuxHost</tt><big>(</big><em>name</em>, <em>init_this_host=False</em>, <em>iface='eth0'</em><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.services.heartbeat.Device" title="cup.services.heartbeat.Device"><tt class="xref py py-class docutils literal"><span class="pre">cup.services.heartbeat.Device</span></tt></a></p>
+<p>a linux host resource</p>
+<dl class="method">
+<dt id="cup.services.heartbeat.LinuxHost.get_cpu_idle">
+<tt class="descname">get_cpu_idle</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost.get_cpu_idle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost.get_cpu_idle" title="Permalink to this definition">¶</a></dt>
+<dd><p>get cpu idle rate</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.LinuxHost.get_ip">
+<tt class="descname">get_ip</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost.get_ip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost.get_ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>return ip information</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.LinuxHost.get_mem_info">
+<tt class="descname">get_mem_info</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost.get_mem_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost.get_mem_info" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(mem_inuse, mem_total), in MB</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.LinuxHost.get_net_usage">
+<tt class="descname">get_net_usage</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost.get_net_usage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost.get_net_usage" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(net_in, net_out)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.LinuxHost.set_cpu_idle">
+<tt class="descname">set_cpu_idle</tt><big>(</big><em>idle_rate</em><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost.set_cpu_idle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost.set_cpu_idle" title="Permalink to this definition">¶</a></dt>
+<dd><p>set cpu idle rate</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.LinuxHost.set_ip_port">
+<tt class="descname">set_ip_port</tt><big>(</big><em>ipaddr</em><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost.set_ip_port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost.set_ip_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>set ip information</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ipaddr</strong> &#8211; ipaddr should be string and something like 10.10.10.1</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.LinuxHost.set_linux_res_bydict">
+<tt class="descname">set_linux_res_bydict</tt><big>(</big><em>info_dict</em><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost.set_linux_res_bydict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost.set_linux_res_bydict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>{</dt>
+<dd>&#8216;iface&#8217;: &#8216;eth0&#8217;,
+&#8216;ipaddr&#8217;: &#8216;10.10.10.1&#8217;,
+&#8216;port&#8217;:   8089,
+&#8216;cpu_idle&#8217;: 50,
+&#8216;mem_inuse&#8217;: 1024,        # MB
+&#8216;mem_total&#8217;: 8192,
+&#8216;net_in&#8217;:    8192,        # kb
+&#8216;net_out&#8217;:   102400,      # kb</dd>
+</dl>
+<p>}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.LinuxHost.set_mem_usage">
+<tt class="descname">set_mem_usage</tt><big>(</big><em>mem_inuse</em>, <em>mem_total</em><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost.set_mem_usage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost.set_mem_usage" title="Permalink to this definition">¶</a></dt>
+<dd><p>set up mem_inuse and mem_total.
+Will update any of them if it is not None.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.LinuxHost.set_net_usage">
+<tt class="descname">set_net_usage</tt><big>(</big><em>net_in</em>, <em>net_out</em><big>)</big><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost.set_net_usage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost.set_net_usage" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>net_in</strong> &#8211; net_in in kB/s. If net_in is None, will update nothing.</li>
+<li><strong>net_out</strong> &#8211; net_out in kB/s. If net_out is None, will update nothing.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.services">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cup.services" title="Permalink to this headline">¶</a></h2>
+<p>&#64;author Guannan Ma &#64;mythmgn</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">cup.services package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-cup.services.heartbeat">cup.services.heartbeat module</a></li>
+<li><a class="reference internal" href="#module-cup.services">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="cup.res.html"
+                        title="previous chapter">cup.res package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cup.shell.html"
+                        title="next chapter">cup.shell package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/cup.services.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cup.shell.html" title="cup.shell package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="cup.res.html" title="cup.res package"
+             >previous</a> |</li>
+        <li><a href="index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="cup.html" >cup package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

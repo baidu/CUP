@@ -1,0 +1,1124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup package &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="index.html" />
+    <link rel="next" title="cup.net package" href="cup.net.html" />
+    <link rel="prev" title="Welcome to cup’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cup.net.html" title="cup.net package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to cup’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">cup 1.2.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="cup-package">
+<h1>cup package<a class="headerlink" href="#cup-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cup.net.html">cup.net package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cup.net.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cup.net.async.html">cup.net.async package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.async.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.async.html#module-cup.net.async.common">cup.net.async.common module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.async.html#module-cup.net.async.conn">cup.net.async.conn module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.async.html#module-cup.net.async.msg">cup.net.async.msg module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.async.html#module-cup.net.async.msgcenter">cup.net.async.msgcenter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.async.html#module-cup.net.async">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cup.net.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.net.html#module-cup.net.route">cup.net.route module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.net.html#module-cup.net">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cup.res.html">cup.res package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cup.res.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.res.html#module-cup.res.linux">cup.res.linux module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.res.html#module-cup.res">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cup.services.html">cup.services package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cup.services.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.services.html#module-cup.services.heartbeat">cup.services.heartbeat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.services.html#module-cup.services">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cup.shell.html">cup.shell package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cup.shell.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.shell.html#module-cup.shell.expect">cup.shell.expect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.shell.html#module-cup.shell">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cup.thirdp.html">cup.thirdp package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cup.thirdp.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cup.thirdp.MySQLdb.html">cup.thirdp.MySQLdb package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cup.thirdp.MySQLdb.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="cup.thirdp.MySQLdb.constants.html">cup.thirdp.MySQLdb.constants package</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="cup.thirdp.MySQLdb.constants.html#submodules">Submodules</a></li>
+<li class="toctree-l6"><a class="reference internal" href="cup.thirdp.MySQLdb.constants.html#module-cup.thirdp.MySQLdb.constants.CLIENT">cup.thirdp.MySQLdb.constants.CLIENT module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="cup.thirdp.MySQLdb.constants.html#module-cup.thirdp.MySQLdb.constants.CR">cup.thirdp.MySQLdb.constants.CR module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="cup.thirdp.MySQLdb.constants.html#module-cup.thirdp.MySQLdb.constants.ER">cup.thirdp.MySQLdb.constants.ER module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="cup.thirdp.MySQLdb.constants.html#module-cup.thirdp.MySQLdb.constants.FIELD_TYPE">cup.thirdp.MySQLdb.constants.FIELD_TYPE module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="cup.thirdp.MySQLdb.constants.html#module-cup.thirdp.MySQLdb.constants.FLAG">cup.thirdp.MySQLdb.constants.FLAG module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="cup.thirdp.MySQLdb.constants.html#module-cup.thirdp.MySQLdb.constants.REFRESH">cup.thirdp.MySQLdb.constants.REFRESH module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="cup.thirdp.MySQLdb.constants.html#module-cup.thirdp.MySQLdb.constants">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="cup.thirdp.MySQLdb.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.thirdp.MySQLdb.html#module-cup.thirdp.MySQLdb.connections">cup.thirdp.MySQLdb.connections module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.thirdp.MySQLdb.html#module-cup.thirdp.MySQLdb.converters">cup.thirdp.MySQLdb.converters module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.thirdp.MySQLdb.html#module-cup.thirdp.MySQLdb.cursors">cup.thirdp.MySQLdb.cursors module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.thirdp.MySQLdb.html#module-cup.thirdp.MySQLdb.release">cup.thirdp.MySQLdb.release module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.thirdp.MySQLdb.html#module-cup.thirdp.MySQLdb.times">cup.thirdp.MySQLdb.times module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.thirdp.MySQLdb.html#module-cup.thirdp.MySQLdb">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cup.thirdp.httplib2.html">cup.thirdp.httplib2 package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cup.thirdp.httplib2.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.thirdp.httplib2.html#module-cup.thirdp.httplib2.iri2uri">cup.thirdp.httplib2.iri2uri module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.thirdp.httplib2.html#module-cup.thirdp.httplib2.socks">cup.thirdp.httplib2.socks module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.thirdp.httplib2.html#module-cup.thirdp.httplib2">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cup.thirdp.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.thirdp.html#module-cup.thirdp.pexpect">cup.thirdp.pexpect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.thirdp.html#module-cup.thirdp">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cup.util.html">cup.util package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cup.util.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.util.html#module-cup.util.conf">cup.util.conf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.util.html#module-cup.util.constants">cup.util.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.util.html#module-cup.util.context">cup.util.context module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.util.html#module-cup.util.generator">cup.util.generator module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cup.util.html#class-cgeneratorman-object">class CGeneratorMan(object)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cup.util.html#module-cup.util.misc">cup.util.misc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.util.html#module-cup.util.thread">cup.util.thread module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.util.html#module-cup.util.threadpool">cup.util.threadpool module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.util.html#module-cup.util">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cup.web.html">cup.web package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cup.web.html#module-cup.web">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cup.cache">
+<span id="cup-cache-module"></span><h2>cup.cache module<a class="headerlink" href="#module-cup.cache" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body">cache related module</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="cup.cache.KvCache">
+<em class="property">class </em><tt class="descclassname">cup.cache.</tt><tt class="descname">KvCache</tt><a class="reference internal" href="_modules/cup/cache.html#KvCache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.cache.KvCache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Key-Value Cache object</p>
+<dl class="method">
+<dt id="cup.cache.KvCache.cleanup_expired">
+<tt class="descname">cleanup_expired</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/cache.html#KvCache.cleanup_expired"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.cache.KvCache.cleanup_expired" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete all expired items</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.cache.KvCache.clear">
+<tt class="descname">clear</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/cache.html#KvCache.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.cache.KvCache.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove all kv cache inside.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.cache.KvCache.get">
+<tt class="descname">get</tt><big>(</big><em>key</em><big>)</big><a class="reference internal" href="_modules/cup/cache.html#KvCache.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.cache.KvCache.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get your cache with key.
+If the cache is expired, it will return None.
+If the key does not exist, it will return None.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.cache.KvCache.get_expired">
+<tt class="descname">get_expired</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/cache.html#KvCache.get_expired"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.cache.KvCache.get_expired" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>return expired items. Return type is a dict (</dt>
+<dd><dl class="first docutils">
+<dt>{</dt>
+<dd>&#8216;key&#8217; : (value, expire_time)</dd>
+</dl>
+<p class="last">}</p>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.cache.KvCache.set">
+<tt class="descname">set</tt><big>(</big><em>kvlist</em>, <em>expire_sec=None</em><big>)</big><a class="reference internal" href="_modules/cup/cache.html#KvCache.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.cache.KvCache.set" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>kvlist</strong> &#8211; kvlist is a dict that contains your cache.</li>
+<li><strong>expire_sec</strong> &#8211; if expire_sec is None, the cache will never expire.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.cache.KvCache.stat">
+<tt class="descname">stat</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/cache.html#KvCache.stat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.cache.KvCache.stat" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a tuple with (item_num, expired_num)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.decorators">
+<span id="cup-decorators-module"></span><h2>cup.decorators module<a class="headerlink" href="#module-cup.decorators" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma <a class="reference external" href="mailto:maguannan&#37;&#52;&#48;baidu&#46;com">maguannan<span>&#64;</span>baidu<span>&#46;</span>com</a> &#64;mythmgn</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body">decorators related module</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="cup.decorators.Singleton">
+<em class="property">class </em><tt class="descclassname">cup.decorators.</tt><tt class="descname">Singleton</tt><big>(</big><em>cls</em><big>)</big><a class="reference internal" href="_modules/cup/decorators.html#Singleton"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.decorators.Singleton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Singleton你的类.
+用法如下:</p>
+<div class="highlight-python"><pre>import cup
+
+@cup.decorator.Singleton
+class YourClass(object):
+    def __init__(self):
+    pass</pre>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.decorators.needlinux">
+<tt class="descclassname">cup.decorators.</tt><tt class="descname">needlinux</tt><big>(</big><em>function</em><big>)</big><a class="reference internal" href="_modules/cup/decorators.html#needlinux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.decorators.needlinux" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Platform:</th><td class="field-body">Linux</td>
+</tr>
+</tbody>
+</table>
+<p>只支持linux的python修饰符, 用来表明这个函数只能运行在linux系统上.
+如果函数运行在非linux平台, raise cup.err.DecoratorException</p>
+<dl class="docutils">
+<dt>用法如下::</dt>
+<dd><p class="first">import cup
+&#64;cup.decorator.needlinux
+def your_func():</p>
+<blockquote class="last">
+<div>pass</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.decorators.TraceUsedTime">
+<em class="property">class </em><tt class="descclassname">cup.decorators.</tt><tt class="descname">TraceUsedTime</tt><big>(</big><em>b_print_stdout=False</em>, <em>enter_msg=''</em>, <em>leave_msg=''</em><big>)</big><a class="reference internal" href="_modules/cup/decorators.html#TraceUsedTime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.decorators.TraceUsedTime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>追踪函数的耗时情况
+如果init过cup.log.init_comlog, 会打印到log文件。
+example:</p>
+<dl class="docutils">
+<dt>::</dt>
+<dd><p class="first">import time</p>
+<p>from cup import decorators</p>
+<p>&#64;decorators.TraceUsedTime(True)
+def test():</p>
+<blockquote>
+<div>print &#8216;test&#8217;
+time.sleep(4)</div></blockquote>
+<p># trace something with context. E.g. event_id
+def _test_trace_time_map(sleep_time):</p>
+<blockquote>
+<div>print &#8220;ready to work&#8221;
+time.sleep(sleep_time)</div></blockquote>
+<dl class="docutils">
+<dt>traced_test_trace_time_map = decorators.TraceUsedTime(</dt>
+<dd>b_print_stdout=False,
+enter_msg=&#8217;event_id: 0x12345&#8217;,
+leave_msg=&#8217;event_id: 0x12345&#8217;</dd>
+</dl>
+<p class="last">)(_test_trace_time_map)
+traced_test_trace_time_map(sleep_time=5)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.err">
+<span id="cup-err-module"></span><h2>cup.err module<a class="headerlink" href="#module-cup.err" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma <a class="reference external" href="mailto:maguannan&#37;&#52;&#48;baidu&#46;com">maguannan<span>&#64;</span>baidu<span>&#46;</span>com</a> &#64;mythmgn</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">last_modify_date:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">2014</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body">error related module</td>
+</tr>
+</tbody>
+</table>
+<dl class="exception">
+<dt id="cup.err.BaseCupException">
+<em class="property">exception </em><tt class="descclassname">cup.err.</tt><tt class="descname">BaseCupException</tt><big>(</big><em>msg</em><big>)</big><a class="reference internal" href="_modules/cup/err.html#BaseCupException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.err.BaseCupException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>所有cup库Exception的基类.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.err.DecoratorException">
+<em class="property">exception </em><tt class="descclassname">cup.err.</tt><tt class="descname">DecoratorException</tt><big>(</big><em>msg</em><big>)</big><a class="reference internal" href="_modules/cup/err.html#DecoratorException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.err.DecoratorException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.err.BaseCupException" title="cup.err.BaseCupException"><tt class="xref py py-class docutils literal"><span class="pre">cup.err.BaseCupException</span></tt></a></p>
+<p>Cup Decorator修饰符相关的异常Exception</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.err.LoggerException">
+<em class="property">exception </em><tt class="descclassname">cup.err.</tt><tt class="descname">LoggerException</tt><big>(</big><em>msg</em><big>)</big><a class="reference internal" href="_modules/cup/err.html#LoggerException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.err.LoggerException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.err.BaseCupException" title="cup.err.BaseCupException"><tt class="xref py py-class docutils literal"><span class="pre">cup.err.BaseCupException</span></tt></a></p>
+<p>cup.log相关的Exception</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.err.ResException">
+<em class="property">exception </em><tt class="descclassname">cup.err.</tt><tt class="descname">ResException</tt><big>(</big><em>msg</em><big>)</big><a class="reference internal" href="_modules/cup/err.html#ResException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.err.ResException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.err.BaseCupException" title="cup.err.BaseCupException"><tt class="xref py py-class docutils literal"><span class="pre">cup.err.BaseCupException</span></tt></a></p>
+<p>cup.res相关的Exception</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.err.NoSuchProcess">
+<em class="property">exception </em><tt class="descclassname">cup.err.</tt><tt class="descname">NoSuchProcess</tt><big>(</big><em>pid</em>, <em>str_process_name</em><big>)</big><a class="reference internal" href="_modules/cup/err.html#NoSuchProcess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.err.NoSuchProcess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.err.ResException" title="cup.err.ResException"><tt class="xref py py-class docutils literal"><span class="pre">cup.err.ResException</span></tt></a></p>
+<p>通用Exception, 找不到这个进程</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.err.AccessDenied">
+<em class="property">exception </em><tt class="descclassname">cup.err.</tt><tt class="descname">AccessDenied</tt><big>(</big><em>str_resouce</em><big>)</big><a class="reference internal" href="_modules/cup/err.html#AccessDenied"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.err.AccessDenied" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.err.ResException" title="cup.err.ResException"><tt class="xref py py-class docutils literal"><span class="pre">cup.err.ResException</span></tt></a></p>
+<p>通用Exception, 权限相关的异常Exception类</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.err.NetException">
+<em class="property">exception </em><tt class="descclassname">cup.err.</tt><tt class="descname">NetException</tt><big>(</big><em>msg=''</em><big>)</big><a class="reference internal" href="_modules/cup/err.html#NetException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.err.NetException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.err.BaseCupException" title="cup.err.BaseCupException"><tt class="xref py py-class docutils literal"><span class="pre">cup.err.BaseCupException</span></tt></a></p>
+<p>通用网络相关Exception</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.err.AsyncMsgError">
+<em class="property">exception </em><tt class="descclassname">cup.err.</tt><tt class="descname">AsyncMsgError</tt><big>(</big><em>msg=''</em><big>)</big><a class="reference internal" href="_modules/cup/err.html#AsyncMsgError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.err.AsyncMsgError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.err.NetException" title="cup.err.NetException"><tt class="xref py py-class docutils literal"><span class="pre">cup.err.NetException</span></tt></a></p>
+<p>cup.net.async异步消息相关的异常Exception类</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cup.err.ThreadTermException">
+<em class="property">exception </em><tt class="descclassname">cup.err.</tt><tt class="descname">ThreadTermException</tt><big>(</big><em>msg=''</em><big>)</big><a class="reference internal" href="_modules/cup/err.html#ThreadTermException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.err.ThreadTermException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.err.BaseCupException" title="cup.err.BaseCupException"><tt class="xref py py-class docutils literal"><span class="pre">cup.err.BaseCupException</span></tt></a></p>
+<p>结束线程相关的err</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.log">
+<span id="cup-log-module"></span><h2>cup.log module<a class="headerlink" href="#module-cup.log" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body">common log related module</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="cup.log.debug">
+<tt class="descclassname">cup.log.</tt><tt class="descname">debug</tt><big>(</big><em>msg</em>, <em>back_trace_len=0</em><big>)</big><a class="reference internal" href="_modules/cup/log.html#debug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.log.debug" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>msg</strong> &#8211; logging.DEBUG级别的日志打印。</li>
+<li><strong>back_trace_len</strong> &#8211; 为扩展预留的参数， 正常使用可忽略。</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.log.info">
+<tt class="descclassname">cup.log.</tt><tt class="descname">info</tt><big>(</big><em>msg</em>, <em>back_trace_len=0</em><big>)</big><a class="reference internal" href="_modules/cup/log.html#info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.log.info" title="Permalink to this definition">¶</a></dt>
+<dd><p>logging.INFO的日志打印</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.log.warn">
+<tt class="descclassname">cup.log.</tt><tt class="descname">warn</tt><big>(</big><em>msg</em>, <em>back_trace_len=0</em><big>)</big><a class="reference internal" href="_modules/cup/log.html#warn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.log.warn" title="Permalink to this definition">¶</a></dt>
+<dd><p>logging.WARN级别的日志打印</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.log.critical">
+<tt class="descclassname">cup.log.</tt><tt class="descname">critical</tt><big>(</big><em>msg</em>, <em>back_trace_len=0</em><big>)</big><a class="reference internal" href="_modules/cup/log.html#critical"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.log.critical" title="Permalink to this definition">¶</a></dt>
+<dd><p>logging.CRITICAL级别的日志打印</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.log.init_comlog">
+<tt class="descclassname">cup.log.</tt><tt class="descname">init_comlog</tt><big>(</big><em>loggername</em>, <em>loglevel=20</em>, <em>logfile='cup.log'</em>, <em>logtype=0</em>, <em>maxlogsize=1073741824</em>, <em>bprint_console=False</em><big>)</big><a class="reference internal" href="_modules/cup/log.html#init_comlog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.log.init_comlog" title="Permalink to this definition">¶</a></dt>
+<dd><p>初始化日志函数。用法如下:</p>
+<div class="highlight-python"><pre>:param loggername:</pre>
+</div>
+<blockquote>
+<div>这个logger的名字.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>loglevel</strong> &#8211; 一共四种 logging.DEBUG logging.INFO logging.WARN logging.CRITICAL</li>
+<li><strong>logfile</strong> &#8211; log文件的位置,如不存在，会尝试创建该文件</li>
+<li><strong>logtype</strong> &#8211; 支持两种leo.log.ROTATION cup.log.INFINITE
+ROTATION会在文件大小达到maxlogsize的时候进行switch.
+一共会switch 30个文件, 然后在这30个文件里面ROTATION的写
+INFINITE会一直写log文件</li>
+<li><strong>maxlogsize</strong> &#8211; logfile的最大文件大小(单位byte).超过会进行覆盖写或者switch.</li>
+<li><strong>b_printcmd</strong> &#8211; 打印日志到logfile的同时,是否打印到stdout.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>请注意，打印日志时要么打印unicode字符，要么打印Python默认的UTF8的字符</p>
+<p><em>E.g.</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">cup</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="n">log</span><span class="o">.</span><span class="n">init_comlog</span><span class="p">(</span>
+    <span class="s">&#39;test&#39;</span><span class="p">,</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
+    <span class="s">&#39;/home/work/test/test.log&#39;</span><span class="p">,</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">ROTATION</span><span class="p">,</span>
+    <span class="mi">1024</span><span class="p">,</span>
+    <span class="bp">False</span>
+<span class="p">)</span>
+<span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;test xxx&#39;</span><span class="p">)</span>
+<span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s">&#39;test critical&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.log.setloglevel">
+<tt class="descclassname">cup.log.</tt><tt class="descname">setloglevel</tt><big>(</big><em>logginglevel</em><big>)</big><a class="reference internal" href="_modules/cup/log.html#setloglevel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.log.setloglevel" title="Permalink to this definition">¶</a></dt>
+<dd><p>进程运行时更改loglevel</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>logginglevel</strong> &#8211; 四种, 同init_comlog的loglevel</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.mail">
+<span id="cup-mail-module"></span><h2>cup.mail module<a class="headerlink" href="#module-cup.mail" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body">mail related modules. <strong>Recommand using SmtpMailer</strong></td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="cup.mail.mutt_sendmail">
+<tt class="descclassname">cup.mail.</tt><tt class="descname">mutt_sendmail</tt><big>(</big><em>tostr</em>, <em>subject</em>, <em>body</em>, <em>attach</em>, <em>content_is_html=False</em><big>)</big><a class="reference internal" href="_modules/cup/mail.html#mutt_sendmail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.mail.mutt_sendmail" title="Permalink to this definition">¶</a></dt>
+<dd><p>请注意。mutt_sendmail不推荐被使用，除非无法使用此module的SmtpMailer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>exec_cwd</strong> &#8211; 切换到exec_cwd目录，然后发送邮件。 发送之后会回到原来的workdir.
+如果不期望切换目录， 请传入&#8217;&#8216;</li>
+<li><strong>tostr</strong> &#8211; 收件人列表， 可多人。 用,分隔</li>
+<li><strong>subject</strong> &#8211; 邮件主题</li>
+<li><strong>body</strong> &#8211; 邮件内容</li>
+<li><strong>attach</strong> &#8211; 邮件附件，可多项，用,分割。</li>
+<li><strong>content_is_html</strong> &#8211; 邮件内容是否是html格式的</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">执行成功返回True, 否则返回False, 并打印错误到stderr</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.mail.SmtpMailer">
+<em class="property">class </em><tt class="descclassname">cup.mail.</tt><tt class="descname">SmtpMailer</tt><big>(</big><em>sender</em>, <em>server='mail2-in.baidu.com'</em>, <em>port=25</em>, <em>is_html=False</em><big>)</big><a class="reference internal" href="_modules/cup/mail.html#SmtpMailer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.mail.SmtpMailer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sender</strong> &#8211; 设置发送人邮箱</li>
+<li><strong>server</strong> &#8211; smtp的mailserver</li>
+<li><strong>port</strong> &#8211; port</li>
+<li><strong>is_html</strong> &#8211; body是否是html.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>如下有个支持html嵌入图片以及附件的例子
+我厂的smtp server hostname请自行babel搜索smtp服务器</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">cup</span>
+<span class="n">mailer</span> <span class="o">=</span> <span class="n">cup</span><span class="o">.</span><span class="n">mail</span><span class="o">.</span><span class="n">SmtpMailer</span><span class="p">(</span>
+    <span class="s">&#39;xxx@xxx.com&#39;</span><span class="p">,</span>
+    <span class="s">&#39;xxxx.smtp.xxx.com&#39;</span><span class="p">,</span>
+    <span class="n">is_html</span><span class="o">=</span><span class="bp">True</span>
+<span class="p">)</span>
+<span class="n">mailer</span><span class="o">.</span><span class="n">sendmail</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="s">&#39;maguannan@baidu.com&#39;</span><span class="p">,</span>
+        <span class="s">&#39;liuxuan05@baidu.com&#39;</span><span class="p">,</span>
+        <span class="s">&#39;zhaominghao@baidu.com&#39;</span>
+    <span class="p">],</span>
+    <span class="s">&#39;test_img&#39;</span><span class="p">,</span>
+    <span class="p">(</span>
+        <span class="s">&#39;testset &lt;img src=&quot;http://sagit.baidu.com/main/&#39;</span>
+        <span class="s">&#39;wp-content/uploads/2013/06/monkeyc.jpg&quot;&gt;&lt;/img&gt;&#39;</span>
+    <span class="p">),</span>
+    <span class="p">[</span><span class="s">&#39;/home/work/test.txt&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="cup.mail.SmtpMailer.sendmail">
+<tt class="descname">sendmail</tt><big>(</big><em>recipients</em>, <em>subject=''</em>, <em>body=''</em>, <em>attachments=None</em><big>)</big><a class="reference internal" href="_modules/cup/mail.html#SmtpMailer.sendmail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.mail.SmtpMailer.sendmail" title="Permalink to this definition">¶</a></dt>
+<dd><p>发送邮件.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>recipients</strong> &#8211; 支持传入一个邮件接收者(string), 或者邮件接受者list</li>
+<li><strong>subject</strong> &#8211; 邮件主题</li>
+<li><strong>body</strong> &#8211; 邮件正文</li>
+<li><strong>attachments</strong> &#8211; 支持传入一个附件(string类型,邮件路径)或者附件list路径列表.
+请注意, 需要传入绝对路径!</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">发送成功返回(True, None)的tuple, 失败返回(False, error_msg)的tuple</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.mail.SmtpMailer.setup">
+<tt class="descname">setup</tt><big>(</big><em>sender</em>, <em>server</em>, <em>port=25</em>, <em>is_html=False</em><big>)</big><a class="reference internal" href="_modules/cup/mail.html#SmtpMailer.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.mail.SmtpMailer.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>可在运行过程中更改发送设置</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.oper">
+<span id="cup-oper-module"></span><h2>cup.oper module<a class="headerlink" href="#module-cup.oper" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Zhao Minghao</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body">operations related module</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="cup.oper.rm">
+<tt class="descclassname">cup.oper.</tt><tt class="descname">rm</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/cup/oper.html#rm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.oper.rm" title="Permalink to this definition">¶</a></dt>
+<dd><p>rm the file if no exception happens.
+Will not raise exception if it fails</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.oper.rmrf">
+<tt class="descclassname">cup.oper.</tt><tt class="descname">rmrf</tt><big>(</big><em>fpath</em><big>)</big><a class="reference internal" href="_modules/cup/oper.html#rmrf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.oper.rmrf" title="Permalink to this definition">¶</a></dt>
+<dd><p>可使用pythn自带的shutil.rmtree 不推荐使用这个函数
+:param fpath:</p>
+<blockquote>
+<div>删除的路径</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.oper.is_proc_exist">
+<tt class="descclassname">cup.oper.</tt><tt class="descname">is_proc_exist</tt><big>(</big><em>path</em>, <em>name</em><big>)</big><a class="reference internal" href="_modules/cup/oper.html#is_proc_exist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.oper.is_proc_exist" title="Permalink to this definition">¶</a></dt>
+<dd><p>通过name找到该进程的pid. 之后通过传入的path匹配/proc进程目录底下的cwd文件，
+如果cwd也包含该path目录。 则认为proc进程存在， return True, 否则False
+:param path:</p>
+<blockquote>
+<div>源程序运行启动的路径</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; 源程序名称</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">存在返回True， 不存在返回False</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.oper.kill">
+<tt class="descclassname">cup.oper.</tt><tt class="descname">kill</tt><big>(</big><em>path</em>, <em>name</em>, <em>sign=''</em>, <em>b_kill_child=False</em><big>)</big><a class="reference internal" href="_modules/cup/oper.html#kill"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.oper.kill" title="Permalink to this definition">¶</a></dt>
+<dd><p>通过和is_proc_exist一样的检查顺序找到这个进程， 然后根据向该进程发送sign.
+sign不赋值， 默认 kill pid, 赋值 kill -sign pid.
+b_kill_child  是否递归删除子进程
+:param path:</p>
+<blockquote>
+<div>源程序运行启动的路径</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> &#8211; 源程序名称</li>
+<li><strong>sign</strong> &#8211; kill 程序发送的信号量， 支持空、9,、18、19</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">B_kill_child:</th><td class="field-body"><p class="first last">杀死当前进程的时候是否递归删除子进程</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.oper.backup_file">
+<tt class="descclassname">cup.oper.</tt><tt class="descname">backup_file</tt><big>(</big><em>srcpath</em>, <em>filename</em>, <em>dstpath</em>, <em>label=None</em><big>)</big><a class="reference internal" href="_modules/cup/oper.html#backup_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.oper.backup_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>把srcpath目录下的filename文件备份到dstpath目录下。 备份名字变为
+dstpath/filename.label   label默认是(None), 可不传入，函数自动
+把label变成当前时间.
+如果dstpath不存在， 函数会尝试创建目录。如果创建失败， raise IOError</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.platforms">
+<span id="cup-platforms-module"></span><h2>cup.platforms module<a class="headerlink" href="#module-cup.platforms" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma <a class="reference external" href="mailto:maguannan&#37;&#52;&#48;baidu&#46;com">maguannan<span>&#64;</span>baidu<span>&#46;</span>com</a> &#64;mythmgn</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body">cross-platform functions related module</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="cup.platforms.is_linux">
+<tt class="descclassname">cup.platforms.</tt><tt class="descname">is_linux</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/platforms.html#is_linux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.platforms.is_linux" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>&#64;return:</dt>
+<dd>True or False</dd>
+</dl>
+<p>Check if you are running on Linux.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.platforms.is_windows">
+<tt class="descclassname">cup.platforms.</tt><tt class="descname">is_windows</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/platforms.html#is_windows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.platforms.is_windows" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>&#64;return:</dt>
+<dd>True or False</dd>
+</dl>
+<p>Check if you are running on Windows.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.timeplus">
+<span id="cup-timeplus-module"></span><h2>cup.timeplus module<a class="headerlink" href="#module-cup.timeplus" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma <a class="reference external" href="mailto:maguannan&#37;&#52;&#48;baidu&#46;com">maguannan<span>&#64;</span>baidu<span>&#46;</span>com</a> &#64;mythmgn</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="cup.timeplus.get_str_now">
+<tt class="descclassname">cup.timeplus.</tt><tt class="descname">get_str_now</tt><big>(</big><em>fmt='%Y-%m-%d-%H-%M-%S'</em><big>)</big><a class="reference internal" href="_modules/cup/timeplus.html#get_str_now"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.timeplus.get_str_now" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fmt</strong> &#8211; 默认不需要填写，默认=&#8217;%Y-%m-%d-%H-%M-%S&#8217;. 可以更改成自己想用的string
+格式. 比如 &#8216;%Y.%m.%d.%H.%M.%S&#8217;</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.unittest">
+<span id="cup-unittest-module"></span><h2>cup.unittest module<a class="headerlink" href="#module-cup.unittest" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma <a class="reference external" href="mailto:maguannan&#37;&#52;&#48;baidu&#46;com">maguannan<span>&#64;</span>baidu<span>&#46;</span>com</a> &#64;mythmgn</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body">Null</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="cup.unittest.assert_true">
+<tt class="descclassname">cup.unittest.</tt><tt class="descname">assert_true</tt><big>(</big><em>val</em>, <em>errmsg=''</em><big>)</big><a class="reference internal" href="_modules/cup/unittest.html#assert_true"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.unittest.assert_true" title="Permalink to this definition">¶</a></dt>
+<dd><p>如果val is not True， assert并打印到stdout.
+errmsg参数为assert后提示到stderr的调用者错误信息
+如果开启过leo.log.init_comlog的log， 同时打印critical log到log文件</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.unittest.assert_false">
+<tt class="descclassname">cup.unittest.</tt><tt class="descname">assert_false</tt><big>(</big><em>val</em>, <em>errmsg=''</em><big>)</big><a class="reference internal" href="_modules/cup/unittest.html#assert_false"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.unittest.assert_false" title="Permalink to this definition">¶</a></dt>
+<dd><p>如果val is not False， assert并打印到stdout.
+errmsg参数为assert后提示到stderr的调用者错误信息
+如果开启过leo.log.init_comlog的log， 同时打印critical log到log文件</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.unittest.assert_eq">
+<tt class="descclassname">cup.unittest.</tt><tt class="descname">assert_eq</tt><big>(</big><em>val</em>, <em>exp</em>, <em>errmsg=''</em><big>)</big><a class="reference internal" href="_modules/cup/unittest.html#assert_eq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.unittest.assert_eq" title="Permalink to this definition">¶</a></dt>
+<dd><p>assert_eq， 如果val!=exp， assert并打印到stdout.
+errmsg参数为assert后提示到stderr的调用者错误信息
+如果开启过leo.log.init_comlog的log， 同时打印critical log到log文件</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.unittest.assert_not_eq">
+<tt class="descclassname">cup.unittest.</tt><tt class="descname">assert_not_eq</tt><big>(</big><em>val</em>, <em>exp</em>, <em>errmsg=''</em><big>)</big><a class="reference internal" href="_modules/cup/unittest.html#assert_not_eq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.unittest.assert_not_eq" title="Permalink to this definition">¶</a></dt>
+<dd><p>assert_not_eq. val不能等于exp, 如果等于则assert</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.unittest.assert_eq_one">
+<tt class="descclassname">cup.unittest.</tt><tt class="descname">assert_eq_one</tt><big>(</big><em>val</em>, <em>array</em>, <em>errmsg=''</em><big>)</big><a class="reference internal" href="_modules/cup/unittest.html#assert_eq_one"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.unittest.assert_eq_one" title="Permalink to this definition">¶</a></dt>
+<dd><p>assert_eq_one, 如果val!=array(可遍历类型)里面的任何item, assert</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.unittest.assert_lt">
+<tt class="descclassname">cup.unittest.</tt><tt class="descname">assert_lt</tt><big>(</big><em>val</em>, <em>exp</em>, <em>errmsg=''</em><big>)</big><a class="reference internal" href="_modules/cup/unittest.html#assert_lt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.unittest.assert_lt" title="Permalink to this definition">¶</a></dt>
+<dd><p>assert_lt, expect val &lt; exp</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.unittest.assert_gt">
+<tt class="descclassname">cup.unittest.</tt><tt class="descname">assert_gt</tt><big>(</big><em>val</em>, <em>exp</em>, <em>errmsg=''</em><big>)</big><a class="reference internal" href="_modules/cup/unittest.html#assert_gt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.unittest.assert_gt" title="Permalink to this definition">¶</a></dt>
+<dd><p>assert_gt, expect val &gt; exp</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.unittest.assert_ge">
+<tt class="descclassname">cup.unittest.</tt><tt class="descname">assert_ge</tt><big>(</big><em>val</em>, <em>exp</em>, <em>errmsg=''</em><big>)</big><a class="reference internal" href="_modules/cup/unittest.html#assert_ge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.unittest.assert_ge" title="Permalink to this definition">¶</a></dt>
+<dd><p>expect val &gt;= exp</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.unittest.assert_le">
+<tt class="descclassname">cup.unittest.</tt><tt class="descname">assert_le</tt><big>(</big><em>val</em>, <em>exp</em>, <em>errmsg=''</em><big>)</big><a class="reference internal" href="_modules/cup/unittest.html#assert_le"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.unittest.assert_le" title="Permalink to this definition">¶</a></dt>
+<dd><p>expect val &lt;= exp</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.unittest.assert_ne">
+<tt class="descclassname">cup.unittest.</tt><tt class="descname">assert_ne</tt><big>(</big><em>val</em>, <em>exp</em>, <em>errmsg=''</em><big>)</big><a class="reference internal" href="_modules/cup/unittest.html#assert_ne"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.unittest.assert_ne" title="Permalink to this definition">¶</a></dt>
+<dd><p>expect val != exp</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.unittest.CUTCase">
+<em class="property">class </em><tt class="descclassname">cup.unittest.</tt><tt class="descname">CUTCase</tt><big>(</big><em>logfile='./test.log'</em>, <em>b_logstd=False</em>, <em>b_debug=False</em><big>)</big><a class="reference internal" href="_modules/cup/unittest.html#CUTCase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.unittest.CUTCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>leo库拥有的测试class. 支持nosetests. 可派生此类来实现测试class.
+其中set_result函数会在nosetests执行case后设置，case成功则设置True,
+case fail设置False. 在teardown阶段可调用get_result函数
+来获得case是否执行成功。</p>
+<dl class="method">
+<dt id="cup.unittest.CUTCase.get_result">
+<tt class="descname">get_result</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/unittest.html#CUTCase.get_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.unittest.CUTCase.get_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>在teardown或者fail_teardown阶段获得是否case执行成功</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.unittest.CUTCase.set_result">
+<tt class="descname">set_result</tt><big>(</big><em>b_result</em><big>)</big><a class="reference internal" href="_modules/cup/unittest.html#CUTCase.set_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.unittest.CUTCase.set_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>cup ut 类用来设置case是否失败的函数。 一般不需要显示调用，
+内部自动处理。</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.unittest.CUTCase.setup">
+<tt class="descname">setup</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/unittest.html#CUTCase.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.unittest.CUTCase.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Case的setup虚函数, 实际case需事先该函数</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.unittest.CUTCase.teardown">
+<tt class="descname">teardown</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/unittest.html#CUTCase.teardown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.unittest.CUTCase.teardown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Case的setup虚函数, 实际case需实现该函数</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.unittest.CUTCase.test_run">
+<tt class="descname">test_run</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/unittest.html#CUTCase.test_run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.unittest.CUTCase.test_run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Case的setup虚函数, 实际case需事先该函数</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.unittest.CCaseExecutor">
+<em class="property">class </em><tt class="descclassname">cup.unittest.</tt><tt class="descname">CCaseExecutor</tt><a class="reference internal" href="_modules/cup/unittest.html#CCaseExecutor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.unittest.CCaseExecutor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>可调用CCaseExecutor类来执行leo.unittest.CUTCase的派生类case.
+代码示例, 可nosetests执行， 也可python test_xxx.py执行的例子</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#!/usr/bin/env python</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">import</span> <span class="nn">cup</span>
+<span class="kn">import</span> <span class="nn">sb_global</span>
+
+<span class="kn">from</span> <span class="nn">nfsinit</span> <span class="kn">import</span> <span class="n">CClearMan</span>
+<span class="kn">from</span> <span class="nn">nfs</span> <span class="kn">import</span> <span class="n">CNfs</span>
+<span class="kn">from</span> <span class="nn">cli</span> <span class="kn">import</span> <span class="n">CCli</span>
+
+<span class="k">class</span> <span class="nc">TestMyCase</span><span class="p">(</span><span class="n">cup</span><span class="o">.</span><span class="n">unittest</span><span class="o">.</span><span class="n">CUTCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
+            <span class="n">logfile</span><span class="o">=</span><span class="n">sb_global</span><span class="o">.</span><span class="n">G_CASE_RUN_LOG</span><span class="p">,</span>
+            <span class="n">b_logstd</span><span class="o">=</span><span class="bp">False</span>
+        <span class="p">)</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span> <span class="s">&#39;Start to run &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">__file__</span> <span class="p">)</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cli</span> <span class="o">=</span> <span class="n">CCli</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nfs</span> <span class="o">=</span> <span class="n">CNfs</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_uniq_strman</span> <span class="o">=</span> <span class="n">cup</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">CGeneratorMan</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clearman</span> <span class="o">=</span> <span class="n">CClearMan</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">str_uniq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uniq_strman</span><span class="o">.</span><span class="n">get_uniqname</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_workfolder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>                     <span class="o">+</span> <span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">str_uniq</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_work_remote_folder</span> <span class="o">=</span>                     <span class="bp">self</span><span class="o">.</span><span class="n">_nfs</span><span class="o">.</span><span class="n">translate_path_into_remote_under_rw_folder</span><span class="p">(</span>
+            <span class="n">str_uniq</span>
+            <span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_workfolder</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clearman</span><span class="o">.</span><span class="n">addfolder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_workfolder</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_check_filemd5</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39;/usr/bin/diff --brief </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span> <span class="p">)</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">unittest</span><span class="o">.</span><span class="n">assert_eq</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ret</span> <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c">#</span>
+        <span class="c"># @author: maguannan</span>
+        <span class="c">#</span>
+        <span class="n">inited_bigfile</span> <span class="o">=</span> <span class="n">sb_global</span><span class="o">.</span><span class="n">G_NFS_DISK_RD</span> <span class="o">+</span>                     <span class="n">sb_global</span><span class="o">.</span><span class="n">G_TEST_BIGFILE</span>
+        <span class="n">bigfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workfolder</span> <span class="o">+</span>                     <span class="s">&#39;/test_big_file_offsite_write_random_write&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tmpfile</span> <span class="o">=</span> <span class="n">sb_global</span><span class="o">.</span><span class="n">G_TMP4USE</span> <span class="o">+</span>                     <span class="s">&#39;/test_big_file_offsite_write_random_write&#39;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span> <span class="s">&#39;cp </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">inited_bigfile</span><span class="p">,</span> <span class="n">bigfile</span><span class="p">)</span> <span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span> <span class="s">&#39;cp </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">bigfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmpfile</span><span class="p">)</span> <span class="p">)</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="mi">50</span>
+        <span class="n">baseOffsite</span> <span class="o">=</span> <span class="mi">1000</span>
+        <span class="n">fp0</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">bigfile</span><span class="p">,</span> <span class="s">&#39;r+b&#39;</span><span class="p">)</span>
+        <span class="n">fp1</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmpfile</span><span class="p">,</span> <span class="s">&#39;rb+&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="n">times</span> <span class="p">):</span>
+            <span class="n">fp0</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">baseOffsite</span><span class="p">)</span>
+            <span class="n">fp1</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">baseOffsite</span><span class="p">)</span>
+            <span class="n">fp0</span><span class="o">.</span><span class="n">write</span><span class="p">(</span> <span class="s">&#39;a&#39;</span> <span class="o">*</span> <span class="mi">100</span> <span class="p">)</span>
+            <span class="n">fp1</span><span class="o">.</span><span class="n">write</span><span class="p">(</span> <span class="s">&#39;a&#39;</span> <span class="o">*</span> <span class="mi">100</span> <span class="p">)</span>
+            <span class="n">baseOffsite</span> <span class="o">+=</span> <span class="mi">1000</span>
+        <span class="n">fp0</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">fp1</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_filemd5</span><span class="p">(</span><span class="n">bigfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmpfile</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">teardown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_result</span><span class="p">():</span>
+            <span class="c"># if case succeeded, do sth</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmpfile</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_clearman</span><span class="o">.</span><span class="n">teardown</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># if case failed, do sth else.</span>
+            <span class="k">print</span> <span class="s">&#39;failed&#39;</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span> <span class="s">&#39;End running &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">__file__</span> <span class="p">)</span> <span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">cup</span><span class="o">.</span><span class="n">unittest</span><span class="o">.</span><span class="n">CCaseExecutor</span><span class="p">()</span><span class="o">.</span><span class="n">runcase</span><span class="p">(</span><span class="n">TestMyCase</span><span class="p">())</span>
+</pre></div>
+</div>
+<dl class="classmethod">
+<dt id="cup.unittest.CCaseExecutor.runcase">
+<em class="property">classmethod </em><tt class="descname">runcase</tt><big>(</big><em>case</em><big>)</big><a class="reference internal" href="_modules/cup/unittest.html#CCaseExecutor.runcase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.unittest.CCaseExecutor.runcase" title="Permalink to this definition">¶</a></dt>
+<dd><p>run the case</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.version">
+<span id="cup-version-module"></span><h2>cup.version module<a class="headerlink" href="#module-cup.version" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma <a class="reference external" href="mailto:maguannan&#37;&#52;&#48;baidu&#46;com">maguannan<span>&#64;</span>baidu<span>&#46;</span>com</a> &#64;mythmgn</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">modify_date:</th><td class="field-body">2014</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="module-cup">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cup" title="Permalink to this headline">¶</a></h2>
+<p>&#64;author Guannan Ma
+&#64;brief
+&#64;note</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">cup package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-cup.cache">cup.cache module</a></li>
+<li><a class="reference internal" href="#module-cup.decorators">cup.decorators module</a></li>
+<li><a class="reference internal" href="#module-cup.err">cup.err module</a></li>
+<li><a class="reference internal" href="#module-cup.log">cup.log module</a></li>
+<li><a class="reference internal" href="#module-cup.mail">cup.mail module</a></li>
+<li><a class="reference internal" href="#module-cup.oper">cup.oper module</a></li>
+<li><a class="reference internal" href="#module-cup.platforms">cup.platforms module</a></li>
+<li><a class="reference internal" href="#module-cup.timeplus">cup.timeplus module</a></li>
+<li><a class="reference internal" href="#module-cup.unittest">cup.unittest module</a></li>
+<li><a class="reference internal" href="#module-cup.version">cup.version module</a></li>
+<li><a class="reference internal" href="#module-cup">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to cup&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cup.net.html"
+                        title="next chapter">cup.net package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/cup.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cup.net.html" title="cup.net package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to cup’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">cup 1.2.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

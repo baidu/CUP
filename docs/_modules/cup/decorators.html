@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.decorators &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.decorators</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/python</span>
+<span class="c"># -*- coding: utf-8 -*</span>
+<span class="c"># #############################################################################</span>
+<span class="c">#</span>
+<span class="c">#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved</span>
+<span class="c">#</span>
+<span class="c"># #############################################################################</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:author:</span>
+<span class="sd">    Guannan Ma maguannan@baidu.com @mythmgn</span>
+<span class="sd">:create_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:last_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:descrition:</span>
+<span class="sd">    decorators related module</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span> <span class="k">as</span> <span class="n">datetime_in</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+
+<span class="kn">import</span> <span class="nn">cup</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Singleton&#39;</span><span class="p">,</span> <span class="s">&#39;needlinux&#39;</span><span class="p">,</span> <span class="s">&#39;TraceUsedTime&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="Singleton"><a class="viewcode-back" href="../../cup.html#cup.decorators.Singleton">[docs]</a><span class="k">class</span> <span class="nc">Singleton</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c"># pylint: disable=R0903</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Singleton你的类.</span>
+<span class="sd">    用法如下::</span>
+<span class="sd">        import cup</span>
+
+<span class="sd">        @cup.decorator.Singleton</span>
+<span class="sd">        class YourClass(object):</span>
+<span class="sd">            def __init__(self):</span>
+<span class="sd">            pass</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__instance</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__cls</span> <span class="o">=</span> <span class="n">cls</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__instance</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__instance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cls</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__instance</span>
+
+</div>
+<span class="k">def</span> <span class="nf">py_versioncheck</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :platform:</span>
+<span class="sd">        any platform + any functions in python</span>
+<span class="sd">    :param version:</span>
+<span class="sd">        Version of python which should be &lt;= version of the OS.</span>
+<span class="sd">        *E.g. version=(&#39;2&#39;, &#39;7&#39;, &#39;0&#39;)*</span>
+<span class="sd">        Python version should &gt;= version.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">py_version</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_version_tuple</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">py_version</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">version</span><span class="p">(</span><span class="n">ind</span><span class="p">))</span> <span class="o">&lt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">cup</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">DecoratorException</span><span class="p">(</span>
+                <span class="s">&#39;Python version check failed. You expect version &gt;= </span><span class="si">%s</span><span class="s">,&#39;</span>
+                <span class="s">&#39;but python-version on this machine:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                <span class="p">(</span><span class="n">version</span><span class="p">,</span> <span class="n">py_version</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="n">ind</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">function</span>
+
+
+<div class="viewcode-block" id="needlinux"><a class="viewcode-back" href="../../cup.html#cup.decorators.needlinux">[docs]</a><span class="k">def</span> <span class="nf">needlinux</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :platform: Linux</span>
+<span class="sd">    只支持linux的python修饰符, 用来表明这个函数只能运行在linux系统上.</span>
+<span class="sd">    如果函数运行在非linux平台, raise cup.err.DecoratorException</span>
+
+<span class="sd">    用法如下::</span>
+<span class="sd">        import cup</span>
+<span class="sd">        @cup.decorator.needlinux</span>
+<span class="sd">        def your_func():</span>
+<span class="sd">            pass</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">!=</span> <span class="s">&#39;Linux&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">cup</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">DecoratorException</span><span class="p">(</span>
+            <span class="s">&#39;The system is not linux.&#39;</span>
+            <span class="s">&#39;This functionality only supported in linux&#39;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">function</span>
+
+
+<span class="c"># pylint:disable=R0903</span></div>
+<div class="viewcode-block" id="TraceUsedTime"><a class="viewcode-back" href="../../cup.html#cup.decorators.TraceUsedTime">[docs]</a><span class="k">class</span> <span class="nc">TraceUsedTime</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    追踪函数的耗时情况</span>
+<span class="sd">    如果init过cup.log.init_comlog, 会打印到log文件。</span>
+<span class="sd">    example:</span>
+
+<span class="sd">    ::</span>
+<span class="sd">        import time</span>
+
+<span class="sd">        from cup import decorators</span>
+
+<span class="sd">        @decorators.TraceUsedTime(True)</span>
+<span class="sd">        def test():</span>
+<span class="sd">            print &#39;test&#39;</span>
+<span class="sd">            time.sleep(4)</span>
+
+
+<span class="sd">        # trace something with context. E.g. event_id</span>
+<span class="sd">        def _test_trace_time_map(sleep_time):</span>
+<span class="sd">            print &quot;ready to work&quot;</span>
+<span class="sd">            time.sleep(sleep_time)</span>
+
+
+<span class="sd">        traced_test_trace_time_map = decorators.TraceUsedTime(</span>
+<span class="sd">            b_print_stdout=False,</span>
+<span class="sd">            enter_msg=&#39;event_id: 0x12345&#39;,</span>
+<span class="sd">            leave_msg=&#39;event_id: 0x12345&#39;</span>
+<span class="sd">        )(_test_trace_time_map)</span>
+<span class="sd">        traced_test_trace_time_map(sleep_time=5)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b_print_stdout</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">enter_msg</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">leave_msg</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param b_print_stdout:</span>
+<span class="sd">            自动打印到由cup.log.init_comlog设置的logfile中，</span>
+<span class="sd">            如果init_comlog未被调用和初始化，则不会打印。</span>
+<span class="sd">            如果b_print_stdout=True, 则会同时打印时间追踪日志到stdout.</span>
+
+<span class="sd">        :param enter_msg:</span>
+<span class="sd">            会在函数进入时期也同步打印的msg</span>
+
+<span class="sd">        :param leave_msg:</span>
+<span class="sd">            会在函数离开时期同步打印的msg</span>
+
+<span class="sd">        建议如果不使用cup.log.init_comlog打日志的话，则b_print_stdout=True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_b_print_stdout</span> <span class="o">=</span> <span class="n">b_print_stdout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_enter_msg</span> <span class="o">=</span> <span class="n">enter_msg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_leave_msg</span> <span class="o">=</span> <span class="n">leave_msg</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">_wrapper_log</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b_print_stdout</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s">&#39;**enter func:</span><span class="si">%s</span><span class="s">,time:</span><span class="si">%s</span><span class="s">, msg:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">function</span><span class="p">,</span> <span class="n">datetime_in</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enter_msg</span>
+                <span class="p">)</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s">&#39;**enter func:</span><span class="si">%s</span><span class="s">, msg:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enter_msg</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">then</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">used_time</span> <span class="o">=</span> <span class="n">then</span> <span class="o">-</span> <span class="n">now</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s">&#39;**leave func:</span><span class="si">%s</span><span class="s">, used_time:</span><span class="si">%f</span><span class="s">, msg:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">function</span><span class="p">,</span> <span class="n">used_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enter_msg</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b_print_stdout</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s">&#39;**leave func:</span><span class="si">%s</span><span class="s">, time:</span><span class="si">%s</span><span class="s">, used_time:</span><span class="si">%f</span><span class="s">, msg:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">function</span><span class="p">,</span> <span class="n">datetime_in</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="n">used_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_leave_msg</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">_wrapper_log</span>
+
+
+<span class="c"># Things below for unittest</span></div>
+<span class="nd">@TraceUsedTime</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_test_trace_time</span><span class="p">():</span>
+    <span class="k">print</span> <span class="s">&#39;now&#39;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="n">datetime_in</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;then&#39;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="n">datetime_in</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+
+<span class="nd">@TraceUsedTime</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_test_trace_time_log</span><span class="p">():</span>
+    <span class="k">print</span> <span class="s">&#39;now&#39;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="n">datetime_in</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;then&#39;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="n">datetime_in</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">_test_trace_time_map</span><span class="p">(</span><span class="n">sleep_time</span><span class="p">):</span>
+    <span class="k">print</span> <span class="s">&quot;ready to work&quot;</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleep_time</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_test</span><span class="p">():</span>
+    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">init_comlog</span><span class="p">(</span>
+        <span class="s">&#39;test&#39;</span><span class="p">,</span> <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="s">&#39;./test.log&#39;</span><span class="p">,</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">ROTATION</span><span class="p">,</span> <span class="mi">102400000</span><span class="p">,</span> <span class="bp">False</span>
+    <span class="p">)</span>
+    <span class="n">_test_trace_time</span><span class="p">()</span>
+    <span class="n">_test_trace_time_log</span><span class="p">()</span>
+    <span class="n">func</span> <span class="o">=</span> <span class="n">TraceUsedTime</span><span class="p">(</span>
+        <span class="n">b_print_stdout</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="n">enter_msg</span><span class="o">=</span><span class="s">&#39;event_id: 0x12345&#39;</span><span class="p">,</span>
+        <span class="n">leave_msg</span><span class="o">=</span><span class="s">&#39;event_id: 0x12345&#39;</span>
+    <span class="p">)(</span><span class="n">_test_trace_time_map</span><span class="p">)</span>
+    <span class="n">func</span><span class="p">(</span><span class="n">sleep_time</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">_test</span><span class="p">()</span>
+
+<span class="c"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

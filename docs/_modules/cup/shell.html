@@ -1,0 +1,413 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.shell &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.shell</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/python</span>
+<span class="c"># -*- coding: utf-8 -*</span>
+<span class="c"># #############################################################################</span>
+<span class="c">#</span>
+<span class="c">#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved</span>
+<span class="c">#</span>
+<span class="c"># #############################################################################</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:author:</span>
+<span class="sd">    Guannan Ma</span>
+<span class="sd">:create_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:last_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:descrition:</span>
+<span class="sd">    shell related module</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">signal</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+
+<span class="kn">import</span> <span class="nn">cup</span>
+<span class="kn">from</span> <span class="nn">cup.shell</span> <span class="kn">import</span> <span class="n">expect</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&#39;md5file&#39;</span><span class="p">,</span>
+    <span class="s">&#39;kill9_byname&#39;</span><span class="p">,</span>
+    <span class="s">&#39;del_if_exist&#39;</span><span class="p">,</span>
+    <span class="s">&#39;execshell&#39;</span><span class="p">,</span>
+    <span class="s">&#39;execshell_withpipe&#39;</span><span class="p">,</span>
+    <span class="s">&#39;expect&#39;</span><span class="p">,</span>
+    <span class="s">&#39;execshell_withpipe_exwitherr&#39;</span><span class="p">,</span>
+    <span class="s">&#39;is_proc_alive&#39;</span><span class="p">,</span>
+    <span class="s">&#39;forkexe_shell&#39;</span><span class="p">,</span>
+    <span class="s">&#39;execshell_withpipe_ex&#39;</span><span class="p">,</span>
+    <span class="s">&#39;execshell_withpipe_str&#39;</span><span class="p">,</span>
+    <span class="s">&#39;ShellExec&#39;</span>
+<span class="p">]</span>
+
+<span class="n">_DEPRECATED_MSG</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;Plz use class cup.shell.ShellExec instead. Function </span><span class="si">%s</span><span class="s"></span>
+<span class="s"> deprecated&#39;&#39;&#39;</span>
+
+
+<div class="viewcode-block" id="ShellExec"><a class="viewcode-back" href="../../cup.shell.html#cup.shell.ShellExec">[docs]</a><span class="k">class</span> <span class="nc">ShellExec</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c"># pylint: disable=R0903</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    用来执行shell的类。 用法如下:</span>
+<span class="sd">    shellexec = cup.shell.ShellExec()</span>
+<span class="sd">    # timeout=None, 一直等待直到命令执行完</span>
+<span class="sd">    shellexec.run(&#39;/bin/ls&#39;, timeout=None)</span>
+<span class="sd">    # timeout&gt;=0, 等待固定时间，如超时未结束terminate这个shell命令。</span>
+<span class="sd">    shellexec.run(cmd=&#39;/bin/ls&#39;, timeout=100)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_subpro</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_subpro_data</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="ShellExec.run"><a class="viewcode-back" href="../../cup.shell.html#cup.shell.ShellExec.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        参见类说明。</span>
+
+<span class="sd">        :param cmd:</span>
+<span class="sd">            执行命令</span>
+
+<span class="sd">        :param timeout:</span>
+<span class="sd">            执行等待时间， None为无线等待。 timeout&gt;=0等待具体时间，超时</span>
+<span class="sd">            terminate.</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            一个dict, 包含&#39;stdout&#39; &#39;stderr&#39; &#39;returncode&#39; 三个key:</span>
+
+<span class="sd">            returncode == 0 代表执行成功, returncode 999代表执行超时</span>
+
+<span class="sd">            {</span>
+<span class="sd">                &#39;stdout&#39; : &#39;Success&#39;,</span>
+<span class="sd">                &#39;stderr&#39; : None,</span>
+<span class="sd">                &#39;returncode&#39; : 0</span>
+<span class="sd">            }</span>
+
+<span class="sd">        E.g.</span>
+
+<span class="sd">        执行ls， 超时时间为1s, 超过1s会kill掉该shell进程， 然后回返returncode</span>
+<span class="sd">        999</span>
+<span class="sd">        ::</span>
+<span class="sd">            import cup</span>
+<span class="sd">            shelltool = cup.shell.ShellExec()</span>
+<span class="sd">            print shelltool.run(&#39;/bin/ls&#39;, timeout=1)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">_signal_handle</span><span class="p">():</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            signal setup</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGPIPE</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIG_DFL</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">_target</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_subpro</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
+                <span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                <span class="n">preexec_fn</span><span class="o">=</span><span class="n">_signal_handle</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_subpro_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subpro</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;stdout&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+            <span class="s">&#39;stderr&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+            <span class="s">&#39;returncode&#39;</span><span class="p">:</span> <span class="mi">0</span>
+        <span class="p">}</span>
+        <span class="n">cmdthd</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">_target</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="p">))</span>
+        <span class="n">cmdthd</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">cmdthd</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cmdthd</span><span class="o">.</span><span class="n">isAlive</span><span class="p">()</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">str_warn</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s">&#39;Shell &quot;</span><span class="si">%s</span><span class="s">&quot;execution timout:</span><span class="si">%d</span><span class="s">. To kill it&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">str_warn</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_subpro</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s">&#39;returncode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">999</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s">&#39;stderr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">str_warn</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s">&#39;returncode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subpro</span><span class="o">.</span><span class="n">returncode</span>
+            <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subpro_data</span><span class="p">)</span> <span class="o">==</span> <span class="nb">tuple</span><span class="p">,</span> \
+                <span class="s">&#39;self._subpro_data should be a tuple&#39;</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s">&#39;stdout&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subpro_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s">&#39;stderr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subpro_data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">ret</span>
+
+</div></div>
+<span class="k">def</span> <span class="nf">_do_execshell</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">b_printcmd</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    timeout默认赋值None，代表一直等待直到执行结束. 其他情况 &gt;=0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">timeout</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">cup</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">ShellException</span><span class="p">(</span>
+            <span class="s">&#39;timeout should be None or &gt;= 0&#39;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">b_printcmd</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&#39;To exec cmd:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">cmd</span>
+    <span class="n">shellexec</span> <span class="o">=</span> <span class="n">ShellExec</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">shellexec</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="execshell"><a class="viewcode-back" href="../../cup.shell.html#cup.shell.execshell">[docs]</a><span class="k">def</span> <span class="nf">execshell</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">b_printcmd</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    执行shell命令，返回returncode</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_do_execshell</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">b_printcmd</span><span class="o">=</span><span class="n">b_printcmd</span><span class="p">)[</span><span class="s">&#39;returncode&#39;</span><span class="p">]</span>
+
+</div>
+<div class="viewcode-block" id="execshell_withpipe"><a class="viewcode-back" href="../../cup.shell.html#cup.shell.execshell_withpipe">[docs]</a><span class="k">def</span> <span class="nf">execshell_withpipe</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    以popen的方式执行某条shell命令， 返回os.popen(cmd)</span>
+<span class="sd">    Deprecated. 不推荐使用， 推荐使用ShellExec</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span>
+
+</div>
+<div class="viewcode-block" id="execshell_withpipe_ex"><a class="viewcode-back" href="../../cup.shell.html#cup.shell.execshell_withpipe_ex">[docs]</a><span class="k">def</span> <span class="nf">execshell_withpipe_ex</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">b_printcmd</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    历史兼容函数。</span>
+<span class="sd">    执行某条shell命令，回返执行stdout的结果行（list).</span>
+<span class="sd">    Deprecated. 不推荐使用， 推荐使用ShellExec.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">strfile</span> <span class="o">=</span> <span class="s">&#39;/tmp/</span><span class="si">%s</span><span class="s">.</span><span class="si">%d</span><span class="s">.</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+        <span class="s">&#39;shell_env.py&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()),</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">100000</span><span class="p">,</span> <span class="mi">999999</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mknod</span><span class="p">(</span><span class="n">strfile</span><span class="p">)</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="n">cmd</span> <span class="o">+</span> <span class="s">&#39; 1&gt;&#39;</span> <span class="o">+</span> <span class="n">strfile</span> <span class="o">+</span> <span class="s">&#39; 2&gt;/dev/null&#39;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">True</span> <span class="o">==</span> <span class="n">b_printcmd</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">cmd</span>
+    <span class="n">fphandle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">strfile</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">fphandle</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="n">fphandle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">strfile</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">lines</span>
+
+</div>
+<div class="viewcode-block" id="execshell_withpipe_str"><a class="viewcode-back" href="../../cup.shell.html#cup.shell.execshell_withpipe_str">[docs]</a><span class="k">def</span> <span class="nf">execshell_withpipe_str</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">b_printcmd</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    历史兼容函数。</span>
+<span class="sd">    同execshell_withpipe_ex, 但回返信息是string. (将所有行join成一个string回返)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">execshell_withpipe_ex</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">b_printcmd</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="execshell_withpipe_exwitherr"><a class="viewcode-back" href="../../cup.shell.html#cup.shell.execshell_withpipe_exwitherr">[docs]</a><span class="k">def</span> <span class="nf">execshell_withpipe_exwitherr</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">b_printcmd</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    历史兼容函数。 不推荐使用</span>
+<span class="sd">    同execshell_withpipe_ex, 但回返信息是string. (将所有行join成一个string回返)</span>
+<span class="sd">    该函数会将stdout和stderr一同回返。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">strfile</span> <span class="o">=</span> <span class="s">&#39;/tmp/</span><span class="si">%s</span><span class="s">.</span><span class="si">%d</span><span class="s">.</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+        <span class="s">&#39;shell_env.py&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()),</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">100000</span><span class="p">,</span> <span class="mi">999999</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="n">cmd</span> <span class="o">+</span> <span class="s">&#39; &gt;&#39;</span> <span class="o">+</span> <span class="n">strfile</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="n">cmd</span> <span class="o">+</span> <span class="s">&#39; 2&gt;&amp;1&#39;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">b_printcmd</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">cmd</span>
+    <span class="n">fhandle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">strfile</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">fhandle</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="n">fhandle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">strfile</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">lines</span>
+
+</div>
+<div class="viewcode-block" id="is_proc_alive"><a class="viewcode-back" href="../../cup.shell.html#cup.shell.is_proc_alive">[docs]</a><span class="k">def</span> <span class="nf">is_proc_alive</span><span class="p">(</span><span class="n">procname</span><span class="p">,</span> <span class="n">is_whole_word</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    通过ps -ef|grep -w procname$ |grep -v grep|wc -l 判断进程是否存在</span>
+<span class="sd">    相关函数有: cup.oper.is_proc_exist(path, name)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># print procName</span>
+    <span class="k">if</span> <span class="n">is_whole_word</span><span class="p">:</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;ps -ef|grep -w </span><span class="si">%s</span><span class="s">$ |grep -v grep|wc -l&#39;</span> <span class="o">%</span> <span class="n">procname</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;ps -ef|grep -w </span><span class="si">%s</span><span class="s"> |grep -v grep|wc -l&#39;</span> <span class="o">%</span> <span class="n">procname</span>
+    <span class="c"># print cmd</span>
+    <span class="n">rev</span> <span class="o">=</span> <span class="n">execshell_withpipe_str</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">rev</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+
+</div>
+<div class="viewcode-block" id="forkexe_shell"><a class="viewcode-back" href="../../cup.shell.html#cup.shell.forkexe_shell">[docs]</a><span class="k">def</span> <span class="nf">forkexe_shell</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    fock一个进程并在该进程执行shell的cmd命令</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fork</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">pid</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c"># os.chdir(&quot;/&quot;)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">setsid</span><span class="p">()</span>
+    <span class="c"># os.umask(0)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fork</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">pid</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="md5file"><a class="viewcode-back" href="../../cup.shell.html#cup.shell.md5file">[docs]</a><span class="k">def</span> <span class="nf">md5file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        计算一个文件的md5值。返回32位长的hex字符串。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&#39;No such file: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fhandle</span><span class="p">:</span>
+        <span class="n">md5obj</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">strtmp</span> <span class="o">=</span> <span class="n">fhandle</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">131072</span><span class="p">)</span>  <span class="c"># read 128k one time</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">strtmp</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">md5obj</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">strtmp</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">md5obj</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="kill9_byname"><a class="viewcode-back" href="../../cup.shell.html#cup.shell.kill9_byname">[docs]</a><span class="k">def</span> <span class="nf">kill9_byname</span><span class="p">(</span><span class="n">strname</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kill -9 process by name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fd_pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="s">&quot;ps -ef | grep -v grep |grep </span><span class="si">%s</span><span class="s"> </span><span class="se">\</span>
+<span class="s">            |awk &#39;{print $2}&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">strname</span><span class="p">))</span>
+    <span class="n">pids</span> <span class="o">=</span> <span class="n">fd_pid</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="n">fd_pid</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">pids</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&quot;kill -9 </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pid</span><span class="p">))</span>
+
+</div>
+<span class="k">def</span> <span class="nf">kill_byname</span><span class="p">(</span><span class="n">strname</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    kill process by name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fd_pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="s">&quot;ps -ef | grep -v grep |grep </span><span class="si">%s</span><span class="s"> </span><span class="se">\</span>
+<span class="s">            |awk &#39;{print $2}&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">strname</span><span class="p">))</span>
+    <span class="n">pids</span> <span class="o">=</span> <span class="n">fd_pid</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="n">fd_pid</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">pids</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&quot;kill -s SIGKILL </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pid</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="del_if_exist"><a class="viewcode-back" href="../../cup.shell.html#cup.shell.del_if_exist">[docs]</a><span class="k">def</span> <span class="nf">del_if_exist</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    如果文件/目录/symlink存在则删除他们</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="s">&#39;/&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&#39;Cannot delete root path /&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">lexists</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&#39;Does not support deleting the type 4 the path&#39;</span><span class="p">)</span>
+
+</div>
+<span class="k">def</span> <span class="nf">shell_diff</span><span class="p">(</span><span class="n">srcfile</span><span class="p">,</span> <span class="n">dstfile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    调用shell环境的diff命令diff两个文件， 回返diff信息。</span>
+<span class="sd">    无diff回返0， 有diff回返非0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="s">&#39;diff </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">srcfile</span><span class="p">,</span> <span class="n">dstfile</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+
+<span class="c"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

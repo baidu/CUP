@@ -1,0 +1,512 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.util.constants &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../../index.html" />
+    <link rel="up" title="cup.util" href="../util.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../util.html" accesskey="U">cup.util</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.util.constants</h1><div class="highlight"><pre>
+<span class="c">#!/bin/env python</span>
+<span class="c"># -*- coding: utf-8 -*</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:descrition:</span>
+<span class="sd">    heartbeat related module</span>
+<span class="sd">    *test-case-name: twisted.python.test.test_constants*</span>
+<span class="sd">    Copyright (c) Twisted Matrix Laboratories.</span>
+<span class="sd">    See LICENSE for details.</span>
+
+<span class="sd">:license:</span>
+<span class="sd">    CUP dev team modified and redistrbuted this module,</span>
+<span class="sd">    according to MIT license(http://opensource.org/licenses/mit-license.php)</span>
+<span class="sd">    that Twisted lib obeys.</span>
+<span class="sd">    If any concern, plz contact mythmgn@gmail.com.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&#39;NamedConstant&#39;</span><span class="p">,</span> <span class="s">&#39;ValueConstant&#39;</span><span class="p">,</span> <span class="s">&#39;FlagConstant&#39;</span><span class="p">,</span>
+    <span class="s">&#39;Names&#39;</span><span class="p">,</span> <span class="s">&#39;Values&#39;</span><span class="p">,</span> <span class="s">&#39;Flags&#39;</span><span class="p">]</span>
+
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+
+<span class="n">_UNSPECIFIED</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">_CONSTANT_ORDER</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="nb">next</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
+
+
+<span class="k">class</span> <span class="nc">_Constant</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c"># pylint: disable=R0903</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    @ivar _index: A C{int} allocated from a shared itertools.counter in order</span>
+<span class="sd">        to keep track of the order in which L{_Constant}s are instantiated.</span>
+
+<span class="sd">    @ivar name: A C{str} giving the name of this constant; only set once the</span>
+<span class="sd">        constant is initialized by L{_ConstantsContainer}.</span>
+
+<span class="sd">    @ivar _container: The L{_ConstantsContainer} subclass this constant belongs</span>
+<span class="sd">        to; C{None} until the constant is initialized by that subclass.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_container</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="n">_CONSTANT_ORDER</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return text identifying both which constant this is and</span>
+<span class="sd">        which collection it belongs to.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">=</span><span class="si">%s</span><span class="s">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_container</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_realize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Complete the initialization of this L{_Constant}.</span>
+
+<span class="sd">        @param container: The L{_ConstantsContainer} subclass this constant is</span>
+<span class="sd">            part of.</span>
+
+<span class="sd">        @param name: The name of this constant in its container.</span>
+
+<span class="sd">        @param value: The value of this constant; not used, as named constants</span>
+<span class="sd">            have no value apart from their identity.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_container</span> <span class="o">=</span> <span class="n">container</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+
+<span class="k">class</span> <span class="nc">_ConstantsContainerType</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    L{_ConstantsContainerType} is a metaclass for creating constants container</span>
+<span class="sd">    classes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attributes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new constants container class.</span>
+
+<span class="sd">        If C{attributes} includes a value of C{None} for the C{&quot;_constantType&quot;}</span>
+<span class="sd">        key, the new class will not be initialized as a constants container and</span>
+<span class="sd">        it will behave as a normal class.</span>
+
+<span class="sd">        @param name: The name of the container class.</span>
+<span class="sd">        @type name: L{str}</span>
+
+<span class="sd">        @param bases: A tuple of the base classes for the new container class.</span>
+<span class="sd">        @type bases: L{tuple} of L{_ConstantsContainerType} instances</span>
+
+<span class="sd">        @param attributes: The attributes of the new container class, including</span>
+<span class="sd">            any constants it is to contain.</span>
+<span class="sd">        @type attributes: L{dict}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cls</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">_ConstantsContainerType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attributes</span><span class="p">)</span>
+
+        <span class="c"># Only realize constants in concrete _ConstantsContainer subclasses.</span>
+        <span class="c"># Ignore intermediate base classes.</span>
+        <span class="n">constantType</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="s">&#39;_constantType&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">constantType</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cls</span>
+
+        <span class="n">constants</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">)</span> <span class="ow">in</span> <span class="n">attributes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">descriptor</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">_constantType</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">descriptor</span><span class="o">.</span><span class="n">_container</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s">&quot;Cannot use </span><span class="si">%s</span><span class="s"> as the value of an attribute on </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                            <span class="n">descriptor</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+                <span class="n">constants</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">descriptor</span><span class="o">.</span><span class="n">_index</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">))</span>
+
+        <span class="n">enumerants</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">enumerant</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">constants</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_constantFactory</span><span class="p">(</span><span class="n">enumerant</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">)</span>
+            <span class="n">descriptor</span><span class="o">.</span><span class="n">_realize</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">enumerant</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="n">enumerants</span><span class="p">[</span><span class="n">enumerant</span><span class="p">]</span> <span class="o">=</span> <span class="n">descriptor</span>
+
+        <span class="c"># Save the dictionary which contains *only* constants (distinct from</span>
+        <span class="c"># any</span>
+        <span class="c"># other attributes the application may have given the container) where</span>
+        <span class="c"># the class can use it later (eg for lookupByName).</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">_enumerants</span> <span class="o">=</span> <span class="n">enumerants</span>
+
+        <span class="k">return</span> <span class="n">cls</span>
+
+
+<span class="c"># In Python3 metaclasses are defined using a C{metaclass} keyword argument in</span>
+<span class="c"># the class definition. This would cause a syntax error in Python2.</span>
+<span class="c"># So we use L{type} to introduce an intermediate base class with the desired</span>
+<span class="c"># metaclass.</span>
+<span class="c"># See:</span>
+<span class="c"># * http://docs.python.org/2/library/functions.html# type</span>
+<span class="c"># * http://docs.python.org/3/reference/datamodel.html#</span>
+<span class="c"># customizing-class-creation</span>
+<span class="k">class</span> <span class="nc">_ConstantsContainer</span><span class="p">(</span><span class="n">_ConstantsContainerType</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="p">),</span> <span class="p">{})):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    L{_ConstantsContainer} is a class with attributes used as symbolic</span>
+<span class="sd">    constants.  It is up to subclasses to specify what kind of constants are</span>
+<span class="sd">    allowed.</span>
+
+<span class="sd">    @cvar _constantType: Specified by a L{_ConstantsContainer} subclass to</span>
+<span class="sd">        specify the type of constants allowed by that subclass.</span>
+
+<span class="sd">    @cvar _enumerants: A C{dict} mapping the names of constants (eg</span>
+<span class="sd">        L{NamedConstant} instances) found in the class definition to those</span>
+<span class="sd">        instances.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_constantType</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Classes representing constants containers are not intended to be</span>
+<span class="sd">        instantiated.</span>
+
+<span class="sd">        The class object itself is used directly.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> may not be instantiated.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="p">))</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_constantFactory</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct the value for a new constant to add to this container.</span>
+
+<span class="sd">        @param name: The name of the constant to create.</span>
+
+<span class="sd">        @param descriptor: An instance of a L{_Constant} subclass (eg</span>
+<span class="sd">            L{NamedConstant}) which is assigned to C{name}.</span>
+
+<span class="sd">        @return: L{NamedConstant} instances have no value apart from identity,</span>
+<span class="sd">            so return a meaningless dummy value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_UNSPECIFIED</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">lookupByName</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve a constant by its name or raise a C{ValueError} if there is no</span>
+<span class="sd">        constant associated with that name.</span>
+
+<span class="sd">        @param name: A C{str} giving the name of one of the constants defined</span>
+<span class="sd">        by C{cls}.</span>
+
+<span class="sd">        @raise ValueError: If C{name} is not the name of one of the constants</span>
+<span class="sd">            defined by C{cls}.</span>
+
+<span class="sd">        @return: The L{NamedConstant} associated with C{name}.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">cls</span><span class="o">.</span><span class="n">_enumerants</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">iterconstants</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iteration over a L{Names} subclass results in all of the constants it</span>
+<span class="sd">        contains.</span>
+
+<span class="sd">        @return: an iterator the elements of which are the L{NamedConstant}</span>
+<span class="sd">            instances defined in the body of this L{Names} subclass.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">constants</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_enumerants</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span>
+            <span class="nb">sorted</span><span class="p">(</span><span class="n">constants</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">descriptor</span><span class="p">:</span> <span class="n">descriptor</span><span class="o">.</span><span class="n">_index</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="NamedConstant"><a class="viewcode-back" href="../../../cup.util.html#cup.util.constants.NamedConstant">[docs]</a><span class="k">class</span> <span class="nc">NamedConstant</span><span class="p">(</span><span class="n">_Constant</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    L{NamedConstant} defines an attribute to be a named constant within a</span>
+<span class="sd">    collection defined by a L{Names} subclass.</span>
+
+<span class="sd">    L{NamedConstant} is only for use in the definition of L{Names}</span>
+<span class="sd">    subclasses.  Do not instantiate L{NamedConstant} elsewhere and do not</span>
+<span class="sd">    subclass it.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+</div>
+<div class="viewcode-block" id="Names"><a class="viewcode-back" href="../../../cup.util.html#cup.util.constants.Names">[docs]</a><span class="k">class</span> <span class="nc">Names</span><span class="p">(</span><span class="n">_ConstantsContainer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A L{Names} subclass contains constants which differ only in their names and</span>
+<span class="sd">    identities.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_constantType</span> <span class="o">=</span> <span class="n">NamedConstant</span>
+
+</div>
+<div class="viewcode-block" id="ValueConstant"><a class="viewcode-back" href="../../../cup.util.html#cup.util.constants.ValueConstant">[docs]</a><span class="k">class</span> <span class="nc">ValueConstant</span><span class="p">(</span><span class="n">_Constant</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    L{ValueConstant} defines an attribute to be a named constant within a</span>
+<span class="sd">    collection defined by a L{Values} subclass.</span>
+
+<span class="sd">    L{ValueConstant} is only for use in the definition of L{Values} subclasses.</span>
+<span class="sd">    Do not instantiate L{ValueConstant} elsewhere and do not subclass it.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">_Constant</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+</div>
+<div class="viewcode-block" id="Values"><a class="viewcode-back" href="../../../cup.util.html#cup.util.constants.Values">[docs]</a><span class="k">class</span> <span class="nc">Values</span><span class="p">(</span><span class="n">_ConstantsContainer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A L{Values} subclass contains constants which are associated with arbitrary</span>
+<span class="sd">    values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_constantType</span> <span class="o">=</span> <span class="n">ValueConstant</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Values.lookupByValue"><a class="viewcode-back" href="../../../cup.util.html#cup.util.constants.Values.lookupByValue">[docs]</a>    <span class="k">def</span> <span class="nf">lookupByValue</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve a constant by its value or raise a C{ValueError} if there is</span>
+<span class="sd">        no constant associated with that value.</span>
+
+<span class="sd">        @param value: The value of one of the constants defined by C{cls}.</span>
+
+<span class="sd">        @raise ValueError: If C{value} is not the value of one of the constants</span>
+<span class="sd">            defined by C{cls}.</span>
+
+<span class="sd">        @return: The L{ValueConstant} associated with C{value}.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">constant</span> <span class="ow">in</span> <span class="n">cls</span><span class="o">.</span><span class="n">iterconstants</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">constant</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">constant</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+</div></div>
+<span class="k">def</span> <span class="nf">_flagOp</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implement a binary operator for a L{FlagConstant} instance.</span>
+
+<span class="sd">    @param op: A two-argument callable implementing the binary operation.  For</span>
+<span class="sd">        example, C{operator.operator.or_}.</span>
+
+<span class="sd">    @param left: The left-hand L{FlagConstant} instance.</span>
+<span class="sd">    @param right: The right-hand L{FlagConstant} instance.</span>
+
+<span class="sd">    @return: A new L{FlagConstant} instance representing the result of the</span>
+<span class="sd">        operation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">names</span><span class="p">,</span> <span class="n">right</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">FlagConstant</span><span class="p">()</span>
+    <span class="n">result</span><span class="o">.</span><span class="n">_realize</span><span class="p">(</span><span class="n">left</span><span class="o">.</span><span class="n">_container</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<div class="viewcode-block" id="FlagConstant"><a class="viewcode-back" href="../../../cup.util.html#cup.util.constants.FlagConstant">[docs]</a><span class="k">class</span> <span class="nc">FlagConstant</span><span class="p">(</span><span class="n">_Constant</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    L{FlagConstant} defines an attribute to be a flag constant within a</span>
+<span class="sd">    collection defined by a L{Flags} subclass.</span>
+
+<span class="sd">    L{FlagConstant} is only for use in the definition of L{Flags} subclasses.</span>
+<span class="sd">    Do not instantiate L{FlagConstant} elsewhere and do not subclass it.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">_UNSPECIFIED</span><span class="p">):</span>
+        <span class="n">_Constant</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_realize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Complete the initialization of this L{FlagConstant}.</span>
+
+<span class="sd">        This implementation differs from other C{_realize} implementations in</span>
+<span class="sd">        that a L{FlagConstant} may have several names which apply to it, due to</span>
+<span class="sd">        flags being combined with various operators.</span>
+
+<span class="sd">        @param container: The L{Flags} subclass this constant is part of.</span>
+
+<span class="sd">        @param names: When a single-flag value is being initialized, a C{str}</span>
+<span class="sd">            giving the name of that flag.  This is the case which happens when</span>
+<span class="sd">            a L{Flags} subclass is being initialized and L{FlagConstant}</span>
+<span class="sd">            instances from its body are being realized.</span>
+<span class="sd">            Otherwise, a C{set} of C{str}</span>
+<span class="sd">            giving names of all the flags set on this L{FlagConstant} instance.</span>
+<span class="sd">            This is the case when two flags are combined using C{|}, for</span>
+<span class="sd">            example.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">names</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">names</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">)</span> <span class="o">=</span> <span class="n">names</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;{&quot;</span> <span class="o">+</span> <span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">names</span><span class="p">))</span> <span class="o">+</span> <span class="s">&quot;}&quot;</span>
+        <span class="n">_Constant</span><span class="o">.</span><span class="n">_realize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="n">names</span>
+
+    <span class="k">def</span> <span class="nf">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Define C{|} on two L{FlagConstant} instances to create a new</span>
+<span class="sd">        L{FlagConstant} instance with all flags set in either instance set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_flagOp</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">or_</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Define C{&amp;} on two L{FlagConstant} instances to create a new</span>
+<span class="sd">        L{FlagConstant} instance with only flags set in both instances set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_flagOp</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">and_</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__xor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Define C{^} on two L{FlagConstant} instances to create a new</span>
+<span class="sd">        L{FlagConstant} instance with only flags set on exactly one instance</span>
+<span class="sd">        set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_flagOp</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">xor</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__invert__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Define C{~} on a L{FlagConstant} instance to create a new</span>
+<span class="sd">        L{FlagConstant} instance with all flags not set on this instance set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">FlagConstant</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">_realize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_container</span><span class="p">,</span> <span class="nb">set</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_container</span><span class="o">.</span><span class="n">iterconstants</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">flag</span><span class="o">.</span><span class="n">value</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">|=</span> <span class="n">flag</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        @return: An iterator of flags set on this instance set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_container</span><span class="o">.</span><span class="n">lookupByName</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        @param flag: The flag to test for membership in this instance</span>
+<span class="sd">            set.</span>
+
+<span class="sd">        @return: C{True} if C{flag} is in this instance set, else</span>
+<span class="sd">            C{False}.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Optimization for testing membership without iteration.</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">flag</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__nonzero__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        @return: C{False} if this flag&#39;s value is 0, else C{True}.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+    <span class="n">__bool__</span> <span class="o">=</span> <span class="n">__nonzero__</span>
+
+</div>
+<div class="viewcode-block" id="Flags"><a class="viewcode-back" href="../../../cup.util.html#cup.util.constants.Flags">[docs]</a><span class="k">class</span> <span class="nc">Flags</span><span class="p">(</span><span class="n">Values</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A L{Flags} subclass contains constants which can be combined using the</span>
+<span class="sd">    common bitwise operators (C{|}, C{&amp;}, etc) similar to a I{bitvector} from a</span>
+<span class="sd">    language like C.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_constantType</span> <span class="o">=</span> <span class="n">FlagConstant</span>
+
+    <span class="n">_value</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_constantFactory</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        For L{FlagConstant} instances with no explicitly defined value, assign</span>
+<span class="sd">        the next power of two as its value.</span>
+
+<span class="sd">        @param name: The name of the constant to create.</span>
+
+<span class="sd">        @param descriptor: An instance of a L{FlagConstant}</span>
+<span class="sd">            which is assigned to</span>
+<span class="sd">            C{name}.</span>
+
+<span class="sd">        @return: Either the value passed to the C{descriptor} constructor, or</span>
+<span class="sd">            the next power of 2 value which will be assigned to C{descriptor},</span>
+<span class="sd">            relative to the value of the last defined L{FlagConstant}.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">descriptor</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="n">_UNSPECIFIED</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_value</span>
+            <span class="n">cls</span><span class="o">.</span><span class="n">_value</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">descriptor</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">cls</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">value</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../util.html" >cup.util</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

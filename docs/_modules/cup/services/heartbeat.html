@@ -1,0 +1,411 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.services.heartbeat &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.services.heartbeat</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/python</span>
+<span class="c"># -*- coding: utf-8 -*</span>
+<span class="c"># #############################################################################</span>
+<span class="c">#</span>
+<span class="c">#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved</span>
+<span class="c">#</span>
+<span class="c"># #############################################################################</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:author:</span>
+<span class="sd">    Guannan Ma maguannan@baidu.com @mythmgn</span>
+<span class="sd">:create_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:last_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:descrition:</span>
+<span class="sd">    heartbeat related module</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+
+<span class="kn">from</span> <span class="nn">cup</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cup</span> <span class="kn">import</span> <span class="n">net</span>
+<span class="kn">from</span> <span class="nn">cup.util</span> <span class="kn">import</span> <span class="n">conf</span>
+<span class="kn">from</span> <span class="nn">cup.res</span> <span class="kn">import</span> <span class="n">linux</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c"># pylint: disable=W0611</span>
+    <span class="kn">import</span> <span class="nn">Queue</span> <span class="kn">as</span> <span class="nn">queue</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="c"># pylint: disable=F0401</span>
+    <span class="kn">import</span> <span class="nn">queue</span>
+
+
+<div class="viewcode-block" id="Device"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.Device">[docs]</a><span class="k">class</span> <span class="nc">Device</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for all devices in heartbeat service</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param:</span>
+<span class="sd">            the name of the device</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_healthy</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="Device.get_last_healthy"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.Device.get_last_healthy">[docs]</a>    <span class="k">def</span> <span class="nf">get_last_healthy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get last_healthy time of the device</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_healthy</span>
+</div>
+<div class="viewcode-block" id="Device.set_last_healthy"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.Device.set_last_healthy">[docs]</a>    <span class="k">def</span> <span class="nf">set_last_healthy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set last_healthy time</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;device </span><span class="si">%s</span><span class="s"> set_last_healthy&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_healthy</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Device.serilize"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.Device.serilize">[docs]</a>    <span class="k">def</span> <span class="nf">serilize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        serilize device info</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Device.get_name"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.Device.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get name&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+</div></div>
+<div class="viewcode-block" id="LinuxHost"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.LinuxHost">[docs]</a><span class="k">class</span> <span class="nc">LinuxHost</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    a linux host resource</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">init_this_host</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">iface</span><span class="o">=</span><span class="s">&#39;eth0&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param name:</span>
+<span class="sd">            name of the LinuxHost</span>
+<span class="sd">        :param init_this_host:</span>
+<span class="sd">            if init_this_host is True, will initialize the object by this linux</span>
+<span class="sd">            . Otherwise, you need to initialize it by yourself.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="c"># -1 means initialized</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;iface&#39;</span><span class="p">:</span>   <span class="n">iface</span><span class="p">,</span>
+            <span class="s">&#39;ipaddr&#39;</span><span class="p">:</span> <span class="s">&#39;0.0.0.0&#39;</span><span class="p">,</span>
+            <span class="s">&#39;hostname&#39;</span><span class="p">:</span> <span class="n">net</span><span class="o">.</span><span class="n">get_local_hostname</span><span class="p">(),</span>
+            <span class="s">&#39;cpu_idle&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="s">&#39;mem_inuse&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>        <span class="c"># MB</span>
+            <span class="s">&#39;mem_total&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="s">&#39;net_in&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>        <span class="c"># kb</span>
+            <span class="s">&#39;net_out&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span>      <span class="c"># kb</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">init_this_host</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">[</span><span class="s">&#39;ipaddr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">get_hostip</span><span class="p">()</span>
+            <span class="n">cpuinfo</span> <span class="o">=</span> <span class="n">linux</span><span class="o">.</span><span class="n">get_cpu_usage</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">meminfo</span> <span class="o">=</span> <span class="n">linux</span><span class="o">.</span><span class="n">get_meminfo</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">[</span><span class="s">&#39;net_in&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">linux</span><span class="o">.</span><span class="n">get_net_recv_speed</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">[</span><span class="s">&#39;iface&#39;</span><span class="p">],</span> <span class="mi">1</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">[</span><span class="s">&#39;net_out&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">linux</span><span class="o">.</span><span class="n">get_net_transmit_speed</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">[</span><span class="s">&#39;iface&#39;</span><span class="p">],</span> <span class="mi">1</span>
+            <span class="p">)</span>
+            <span class="c"># pylint: disable=E1101</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">[</span><span class="s">&#39;cpu_idle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cpuinfo</span><span class="o">.</span><span class="n">idle</span>
+            <span class="c"># pylint: disable=E1101</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">[</span><span class="s">&#39;mem_inuse&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meminfo</span><span class="o">.</span><span class="n">total</span> <span class="o">-</span> <span class="n">meminfo</span><span class="o">.</span><span class="n">free</span>
+
+<div class="viewcode-block" id="LinuxHost.set_linux_res_bydict"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.LinuxHost.set_linux_res_bydict">[docs]</a>    <span class="k">def</span> <span class="nf">set_linux_res_bydict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            {</span>
+<span class="sd">                &#39;iface&#39;: &#39;eth0&#39;,</span>
+<span class="sd">                &#39;ipaddr&#39;: &#39;10.10.10.1&#39;,</span>
+<span class="sd">                &#39;port&#39;:   8089,</span>
+<span class="sd">                &#39;cpu_idle&#39;: 50,</span>
+<span class="sd">                &#39;mem_inuse&#39;: 1024,        # MB</span>
+<span class="sd">                &#39;mem_total&#39;: 8192,</span>
+<span class="sd">                &#39;net_in&#39;:    8192,        # kb</span>
+<span class="sd">                &#39;net_out&#39;:   102400,      # kb</span>
+<span class="sd">            }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">info_dict</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;does not have this key:</span><span class="si">%s</span><span class="s">, ignore&#39;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">info_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;linux info:</span><span class="si">%s</span><span class="s"> updated, </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span>
+</div>
+<div class="viewcode-block" id="LinuxHost.set_ip_port"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.LinuxHost.set_ip_port">[docs]</a>    <span class="k">def</span> <span class="nf">set_ip_port</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ipaddr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set ip information</span>
+
+<span class="sd">        :param ipaddr:</span>
+<span class="sd">            ipaddr should be string and something like 10.10.10.1</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">[</span><span class="s">&#39;ipaddr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ipaddr</span>
+</div>
+<div class="viewcode-block" id="LinuxHost.get_ip"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.LinuxHost.get_ip">[docs]</a>    <span class="k">def</span> <span class="nf">get_ip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return ip information</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">[</span><span class="s">&#39;ipaddr&#39;</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="LinuxHost.set_cpu_idle"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.LinuxHost.set_cpu_idle">[docs]</a>    <span class="k">def</span> <span class="nf">set_cpu_idle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idle_rate</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set cpu idle rate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">[</span><span class="s">&#39;cpu_idle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">idle_rate</span>
+</div>
+<div class="viewcode-block" id="LinuxHost.get_cpu_idle"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.LinuxHost.get_cpu_idle">[docs]</a>    <span class="k">def</span> <span class="nf">get_cpu_idle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get cpu idle rate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">[</span><span class="s">&#39;cpu_idle&#39;</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="LinuxHost.set_mem_usage"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.LinuxHost.set_mem_usage">[docs]</a>    <span class="k">def</span> <span class="nf">set_mem_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mem_inuse</span><span class="p">,</span> <span class="n">mem_total</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set up mem_inuse and mem_total.</span>
+<span class="sd">        Will update any of them if it is not None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">mem_inuse</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">[</span><span class="s">&#39;mem_inuse&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mem_inuse</span>
+        <span class="k">if</span> <span class="n">mem_total</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">[</span><span class="s">&#39;mem_total&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mem_total</span>
+</div>
+<div class="viewcode-block" id="LinuxHost.get_mem_info"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.LinuxHost.get_mem_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_mem_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return:</span>
+<span class="sd">            (mem_inuse, mem_total), in MB</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">[</span><span class="s">&#39;mem_inuse&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">[</span><span class="s">&#39;mem_total&#39;</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="LinuxHost.set_net_usage"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.LinuxHost.set_net_usage">[docs]</a>    <span class="k">def</span> <span class="nf">set_net_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">net_in</span><span class="p">,</span> <span class="n">net_out</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param net_in:</span>
+<span class="sd">            net_in in kB/s. If net_in is None, will update nothing.</span>
+<span class="sd">        :param net_out:</span>
+<span class="sd">            net_out in kB/s. If net_out is None, will update nothing.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">net_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">[</span><span class="s">&#39;net_in&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">net_in</span>
+        <span class="k">if</span> <span class="n">net_out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">[</span><span class="s">&#39;net_out&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">net_out</span>
+</div>
+<div class="viewcode-block" id="LinuxHost.get_net_usage"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.LinuxHost.get_net_usage">[docs]</a>    <span class="k">def</span> <span class="nf">get_net_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return:</span>
+<span class="sd">            (net_in, net_out)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">[</span><span class="s">&#39;net_in&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict_info</span><span class="p">[</span><span class="s">&#39;net_out&#39;</span><span class="p">])</span>
+
+
+<span class="c"># class Process(LinuxHost):</span>
+<span class="c">#     def __init__(self, procname, path):</span>
+
+</div></div>
+<div class="viewcode-block" id="HeartbeatService"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.HeartbeatService">[docs]</a><span class="k">class</span> <span class="nc">HeartbeatService</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    HeartBeat service</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">judge_lost_in_sec</span><span class="p">,</span> <span class="n">keep_lost</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param judge_lost_in_sec:</span>
+<span class="sd">            if you call function get_lost() and find that time.time()</span>
+<span class="sd">            minus last_healthy time of the device &gt; judge_lost_in_sec,</span>
+<span class="sd">            the device will be marked as lost.</span>
+<span class="sd">        :param keep_lost:</span>
+<span class="sd">            whether we store lost deivce info</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_judge_lost</span> <span class="o">=</span> <span class="n">judge_lost_in_sec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">keep_lost</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lost_devices</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lost_devices</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="HeartbeatService.activate"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.HeartbeatService.activate">[docs]</a>    <span class="k">def</span> <span class="nf">activate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        activate a device in HeartBeat Service.</span>
+<span class="sd">        Add one if it&#39;s new to hbs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">device</span><span class="o">.</span><span class="n">set_last_healthy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">device</span>
+</div>
+<div class="viewcode-block" id="HeartbeatService.adjust_judge_lost_time"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.HeartbeatService.adjust_judge_lost_time">[docs]</a>    <span class="k">def</span> <span class="nf">adjust_judge_lost_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_in_sec</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        adjust judge_lost_in_sec</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s">&#39;heartbeat service judge_lost_in_sec changed, old </span><span class="si">%d</span><span class="s">, new </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_judge_lost</span><span class="p">,</span> <span class="n">time_in_sec</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_judge_lost</span> <span class="o">=</span> <span class="n">time_in_sec</span>
+        <span class="k">return</span>
+</div>
+<div class="viewcode-block" id="HeartbeatService.refresh"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.HeartbeatService.refresh">[docs]</a>    <span class="k">def</span> <span class="nf">refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param key:</span>
+<span class="sd">            refresh the device by key</span>
+<span class="sd">        :return:</span>
+<span class="sd">            if key does not exist, return False</span>
+<span class="sd">            else, fresh the last_healthy time of the device</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">,</span> <span class="s">&#39;needs to be a str&#39;</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">device</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;Device not found, key:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="n">device</span><span class="o">.</span><span class="n">set_last_healthy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div>
+<div class="viewcode-block" id="HeartbeatService.get_lost"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.HeartbeatService.get_lost">[docs]</a>    <span class="k">def</span> <span class="nf">get_lost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get lost devices</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">lost_devices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">dkey</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span><span class="p">[</span><span class="n">dkey</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">now</span> <span class="o">-</span> <span class="n">device</span><span class="o">.</span><span class="n">get_last_healthy</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_judge_lost</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lost_devices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_lost_devices</span><span class="p">[</span><span class="n">dkey</span><span class="p">]</span> <span class="o">=</span> <span class="n">device</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span><span class="p">[</span><span class="n">dkey</span><span class="p">]</span>
+                <span class="n">lost_devices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;heartbeat lost, device:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">dkey</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lost_devices</span>
+</div>
+<div class="viewcode-block" id="HeartbeatService.cleanup_oldlost"><a class="viewcode-back" href="../../../cup.services.html#cup.services.heartbeat.HeartbeatService.cleanup_oldlost">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup_oldlost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dump_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        cleanup old lost devices.</span>
+
+<span class="sd">        :param dump_file:</span>
+<span class="sd">            if dump_file is not None, we will store devices info into dump_file</span>
+<span class="sd">            Otherwise, we will cleanup the lost devices only.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;start - empty_lost devices, dump_file:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">dump_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lost_devices</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;end - does not keep_lost devices, return&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">dump_file</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lost_devices</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;end - does not have dump_file, return&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">info_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">info_dict</span><span class="p">[</span><span class="s">&#39;devices&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lost_devices</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">info_dict</span><span class="p">[</span><span class="s">&#39;devices&#39;</span><span class="p">][</span><span class="s">&#39;lost&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">info_dict</span><span class="p">[</span><span class="s">&#39;devices&#39;</span><span class="p">][</span><span class="s">&#39;lost_num&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lost_devices</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">info_dict</span><span class="p">[</span><span class="s">&#39;devices&#39;</span><span class="p">][</span><span class="s">&#39;lost_num&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">dkey</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lost_devices</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">tmp_dict</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">tmp_dict</span><span class="p">[</span><span class="s">&#39;key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dkey</span>
+                <span class="n">tmp_dict</span><span class="p">[</span><span class="s">&#39;last_healthy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_devices</span><span class="p">[</span><span class="n">dkey</span><span class="p">]</span><span class="o">.</span><span class="n">get_last_healthy</span><span class="p">()</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lost_devices</span><span class="p">[</span><span class="n">dkey</span><span class="p">]</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;end - empty_lost devices&#39;</span><span class="p">)</span>
+                <span class="n">info_dict</span><span class="p">[</span><span class="s">&#39;devices&#39;</span><span class="p">][</span><span class="s">&#39;lost&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp_dict</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;failed to dump lost_file, error:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+        <span class="n">conf_writer</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">Dict2Configure</span><span class="p">(</span><span class="n">info_dict</span><span class="p">)</span>
+        <span class="n">conf_writer</span><span class="o">.</span><span class="n">write_conf</span><span class="p">(</span><span class="n">dump_file</span><span class="p">)</span>
+        <span class="k">return</span>
+
+</div></div>
+<span class="k">def</span> <span class="nf">_test</span><span class="p">():</span>
+    <span class="n">localhost</span> <span class="o">=</span> <span class="n">LinuxHost</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">init_this_host</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">localhost</span><span class="o">.</span><span class="n">serilize</span><span class="p">()</span>
+    <span class="k">print</span> <span class="s">&#39;binary:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">binary</span>
+    <span class="k">print</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">_test</span><span class="p">()</span>
+<span class="c"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

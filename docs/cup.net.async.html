@@ -1,0 +1,822 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.net.async package &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="index.html" />
+    <link rel="up" title="cup.net package" href="cup.net.html" />
+    <link rel="next" title="cup.res package" href="cup.res.html" />
+    <link rel="prev" title="cup.net package" href="cup.net.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cup.res.html" title="cup.res package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cup.net.html" title="cup.net package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="cup.html" >cup package</a> &raquo;</li>
+          <li><a href="cup.net.html" accesskey="U">cup.net package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="cup-net-async-package">
+<h1>cup.net.async package<a class="headerlink" href="#cup-net-async-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cup.net.async.common">
+<span id="cup-net-async-common-module"></span><h2>cup.net.async.common module<a class="headerlink" href="#module-cup.net.async.common" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="cup.net.async.common.ip_port2connaddr">
+<tt class="descclassname">cup.net.async.common.</tt><tt class="descname">ip_port2connaddr</tt><big>(</big><em>peer</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/common.html#ip_port2connaddr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.common.ip_port2connaddr" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>connaddr是个64bit的int</dt>
+<dd>32 -  16    - 16   - 32
+ip - port   - stub - future</dd>
+</dl>
+<p>该函数以peer(ipaddr, port)为输入参数， 生成一个connaddr</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.net.async.common.add_stub2connaddr">
+<tt class="descclassname">cup.net.async.common.</tt><tt class="descname">add_stub2connaddr</tt><big>(</big><em>pack</em>, <em>stub</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/common.html#add_stub2connaddr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.common.add_stub2connaddr" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>connaddr是个64bit的int</dt>
+<dd>32 -  16    - 16   - 32
+ip - port   - stub - future</dd>
+</dl>
+<p>该函数设置connaddr中的stub到connaddr</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.net.async.common.add_future2connaddr">
+<tt class="descclassname">cup.net.async.common.</tt><tt class="descname">add_future2connaddr</tt><big>(</big><em>pack</em>, <em>future</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/common.html#add_future2connaddr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.common.add_future2connaddr" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>connaddr是个64bit的int</dt>
+<dd>32 -  16    - 16   - 32
+ip - port   - stub - future</dd>
+</dl>
+<p>该函数设置connaddr中的future到connaddr</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.net.async.common.get_ip_and_port_connaddr">
+<tt class="descclassname">cup.net.async.common.</tt><tt class="descname">get_ip_and_port_connaddr</tt><big>(</big><em>pack</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/common.html#get_ip_and_port_connaddr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.common.get_ip_and_port_connaddr" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>connaddr是个64bit的int</dt>
+<dd>32 -  16    - 16   - 32
+ip - port   - stub - future</dd>
+</dl>
+<p>该函数获取connaddr中的(ip, port)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.net.async.common.getip_connaddr">
+<tt class="descclassname">cup.net.async.common.</tt><tt class="descname">getip_connaddr</tt><big>(</big><em>pack</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/common.html#getip_connaddr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.common.getip_connaddr" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>connaddr是个64bit的int</dt>
+<dd>32 -  16    - 16   - 32
+ip - port   - stub - future</dd>
+</dl>
+<p>该函数获取connaddr中的ip</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.net.async.common.getport_connaddr">
+<tt class="descclassname">cup.net.async.common.</tt><tt class="descname">getport_connaddr</tt><big>(</big><em>pack</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/common.html#getport_connaddr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.common.getport_connaddr" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>connaddr是个64bit的int</dt>
+<dd>32 -  16    - 16   - 32
+ip - port   - stub - future</dd>
+</dl>
+<p>该函数获取connaddr中的port</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.net.async.common.getstub_connaddr">
+<tt class="descclassname">cup.net.async.common.</tt><tt class="descname">getstub_connaddr</tt><big>(</big><em>pack</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/common.html#getstub_connaddr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.common.getstub_connaddr" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>connaddr是个64bit的int</dt>
+<dd>32 -  16    - 16   - 32
+ip - port   - stub - future</dd>
+</dl>
+<p>该函数获取connaddr中的stub</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.net.async.common.getfuture_connaddr">
+<tt class="descclassname">cup.net.async.common.</tt><tt class="descname">getfuture_connaddr</tt><big>(</big><em>pack</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/common.html#getfuture_connaddr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.common.getfuture_connaddr" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>connaddr是个64bit的int</dt>
+<dd>32 -  16    - 16   - 32
+ip - port   - stub - future</dd>
+</dl>
+<p>该函数获取connaddr中的future</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.net.async.conn">
+<span id="cup-net-async-conn-module"></span><h2>cup.net.async.conn module<a class="headerlink" href="#module-cup.net.async.conn" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body">connection related module</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="cup.net.async.conn.CConnContext">
+<em class="property">class </em><tt class="descclassname">cup.net.async.conn.</tt><tt class="descname">CConnContext</tt><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Connection上下文处理类</p>
+<dl class="method">
+<dt id="cup.net.async.conn.CConnContext.do_recv_data">
+<tt class="descname">do_recv_data</tt><big>(</big><em>data</em>, <em>data_len</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnContext.do_recv_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnContext.do_recv_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>push data into the recving_msg queue
+network read should be in 1 thread only.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnContext.get_context_info">
+<tt class="descname">get_context_info</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnContext.get_context_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnContext.get_context_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>get context info</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnContext.get_peerinfo">
+<tt class="descname">get_peerinfo</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnContext.get_peerinfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnContext.get_peerinfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>get peerinfo</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnContext.get_recving_msg">
+<tt class="descname">get_recving_msg</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnContext.get_recving_msg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnContext.get_recving_msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the net msg being received</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnContext.get_sock">
+<tt class="descname">get_sock</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnContext.get_sock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnContext.get_sock" title="Permalink to this definition">¶</a></dt>
+<dd><p>return associated socket</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnContext.is_detroying">
+<tt class="descname">is_detroying</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnContext.is_detroying"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnContext.is_detroying" title="Permalink to this definition">¶</a></dt>
+<dd><p>is context being destroyed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnContext.is_reading">
+<tt class="descname">is_reading</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnContext.is_reading"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnContext.is_reading" title="Permalink to this definition">¶</a></dt>
+<dd><p>get if it is reading</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnContext.put_msg">
+<tt class="descname">put_msg</tt><big>(</big><em>flag</em>, <em>msg</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnContext.put_msg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnContext.put_msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Put msg into the sending queue.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>flag</strong> &#8211; <p>flag determines the priority of the msg.</p>
+<p>Msg with higher priority will have bigger chance to be</p>
+<p>sent out soon.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">TODO:</th><td class="field-body">If the msg queue is too big, consider close the network link</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnContext.release_readlock">
+<tt class="descname">release_readlock</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnContext.release_readlock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnContext.release_readlock" title="Permalink to this definition">¶</a></dt>
+<dd><p>release the readlock</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnContext.release_writelock">
+<tt class="descname">release_writelock</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnContext.release_writelock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnContext.release_writelock" title="Permalink to this definition">¶</a></dt>
+<dd><p>release the writelock</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnContext.set_conn_man">
+<tt class="descname">set_conn_man</tt><big>(</big><em>conn</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnContext.set_conn_man"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnContext.set_conn_man" title="Permalink to this definition">¶</a></dt>
+<dd><p>set conn for context</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnContext.set_peerinfo">
+<tt class="descname">set_peerinfo</tt><big>(</big><em>peer</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnContext.set_peerinfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnContext.set_peerinfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>set peerinfo</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnContext.set_reading">
+<tt class="descname">set_reading</tt><big>(</big><em>is_reading</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnContext.set_reading"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnContext.set_reading" title="Permalink to this definition">¶</a></dt>
+<dd><p>set reading status</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnContext.set_sock">
+<tt class="descname">set_sock</tt><big>(</big><em>sock</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnContext.set_sock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnContext.set_sock" title="Permalink to this definition">¶</a></dt>
+<dd><p>associate socket</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnContext.to_destroy">
+<tt class="descname">to_destroy</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnContext.to_destroy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnContext.to_destroy" title="Permalink to this definition">¶</a></dt>
+<dd><p>destroy context</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnContext.try_move2next_sending_msg">
+<tt class="descname">try_move2next_sending_msg</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnContext.try_move2next_sending_msg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnContext.try_move2next_sending_msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>move to next msg that will be sent</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnContext.try_readlock">
+<tt class="descname">try_readlock</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnContext.try_readlock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnContext.try_readlock" title="Permalink to this definition">¶</a></dt>
+<dd><p>try to acquire readlock</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if succeed. False, otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnContext.try_writelock">
+<tt class="descname">try_writelock</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnContext.try_writelock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnContext.try_writelock" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if succeed. False, otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.net.async.conn.CConnectionManager">
+<em class="property">class </em><tt class="descclassname">cup.net.async.conn.</tt><tt class="descname">CConnectionManager</tt><big>(</big><em>ip</em>, <em>bindport</em>, <em>thdpool_param</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnectionManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnectionManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>connaddr. Convert ip:port  into a 64-bit hex.</p>
+<dl class="attribute">
+<dt id="cup.net.async.conn.CConnectionManager.NET_RW_SIZE">
+<tt class="descname">NET_RW_SIZE</tt><em class="property"> = 131072</em><a class="headerlink" href="#cup.net.async.conn.CConnectionManager.NET_RW_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="cup.net.async.conn.CConnectionManager.QueueError">
+<em class="property">exception </em><tt class="descname">QueueError</tt><big>(</big><em>msg</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnectionManager.QueueError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnectionManager.QueueError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>internal queue error for CConnectionManager class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnectionManager.add_write_job">
+<tt class="descclassname">CConnectionManager.</tt><tt class="descname">add_write_job</tt><big>(</big><em>context</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnectionManager.add_write_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnectionManager.add_write_job" title="Permalink to this definition">¶</a></dt>
+<dd><p>add network write into queue</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnectionManager.bind">
+<tt class="descclassname">CConnectionManager.</tt><tt class="descname">bind</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnectionManager.bind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnectionManager.bind" title="Permalink to this definition">¶</a></dt>
+<dd><p>bind the ip:port</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnectionManager.connect">
+<tt class="descclassname">CConnectionManager.</tt><tt class="descname">connect</tt><big>(</big><em>peer</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnectionManager.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnectionManager.connect" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>peer</strong> &#8211; ip:port</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnectionManager.dump_stats">
+<tt class="descclassname">CConnectionManager.</tt><tt class="descname">dump_stats</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnectionManager.dump_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnectionManager.dump_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>dump stats</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnectionManager.get_recv_msg">
+<tt class="descclassname">CConnectionManager.</tt><tt class="descname">get_recv_msg</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnectionManager.get_recv_msg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnectionManager.get_recv_msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>get recv msg from queue</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnectionManager.get_recv_msg_ind">
+<tt class="descclassname">CConnectionManager.</tt><tt class="descname">get_recv_msg_ind</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnectionManager.get_recv_msg_ind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnectionManager.get_recv_msg_ind" title="Permalink to this definition">¶</a></dt>
+<dd><p>get recv msg ind</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnectionManager.get_recv_queue">
+<tt class="descclassname">CConnectionManager.</tt><tt class="descname">get_recv_queue</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnectionManager.get_recv_queue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnectionManager.get_recv_queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>get recving_msg queue</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnectionManager.poll">
+<tt class="descclassname">CConnectionManager.</tt><tt class="descname">poll</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnectionManager.poll"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnectionManager.poll" title="Permalink to this definition">¶</a></dt>
+<dd><p>start to poll</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnectionManager.push_msg2sendqueue">
+<tt class="descclassname">CConnectionManager.</tt><tt class="descname">push_msg2sendqueue</tt><big>(</big><em>msg</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnectionManager.push_msg2sendqueue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnectionManager.push_msg2sendqueue" title="Permalink to this definition">¶</a></dt>
+<dd><p>push msg into the send queue</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnectionManager.read">
+<tt class="descclassname">CConnectionManager.</tt><tt class="descname">read</tt><big>(</big><em>context</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnectionManager.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnectionManager.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>read with conn context</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.conn.CConnectionManager.stop">
+<tt class="descclassname">CConnectionManager.</tt><tt class="descname">stop</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/conn.html#CConnectionManager.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.conn.CConnectionManager.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>stop the connection manager</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.net.async.msg">
+<span id="cup-net-async-msg-module"></span><h2>cup.net.async.msg module<a class="headerlink" href="#module-cup.net.async.msg" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body">netmsg related module</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="cup.net.async.msg.CNetMsg">
+<em class="property">class </em><tt class="descclassname">cup.net.async.msg.</tt><tt class="descname">CNetMsg</tt><big>(</big><em>is_postmsg=True</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="docutils">
+<dt>CNetMsg</dt>
+<dd><p class="first">flag: System use only.
+type: System will use type &gt; 65535. Users will use type &lt;=65535</p>
+<p class="last">#head 0, SAGIT for building connection
+#len - uint64
+#fromip,port, stub -uint64
+#toip,port, stub   -uint64
+#msg_type          -uint32
+#uniqid            -uint64
+#body           -no limit (length:uint64)</p>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="cup.net.async.msg.CNetMsg.MSGTYPE">
+<tt class="descname">MSGTYPE</tt><em class="property"> = &lt;cup.net.async.msg.CMsgType object at 0x7f462e04e210&gt;</em><a class="headerlink" href="#cup.net.async.msg.CNetMsg.MSGTYPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cup.net.async.msg.CNetMsg.MSG_FLAG_MAN">
+<tt class="descname">MSG_FLAG_MAN</tt><em class="property"> = &lt;cup.net.async.msg.CMsgFlag object at 0x7f462e04efd0&gt;</em><a class="headerlink" href="#cup.net.async.msg.CNetMsg.MSG_FLAG_MAN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cup.net.async.msg.CNetMsg.MSG_SIGN">
+<tt class="descname">MSG_SIGN</tt><em class="property"> = 'SAGIT0\\1'</em><a class="headerlink" href="#cup.net.async.msg.CNetMsg.MSG_SIGN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.get_body">
+<tt class="descname">get_body</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.get_body"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.get_body" title="Permalink to this definition">¶</a></dt>
+<dd><p>get msg body</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.get_bodylen">
+<tt class="descname">get_bodylen</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.get_bodylen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.get_bodylen" title="Permalink to this definition">¶</a></dt>
+<dd><p>get body length</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.get_flag">
+<tt class="descname">get_flag</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.get_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.get_flag" title="Permalink to this definition">¶</a></dt>
+<dd><p>get msg flag</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.get_from_addr">
+<tt class="descname">get_from_addr</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.get_from_addr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.get_from_addr" title="Permalink to this definition">¶</a></dt>
+<dd><p>get from addr</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.get_msg_len">
+<tt class="descname">get_msg_len</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.get_msg_len"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.get_msg_len" title="Permalink to this definition">¶</a></dt>
+<dd><p>get msg len</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.get_msg_type">
+<tt class="descname">get_msg_type</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.get_msg_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.get_msg_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>get msg type</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.get_order_counts">
+<tt class="descname">get_order_counts</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.get_order_counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.get_order_counts" title="Permalink to this definition">¶</a></dt>
+<dd><p>get order counts</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.get_to_addr">
+<tt class="descname">get_to_addr</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.get_to_addr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.get_to_addr" title="Permalink to this definition">¶</a></dt>
+<dd><p>get to addr</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.get_uniq_id">
+<tt class="descname">get_uniq_id</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.get_uniq_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.get_uniq_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>get unique msg id</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.get_write_bytes">
+<tt class="descname">get_write_bytes</tt><big>(</big><em>length</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.get_write_bytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.get_write_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>get write bytes from the msg</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.is_a_recvmsg">
+<tt class="descname">is_a_recvmsg</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.is_a_recvmsg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.is_a_recvmsg" title="Permalink to this definition">¶</a></dt>
+<dd><p>is a msg being received</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.is_a_sendmsg">
+<tt class="descname">is_a_sendmsg</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.is_a_sendmsg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.is_a_sendmsg" title="Permalink to this definition">¶</a></dt>
+<dd><p>is a msg being sent</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.is_msg_already_sent">
+<tt class="descname">is_msg_already_sent</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.is_msg_already_sent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.is_msg_already_sent" title="Permalink to this definition">¶</a></dt>
+<dd><p>is msg already sent</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.is_recvmsg_complete">
+<tt class="descname">is_recvmsg_complete</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.is_recvmsg_complete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.is_recvmsg_complete" title="Permalink to this definition">¶</a></dt>
+<dd><p>is msg received already</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.is_sendmsg_complete">
+<tt class="descname">is_sendmsg_complete</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.is_sendmsg_complete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.is_sendmsg_complete" title="Permalink to this definition">¶</a></dt>
+<dd><p>is msg sent complete</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.push_data">
+<tt class="descname">push_data</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.push_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.push_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>push data into the msg</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.seek_write">
+<tt class="descname">seek_write</tt><big>(</big><em>length_ahead</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.seek_write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.seek_write" title="Permalink to this definition">¶</a></dt>
+<dd><p>seek foreward by length</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.set_body">
+<tt class="descname">set_body</tt><big>(</big><em>body</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.set_body"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.set_body" title="Permalink to this definition">¶</a></dt>
+<dd><p>set msg body</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.set_flag">
+<tt class="descname">set_flag</tt><big>(</big><em>flag</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.set_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.set_flag" title="Permalink to this definition">¶</a></dt>
+<dd><p>set flag for the msg</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.set_from_addr">
+<tt class="descname">set_from_addr</tt><big>(</big><em>ip_port</em>, <em>stub_future</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.set_from_addr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.set_from_addr" title="Permalink to this definition">¶</a></dt>
+<dd><p>set msg from addr</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.set_msg_type">
+<tt class="descname">set_msg_type</tt><big>(</big><em>msg_type</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.set_msg_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.set_msg_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>set msg type</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.set_need_head">
+<tt class="descname">set_need_head</tt><big>(</big><em>b_need=False</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.set_need_head"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.set_need_head" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Note:</th><td class="field-body">By default, the msg does not need to have a head unless
+it&#8217;s the first msg that posted/received.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.set_to_addr">
+<tt class="descname">set_to_addr</tt><big>(</big><em>ip_port</em>, <em>stub_future</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.set_to_addr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.set_to_addr" title="Permalink to this definition">¶</a></dt>
+<dd><p>set msg to addr</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CNetMsg.set_uniq_id">
+<tt class="descname">set_uniq_id</tt><big>(</big><em>uniq_id</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CNetMsg.set_uniq_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CNetMsg.set_uniq_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>set msg unique id</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.net.async.msg.CAckMsg">
+<em class="property">class </em><tt class="descclassname">cup.net.async.msg.</tt><tt class="descname">CAckMsg</tt><big>(</big><em>is_postmsg=True</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CAckMsg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CAckMsg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.net.async.msg.CNetMsg" title="cup.net.async.msg.CNetMsg"><tt class="xref py py-class docutils literal"><span class="pre">cup.net.async.msg.CNetMsg</span></tt></a></p>
+<p>ack msg example</p>
+<dl class="method">
+<dt id="cup.net.async.msg.CAckMsg.get_ack">
+<tt class="descname">get_ack</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CAckMsg.get_ack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CAckMsg.get_ack" title="Permalink to this definition">¶</a></dt>
+<dd><p>get ack</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CAckMsg.set_ack">
+<tt class="descname">set_ack</tt><big>(</big><em>status</em>, <em>msg</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CAckMsg.set_ack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CAckMsg.set_ack" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>status</strong> &#8211; status of the msg</li>
+<li><strong>msg</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msg.CAckMsg.set_body">
+<tt class="descname">set_body</tt><big>(</big><em>map_ack</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/msg.html#CAckMsg.set_body"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msg.CAckMsg.set_body" title="Permalink to this definition">¶</a></dt>
+<dd><p>set body</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.net.async.msgcenter">
+<span id="cup-net-async-msgcenter-module"></span><h2>cup.net.async.msgcenter module<a class="headerlink" href="#module-cup.net.async.msgcenter" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body">msg center related module</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="cup.net.async.msgcenter.IMessageCenter">
+<em class="property">class </em><tt class="descclassname">cup.net.async.msgcenter.</tt><tt class="descname">IMessageCenter</tt><big>(</big><em>ip</em>, <em>port</em>, <em>thdpool_param=None</em>, <em>stat_intvl=20</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/msgcenter.html#IMessageCenter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msgcenter.IMessageCenter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Message center class</p>
+<dl class="method">
+<dt id="cup.net.async.msgcenter.IMessageCenter.default_handle">
+<tt class="descname">default_handle</tt><big>(</big><em>msg</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/msgcenter.html#IMessageCenter.default_handle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msgcenter.IMessageCenter.default_handle" title="Permalink to this definition">¶</a></dt>
+<dd><p>default handle for msgcenter</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msgcenter.IMessageCenter.dump_stat">
+<tt class="descname">dump_stat</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/msgcenter.html#IMessageCenter.dump_stat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msgcenter.IMessageCenter.dump_stat" title="Permalink to this definition">¶</a></dt>
+<dd><p>dump message center class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msgcenter.IMessageCenter.handle">
+<tt class="descname">handle</tt><big>(</big><em>msg</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/msgcenter.html#IMessageCenter.handle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msgcenter.IMessageCenter.handle" title="Permalink to this definition">¶</a></dt>
+<dd><p>handle function which should be implemented by
+sub-class.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msgcenter.IMessageCenter.is_stopping">
+<tt class="descname">is_stopping</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/msgcenter.html#IMessageCenter.is_stopping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msgcenter.IMessageCenter.is_stopping" title="Permalink to this definition">¶</a></dt>
+<dd><p>is msg center being stopped</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msgcenter.IMessageCenter.post_msg">
+<tt class="descname">post_msg</tt><big>(</big><em>msg</em><big>)</big><a class="reference internal" href="_modules/cup/net/async/msgcenter.html#IMessageCenter.post_msg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msgcenter.IMessageCenter.post_msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>post a net msg</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msgcenter.IMessageCenter.run">
+<tt class="descname">run</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/msgcenter.html#IMessageCenter.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msgcenter.IMessageCenter.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run the msgcenter</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msgcenter.IMessageCenter.setup">
+<tt class="descname">setup</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/msgcenter.html#IMessageCenter.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msgcenter.IMessageCenter.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>setup the message center</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.async.msgcenter.IMessageCenter.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cup/net/async/msgcenter.html#IMessageCenter.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.async.msgcenter.IMessageCenter.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>stop the message center</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.net.async">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cup.net.async" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">author:</th><td class="field-body">Guannan Ma</td>
+</tr>
+<tr class="field-even field"><th class="field-name">create_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">last_date:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-even field"><th class="field-name">descrition:</th><td class="field-body"><strong>Async Module是ython tcp异步通讯框架.</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">cup.net.async package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-cup.net.async.common">cup.net.async.common module</a></li>
+<li><a class="reference internal" href="#module-cup.net.async.conn">cup.net.async.conn module</a></li>
+<li><a class="reference internal" href="#module-cup.net.async.msg">cup.net.async.msg module</a></li>
+<li><a class="reference internal" href="#module-cup.net.async.msgcenter">cup.net.async.msgcenter module</a></li>
+<li><a class="reference internal" href="#module-cup.net.async">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="cup.net.html"
+                        title="previous chapter">cup.net package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cup.res.html"
+                        title="next chapter">cup.res package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/cup.net.async.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cup.res.html" title="cup.res package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="cup.net.html" title="cup.net package"
+             >previous</a> |</li>
+        <li><a href="index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="cup.html" >cup package</a> &raquo;</li>
+          <li><a href="cup.net.html" >cup.net package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.net.async.common &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../../../index.html" />
+    <link rel="up" title="cup.net" href="../../net.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../net.html" accesskey="U">cup.net</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.net.async.common</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/python</span>
+<span class="c"># -*- coding: utf-8 -*</span>
+<span class="c"># #############################################################################</span>
+<span class="c">#</span>
+<span class="c">#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved</span>
+<span class="c">#</span>
+<span class="c"># #############################################################################</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:author:</span>
+<span class="sd">    Guannan Ma</span>
+<span class="sd">:create_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:last_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="kn">from</span> <span class="nn">cup.util</span> <span class="kn">import</span> <span class="n">misc</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&#39;ip_port2connaddr&#39;</span><span class="p">,</span> <span class="s">&#39;add_stub2connaddr&#39;</span><span class="p">,</span> <span class="s">&#39;add_future2connaddr&#39;</span><span class="p">,</span>
+    <span class="s">&#39;get_ip_and_port_connaddr&#39;</span><span class="p">,</span> <span class="s">&#39;getip_connaddr&#39;</span><span class="p">,</span> <span class="s">&#39;getport_connaddr&#39;</span><span class="p">,</span>
+    <span class="s">&#39;getstub_connaddr&#39;</span><span class="p">,</span> <span class="s">&#39;getfuture_connaddr&#39;</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="ip_port2connaddr"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.common.ip_port2connaddr">[docs]</a><span class="k">def</span> <span class="nf">ip_port2connaddr</span><span class="p">(</span><span class="n">peer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    connaddr是个64bit的int</span>
+<span class="sd">        32 -  16    - 16   - 32</span>
+<span class="sd">        ip - port   - stub - future</span>
+<span class="sd">    该函数以peer(ipaddr, port)为输入参数， 生成一个connaddr</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">misc</span><span class="o">.</span><span class="n">check_type</span><span class="p">(</span><span class="n">peer</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+    <span class="n">ipaddr</span><span class="p">,</span> <span class="n">port</span> <span class="o">=</span> <span class="n">peer</span>
+    <span class="n">misc</span><span class="o">.</span><span class="n">check_type</span><span class="p">(</span><span class="n">ipaddr</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+    <span class="n">packed</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_aton</span><span class="p">(</span><span class="n">ipaddr</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&quot;!L&quot;</span><span class="p">,</span> <span class="n">packed</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="mi">64</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">port</span> <span class="o">&lt;&lt;</span> <span class="mi">48</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="add_stub2connaddr"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.common.add_stub2connaddr">[docs]</a><span class="k">def</span> <span class="nf">add_stub2connaddr</span><span class="p">(</span><span class="n">pack</span><span class="p">,</span> <span class="n">stub</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    connaddr是个64bit的int</span>
+<span class="sd">        32 -  16    - 16   - 32</span>
+<span class="sd">        ip - port   - stub - future</span>
+<span class="sd">    该函数设置connaddr中的stub到connaddr</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">pack</span> <span class="o">|</span> <span class="p">(</span><span class="n">stub</span> <span class="o">&lt;&lt;</span> <span class="mi">32</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="add_future2connaddr"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.common.add_future2connaddr">[docs]</a><span class="k">def</span> <span class="nf">add_future2connaddr</span><span class="p">(</span><span class="n">pack</span><span class="p">,</span> <span class="n">future</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    connaddr是个64bit的int</span>
+<span class="sd">        32 -  16    - 16   - 32</span>
+<span class="sd">        ip - port   - stub - future</span>
+<span class="sd">    该函数设置connaddr中的future到connaddr</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">pack</span> <span class="o">|</span> <span class="n">future</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="get_ip_and_port_connaddr"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.common.get_ip_and_port_connaddr">[docs]</a><span class="k">def</span> <span class="nf">get_ip_and_port_connaddr</span><span class="p">(</span><span class="n">pack</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    connaddr是个64bit的int</span>
+<span class="sd">        32 -  16    - 16   - 32</span>
+<span class="sd">        ip - port   - stub - future</span>
+<span class="sd">    该函数获取connaddr中的(ip, port)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ipaddr</span> <span class="o">=</span> <span class="n">getip_connaddr</span><span class="p">(</span><span class="n">pack</span><span class="p">)</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="n">getport_connaddr</span><span class="p">(</span><span class="n">pack</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">ipaddr</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="getip_connaddr"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.common.getip_connaddr">[docs]</a><span class="k">def</span> <span class="nf">getip_connaddr</span><span class="p">(</span><span class="n">pack</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    connaddr是个64bit的int</span>
+<span class="sd">        32 -  16    - 16   - 32</span>
+<span class="sd">        ip - port   - stub - future</span>
+<span class="sd">    该函数获取connaddr中的ip</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_ntoa</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s">&#39;!L&#39;</span><span class="p">,</span> <span class="n">pack</span> <span class="o">&gt;&gt;</span> <span class="mi">64</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="getport_connaddr"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.common.getport_connaddr">[docs]</a><span class="k">def</span> <span class="nf">getport_connaddr</span><span class="p">(</span><span class="n">pack</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    connaddr是个64bit的int</span>
+<span class="sd">        32 -  16    - 16   - 32</span>
+<span class="sd">        ip - port   - stub - future</span>
+<span class="sd">    该函数获取connaddr中的port</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">pack</span> <span class="o">&gt;&gt;</span> <span class="mi">48</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xffff</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="getstub_connaddr"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.common.getstub_connaddr">[docs]</a><span class="k">def</span> <span class="nf">getstub_connaddr</span><span class="p">(</span><span class="n">pack</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    connaddr是个64bit的int</span>
+<span class="sd">        32 -  16    - 16   - 32</span>
+<span class="sd">        ip - port   - stub - future</span>
+<span class="sd">    该函数获取connaddr中的stub</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">pack</span> <span class="o">&gt;&gt;</span> <span class="mi">32</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xffff</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="getfuture_connaddr"><a class="viewcode-back" href="../../../../cup.net.async.html#cup.net.async.common.getfuture_connaddr">[docs]</a><span class="k">def</span> <span class="nf">getfuture_connaddr</span><span class="p">(</span><span class="n">pack</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    connaddr是个64bit的int</span>
+<span class="sd">        32 -  16    - 16   - 32</span>
+<span class="sd">        ip - port   - stub - future</span>
+<span class="sd">    该函数获取connaddr中的future</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">pack</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xffff</span><span class="p">)</span>
+
+<span class="c"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../net.html" >cup.net</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

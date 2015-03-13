@@ -1,0 +1,480 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.log &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.log</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/python</span>
+<span class="c"># -*- coding: utf-8 -*</span>
+<span class="c"># #############################################################################</span>
+<span class="c">#</span>
+<span class="c">#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved</span>
+<span class="c">#</span>
+<span class="c"># #############################################################################</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:author:</span>
+<span class="sd">    Guannan Ma</span>
+<span class="sd">:create_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:last_date:</span>
+<span class="sd">    2014</span>
+<span class="sd">:descrition:</span>
+<span class="sd">    common log related module</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&#39;debug&#39;</span><span class="p">,</span> <span class="s">&#39;info&#39;</span><span class="p">,</span> <span class="s">&#39;warn&#39;</span><span class="p">,</span> <span class="s">&#39;critical&#39;</span><span class="p">,</span>
+    <span class="s">&#39;init_comlog&#39;</span><span class="p">,</span> <span class="s">&#39;setloglevel&#39;</span><span class="p">,</span>
+    <span class="s">&#39;ROTATION&#39;</span><span class="p">,</span> <span class="s">&#39;INFINITE&#39;</span>
+<span class="p">]</span>
+
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="c"># import traceback</span>
+<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">handlers</span>
+
+<span class="kn">import</span> <span class="nn">cup</span>
+<span class="kn">from</span> <span class="nn">cup</span> <span class="kn">import</span> <span class="n">err</span>
+<span class="kn">from</span> <span class="nn">cup</span> <span class="kn">import</span> <span class="n">platforms</span>
+
+
+<span class="n">ROTATION</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">INFINITE</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">ROTATION_COUNTS</span> <span class="o">=</span> <span class="mi">30</span>
+
+<span class="n">DEBUG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span>
+
+<span class="n">INFO</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span>
+
+<span class="n">ERROR</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span>
+
+<span class="n">CRITICAL</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span>
+
+
+<span class="k">class</span> <span class="nc">_Singleton</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c"># pylint: disable=R0903</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Singleton你的类.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_LOCK</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cls</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__instance</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__cls</span> <span class="o">=</span> <span class="n">cls</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_LOCK</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__instance</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__instance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cls</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_LOCK</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__instance</span>
+
+
+<span class="c"># pylint: disable=R0903</span>
+<span class="nd">@_Singleton</span>
+<span class="k">class</span> <span class="nc">_LoggerMan</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">_instance</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">_pylogger</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">_maxsize</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">_b_rotation</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">_logfile</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="n">_logtype</span> <span class="o">=</span> <span class="n">ROTATION</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_getlogger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pylogger</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">LoggerException</span><span class="p">(</span>
+                <span class="s">&#39;The Cup logger has not been initalized Yet. &#39;</span>
+                <span class="s">&#39;Call init_comlog first&#39;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pylogger</span>
+
+    <span class="k">def</span> <span class="nf">_setlogger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pylogger</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">LoggerException</span><span class="p">(</span>
+                <span class="sd">&quot;&quot;&quot;WARNING!!! The cup logger has been initalized already\</span>
+<span class="sd">                .Plz do NOT init_comlog twice&quot;&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pylogger</span> <span class="o">=</span> <span class="n">logger</span>
+
+    <span class="k">def</span> <span class="nf">_reset_logger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pylogger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pylogger</span> <span class="o">=</span> <span class="n">logger</span>
+
+    <span class="k">def</span> <span class="nf">is_initalized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Initialized or not</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pylogger</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+
+    <span class="k">def</span> <span class="nf">_config_filelogger</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">loglevel</span><span class="p">,</span> <span class="n">strlogfile</span><span class="p">,</span> <span class="n">logtype</span><span class="p">,</span> <span class="n">maxsize</span><span class="p">,</span> <span class="n">bprint_console</span>
+    <span class="p">):</span>  <span class="c"># too many arg pylint: disable=R0913</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">strlogfile</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">mknod</span><span class="p">(</span><span class="n">strlogfile</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">LoggerException</span><span class="p">(</span>
+                    <span class="s">&#39;logfile does not exist. &#39;</span>
+                    <span class="s">&#39;try to create it. but file creation failed&#39;</span>
+                <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logfile</span> <span class="o">=</span> <span class="n">strlogfile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logtype</span> <span class="o">=</span> <span class="n">logtype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pylogger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">loglevel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_maxsize</span> <span class="o">=</span> <span class="n">maxsize</span>
+        <span class="c"># &#39;%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(message)s&#39;</span>
+        <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
+            <span class="s">&#39;</span><span class="si">%(levelname)s</span><span class="s">: </span><span class="si">%(asctime)s</span><span class="s"> </span><span class="si">%(message)s</span><span class="s">&#39;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">bprint_console</span><span class="p">:</span>
+            <span class="n">streamhandler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+            <span class="n">streamhandler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">loglevel</span><span class="p">)</span>
+            <span class="n">streamhandler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pylogger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">streamhandler</span><span class="p">)</span>
+        <span class="n">fdhandler</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">logtype</span> <span class="o">==</span> <span class="n">ROTATION</span><span class="p">:</span>
+            <span class="n">fdhandler</span> <span class="o">=</span> <span class="n">handlers</span><span class="o">.</span><span class="n">RotatingFileHandler</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logfile</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="n">maxsize</span><span class="p">,</span> <span class="n">ROTATION_COUNTS</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&#39;utf-8&#39;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fdhandler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logfile</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&#39;utf-8&#39;</span>
+            <span class="p">)</span>
+        <span class="n">fdhandler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+        <span class="n">fdhandler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">loglevel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pylogger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">fdhandler</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_line</span><span class="p">(</span><span class="n">back</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">sys</span><span class="o">.</span><span class="n">_getframe</span><span class="p">(</span><span class="n">back</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">f_lineno</span>  <span class="c"># traceback pylint:disable=W0212</span>
+
+
+<span class="k">def</span> <span class="nf">_file</span><span class="p">(</span><span class="n">back</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="c"># pylint:disable=W0212</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">_getframe</span><span class="p">(</span><span class="n">back</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_filename</span><span class="p">)</span>
+
+
+<span class="c"># def _func(back=0):</span>
+<span class="c">#     # traceback functionality. pylint:disable=W0212</span>
+<span class="c">#     return sys._getframe(back + 1).f_code.co_name \</span>
+
+
+<span class="k">def</span> <span class="nf">_proc_thd_id</span><span class="p">():</span>
+    <span class="c"># return str(os.getpid()) # traceback functionality. pylint:disable=W0212</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span> <span class="o">+</span> <span class="s">&#39;:&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span><span class="o">.</span><span class="n">ident</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_log_file_func_info</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">back_trace_len</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="n">tempmsg</span> <span class="o">=</span> <span class="s">&#39; * [</span><span class="si">%s</span><span class="s">] [</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">]&#39;</span> <span class="o">%</span> <span class="p">(</span>
+        <span class="n">_proc_thd_id</span><span class="p">(),</span> <span class="n">_file</span><span class="p">(</span><span class="mi">2</span> <span class="o">+</span> <span class="n">back_trace_len</span><span class="p">),</span>
+        <span class="n">_line</span><span class="p">(</span><span class="mi">2</span> <span class="o">+</span> <span class="n">back_trace_len</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tempmsg</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">msg</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">msg</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf8&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="init_comlog"><a class="viewcode-back" href="../../cup.html#cup.log.init_comlog">[docs]</a><span class="k">def</span> <span class="nf">init_comlog</span><span class="p">(</span>
+    <span class="n">loggername</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="s">&#39;cup.log&#39;</span><span class="p">,</span>
+    <span class="n">logtype</span><span class="o">=</span><span class="n">ROTATION</span><span class="p">,</span> <span class="n">maxlogsize</span><span class="o">=</span><span class="mi">1073741824</span><span class="p">,</span> <span class="n">bprint_console</span><span class="o">=</span><span class="bp">False</span>
+<span class="p">):</span>  <span class="c"># too many arg pylint: disable=R0913</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    初始化日志函数。用法如下::</span>
+
+<span class="sd">    :param loggername:</span>
+<span class="sd">        这个logger的名字.</span>
+<span class="sd">    :param loglevel:</span>
+<span class="sd">        一共四种 logging.DEBUG logging.INFO logging.WARN logging.CRITICAL</span>
+<span class="sd">    :param logfile:</span>
+<span class="sd">        log文件的位置,如不存在，会尝试创建该文件</span>
+<span class="sd">    :param logtype:</span>
+<span class="sd">        支持两种leo.log.ROTATION cup.log.INFINITE</span>
+<span class="sd">        ROTATION会在文件大小达到maxlogsize的时候进行switch.</span>
+<span class="sd">        一共会switch 30个文件, 然后在这30个文件里面ROTATION的写</span>
+<span class="sd">        INFINITE会一直写log文件</span>
+<span class="sd">    :param maxlogsize:</span>
+<span class="sd">        logfile的最大文件大小(单位byte).超过会进行覆盖写或者switch.</span>
+<span class="sd">    :param b_printcmd:</span>
+<span class="sd">        打印日志到logfile的同时,是否打印到stdout.</span>
+
+<span class="sd">    请注意，打印日志时要么打印unicode字符，要么打印Python默认的UTF8的字符</span>
+
+<span class="sd">    *E.g.*</span>
+<span class="sd">    ::</span>
+<span class="sd">        import logging</span>
+<span class="sd">        from cup import log</span>
+<span class="sd">        log.init_comlog(</span>
+<span class="sd">            &#39;test&#39;,</span>
+<span class="sd">            logging.DEBUG,</span>
+<span class="sd">            &#39;/home/work/test/test.log&#39;,</span>
+<span class="sd">            log.ROTATION,</span>
+<span class="sd">            1024,</span>
+<span class="sd">            False</span>
+<span class="sd">        )</span>
+<span class="sd">        log.info(&#39;test xxx&#39;)</span>
+<span class="sd">        log.critical(&#39;test critical&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">loggerman</span> <span class="o">=</span> <span class="n">_LoggerMan</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">loggerman</span><span class="o">.</span><span class="n">is_initalized</span><span class="p">()</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+        <span class="n">loggerman</span><span class="o">.</span><span class="n">_setlogger</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">loggername</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">logfile</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">platforms</span><span class="o">.</span><span class="n">is_linux</span><span class="p">():</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">mknod</span><span class="p">(</span><span class="n">logfile</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">logfile</span><span class="p">,</span> <span class="s">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fhandle</span><span class="p">:</span>
+                    <span class="n">fhandle</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;----Windows File Creation ----</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">logfile</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">LoggerException</span><span class="p">(</span>
+                <span class="s">&#39;The log file exists. But it</span><span class="se">\&#39;</span><span class="s">s not regular file&#39;</span>
+            <span class="p">)</span>
+        <span class="n">loggerman</span><span class="o">.</span><span class="n">_config_filelogger</span><span class="p">(</span>
+            <span class="n">loglevel</span><span class="p">,</span> <span class="n">logfile</span><span class="p">,</span> <span class="n">logtype</span><span class="p">,</span> <span class="n">maxlogsize</span><span class="p">,</span> <span class="n">bprint_console</span>
+        <span class="p">)</span>  <span class="c"># too many arg pylint: disable=w0212</span>
+        <span class="n">info</span><span class="p">(</span><span class="s">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">20</span> <span class="o">+</span> <span class="s">&#39;Log Initialized Successfully&#39;</span> <span class="o">+</span> <span class="s">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&#39;[</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">] init_comlog has been already initalized&#39;</span> <span class="o">%</span> \
+            <span class="p">(</span><span class="n">_file</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">_line</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span>
+
+</div>
+<span class="k">def</span> <span class="nf">reinit_comlog</span><span class="p">(</span>
+    <span class="n">loggername</span><span class="p">,</span> <span class="n">loglevel</span><span class="p">,</span> <span class="n">logfile</span><span class="p">,</span> <span class="n">logtype</span><span class="p">,</span> <span class="n">maxlogsize</span><span class="p">,</span> <span class="n">bprint_console</span>
+<span class="p">):</span>  <span class="c"># too many arg pylint: disable=R0913</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    重新设置comlog, 参与意义同init_comlog.</span>
+
+<span class="sd">    reinit_comlog会重新设置整个进程的参数， 但请注意loggername一定不能与</span>
+
+<span class="sd">    原来的loggername相同，否则可能出现打印两次的情况</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">loggerman</span> <span class="o">=</span> <span class="n">_LoggerMan</span><span class="p">()</span>
+    <span class="n">loggerman</span><span class="o">.</span><span class="n">_reset_logger</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">loggername</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">logfile</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">platforms</span><span class="o">.</span><span class="n">is_linux</span><span class="p">():</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mknod</span><span class="p">(</span><span class="n">logfile</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">logfile</span><span class="p">,</span> <span class="s">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fhandle</span><span class="p">:</span>
+                <span class="n">fhandle</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;----Windows File Creation ----</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">logfile</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">LoggerException</span><span class="p">(</span>
+            <span class="s">&#39;The log file exists. But it</span><span class="se">\&#39;</span><span class="s">s not regular file&#39;</span>
+        <span class="p">)</span>
+    <span class="n">loggerman</span><span class="o">.</span><span class="n">_config_filelogger</span><span class="p">(</span>
+        <span class="n">loglevel</span><span class="p">,</span> <span class="n">logfile</span><span class="p">,</span> <span class="n">logtype</span><span class="p">,</span> <span class="n">maxlogsize</span><span class="p">,</span> <span class="n">bprint_console</span>
+    <span class="p">)</span>  <span class="c"># too many arg pylint: disable=w0212</span>
+    <span class="n">info</span><span class="p">(</span><span class="s">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">20</span> <span class="o">+</span> <span class="s">&#39;Log Reinitialized Successfully&#39;</span> <span class="o">+</span> <span class="s">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+    <span class="k">return</span>
+
+
+<span class="k">def</span> <span class="nf">_fail_handle</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="c"># print &#39;cup.log.info print to file failed. %s&#39; % str(e)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf8&#39;</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="s">error:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="info"><a class="viewcode-back" href="../../cup.html#cup.log.info">[docs]</a><span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">back_trace_len</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    logging.INFO的日志打印</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">_log_file_func_info</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">back_trace_len</span><span class="p">)</span>
+        <span class="n">loggerman</span> <span class="o">=</span> <span class="n">_LoggerMan</span><span class="p">()</span>
+        <span class="n">loggerman</span><span class="o">.</span><span class="n">_getlogger</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">err</span><span class="o">.</span><span class="n">LoggerException</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">_fail_handle</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="debug"><a class="viewcode-back" href="../../cup.html#cup.log.debug">[docs]</a><span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">back_trace_len</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param msg:</span>
+<span class="sd">        logging.DEBUG级别的日志打印。</span>
+<span class="sd">    :param back_trace_len:</span>
+<span class="sd">        为扩展预留的参数， 正常使用可忽略。</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">_log_file_func_info</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">back_trace_len</span><span class="p">)</span>
+        <span class="n">loggerman</span> <span class="o">=</span> <span class="n">_LoggerMan</span><span class="p">()</span>
+        <span class="n">loggerman</span><span class="o">.</span><span class="n">_getlogger</span><span class="p">()</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">err</span><span class="o">.</span><span class="n">LoggerException</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">_fail_handle</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="warn"><a class="viewcode-back" href="../../cup.html#cup.log.warn">[docs]</a><span class="k">def</span> <span class="nf">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">back_trace_len</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    logging.WARN级别的日志打印</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">_log_file_func_info</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">back_trace_len</span><span class="p">)</span>
+        <span class="n">loggerman</span> <span class="o">=</span> <span class="n">_LoggerMan</span><span class="p">()</span>
+        <span class="n">loggerman</span><span class="o">.</span><span class="n">_getlogger</span><span class="p">()</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">err</span><span class="o">.</span><span class="n">LoggerException</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">_fail_handle</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+
+</div>
+<span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">back_trace_len</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    logging.ERROR级别的日志打印</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">_log_file_func_info</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">back_trace_len</span><span class="p">)</span>
+        <span class="n">loggerman</span> <span class="o">=</span> <span class="n">_LoggerMan</span><span class="p">()</span>
+        <span class="n">loggerman</span><span class="o">.</span><span class="n">_getlogger</span><span class="p">()</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">err</span><span class="o">.</span><span class="n">LoggerException</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="n">_fail_handle</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="critical"><a class="viewcode-back" href="../../cup.html#cup.log.critical">[docs]</a><span class="k">def</span> <span class="nf">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">back_trace_len</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    logging.CRITICAL级别的日志打印</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">_log_file_func_info</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">back_trace_len</span><span class="p">)</span>
+        <span class="n">loggerman</span> <span class="o">=</span> <span class="n">_LoggerMan</span><span class="p">()</span>
+        <span class="n">loggerman</span><span class="o">.</span><span class="n">_getlogger</span><span class="p">()</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">err</span><span class="o">.</span><span class="n">LoggerException</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">_fail_handle</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="setloglevel"><a class="viewcode-back" href="../../cup.html#cup.log.setloglevel">[docs]</a><span class="k">def</span> <span class="nf">setloglevel</span><span class="p">(</span><span class="n">logginglevel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    进程运行时更改loglevel</span>
+
+<span class="sd">    :param logginglevel:</span>
+<span class="sd">        四种, 同init_comlog的loglevel</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">loggerman</span> <span class="o">=</span> <span class="n">_LoggerMan</span><span class="p">()</span>
+    <span class="n">loggerman</span><span class="o">.</span><span class="n">_getlogger</span><span class="p">()</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logginglevel</span><span class="p">)</span>
+
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;中文&#39;</span><span class="p">)</span>
+    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">init_comlog</span><span class="p">(</span>
+        <span class="s">&#39;test&#39;</span><span class="p">,</span> <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="s">&#39;./test.log&#39;</span><span class="p">,</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">ROTATION</span><span class="p">,</span> <span class="mi">102400000</span><span class="p">,</span> <span class="bp">False</span>
+    <span class="p">)</span>
+    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">init_comlog</span><span class="p">(</span>
+        <span class="s">&#39;test&#39;</span><span class="p">,</span> <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="s">&#39;./test.log&#39;</span><span class="p">,</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">ROTATION</span><span class="p">,</span> <span class="mi">102400000</span><span class="p">,</span> <span class="bp">False</span>
+    <span class="p">)</span>
+    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;test info&#39;</span><span class="p">)</span>
+    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;test debug&#39;</span><span class="p">)</span>
+    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;中文&#39;</span><span class="p">)</span>
+    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">reinit_comlog</span><span class="p">(</span>
+        <span class="s">&#39;re-test&#39;</span><span class="p">,</span> <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="s">&#39;./re.test.log&#39;</span><span class="p">,</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">ROTATION</span><span class="p">,</span> <span class="mi">102400000</span><span class="p">,</span> <span class="bp">False</span>
+    <span class="p">)</span>
+    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;re:test info&#39;</span><span class="p">)</span>
+    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;re:test debug&#39;</span><span class="p">)</span>
+    <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;re:中文&#39;</span><span class="p">)</span>
+
+<span class="c"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

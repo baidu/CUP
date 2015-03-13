@@ -1,0 +1,595 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cup.thirdp.MySQLdb.cursors &mdash; cup 1.2.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.2.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="cup 1.2.1 documentation" href="../../../../index.html" />
+    <link rel="up" title="cup.thirdp.MySQLdb" href="../MySQLdb.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../MySQLdb.html" accesskey="U">cup.thirdp.MySQLdb</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cup.thirdp.MySQLdb.cursors</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;MySQLdb Cursors</span>
+
+<span class="sd">This module implements Cursors of various types for MySQLdb. By</span>
+<span class="sd">default, MySQLdb uses the Cursor class.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ListType</span><span class="p">,</span> <span class="n">TupleType</span><span class="p">,</span> <span class="n">UnicodeType</span>
+
+
+<span class="n">restr</span> <span class="o">=</span> <span class="p">(</span><span class="s">r&quot;\svalues\s*&quot;</span>
+        <span class="s">r&quot;(\(((?&lt;!</span><span class="se">\\</span><span class="s">)&#39;[^\)]*?\)[^\)]*(?&lt;!</span><span class="se">\\</span><span class="s">)?&#39;&quot;</span>
+        <span class="s">r&quot;|[^\(\)]|&quot;</span>
+        <span class="s">r&quot;(?:\([^\)]*\))&quot;</span>
+        <span class="s">r&quot;)+\))&quot;</span><span class="p">)</span>
+
+<span class="n">insert_values</span><span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">restr</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">_mysql_exceptions</span> <span class="kn">import</span> <span class="ne">Warning</span><span class="p">,</span> <span class="n">Error</span><span class="p">,</span> <span class="n">InterfaceError</span><span class="p">,</span> <span class="n">DataError</span><span class="p">,</span> \
+     <span class="n">DatabaseError</span><span class="p">,</span> <span class="n">OperationalError</span><span class="p">,</span> <span class="n">IntegrityError</span><span class="p">,</span> <span class="n">InternalError</span><span class="p">,</span> \
+     <span class="n">NotSupportedError</span><span class="p">,</span> <span class="n">ProgrammingError</span>
+
+
+<div class="viewcode-block" id="BaseCursor"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.BaseCursor">[docs]</a><span class="k">class</span> <span class="nc">BaseCursor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    
+    <span class="sd">&quot;&quot;&quot;A base for Cursor classes. Useful attributes:</span>
+<span class="sd">    </span>
+<span class="sd">    description</span>
+<span class="sd">        A tuple of DB API 7-tuples describing the columns in</span>
+<span class="sd">        the last executed query; see PEP-249 for details.</span>
+
+<span class="sd">    description_flags</span>
+<span class="sd">        Tuple of column flags for last query, one entry per column</span>
+<span class="sd">        in the result set. Values correspond to those in</span>
+<span class="sd">        MySQLdb.constants.FLAG. See MySQL documentation (C API)</span>
+<span class="sd">        for more information. Non-standard extension.</span>
+<span class="sd">    </span>
+<span class="sd">    arraysize</span>
+<span class="sd">        default number of rows fetchmany() will fetch</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">from</span> <span class="nn">_mysql_exceptions</span> <span class="kn">import</span> <span class="n">MySQLError</span><span class="p">,</span> <span class="ne">Warning</span><span class="p">,</span> <span class="n">Error</span><span class="p">,</span> <span class="n">InterfaceError</span><span class="p">,</span> \
+         <span class="n">DatabaseError</span><span class="p">,</span> <span class="n">DataError</span><span class="p">,</span> <span class="n">OperationalError</span><span class="p">,</span> <span class="n">IntegrityError</span><span class="p">,</span> \
+         <span class="n">InternalError</span><span class="p">,</span> <span class="n">ProgrammingError</span><span class="p">,</span> <span class="n">NotSupportedError</span>
+    
+    <span class="n">_defer_warnings</span> <span class="o">=</span> <span class="bp">False</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">weakref</span> <span class="kn">import</span> <span class="n">proxy</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="n">proxy</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description_flags</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rowcount</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arraysize</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lastrowid</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">messages</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errorhandler</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">errorhandler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_warnings</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span> <span class="o">=</span> <span class="bp">None</span>
+        
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errorhandler</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="BaseCursor.close"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.BaseCursor.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Close the cursor. No further queries will be possible.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">:</span> <span class="k">return</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">nextset</span><span class="p">():</span> <span class="k">pass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="bp">None</span>
+</div>
+    <span class="k">def</span> <span class="nf">_check_executed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errorhandler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ProgrammingError</span><span class="p">,</span> <span class="s">&quot;execute() first&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_warning_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_warnings</span><span class="p">:</span>
+            <span class="n">warnings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_db</span><span class="p">()</span><span class="o">.</span><span class="n">show_warnings</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">warnings</span><span class="p">:</span>
+                <span class="c"># This is done in two loops in case</span>
+                <span class="c"># Warnings are set to raise exceptions.</span>
+                <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">warnings</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Warning</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">warnings</span><span class="p">:</span>
+                    <span class="n">warn</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">Warning</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Warning</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">))</span>
+                <span class="n">warn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Warning</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BaseCursor.nextset"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.BaseCursor.nextset">[docs]</a>    <span class="k">def</span> <span class="nf">nextset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Advance to the next result set.</span>
+
+<span class="sd">        Returns None if there are no more result sets.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="p">[:]</span>
+        
+        <span class="n">db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_db</span><span class="p">()</span>
+        <span class="n">nr</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">next_result</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">nr</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_get_result</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_post_get_result</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_warning_check</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">1</span>
+</div>
+    <span class="k">def</span> <span class="nf">_post_get_result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">pass</span>
+    
+    <span class="k">def</span> <span class="nf">_do_get_result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_db</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_result</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rowcount</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">affected_rows</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description_flags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="o">.</span><span class="n">field_flags</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lastrowid</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">insert_id</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_warnings</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">warning_count</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+    
+<div class="viewcode-block" id="BaseCursor.setinputsizes"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.BaseCursor.setinputsizes">[docs]</a>    <span class="k">def</span> <span class="nf">setinputsizes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Does nothing, required by DB API.&quot;&quot;&quot;</span>
+      </div>
+<div class="viewcode-block" id="BaseCursor.setoutputsizes"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.BaseCursor.setoutputsizes">[docs]</a>    <span class="k">def</span> <span class="nf">setoutputsizes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Does nothing, required by DB API.&quot;&quot;&quot;</span>
+</div>
+    <span class="k">def</span> <span class="nf">_get_db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errorhandler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ProgrammingError</span><span class="p">,</span> <span class="s">&quot;cursor closed&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span>
+    
+<div class="viewcode-block" id="BaseCursor.execute"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.BaseCursor.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Execute a query.</span>
+<span class="sd">        </span>
+<span class="sd">        query -- string, query to execute on server</span>
+<span class="sd">        args -- optional sequence or mapping, parameters to use with query.</span>
+
+<span class="sd">        Note: If args is a sequence, then %s must be used as the</span>
+<span class="sd">        parameter placeholder in the query. If a mapping is used,</span>
+<span class="sd">        %(key)s must be used as the placeholder.</span>
+
+<span class="sd">        Returns long integer rows affected, if any</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="p">[:]</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_db</span><span class="p">()</span>
+        <span class="n">charset</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">character_set_name</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">charset</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span> <span class="o">%</span> <span class="n">db</span><span class="o">.</span><span class="n">literal</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="n">m</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;not enough arguments for format string&quot;</span><span class="p">,</span>
+                             <span class="s">&quot;not all arguments converted&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ProgrammingError</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">errorhandler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ProgrammingError</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="ne">TypeError</span><span class="p">,</span> <span class="n">m</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">errorhandler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">exc</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">tb</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
+            <span class="k">del</span> <span class="n">tb</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">exc</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errorhandler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executed</span> <span class="o">=</span> <span class="n">query</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_defer_warnings</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_warning_check</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">r</span>
+</div>
+<div class="viewcode-block" id="BaseCursor.executemany"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.BaseCursor.executemany">[docs]</a>    <span class="k">def</span> <span class="nf">executemany</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Execute a multi-row query.</span>
+<span class="sd">        </span>
+<span class="sd">        query -- string, query to execute on server</span>
+
+<span class="sd">        args</span>
+
+<span class="sd">            Sequence of sequences or mappings, parameters to use with</span>
+<span class="sd">            query.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns long integer rows affected, if any.</span>
+<span class="sd">        </span>
+<span class="sd">        This method improves performance on multiple-row INSERT and</span>
+<span class="sd">        REPLACE. Otherwise it is equivalent to looping over args with</span>
+<span class="sd">        execute().</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">messages</span><span class="p">[:]</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_db</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span> <span class="k">return</span>
+        <span class="n">charset</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">character_set_name</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span> <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">charset</span><span class="p">)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">insert_values</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">m</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">r</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">end</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">qv</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="p">[</span> <span class="n">qv</span> <span class="o">%</span> <span class="n">db</span><span class="o">.</span><span class="n">literal</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span> <span class="p">]</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;not enough arguments for format string&quot;</span><span class="p">,</span>
+                               <span class="s">&quot;not all arguments converted&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">errorhandler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ProgrammingError</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">errorhandler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">exc</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">tb</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
+            <span class="k">del</span> <span class="n">tb</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errorhandler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">query</span><span class="p">[:</span><span class="n">p</span><span class="p">],</span> <span class="s">&#39;,</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">q</span><span class="p">),</span> <span class="n">query</span><span class="p">[</span><span class="n">e</span><span class="p">:]]))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_defer_warnings</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_warning_check</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">r</span>
+    </div>
+<div class="viewcode-block" id="BaseCursor.callproc"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.BaseCursor.callproc">[docs]</a>    <span class="k">def</span> <span class="nf">callproc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">procname</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">()):</span>
+
+        <span class="sd">&quot;&quot;&quot;Execute stored procedure procname with args</span>
+<span class="sd">        </span>
+<span class="sd">        procname -- string, name of procedure to execute on server</span>
+
+<span class="sd">        args -- Sequence of parameters to use with procedure</span>
+
+<span class="sd">        Returns the original args.</span>
+
+<span class="sd">        Compatibility warning: PEP-249 specifies that any modified</span>
+<span class="sd">        parameters must be returned. This is currently impossible</span>
+<span class="sd">        as they are only available by storing them in a server</span>
+<span class="sd">        variable and then retrieved by a query. Since stored</span>
+<span class="sd">        procedures return zero or more result sets, there is no</span>
+<span class="sd">        reliable way to get at OUT or INOUT parameters via callproc.</span>
+<span class="sd">        The server variables are named @_procname_n, where procname</span>
+<span class="sd">        is the parameter above and n is the position of the parameter</span>
+<span class="sd">        (from zero). Once all result sets generated by the procedure</span>
+<span class="sd">        have been fetched, you can issue a SELECT @_procname_0, ...</span>
+<span class="sd">        query using .execute() to get any OUT or INOUT values.</span>
+
+<span class="sd">        Compatibility warning: The act of calling a stored procedure</span>
+<span class="sd">        itself creates an empty result set. This appears after any</span>
+<span class="sd">        result sets generated by the procedure. This is non-standard</span>
+<span class="sd">        behavior with respect to the DB-API. Be sure to use nextset()</span>
+<span class="sd">        to advance through all result sets; otherwise you may get</span>
+<span class="sd">        disconnected.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_db</span><span class="p">()</span>
+        <span class="n">charset</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">character_set_name</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="s">&quot;SET @_</span><span class="si">%s</span><span class="s">_</span><span class="si">%d</span><span class="s">=</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">procname</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span>
+                                         <span class="n">db</span><span class="o">.</span><span class="n">literal</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span>
+                <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">charset</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nextset</span><span class="p">()</span>
+            
+        <span class="n">q</span> <span class="o">=</span> <span class="s">&quot;CALL </span><span class="si">%s</span><span class="s">(</span><span class="si">%s</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">procname</span><span class="p">,</span>
+                             <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;@_</span><span class="si">%s</span><span class="s">_</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">procname</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+                                       <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">))]))</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="ow">is</span> <span class="n">UnicodeType</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">charset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executed</span> <span class="o">=</span> <span class="n">q</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_defer_warnings</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_warning_check</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">args</span>
+    </div>
+    <span class="k">def</span> <span class="nf">_do_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_db</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_executed</span> <span class="o">=</span> <span class="n">q</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_get_result</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowcount</span>
+
+    <span class="k">def</span> <span class="nf">_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_query</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_fetch_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result</span><span class="o">.</span><span class="n">fetch_row</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_type</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fetchone</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+
+    <span class="ne">Warning</span> <span class="o">=</span> <span class="ne">Warning</span>
+    <span class="n">Error</span> <span class="o">=</span> <span class="n">Error</span>
+    <span class="n">InterfaceError</span> <span class="o">=</span> <span class="n">InterfaceError</span>
+    <span class="n">DatabaseError</span> <span class="o">=</span> <span class="n">DatabaseError</span>
+    <span class="n">DataError</span> <span class="o">=</span> <span class="n">DataError</span>
+    <span class="n">OperationalError</span> <span class="o">=</span> <span class="n">OperationalError</span>
+    <span class="n">IntegrityError</span> <span class="o">=</span> <span class="n">IntegrityError</span>
+    <span class="n">InternalError</span> <span class="o">=</span> <span class="n">InternalError</span>
+    <span class="n">ProgrammingError</span> <span class="o">=</span> <span class="n">ProgrammingError</span>
+    <span class="n">NotSupportedError</span> <span class="o">=</span> <span class="n">NotSupportedError</span>
+   
+</div>
+<div class="viewcode-block" id="CursorStoreResultMixIn"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn">[docs]</a><span class="k">class</span> <span class="nc">CursorStoreResultMixIn</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;This is a MixIn class which causes the entire result set to be</span>
+<span class="sd">    stored on the client side, i.e. it uses mysql_store_result(). If the</span>
+<span class="sd">    result set can be very large, consider adding a LIMIT clause to your</span>
+<span class="sd">    query, or using CursorUseResultMixIn instead.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_get_result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_db</span><span class="p">()</span><span class="o">.</span><span class="n">store_result</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="n">rowcount</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_query</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_post_get_result</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">rowcount</span>
+
+    <span class="k">def</span> <span class="nf">_post_get_result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_row</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_result</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="CursorStoreResultMixIn.fetchone"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn.fetchone">[docs]</a>    <span class="k">def</span> <span class="nf">fetchone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetches a single row from the cursor. None indicates that</span>
+<span class="sd">        no more rows are available.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_executed</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">):</span> <span class="k">return</span> <span class="bp">None</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span><span class="o">+</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="n">result</span>
+</div>
+<div class="viewcode-block" id="CursorStoreResultMixIn.fetchmany"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn.fetchmany">[docs]</a>    <span class="k">def</span> <span class="nf">fetchmany</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetch up to size rows from the cursor. Result set may be smaller</span>
+<span class="sd">        than size. If size is not defined, cursor.arraysize is used.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_executed</span><span class="p">()</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span> <span class="o">+</span> <span class="p">(</span><span class="n">size</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">arraysize</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">result</span>
+</div>
+<div class="viewcode-block" id="CursorStoreResultMixIn.fetchall"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn.fetchall">[docs]</a>    <span class="k">def</span> <span class="nf">fetchall</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetchs all available rows from the cursor.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_executed</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span><span class="p">:]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+    </div>
+<div class="viewcode-block" id="CursorStoreResultMixIn.scroll"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.CursorStoreResultMixIn.scroll">[docs]</a>    <span class="k">def</span> <span class="nf">scroll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;relative&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Scroll the cursor in the result set to a new position according</span>
+<span class="sd">        to mode.</span>
+<span class="sd">        </span>
+<span class="sd">        If mode is &#39;relative&#39; (default), value is taken as offset to</span>
+<span class="sd">        the current position in the result set, if set to &#39;absolute&#39;,</span>
+<span class="sd">        value states an absolute target position.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_executed</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;relative&#39;</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span> <span class="o">+</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;absolute&#39;</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errorhandler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ProgrammingError</span><span class="p">,</span>
+                              <span class="s">&quot;unknown scroll mode </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="sb">`mode`</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">r</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errorhandler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">,</span> <span class="s">&quot;out of range&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span> <span class="o">=</span> <span class="n">r</span>
+</div>
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_executed</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span><span class="p">:]</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    
+</div>
+<div class="viewcode-block" id="CursorUseResultMixIn"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn">[docs]</a><span class="k">class</span> <span class="nc">CursorUseResultMixIn</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;This is a MixIn class which causes the result set to be stored</span>
+<span class="sd">    in the server and sent row-by-row to client side, i.e. it uses</span>
+<span class="sd">    mysql_use_result(). You MUST retrieve the entire result set and</span>
+<span class="sd">    close() the cursor before additional queries can be peformed on</span>
+<span class="sd">    the connection.&quot;&quot;&quot;</span>
+
+    <span class="n">_defer_warnings</span> <span class="o">=</span> <span class="bp">True</span>
+    
+    <span class="k">def</span> <span class="nf">_get_result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_db</span><span class="p">()</span><span class="o">.</span><span class="n">use_result</span><span class="p">()</span>
+
+<div class="viewcode-block" id="CursorUseResultMixIn.fetchone"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn.fetchone">[docs]</a>    <span class="k">def</span> <span class="nf">fetchone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetches a single row from the cursor.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_executed</span><span class="p">()</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_row</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_warning_check</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+             </div>
+<div class="viewcode-block" id="CursorUseResultMixIn.fetchmany"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn.fetchmany">[docs]</a>    <span class="k">def</span> <span class="nf">fetchmany</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetch up to size rows from the cursor. Result set may be smaller</span>
+<span class="sd">        than size. If size is not defined, cursor.arraysize is used.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_executed</span><span class="p">()</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_row</span><span class="p">(</span><span class="n">size</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">arraysize</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_warning_check</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">r</span>
+         </div>
+<div class="viewcode-block" id="CursorUseResultMixIn.fetchall"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn.fetchall">[docs]</a>    <span class="k">def</span> <span class="nf">fetchall</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetchs all available rows from the cursor.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_executed</span><span class="p">()</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_row</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rownumber</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_warning_check</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">r</span>
+</div>
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+<div class="viewcode-block" id="CursorUseResultMixIn.next"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.CursorUseResultMixIn.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">row</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">StopIteration</span>
+        <span class="k">return</span> <span class="n">row</span>
+    
+</div></div>
+<div class="viewcode-block" id="CursorTupleRowsMixIn"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.CursorTupleRowsMixIn">[docs]</a><span class="k">class</span> <span class="nc">CursorTupleRowsMixIn</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;This is a MixIn class that causes all rows to be returned as tuples,</span>
+<span class="sd">    which is the standard form required by DB API.&quot;&quot;&quot;</span>
+
+    <span class="n">_fetch_type</span> <span class="o">=</span> <span class="mi">0</span>
+
+</div>
+<div class="viewcode-block" id="CursorDictRowsMixIn"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn">[docs]</a><span class="k">class</span> <span class="nc">CursorDictRowsMixIn</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;This is a MixIn class that causes all rows to be returned as</span>
+<span class="sd">    dictionaries. This is a non-standard feature.&quot;&quot;&quot;</span>
+
+    <span class="n">_fetch_type</span> <span class="o">=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="CursorDictRowsMixIn.fetchoneDict"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn.fetchoneDict">[docs]</a>    <span class="k">def</span> <span class="nf">fetchoneDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetch a single row as a dictionary. Deprecated:</span>
+<span class="sd">        Use fetchone() instead. Will be removed in 1.3.&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s">&quot;fetchoneDict() is non-standard and will be removed in 1.3&quot;</span><span class="p">,</span>
+             <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="CursorDictRowsMixIn.fetchmanyDict"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn.fetchmanyDict">[docs]</a>    <span class="k">def</span> <span class="nf">fetchmanyDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetch several rows as a list of dictionaries. Deprecated:</span>
+<span class="sd">        Use fetchmany() instead. Will be removed in 1.3.&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s">&quot;fetchmanyDict() is non-standard and will be removed in 1.3&quot;</span><span class="p">,</span>
+             <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetchmany</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CursorDictRowsMixIn.fetchallDict"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.CursorDictRowsMixIn.fetchallDict">[docs]</a>    <span class="k">def</span> <span class="nf">fetchallDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetch all available rows as a list of dictionaries. Deprecated:</span>
+<span class="sd">        Use fetchall() instead. Will be removed in 1.3.&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s">&quot;fetchallDict() is non-standard and will be removed in 1.3&quot;</span><span class="p">,</span>
+             <span class="ne">DeprecationWarning</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+
+</div></div>
+<div class="viewcode-block" id="CursorOldDictRowsMixIn"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.CursorOldDictRowsMixIn">[docs]</a><span class="k">class</span> <span class="nc">CursorOldDictRowsMixIn</span><span class="p">(</span><span class="n">CursorDictRowsMixIn</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;This is a MixIn class that returns rows as dictionaries with</span>
+<span class="sd">    the same key convention as the old Mysqldb (MySQLmodule). Don&#39;t</span>
+<span class="sd">    use this.&quot;&quot;&quot;</span>
+
+    <span class="n">_fetch_type</span> <span class="o">=</span> <span class="mi">2</span>
+
+</div>
+<div class="viewcode-block" id="Cursor"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.Cursor">[docs]</a><span class="k">class</span> <span class="nc">Cursor</span><span class="p">(</span><span class="n">CursorStoreResultMixIn</span><span class="p">,</span> <span class="n">CursorTupleRowsMixIn</span><span class="p">,</span>
+             <span class="n">BaseCursor</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;This is the standard Cursor class that returns rows as tuples</span>
+<span class="sd">    and stores the result set in the client.&quot;&quot;&quot;</span>
+
+</div>
+<div class="viewcode-block" id="DictCursor"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.DictCursor">[docs]</a><span class="k">class</span> <span class="nc">DictCursor</span><span class="p">(</span><span class="n">CursorStoreResultMixIn</span><span class="p">,</span> <span class="n">CursorDictRowsMixIn</span><span class="p">,</span>
+                 <span class="n">BaseCursor</span><span class="p">):</span>
+
+     <span class="sd">&quot;&quot;&quot;This is a Cursor class that returns rows as dictionaries and</span>
+<span class="sd">    stores the result set in the client.&quot;&quot;&quot;</span>
+   
+</div>
+<div class="viewcode-block" id="SSCursor"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.SSCursor">[docs]</a><span class="k">class</span> <span class="nc">SSCursor</span><span class="p">(</span><span class="n">CursorUseResultMixIn</span><span class="p">,</span> <span class="n">CursorTupleRowsMixIn</span><span class="p">,</span>
+               <span class="n">BaseCursor</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;This is a Cursor class that returns rows as tuples and stores</span>
+<span class="sd">    the result set in the server.&quot;&quot;&quot;</span>
+
+</div>
+<div class="viewcode-block" id="SSDictCursor"><a class="viewcode-back" href="../../../../cup.thirdp.MySQLdb.html#cup.thirdp.MySQLdb.cursors.SSDictCursor">[docs]</a><span class="k">class</span> <span class="nc">SSDictCursor</span><span class="p">(</span><span class="n">CursorUseResultMixIn</span><span class="p">,</span> <span class="n">CursorDictRowsMixIn</span><span class="p">,</span>
+                   <span class="n">BaseCursor</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;This is a Cursor class that returns rows as dictionaries and</span>
+<span class="sd">    stores the result set in the server.&quot;&quot;&quot;</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">cup 1.2.1 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../MySQLdb.html" >cup.thirdp.MySQLdb</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>
