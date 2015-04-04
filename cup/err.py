@@ -11,7 +11,7 @@
     Guannan Ma maguannan@baidu.com @mythmgn
 :create_date:
     2014
-:last_date:
+:last_modify_date:
     2014
 :descrition:
     error related module
@@ -26,7 +26,7 @@ __all__ = [
 
 class BaseCupException(Exception):
     """
-    所有leo库Exception的基类.
+    所有cup库Exception的基类.
     """
     def __init__(self, msg):
         self._msg = 'Cup module Exception:' + str(msg)

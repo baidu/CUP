@@ -1,3 +1,14 @@
+Version: 1.4.1.0
+ - Under development: 
+   * autosleep
+   * hdfs/ftp operation
+   * unittest assert_log_regex assert_regex
+
+ - cup.bidu
+	* [Bug] sms cannot handle \n as line separator
+ - cup.log
+	* [Enhancement] change check existence of logfile to try - except.
+
 Version: 1.2.0
  - unittest  
 	* [New] Add assert_not_eq

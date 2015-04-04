@@ -82,7 +82,8 @@ def is_proc_exist(path, name):
     # path = os.path.realpath(
     #   os.popen('cd ' + path + ' && pwd').read().strip()
     # )
-    cmd = 'ps -ef|grep %s|grep -v grep|awk \'{print $2}\'' % (name)
+    cmd = 'ps -ef|grep %s|grep -v grep|grep -v vim |grep -v less| grep -v vi|\
+            grep -v cat|grep -v more|grep -v tail|awk \'{print $2}\'' % (name)
     ret = cup.shell.ShellExec().run(cmd, 10)
     pids = ret['stdout'].strip().split('\n')
     if len(pids) == 0 or len(pids) == 1 and len(pids[0]) == 0:

@@ -918,7 +918,7 @@ class Dict2Configure(object):
             if isinstance(value, tuple) or isinstance(value, list):
                 if isinstance(value, tuple):
                     print 'its a tuple, key:%s, value:%s' % (key, value)
-                if isinstance(value[0], dict):
+                if len(value) > 0 and isinstance(value[0], dict):
                     # items are all arrays
                     # [..@section]
                     #   abc:
