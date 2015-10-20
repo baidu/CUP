@@ -16,7 +16,7 @@
     Guannan ported threadpool from twisted.python.
     Mit License applied for twisted.
     http://www.opensource.org/licenses/mit-license.php
-    if any concern, plz contact mythmgn@gmail.com
+    if any concern, plz contact Guannan at mythmgn@gmail.com
 """
 
 try:
@@ -28,7 +28,7 @@ import contextlib
 import threading
 import copy
 import sys
-import traceback
+# import traceback
 
 import cup
 from cup.util import context
@@ -196,8 +196,8 @@ class ThreadPool(object):
                 except Exception as error:
                     success = False
                     cup.log.warn(
-                        'Func failed, func:%s, error_msg: %s, traceback:%s\n' %
-                        (str(function), str(error), traceback.format_exc())
+                        'Func failed, func:%s, error_msg: %s'  %
+                        (str(function), str(error))
                     )
                     if result_callback is None:
                         cup.log.warn('This func does not have callback.')
@@ -219,7 +219,7 @@ class ThreadPool(object):
                         context, result_callback, success, result
                     )
                 except Exception as e:
-                    traceback.print_exc(file=sys.stderr)
+                    # traceback.print_exc(file=sys.stderr)
                     cup.log.warn(
                         'result_callback func failed, callback func:%s,'
                         'err_msg:%s' % (str(result_callback), str(e))

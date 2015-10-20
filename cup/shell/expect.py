@@ -96,7 +96,10 @@ def go(
     """
     回返在hostname机器上执行的shell命令结果信息
     历史兼容函数。 推荐使用go_ex
-    command 有较多转义字符的，不推荐使用go，推荐使用go_witch_scp
+    command 有较多转义字符的，不推荐使用go，推荐使用go_with_scp
+
+    :param timeout:
+        执行命令超时时间， 默认800秒
 
     :return:
         类型tuple:  (ret, return_string)
@@ -108,17 +111,16 @@ def go(
 
 
 def _judge_ret(ret, msg=''):
-    print ret
     if not (ret['exitstatus'] and ret['remote_exitstatus']):
         return True
     ret['result'] = msg + ' \n ' + ret['result']
     return False
 
 
-def go_witch_scp(
+def go_with_scp(
     hostname, username, passwd, command='',
     host_tmp='/tmp/', remote_tmp='/tmp/',
-    timeout=8000, b_print_stdout=True
+    timeout=800, b_print_stdout=True
 ):
     """
     回返在hostname机器上执行的shell命令结果信息,
@@ -129,6 +131,8 @@ def go_witch_scp(
         本次保存command内容的文件目录
     :param remote_tmp:
         远端保持command内容的文件目录
+    :param timeout:
+        执行命令超时时间， 默认800秒
 
     :return:
         dict.有 'exitstatus' 'remote_exitstatus' 'result' 三项输出内容
@@ -151,14 +155,14 @@ def go_witch_scp(
         return ret
     cmd = ' sh %s ' % remote_file
     ret = go_ex(hostname, username, passwd, cmd, timeout, b_print_stdout)
-    cmd = ' rm %s ' % host_file
-    res = cup.shell.execshell(cmd)
-    if not res:
-        ret['result'] = 'rm host_file fail, ret:%s' % res
+    cmd = ' rm -f %s ' % host_file
+    res = cup.shell.execshell(cmd, b_print_stdout)
+    if res:
+        ret['result'] = 'rm -f host_file fail, ret:%s' % res
         return ret
-    cmd = ' rm %s ' % remote_file
+    cmd = ' rm -f %s ' % remote_file
     res = go_ex(hostname, username, passwd, cmd, 10)
-    if not _judge_ret(res, 'rm remote_file ret:'):
+    if not _judge_ret(res, 'rm -f remote_file ret:'):
         return res
     return ret
 
@@ -170,6 +174,9 @@ def go_ex(
     回返在hostname机器上执行的shell命令结果信息,
     相比go而言， 回返信息更丰富，且按照dict方式回返.
     command 有较多转义字符的，不推荐使用go，推荐使用go_witch_scp
+
+    :param timeout:
+        执行命令超时时间， 默认800秒
 
     :return:
         dict.有 'exitstatus' 'remote_exitstatus' 'result' 三项输出内容

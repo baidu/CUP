@@ -20,7 +20,8 @@
 __all__ = [
     'debug', 'info', 'warn', 'critical',
     'init_comlog', 'setloglevel',
-    'ROTATION', 'INFINITE'
+    'ROTATION', 'INFINITE',
+    'reinit_comlog', 'get_inited_loggername'
 ]
 
 
@@ -49,6 +50,8 @@ ERROR = logging.ERROR
 
 CRITICAL = logging.CRITICAL
 
+G_INITED_LOGGER = []
+
 
 class _Singleton(object):  # pylint: disable=R0903
     """
@@ -66,6 +69,20 @@ class _Singleton(object):  # pylint: disable=R0903
             self.__instance = self.__cls(*args, **kwargs)
         self._LOCK.release()
         return self.__instance
+
+
+class _MsgFilter(logging.Filter):
+    """
+    消息过滤器，过滤掉大于等于指定级别的消息
+    """
+    def __init__(self, msg_level=logging.WARNING):
+        self.msg_level = msg_level
+
+    def filter(self, record):
+        if record.levelno >= self.msg_level:
+            return False
+        else:
+            return True
 
 
 # pylint: disable=R0903
@@ -110,7 +127,8 @@ class _LoggerMan(object):
             return True
 
     def _config_filelogger(
-        self, loglevel, strlogfile, logtype, maxsize, bprint_console
+        self, loglevel, strlogfile, logtype, maxsize, bprint_console,
+        gen_wf=False
     ):  # too many arg pylint: disable=R0913
         if not os.path.exists(strlogfile):
             try:
@@ -144,6 +162,16 @@ class _LoggerMan(object):
             )
         fdhandler.setFormatter(formatter)
         fdhandler.setLevel(loglevel)
+        if gen_wf:
+            # add .wf handler
+            file_wf = str(self._logfile) + '.wf'
+            warn_handler = logging.FileHandler(file_wf, 'a', encoding='utf-8')
+            warn_handler.setLevel(logging.WARNING)
+            warn_handler.setFormatter(formatter)
+            self._pylogger.addHandler(warn_handler)
+
+            fdhandler.addFilter(_MsgFilter(logging.WARNING))
+
         self._pylogger.addHandler(fdhandler)
 
 
@@ -181,7 +209,8 @@ def _log_file_func_info(msg, back_trace_len=0):
 
 def init_comlog(
     loggername, loglevel=logging.INFO, logfile='cup.log',
-    logtype=ROTATION, maxlogsize=1073741824, bprint_console=False
+    logtype=ROTATION, maxlogsize=1073741824, bprint_console=False,
+    gen_wf=False
 ):  # too many arg pylint: disable=R0913
     """
     初始化日志函数。用法如下::
@@ -189,7 +218,7 @@ def init_comlog(
     :param loggername:
         这个logger的名字.
     :param loglevel:
-        一共四种 logging.DEBUG logging.INFO logging.WARN logging.CRITICAL
+        一共四种 log.DEBUG log.INFO log.ERROR log.CRITICAL
     :param logfile:
         log文件的位置,如不存在，会尝试创建该文件
     :param logtype:
@@ -201,7 +230,8 @@ def init_comlog(
         logfile的最大文件大小(单位byte).超过会进行覆盖写或者switch.
     :param b_printcmd:
         打印日志到logfile的同时,是否打印到stdout.
-
+    :param gen_wf:
+        将级别大于等于WARNING的消息打印到${logfile}.wf中.
     请注意，打印日志时要么打印unicode字符，要么打印Python默认的UTF8的字符
 
     *E.g.*
@@ -210,7 +240,7 @@ def init_comlog(
         from cup import log
         log.init_comlog(
             'test',
-            logging.DEBUG,
+            log.DEBUG,
             '/home/work/test/test.log',
             log.ROTATION,
             1024,
@@ -234,9 +264,11 @@ def init_comlog(
                 'The log file exists. But it\'s not regular file'
             )
         loggerman._config_filelogger(
-            loglevel, logfile, logtype, maxlogsize, bprint_console
+            loglevel, logfile, logtype, maxlogsize, bprint_console, gen_wf
         )  # too many arg pylint: disable=w0212
         info('-' * 20 + 'Log Initialized Successfully' + '-' * 20)
+        global G_INITED_LOGGER
+        G_INITED_LOGGER.append(loggername)
     else:
         print '[%s:%s] init_comlog has been already initalized' % \
             (_file(1), _line(1))
@@ -244,15 +276,22 @@ def init_comlog(
 
 
 def reinit_comlog(
-    loggername, loglevel, logfile, logtype, maxlogsize, bprint_console
+    loggername, loglevel, logfile, logtype, maxlogsize, bprint_console,
+    gen_wf=False
 ):  # too many arg pylint: disable=R0913
     """
     重新设置comlog, 参与意义同init_comlog.
 
     reinit_comlog会重新设置整个进程的参数， 但请注意loggername一定不能与
 
-    原来的loggername相同，否则可能出现打印两次的情况
+    原来的loggername相同，相同的loggername会raise ValueError
     """
+    global G_INITED_LOGGER
+    if loggername in G_INITED_LOGGER:
+        msg = 'loggername:%s has been already initalized!!!' % loggername
+        raise ValueError(msg)
+    G_INITED_LOGGER.append(loggername)
+    
     loggerman = _LoggerMan()
     loggerman._reset_logger(logging.getLogger(loggername))
     if os.path.exists(logfile) is False:
@@ -266,10 +305,18 @@ def reinit_comlog(
             'The log file exists. But it\'s not regular file'
         )
     loggerman._config_filelogger(
-        loglevel, logfile, logtype, maxlogsize, bprint_console
+        loglevel, logfile, logtype, maxlogsize, bprint_console, gen_wf
     )  # too many arg pylint: disable=w0212
     info('-' * 20 + 'Log Reinitialized Successfully' + '-' * 20)
     return
+
+
+def get_inited_loggername():
+    """
+    获取所有已经init的loggername 
+    """
+    global G_INITED_LOGGER
+    return G_INITED_LOGGER
 
 
 def _fail_handle(msg, e):
@@ -384,5 +431,13 @@ if __name__ == '__main__':
     cup.log.info('re:test info')
     cup.log.debug('re:test debug')
     cup.log.debug('re:中文')
+    cup.log.reinit_comlog(
+        're-test', cup.log.DEBUG, './re.test.log',
+        cup.log.ROTATION, 102400000, False
+    )
+    cup.log.info('re:test info')
+    cup.log.debug('re:test debug')
+    cup.log.debug('re:中文')
+
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

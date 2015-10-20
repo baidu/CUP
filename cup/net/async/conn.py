@@ -10,10 +10,19 @@
     Guannan Ma
 :create_date:
     2014
-:last_date:
-    2014
+:last_modify_date:
+    2015.6.29
 :descrition:
     connection related module
+
+    1. There's only 1 thread reading/receiving data from the interface.
+
+    2. There might have more than 1 thred writing data into the network
+       queue. 1 thread per context(ip, port).
+
+    Notice that _do_write will only TRY to send out some data. It might
+    encounter TCP/IP stack full of data in the send queue of
+    the network interface
 """
 
 import copy
@@ -701,7 +710,7 @@ class CConnectionManager(object):
             context.release_writelock()
 
     # context hash locked the writing.
-    # guarantee there's only 1 thread for context reading.
+    # guarantee there's only 1 thread for context writing.
     def _handle_new_send(self, context):
         self.add_write_job(context)
 
@@ -777,7 +786,7 @@ class CConnectionManager(object):
         peerinfo = context.get_peerinfo()
         if not context.try_writelock():
             cup.log.debug(
-                'Another thread is reading the context. Peerinfo:%s:%s' %
+                'Another thread is writing the context, return. Peerinfo:%s:%s' %
                 (peerinfo[0], peerinfo[1])
             )
             return

@@ -1,3 +1,26 @@
+Version: 1.4.2.0
+	* [Bug] oper.is_proc_exist. fix a bug while check proc exist
+	* [New] Add cup.services.executor. Exec and delay_exec service
+	* [New] Add cup.services.buffers. Buffer releated feature. For easing
+		    memory fragment.	
+	* [Enahcnement] remove traceback in cup.util.threadpool
+	* [Enhancement] cup.log.reinit_comlog, if loggername has inited, raise
+	ValueError
+    * [New]  cup.log.get_inited_loggername, get has inited loggername
+	* [New]  cup.shell.rmtree - add safemode support for shutil.rmtree
+	* [New]  cup.const - add const value support inside cup
+	* [New]  cup.conf - add HdfsConf support
+	* [New]  cup.shell.get_pid - get process id by process_path and grep_string
+
+Version: 1.4.1.0 - [not existent on github.com]
+	* [New] assert_boundary, assert_local_file_eq 2015/4/19
+	* [New] Log level [warnning error fatal] splitted into file.log.wf
+	* [New] Hdfs
+	* [New] Smtp mail supports [cc/bcc]
+	* [Enhancement] Sms add return values
+	* [Bug] cup.util.conf - A sort method bug
+	* [Bug] sms cannot handle \n as line separator
+	
 Version: 1.2.0
  - unittest  
 	* [New] Add assert_not_eq

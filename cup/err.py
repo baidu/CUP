@@ -11,7 +11,7 @@
     Guannan Ma maguannan@baidu.com @mythmgn
 :create_date:
     2014
-:last_date:
+:last_modify_date:
     2014
 :descrition:
     error related module
@@ -26,7 +26,7 @@ __all__ = [
 
 class BaseCupException(Exception):
     """
-    所有leo库Exception的基类.
+    所有cup库Exception的基类.
     """
     def __init__(self, msg):
         self._msg = 'Cup module Exception:' + str(msg)
@@ -108,12 +108,20 @@ class ShellException(BaseCupException):
         super(self.__class__, self).__init__(msg)
 
 
-class NoSuchFileOrDir(BaseCupException):
+class IOException(BaseCupException):
+    """
+    IO related exceptions inside cup
+    """
+    def __init__(self, msg=''):
+        super(self.__class__, self).__init__(msg)
+
+
+class NoSuchFileOrDir(IOException):
     """
     文件或者目录不存在
     """
     def __init__(self, msg=''):
-        super(self.__class__, self).__init__(msg)
+        super(NoSuchFileOrDir, self).__init__(msg)
 
 
 class ThreadTermException(BaseCupException):
@@ -131,5 +139,7 @@ class NotInitialized(BaseCupException):
     def __init__(self, msg=''):
         msg = 'Not initialized: %s' % msg
         super(self.__class__, self).__init__(msg)
+
+
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

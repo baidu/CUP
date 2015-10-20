@@ -10,15 +10,15 @@
     Liu.Jia Guannan Ma
 :create_date:
     2014
-:last_date:
-    2014
 :descrition:
     Complex conf support
 """
 
 import os
 import time
+import copy
 import shutil
+from xml.dom import minidom
 # import subprocess
 import json
 
@@ -411,83 +411,84 @@ class Configure2Dict(object):  # pylint: disable=R0903
 
     2. sections
 
-    2.1 global section
+        2.1 global section
 
-        - if key:value is not under any [section], it is under the global layer
-            by default
-        - global section is the 0th layer section
+            - if key:value is not under any [section], it is under the global layer
+                by default
+            - global section is the 0th layer section
 
-        e.g.
-        test.conf:
-            # test.conf
-            global-key: value
-            global-key1: value1
+            e.g.
+            test.conf:
+                # test.conf
+                global-key: value
+                global-key1: value1
 
-    2.2 child section
-        - [section1] means a child section under Global. And it's the
-            1st layer section
-        - [.section2] means a child section under the nearest section
-            above. It's the 2nd layer section.
-        - [..section3] means a child section under the nearest section
-            above. And the prefix .. means it is the 3rd layer section
+        2.2 child section
+            - [section1] means a child section under Global. And it's the
+                1st layer section
+            - [.section2] means a child section under the nearest section
+                above. It's the 2nd layer section.
+            - [..section3] means a child section under the nearest section
+                above. And the prefix .. means it is the 3rd layer section
 
-        e.g.:
-        test.conf:
+            e.g.:
+            test.conf:
+            ::
 
-        global-key: value
-        [section]
-            host:  abc.com
-            port:  8080
-            [.section_child]
-                child_key: child_value
-                [..section_child_child]
-                    control: ssh
-                    [...section_child_child_child]
-                        wow_key:  wow_value
+                global-key: value
+                [section]
+                    host:  abc.com
+                    port:  8080
+                    [.section_child]
+                        child_key: child_value
+                        [..section_child_child]
+                            control: ssh
+                            [...section_child_child_child]
+                                wow_key:  wow_value
 
-    2.3 section access method
-        get_dict method will convert conf into a ConfDict which is derived
+        2.3 section access method
+            get_dict method will convert conf into a ConfDict which is derived
 
-        from python dict.
+            from python dict.
 
-        - Access the section with confdict['section']['section-child'].
-        - Access the section with confdict.get_ex('section') with (value,
-            comments)
+            - Access the section with confdict['section']['section-child'].
+            - Access the section with confdict.get_ex('section') with (value,
+                comments)
 
 
     3. key:value and key:value array
 
-    3.1 key:value
-        key:value can be set under Global section which is closely after the
-        1st line with no [section] above.
+        3.1 key:value
+            key:value can be set under Global section which is closely after the
+            1st line with no [section] above.
 
-        key:value can also be set under sections.
+            key:value can also be set under sections.
+            ::
+                # test.conf
+                key1: value1
+                [section]
+                    key_section: value_in_section
+                    [.seciton]
+                        key_section_child: value_section_child
 
-        E.g.
+        3.2 key:value arrays
+            key:value arrays can be access with confdict['section']['disk'].
+            You will get a ConfList derived from python list.
+        ::
+
             # test.conf
-            key1: value1
+            # Global layer, key:value
+            host: abc.com
+            port: 12345
+            # 1st layer [monitor]
+            @disk: /home/data0
+            @disk: /home/data1
             [section]
-                key_section: value_in_section
-                [.seciton]
-                    key_section_child: value_section_child
-
-    3.2 key:value arrays
-        key:value arrays can be access with confdict['section']['disk'].
-
-        You will get a ConfList derived from python list.
-
-        # test.conf
-        # Global layer, key:value
-        host: abc.com
-        port: 12345
-        # 1st layer [monitor]
-        @disk: /home/data0
-        @disk: /home/data1
-        [section]
-            @disk: /home/disk/disk1
-            @disk: /home/disk/disk2
+                @disk: /home/disk/disk1
+                @disk: /home/disk/disk2
 
     4. Example
+    ::
         # test.conf
         # Global layer, key:value
         host: abc.com
@@ -729,7 +730,8 @@ class Configure2Dict(object):  # pylint: disable=R0903
         if key[0] == '@':
             key = key[1:]
         for char in key:
-            if not char.isalnum() and char != '_' and char != '-':
+            if not char.isalnum() and char != '_' \
+                    and char != '-' and char != '.':
                 raise KeyFormatError(key)
 
     # Check the [GROUP] key format
@@ -867,29 +869,33 @@ class Dict2Configure(object):
         with open(conf_file, 'w') as fhandle:
             fhandle.write(self._get_write_string())
 
-    def _comp_write_keys(self, valuex, valuey):
+    # pylint: disable=R0911
+    @classmethod
+    def _comp_write_keys(cls, valuex, valuey):
+        if type(valuex) == type(valuey):
+            return 0
+        if isinstance(valuex, str):
+            return -1
+        if isinstance(valuey, str):
+            return 1
+
         if isinstance(valuex, list) and isinstance(valuey, list):
             try:
                 if isinstance(valuex[0], dict) or isinstance(valuex[0], list):
                     return 1
                 else:
                     return -1
-            except:
+            # pylint: disable=W0703
+            except Exception:
                 return -1
             else:
                 return -1
-
-        if type(valuex) == type(valuey):
-            return 0
-
         if isinstance(valuex, list) and isinstance(valuey, str):
             return 1
-
         if isinstance(valuex, dict):
             return 1
         if isinstance(valuey, dict):
             return -1
-
         return 1
 
     # pylint: disable=R0912
@@ -918,7 +924,7 @@ class Dict2Configure(object):
             if isinstance(value, tuple) or isinstance(value, list):
                 if isinstance(value, tuple):
                     print 'its a tuple, key:%s, value:%s' % (key, value)
-                if isinstance(value[0], dict):
+                if len(value) > 0 and isinstance(value[0], dict):
                     # items are all arrays
                     # [..@section]
                     #   abc:
@@ -1011,6 +1017,136 @@ class Dict2Configure(object):
         # if type(item_a)!=type({}) or type(item_b)==type({}):
         #    return -1
         return 1
+
+
+class HdfsXmlConf(object):
+    """
+    hdfs xmlconf modifier.
+
+    Example:
+    ::
+
+        # modify and write new conf into hadoop-site.xmlconf
+        xmlobj = xmlconf.HdfsXmlConf(xmlfile)
+
+        # get hdfs conf items into a python dict
+        key_values = xmlobj.get_items()
+
+        # modify hdfs conf items
+        for name in self._confdict['journalnode']['hadoop_site']:
+            if name in key_values:
+                key_values[name]['value'] = \
+                self._confdict['journalnode']['hadoop_site'][name]
+        else:
+            key_values[name] = {
+                'value': self._confdict['journalnode']['hadoop_site'][name],
+                'description': ' '
+            }
+        hosts = ','.join(self._confdict['journalnode']['host'])
+        key_values['dfs.journalnode.hosts'] = {
+            'value': hosts, 'description':' journalnode hosts'
+        }
+
+        # write back conf items with new values
+        xmlobj.write_conf(key_values)
+    """
+    def __init__(self, filepath):
+        if not os.path.exists(filepath):
+            raise IOError('file not found:{0}'.format(filepath))
+        if not os.path.isfile(filepath):
+            raise IOError('{0} not a file'.format(filepath))
+
+        self._xmlpath = filepath
+        self._confdict = None
+
+    def _load_items(self):
+        self._confdict = {}
+        dom = minidom.parse(self._xmlpath)
+        properties = dom.getElementsByTagName('property')
+        for pro in properties:
+            tmpdict = {}
+            try:
+                tmpdict['value'] = pro.getElementsByTagName(
+                    'value'
+                )[0].childNodes[0].nodeValue
+            except IndexError:
+                tmpdict['value'] = ' '
+            try:
+                tmpdict['description'] = pro.getElementsByTagName(
+                    'description'
+                )[0].childNodes[0].nodeValue
+            except IndexError:
+                tmpdict['description'] = ' '
+            self._confdict[
+                pro.getElementsByTagName('name')[0].childNodes[0].nodeValue
+            ] = tmpdict
+        return self._confdict
+
+    def get_items(self):
+        """
+        return hadoop config items as a dict.
+
+        ::
+            {
+                'dfs.datanode.max.xcievers':  {
+                    'value': 'true', 'description': 'xxxxxxxxxx'
+                },
+                ......
+            }
+        """
+        return self._load_items()
+
+    def _write_to_conf(self, new_confdict):
+        dom = minidom.parse(self._xmlpath)
+        properties = dom.getElementsByTagName('property')
+        tmpdict = copy.deepcopy(new_confdict)
+
+        for pro in properties:
+            name = pro.getElementsByTagName('name')[0].childNodes[0].nodeValue
+            valuenode = pro.getElementsByTagName('value')[0]
+            if name in tmpdict:
+                if valuenode.firstChild is None:
+                    valuenode.appendChild(dom.createTextNode(''))
+                valuenode.firstChild.replaceWholeText(tmpdict[name]['value'])
+                del tmpdict[name]
+            else:
+                parent = pro.parentNode
+                parent.insertBefore(dom.createComment(pro.toxml()), pro)
+                parent.removeChild(pro)
+        configuration_node = dom.getElementsByTagName('configuration')[0]
+        for name in tmpdict:
+            new_pro = dom.createElement('property')
+            new_name = dom.createElement('name')
+            new_name.appendChild(dom.createTextNode(name))
+            new_pro.appendChild(new_name)
+            # value in the new property
+            new_value = dom.createElement('value')
+            new_value.appendChild(dom.createTextNode(tmpdict[name]['value']))
+            new_pro.appendChild(new_value)
+            # description
+            new_desc = dom.createElement('description')
+            new_desc.appendChild(
+                dom.createTextNode(tmpdict[name]['description'])
+            )
+            new_pro.appendChild(new_desc)
+            configuration_node.appendChild(new_pro)
+        return dom.toprettyxml(newl='\n')
+
+    def write_conf(self, kvs):
+        """
+        update config items with a dict kvs. Refer to the example above.
+
+        ::
+            {
+                key : { 'value': value, 'description': 'description'},
+                ......
+            }
+        """
+        self._load_items()
+        str_xml = self._write_to_conf(kvs)
+        with open(self._xmlpath, 'w') as fhandle:
+            fhandle.write(str_xml)
+        self._confdict = kvs
 
 
 def _main_hanle():

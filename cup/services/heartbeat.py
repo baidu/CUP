@@ -64,6 +64,12 @@ class Device(object):
         """
         return pickle.dumps(self._dict_info)
 
+    def get_dict_resinfo(self):
+        """
+        get dict of resource info
+        """
+        return self._dict_info
+
     def get_name(self):
         """get name"""
         return self._name
@@ -237,7 +243,7 @@ class HeartbeatService(object):
         self._judge_lost = time_in_sec
         return
 
-    def refresh(self, key):
+    def refresh(self, key, resource=None):
         """
         :param key:
             refresh the device by key
@@ -251,6 +257,16 @@ class HeartbeatService(object):
             log.warn('Device not found, key:%s' % key)
             return False
         device.set_last_healthy()
+        if resource is not None:
+            device.refresh_resouce(resource)
+            log.debug(
+                'Heartbeat: Device %s refreshed with resource. '
+            )
+        else:
+            log.debug(
+                'Heartbeat: Device %s only refreshed with heartbeat. '
+                'Resource not refreshed'
+            )
         return True
 
     def get_lost(self):

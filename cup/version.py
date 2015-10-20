@@ -15,8 +15,7 @@
     2014
 """
 
-VERSION = '1.2.1'
-OPENSOURCE_VERSION = '1.2.1'
+VERSION = '1.4.2'
 AUTHOR = 'nfs-qa@baidu.com'
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent
