@@ -114,8 +114,7 @@ class SmtpMailer(object):  # pylint: disable=R0903
         mailer.sendmail(
             [
                 'maguannan@baidu.com',
-                'liuxuan05@baidu.com',
-                'zhaominghao@baidu.com'
+                'file-qa@baidu.com'
             ],
             'test_img',
             (
