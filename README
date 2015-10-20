@@ -1,16 +1,16 @@
 CUP 1.4.2.0 released.
 
 Version: 1.4.2.0
-	* [Bug] oper.is_proc_exist. fix a bug while check proc exist
-	* [New] Add cup.services.executor. Exec and delay_exec service
-	* [New] Add cup.services.buffers. Buffer releated feature. For easing memory fragment.	
-	* [Enahcnement] remove traceback in cup.util.threadpool
-	* [Enhancement] cup.log.reinit_comlog, if loggername has inited, raise ValueError
-    * [New]  cup.log.get_inited_loggername, get has inited loggername
-	* [New]  cup.shell.rmtree - add safemode support for shutil.rmtree
-	* [New]  cup.const - add const value support inside cup
-	* [New]  cup.conf - add HdfsConf support
-	* [New]  cup.shell.get_pid - get process id by process_path and grep_string
+* [Bug] oper.is_proc_exist. fix a bug in which an editor, (vim vi, for example) may be incorrectly caught)
+* [New] Add cup.services.executor. Support Queue_Exec and delay_exec service
+* [New] Add cup.services.buffers. Buffer releated feature. For easing memory fragment.	
+* [Enahcnement] remove traceback in cup.util.threadpool
+* [Enhancement] cup.log.reinit_comlog, if loggername has inited, raise ValueError
+* [New]  cup.log.get_inited_loggername, get has inited loggername
+* [New]  cup.shell.rmtree - add safemode support for shutil.rmtree
+* [New]  cup.const - add const value support inside cup
+* [New]  cup.conf - add HdfsConf support
+* [New]  cup.shell.get_pid - get process id by process_path and grep_string
 
 1. Installation                                                                                        
     - run # python setup.py install                                                                    
