@@ -20,19 +20,16 @@
 __all__ = [
     'debug', 'info', 'warn', 'critical',
     'init_comlog', 'setloglevel',
-<<<<<<< HEAD
-    'ROTATION', 'INFINITE'
-=======
     'ROTATION', 'INFINITE',
-    'reinit_comlog', 'get_inited_loggername'
->>>>>>> origin/master
+    'reinit_comlog', 'get_inited_loggername', 'parse'
 ]
 
 
 import os
+import re
 import sys
-import threading
 import logging
+import threading
 # import traceback
 from logging import handlers
 
@@ -54,11 +51,8 @@ ERROR = logging.ERROR
 
 CRITICAL = logging.CRITICAL
 
-<<<<<<< HEAD
-=======
 G_INITED_LOGGER = []
 
->>>>>>> origin/master
 
 class _Singleton(object):  # pylint: disable=R0903
     """
@@ -78,8 +72,7 @@ class _Singleton(object):  # pylint: disable=R0903
         return self.__instance
 
 
-<<<<<<< HEAD
-=======
+# pylint: disable=R0903
 class _MsgFilter(logging.Filter):
     """
     消息过滤器，过滤掉大于等于指定级别的消息
@@ -94,7 +87,6 @@ class _MsgFilter(logging.Filter):
             return True
 
 
->>>>>>> origin/master
 # pylint: disable=R0903
 @_Singleton
 class _LoggerMan(object):
@@ -137,12 +129,8 @@ class _LoggerMan(object):
             return True
 
     def _config_filelogger(
-<<<<<<< HEAD
-        self, loglevel, strlogfile, logtype, maxsize, bprint_console
-=======
         self, loglevel, strlogfile, logtype, maxsize, bprint_console,
         gen_wf=False
->>>>>>> origin/master
     ):  # too many arg pylint: disable=R0913
         if not os.path.exists(strlogfile):
             try:
@@ -176,8 +164,6 @@ class _LoggerMan(object):
             )
         fdhandler.setFormatter(formatter)
         fdhandler.setLevel(loglevel)
-<<<<<<< HEAD
-=======
         if gen_wf:
             # add .wf handler
             file_wf = str(self._logfile) + '.wf'
@@ -188,7 +174,6 @@ class _LoggerMan(object):
 
             fdhandler.addFilter(_MsgFilter(logging.WARNING))
 
->>>>>>> origin/master
         self._pylogger.addHandler(fdhandler)
 
 
@@ -212,7 +197,7 @@ def _proc_thd_id():
 
 
 def _log_file_func_info(msg, back_trace_len=0):
-    tempmsg = ' * [%s] [%s:%s]' % (
+    tempmsg = ' * [%s] [%s:%s] ' % (
         _proc_thd_id(), _file(2 + back_trace_len),
         _line(2 + back_trace_len)
     )
@@ -226,28 +211,20 @@ def _log_file_func_info(msg, back_trace_len=0):
 
 def init_comlog(
     loggername, loglevel=logging.INFO, logfile='cup.log',
-<<<<<<< HEAD
-    logtype=ROTATION, maxlogsize=1073741824, bprint_console=False
-=======
     logtype=ROTATION, maxlogsize=1073741824, bprint_console=False,
     gen_wf=False
->>>>>>> origin/master
 ):  # too many arg pylint: disable=R0913
     """
-    初始化日志函数。用法如下::
+    初始化日志函数
 
     :param loggername:
-        这个logger的名字.
+        这个logger的名字
     :param loglevel:
-<<<<<<< HEAD
-        一共四种 logging.DEBUG logging.INFO logging.WARN logging.CRITICAL
-=======
         一共四种 log.DEBUG log.INFO log.ERROR log.CRITICAL
->>>>>>> origin/master
     :param logfile:
         log文件的位置,如不存在，会尝试创建该文件
     :param logtype:
-        支持两种leo.log.ROTATION cup.log.INFINITE
+        支持两种cup.log.ROTATION cup.log.INFINITE
         ROTATION会在文件大小达到maxlogsize的时候进行switch.
         一共会switch 30个文件, 然后在这30个文件里面ROTATION的写
         INFINITE会一直写log文件
@@ -255,12 +232,8 @@ def init_comlog(
         logfile的最大文件大小(单位byte).超过会进行覆盖写或者switch.
     :param b_printcmd:
         打印日志到logfile的同时,是否打印到stdout.
-<<<<<<< HEAD
-
-=======
     :param gen_wf:
         将级别大于等于WARNING的消息打印到${logfile}.wf中.
->>>>>>> origin/master
     请注意，打印日志时要么打印unicode字符，要么打印Python默认的UTF8的字符
 
     *E.g.*
@@ -269,11 +242,7 @@ def init_comlog(
         from cup import log
         log.init_comlog(
             'test',
-<<<<<<< HEAD
-            logging.DEBUG,
-=======
             log.DEBUG,
->>>>>>> origin/master
             '/home/work/test/test.log',
             log.ROTATION,
             1024,
@@ -297,17 +266,11 @@ def init_comlog(
                 'The log file exists. But it\'s not regular file'
             )
         loggerman._config_filelogger(
-<<<<<<< HEAD
-            loglevel, logfile, logtype, maxlogsize, bprint_console
-        )  # too many arg pylint: disable=w0212
-        info('-' * 20 + 'Log Initialized Successfully' + '-' * 20)
-=======
             loglevel, logfile, logtype, maxlogsize, bprint_console, gen_wf
         )  # too many arg pylint: disable=w0212
         info('-' * 20 + 'Log Initialized Successfully' + '-' * 20)
         global G_INITED_LOGGER
         G_INITED_LOGGER.append(loggername)
->>>>>>> origin/master
     else:
         print '[%s:%s] init_comlog has been already initalized' % \
             (_file(1), _line(1))
@@ -315,22 +278,15 @@ def init_comlog(
 
 
 def reinit_comlog(
-<<<<<<< HEAD
-    loggername, loglevel, logfile, logtype, maxlogsize, bprint_console
-=======
-    loggername, loglevel, logfile, logtype, maxlogsize, bprint_console,
+    loggername, loglevel=logging.INFO, logfile='cup.log',
+    logtype=ROTATION, maxlogsize=1073741824, bprint_console=False,
     gen_wf=False
->>>>>>> origin/master
 ):  # too many arg pylint: disable=R0913
     """
     重新设置comlog, 参与意义同init_comlog.
 
     reinit_comlog会重新设置整个进程的参数， 但请注意loggername一定不能与
 
-<<<<<<< HEAD
-    原来的loggername相同，否则可能出现打印两次的情况
-    """
-=======
     原来的loggername相同，相同的loggername会raise ValueError
     """
     global G_INITED_LOGGER
@@ -338,8 +294,7 @@ def reinit_comlog(
         msg = 'loggername:%s has been already initalized!!!' % loggername
         raise ValueError(msg)
     G_INITED_LOGGER.append(loggername)
-    
->>>>>>> origin/master
+
     loggerman = _LoggerMan()
     loggerman._reset_logger(logging.getLogger(loggername))
     if os.path.exists(logfile) is False:
@@ -353,27 +308,20 @@ def reinit_comlog(
             'The log file exists. But it\'s not regular file'
         )
     loggerman._config_filelogger(
-<<<<<<< HEAD
-        loglevel, logfile, logtype, maxlogsize, bprint_console
-=======
         loglevel, logfile, logtype, maxlogsize, bprint_console, gen_wf
->>>>>>> origin/master
     )  # too many arg pylint: disable=w0212
     info('-' * 20 + 'Log Reinitialized Successfully' + '-' * 20)
     return
 
 
-<<<<<<< HEAD
-=======
 def get_inited_loggername():
     """
-    获取所有已经init的loggername 
+    获取所有已经init的loggername
     """
     global G_INITED_LOGGER
     return G_INITED_LOGGER
 
 
->>>>>>> origin/master
 def _fail_handle(msg, e):
     # print 'cup.log.info print to file failed. %s' % str(e)
     if not isinstance(msg, unicode):
@@ -466,6 +414,74 @@ def setloglevel(logginglevel):
     loggerman._getlogger().setLevel(logginglevel)
 
 
+def parse(logline):
+    """
+    return a dict if the line is valid.
+    Otherwise, return None
+
+    ::
+        dict_info:= {
+           'loglevel': 'DEBUG',
+           'date': '2015-10-14',
+           'time': '16:12:22,924',
+           'pid': 8808,
+           'tid': 1111111,
+           'srcline': 'util.py:33',
+           'msg': 'this is the log content'
+        }
+    """
+    try:
+        content = logline[logline.find(']'):]
+        content = content[(content.find(']') + 1):]
+        content = content[(content.find(']') + 1):].strip()
+        regex = re.compile('[ \t]+')
+        items = regex.split(logline)
+        loglevel, date, time_, _, pid_tid, src = items[0:6]
+        pid, tid = pid_tid.strip('[]').split(':')
+        return {
+            'loglevel': loglevel.strip(':'),
+            'date': date,
+            'time': time_,
+            'pid': pid,
+            'tid': tid,
+            'srcline': src.strip('[]'),
+            'msg': content
+        }
+    # pylint: disable = W0703
+    except Exception:
+        return None
+
+
+def info_if(bol, msg, back_trace_len=1):
+    """log msg with info loglevel if bol is true"""
+    if bol:
+        info(msg, back_trace_len)
+
+
+def error_if(bol, msg, back_trace_len=1):
+    """log msg with error loglevel if bol is true"""
+    if bol:
+        error(msg, back_trace_len)
+
+
+def warn_if(bol, msg, back_trace_len=1):
+    """log msg with error loglevel if bol is true"""
+    if bol:
+        warn(msg, back_trace_len)
+
+
+def critical_if(bol, msg, back_trace_len=1):
+    """log msg with critical loglevel if bol is true"""
+    if bol:
+        critical(msg, back_trace_len)
+
+
+def debug_if(bol, msg, back_trace_len=1):
+    """log msg with critical loglevel if bol is true"""
+    if bol:
+        debug(msg, back_trace_len)
+
+
 if __name__ == '__main__':
     cup.log.debug('中文')
     cup.log.init_comlog(
@@ -486,8 +502,6 @@ if __name__ == '__main__':
     cup.log.info('re:test info')
     cup.log.debug('re:test debug')
     cup.log.debug('re:中文')
-<<<<<<< HEAD
-=======
     cup.log.reinit_comlog(
         're-test', cup.log.DEBUG, './re.test.log',
         cup.log.ROTATION, 102400000, False
@@ -496,6 +510,5 @@ if __name__ == '__main__':
     cup.log.debug('re:test debug')
     cup.log.debug('re:中文')
 
->>>>>>> origin/master
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

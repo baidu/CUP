@@ -29,10 +29,7 @@ import threading
 import subprocess
 
 import cup
-<<<<<<< HEAD
-=======
 from cup import err
->>>>>>> origin/master
 from cup.shell import expect
 
 __all__ = [
@@ -47,12 +44,8 @@ __all__ = [
     'forkexe_shell',
     'execshell_withpipe_ex',
     'execshell_withpipe_str',
-<<<<<<< HEAD
-    'ShellExec'
-=======
     'ShellExec',
     'rmtree'
->>>>>>> origin/master
 ]
 
 _DEPRECATED_MSG = '''Plz use class cup.shell.ShellExec instead. Function %s
@@ -319,8 +312,6 @@ def del_if_exist(path):
         raise IOError('Does not support deleting the type 4 the path')
 
 
-<<<<<<< HEAD
-=======
 def rmtree(path, ignore_errors=False, onerror=None, safemode=True):
     """
     safe rmtree.
@@ -339,7 +330,6 @@ def rmtree(path, ignore_errors=False, onerror=None, safemode=True):
         return shutil.rmtree(path, ignore_errors, onerror)
 
 
->>>>>>> origin/master
 def shell_diff(srcfile, dstfile):
     """
     调用shell环境的diff命令diff两个文件， 回返diff信息。
@@ -348,8 +338,6 @@ def shell_diff(srcfile, dstfile):
     cmd = 'diff %s %s' % (srcfile, dstfile)
     return os.system(cmd)
 
-<<<<<<< HEAD
-=======
 
 def get_pid(process_path, grep_string):
     """
@@ -393,5 +381,4 @@ def _test():
 if __name__ == '__main__':
     _test()
 
->>>>>>> origin/master
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

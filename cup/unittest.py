@@ -17,13 +17,9 @@
     Null
 """
 
-<<<<<<< HEAD
-import sys
-=======
 import os
 import sys
 import hashlib
->>>>>>> origin/master
 import traceback
 import logging
 
@@ -60,11 +56,7 @@ def assert_true(val, errmsg=''):
     """
     如果val is not True， assert并打印到stdout.
     errmsg参数为assert后提示到stderr的调用者错误信息
-<<<<<<< HEAD
-    如果开启过leo.log.init_comlog的log， 同时打印critical log到log文件
-=======
     如果开启过cup.log.init_comlog的log， 同时打印critical log到log文件
->>>>>>> origin/master
     """
     if type(val) != bool:
         raise ValueError('The type of val is not bool')
@@ -75,11 +67,7 @@ def assert_false(val, errmsg=''):
     """
     如果val is not False， assert并打印到stdout.
     errmsg参数为assert后提示到stderr的调用者错误信息
-<<<<<<< HEAD
-    如果开启过leo.log.init_comlog的log， 同时打印critical log到log文件
-=======
     如果开启过cup.log.init_comlog的log， 同时打印critical log到log文件
->>>>>>> origin/master
     """
     if type(val) != bool:
         raise ValueError('The type of val is not bool')
@@ -90,11 +78,7 @@ def assert_eq(val, exp, errmsg=''):
     """
     assert_eq， 如果val!=exp， assert并打印到stdout.
     errmsg参数为assert后提示到stderr的调用者错误信息
-<<<<<<< HEAD
-    如果开启过leo.log.init_comlog的log， 同时打印critical log到log文件
-=======
     如果开启过cup.log.init_comlog的log， 同时打印critical log到log文件
->>>>>>> origin/master
     """
     if (val != exp):
         msg = 'got %s, expect %s\nUser ErrMsg: %s' % (val, exp, errmsg)
@@ -238,11 +222,6 @@ def assert_ne(val, exp, errmsg=''):
         assert False, errmsg
 
 
-<<<<<<< HEAD
-class CUTCase(object):
-    """
-    leo库拥有的测试class. 支持nosetests. 可派生此类来实现测试class.
-=======
 def assert_boundary(val, low, high, errmsg=None):
     """
     expect low <= val <= high
@@ -286,10 +265,26 @@ def assert_local_file_eq(srcfile, dstfile, errmsg=None):
     assert srcmd5 == dstmd5, msg
 
 
+def assert_startswith(source, comp, errmsg=None):
+    """
+    if source does NOT start with comp, assert False
+    """
+    errmsg = 'expect source:{0} starts with:{1}'.format(source, comp)
+    if not source.startswith(comp):
+        assert False, errmsg
+
+
+def assert_none(source):
+    """
+    assert None
+    """
+    if source is not None:
+        assert False, 'expect source is None, but now is {0}'.format(source)
+
+
 class CUTCase(object):
     """
     cup库拥有的测试class. 支持nosetests. 可派生此类来实现测试class.
->>>>>>> origin/master
     其中set_result函数会在nosetests执行case后设置，case成功则设置True,
     case fail设置False. 在teardown阶段可调用get_result函数
     来获得case是否执行成功。
@@ -297,11 +292,7 @@ class CUTCase(object):
     def __init__(self, logfile='./test.log', b_logstd=False, b_debug=False):
         """
         :param logfile:
-<<<<<<< HEAD
-            调用leo.log.init_comlog来进行log文件的初始化，case可直接调用
-=======
             调用cup.log.init_comlog来进行log文件的初始化，case可直接调用
->>>>>>> origin/master
             cup.log.[info|debug|critical|warn]来打印日志。
         :param b_logstd:
             是否打印日志到logfile的同时还打印stdout, 默认不打印
@@ -359,11 +350,7 @@ class CUTCase(object):
 # pylint: disable=R0903
 class CCaseExecutor(object):
     """
-<<<<<<< HEAD
-    可调用CCaseExecutor类来执行leo.unittest.CUTCase的派生类case.
-=======
     可调用CCaseExecutor类来执行cup.unittest.CUTCase的派生类case.
->>>>>>> origin/master
     代码示例, 可nosetests执行， 也可python test_xxx.py执行的例子
     ::
 

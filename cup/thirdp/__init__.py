@@ -6,10 +6,6 @@
         thirdp is short for thirdparty.
         thridp package是来自第三方的python库集合。 比如pexpect. mysql
 """
-<<<<<<< HEAD
-
-
-=======
 import os
 import sys
 import platform
@@ -87,5 +83,4 @@ if _check_if_import_scientistlib():
     import bson
     import pymongo
     import cv
->>>>>>> origin/master
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

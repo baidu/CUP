@@ -113,31 +113,24 @@ class SmtpMailer(object):  # pylint: disable=R0903
         )
         mailer.sendmail(
             [
-<<<<<<< HEAD
-                'abc@baidu.com',
-                'cde@baidu.com',
-                'fff@baidu.com'
-            ],
-            'test_img',
-            (
-                'testset <img src="http://baidu.com/main/'
-=======
                 'maguannan@baidu.com',
-                'file-qa@baidu.com'
+                'liuxuan05@baidu.com',
+                'zhaominghao@baidu.com'
             ],
             'test_img',
             (
-                'testset <img src="http://abc/main/'
->>>>>>> origin/master
-                'wp-content/uploads/2013/06/monkeyc.jpg"></img>'
+                'testset <img src="cid:screenshot.png"></img>'
             ),
-            ['/home/work/test.txt']
+            [
+                '/home/work/screenshot.png',
+                '../abc.zip'
+            ]
         )
     """
     _COMMA_SPLITTER = ','
 
     def __init__(
-        self, sender, server, port=25, is_html=False
+        self, sender, server='mail2-in.baidu.com', port=25, is_html=False
     ):
         """
         """
@@ -164,41 +157,8 @@ class SmtpMailer(object):  # pylint: disable=R0903
                 (instance, ','.join(type_list))
             )
 
-    # pylint: disable=R0914,R0912,R0915
-    def sendmail(self, recipients, subject='', body='', attachments=None):
-        """
-        发送邮件.
-
-        :param recipients:
-            支持传入一个邮件接收者(string), 或者邮件接受者list
-        :param subject:
-            邮件主题
-        :param body:
-            邮件正文
-        :param attachments:
-            支持传入一个附件(string类型,邮件路径)或者附件list路径列表.
-            请注意, 需要传入绝对路径!
-        :return:
-            发送成功返回(True, None)的tuple, 失败返回(False, error_msg)的tuple
-
-        """
-        errmsg = None
-        self._check_type(recipients, [str, list])
-        self._check_type(subject, [str])
-        # self._check_type(body, [str])
-        if self._is_html:
-            msg_body = text.MIMEText(body, 'html', _charset='utf-8')
-        else:
-            msg_body = text.MIMEText(body, 'plain', _charset='utf-8')
-        outer = multipart.MIMEMultipart()
-        outer['Subject'] = subject
-        if type(recipients) == list:
-            outer['To'] = self._COMMA_SPLITTER.join(recipients)
-        else:
-            outer['To'] = recipients
-        outer['From'] = self._sender
-        outer.preamble = 'Peace and Joy!\n'
-        outer.attach(msg_body)
+    @classmethod
+    def _handle_attachments(cls, outer, attachments):
         if type(attachments) == str:
             attrs = [attachments]
         elif type(attachments) == list:
@@ -225,7 +185,9 @@ class SmtpMailer(object):  # pylint: disable=R0903
                         msg = text.MIMEText(fhandle.read(), _subtype=subtype)
                 elif maintype == 'image':
                     with open(attached, 'rb') as fhandle:
+                        imgid = os.path.basename(attached)
                         msg = image.MIMEImage(fhandle.read(), _subtype=subtype)
+                        msg.add_header('Content-ID', imgid)
                 elif maintype == 'audio':
                     with open(attached, 'rb') as fhandle:
                         msg = audio.MIMEAudio(fhandle.read(), _subtype=subtype)
@@ -233,13 +195,13 @@ class SmtpMailer(object):  # pylint: disable=R0903
                     with open(attached, 'rb') as fhandle:
                         msg = base.MIMEBase(maintype, subtype)
                         msg.set_payload(fhandle.read())
-                # Encode the payload using Base64
-                encoders.encode_base64(msg)
-                # Set the filename parameter
-                msg.add_header(
-                    'Content-Disposition', 'attachment',
-                    filename=os.path.basename(attached)
-                )
+                    # Encode the payload using Base64
+                    encoders.encode_base64(msg)
+                    # Set the filename parameter
+                    msg.add_header(
+                        'Content-Disposition', 'attachment',
+                        filename=os.path.basename(attached)
+                    )
                 outer.attach(msg)
             # pylint: disable=W0703
             except Exception as exception:
@@ -248,10 +210,77 @@ class SmtpMailer(object):  # pylint: disable=R0903
                         attached, str(exception)
                     )
                 )
+
+    # pylint: disable=R0914,R0912,R0915
+    def sendmail(self, recipients, subject='', body='', attachments=None,
+        cc=None, bcc=None
+    ):
+        """
+        发送邮件.
+
+        :param recipients:
+            支持传入一个邮件接收者(string), 或者邮件接受者list
+        :param subject:
+            邮件主题
+        :param body:
+            邮件正文
+        :param attachments:
+            支持传入一个附件(string类型,邮件路径)或者附件list路径列表.
+            请注意, 需要传入绝对路径!
+        :param cc:
+            抄送列表. 可以传入一个string类型邮件抄送者. 也可以是一个
+            list，里面每一个item是一个抄送者
+        :param bcc:
+            密送列表. 可以传入一个string类型邮件密送地址. 也可以是一个
+            list，里面每一个item是一个密送地址
+        :return:
+            发送成功返回(True, None)的tuple, 失败返回(False, error_msg)的tuple
+
+        """
+        errmsg = None
+        self._check_type(recipients, [str, list])
+        self._check_type(subject, [str])
+        toaddrs = []
+        # self._check_type(body, [str])
+        if self._is_html:
+            msg_body = text.MIMEText(body, 'html', _charset='utf-8')
+        else:
+            msg_body = text.MIMEText(body, 'plain', _charset='utf-8')
+        outer = multipart.MIMEMultipart()
+        outer['Subject'] = subject
+        if type(recipients) == list:
+            outer['To'] = self._COMMA_SPLITTER.join(recipients)
+            toaddrs.extend(recipients)
+        else:
+            outer['To'] = recipients
+            toaddrs.append(recipients)
+        if cc is not None:
+            if type(cc) == str:
+                outer['Cc'] = cc
+                toaddrs.append(cc)
+            elif type(cc) == list:
+                outer['Cc'] = self._COMMA_SPLITTER.join(cc)
+                toaddrs.extend(cc)
+            else:
+                raise TypeError('cc only accepts string or list')
+        if bcc is not None:
+            if type(bcc) == str:
+                outer['Bcc'] = bcc
+                toaddrs.append(bcc)
+            elif type(bcc) == list:
+                outer['Bcc'] = self._COMMA_SPLITTER.join(bcc)
+                toaddrs.extend(bcc)
+            else:
+                raise TypeError('bcc only accepts string or list')
+        outer['From'] = self._sender
+        outer.preamble = 'Peace and Joy!\n'
+        self._handle_attachments(outer, attachments)
+        outer.attach(msg_body)
+        # handle attachments
         composed = outer.as_string()
         try:
             smtp = smtplib.SMTP(self._server, self._port)
-            smtp.sendmail(self._sender, recipients, composed)
+            smtp.sendmail(self._sender, toaddrs, composed)
             smtp.quit()
             return (True, None)
         except smtplib.SMTPException as smtperr:

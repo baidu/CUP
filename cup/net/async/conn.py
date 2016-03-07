@@ -10,12 +10,6 @@
     Guannan Ma
 :create_date:
     2014
-<<<<<<< HEAD
-:last_date:
-    2014
-:descrition:
-    connection related module
-=======
 :last_modify_date:
     2015.6.29
 :descrition:
@@ -29,7 +23,6 @@
     Notice that _do_write will only TRY to send out some data. It might
     encounter TCP/IP stack full of data in the send queue of
     the network interface
->>>>>>> origin/master
 """
 
 import copy
@@ -717,11 +710,7 @@ class CConnectionManager(object):
             context.release_writelock()
 
     # context hash locked the writing.
-<<<<<<< HEAD
-    # guarantee there's only 1 thread for context reading.
-=======
     # guarantee there's only 1 thread for context writing.
->>>>>>> origin/master
     def _handle_new_send(self, context):
         self.add_write_job(context)
 
@@ -797,11 +786,7 @@ class CConnectionManager(object):
         peerinfo = context.get_peerinfo()
         if not context.try_writelock():
             cup.log.debug(
-<<<<<<< HEAD
-                'Another thread is reading the context. Peerinfo:%s:%s' %
-=======
                 'Another thread is writing the context, return. Peerinfo:%s:%s' %
->>>>>>> origin/master
                 (peerinfo[0], peerinfo[1])
             )
             return

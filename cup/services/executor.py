@@ -28,9 +28,6 @@ from cup import log
 # import Queue as queue
 
 class ExecutionService(object):
-    """
-    task executer, which supports delay_execution and queue_execution.
-    """
     def __init__(
         self, delay_exe_thdnum=3, queue_exec_thdnum=4
     ):
