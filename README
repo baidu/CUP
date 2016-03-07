@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 1. Installation                                                                                        
     - run # python setup.py install                                                                    
                                                                                                        
@@ -30,3 +31,21 @@ cup
 |-- version.py              模块|module             CUP版本号管理   
 
 docs中有详细的网页版库文档， 欢迎查看。 
+=======
+CUP 1.4.2.0 released.
+
+Version: 1.4.2.0
+* [Bug] oper.is_proc_exist. fix a bug in which an editor, (vim vi, for example) may be incorrectly caught)
+* [New] cup.services.executor. New Queue_Exec and delay_exec service
+* [New] cup.services.buffers. Buffer releated feature. For easing memory fragment.	
+* [Enhancement] remove traceback in cup.util.threadpool
+* [Enhancement] cup.log.reinit_comlog, if loggername has inited, raise ValueError
+* [New] cup.log.get_inited_loggername, get has inited loggername
+* [New] cup.shell.rmtree - add safemode support for shutil.rmtree
+* [New] cup.const - add const value support inside cup
+* [New] cup.conf - add HdfsConf support
+* [New] cup.shell.get_pid - get process id by process_path and grep_string
+
+
+使用说明 =>   https://github.com/BaiduQA/CUP/wiki
+>>>>>>> origin/master

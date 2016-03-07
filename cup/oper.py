@@ -23,9 +23,19 @@ import time
 import shutil
 
 import cup
+<<<<<<< HEAD
 
 
 __all__ = ['rm', 'rmrf', 'is_proc_exist', 'kill', 'backup_file']
+=======
+from cup import err
+
+
+__all__ = [
+    'rm', 'rmrf', 'is_proc_exist', 'kill', 'backup_file',
+    'is_process_used_port', 'is_port_used', 'is_path_contain_file'
+]
+>>>>>>> origin/master
 
 
 # pylint: disable=C0103
@@ -40,13 +50,27 @@ def rm(name):
         cup.log.warn("rm oserror")
 
 
+<<<<<<< HEAD
 def rmrf(fpath):
+=======
+def rmrf(fpath, safemode=True):
+>>>>>>> origin/master
     """
     可使用pythn自带的shutil.rmtree 不推荐使用这个函数
     :param fpath:
         删除的路径
     """
+<<<<<<< HEAD
     shutil.rmtree(fpath)
+=======
+    if safemode:
+        if os.path.normpath(os.path.abspath(fpath)) == '/':
+            raise err.ShellException('cannot rmtree root / under safemode')
+    if os.path.isfile(fpath):
+        os.unlink(fpath)
+    else:
+        shutil.rmtree(fpath)
+>>>>>>> origin/master
     # """
     # rmrf一个path目录。 遇到symlink, 不Follow symlink.
     # """
@@ -82,19 +106,35 @@ def is_proc_exist(path, name):
     # path = os.path.realpath(
     #   os.popen('cd ' + path + ' && pwd').read().strip()
     # )
+<<<<<<< HEAD
     cmd = 'ps -ef|grep %s|grep -v grep|grep -v vim |grep -v less| grep -v vi|\
             grep -v cat|grep -v more|grep -v tail|awk \'{print $2}\'' % (name)
+=======
+    cmd = 'ps -ef|grep %s|grep -v "^grep "|grep -v "^vim "|grep -v "^less "|\
+        grep -v "^vi "|grep -v "^cat "|grep -v "^more "|grep -v "^tail "|\
+        awk \'{print $2}\'' % (name)
+>>>>>>> origin/master
     ret = cup.shell.ShellExec().run(cmd, 10)
     pids = ret['stdout'].strip().split('\n')
     if len(pids) == 0 or len(pids) == 1 and len(pids[0]) == 0:
         return False
     for pid in pids:
+<<<<<<< HEAD
         cmd = 'ls -l /proc/%s/cwd|awk \'{print $11}\' ' % (pid)
         ret = cup.shell.ShellExec().run(cmd, 10)
         pid_path = ret['stdout'].strip().strip()
         if pid_path.find(path) == 0:
             # print '%s is exist: %s' % (name, path)
             return True
+=======
+        for sel_path in ["cwd", "exe"]:
+            cmd = 'ls -l /proc/%s/%s|awk \'{print $11}\' ' % (pid, sel_path)
+            ret = cup.shell.ShellExec().run(cmd, 10)
+            pid_path = ret['stdout'].strip().strip()
+            if pid_path.find(path) == 0:
+                # print '%s is exist: %s' % (name, path)
+                return True
+>>>>>>> origin/master
     return False
 
 
@@ -193,4 +233,84 @@ def backup_folder(srcpath, foldername, dstpath, label=None):
         '%s/%s' % (dstpath, foldername + '.' + label)
     )
 
+<<<<<<< HEAD
+=======
+
+def is_path_contain_file(dstpath, dstfile, recursive=False):
+    """
+    判断目录是否存在指定的文件
+
+    :param dstpath:
+        目标目录
+    :param dstfile:
+        目标文件
+    :param recursive:
+        是否支持递归查找，默认False
+    :return:
+        查找成功返回True, 否则返回False
+    """
+    cmd = "find %s -name '%s'" % (dstpath, dstfile)
+    if False == recursive:
+        cmd = "%s -maxdepth 1" % (cmd)
+    ret = cup.shell.ShellExec().run(cmd, 10)
+    if 0 != ret['returncode']:
+        return False
+    stdout = ret['stdout'].strip()
+    if 0 == len(stdout):
+        return False
+    else:
+        return True
+
+
+def is_port_used(port):
+    """
+    判断端口是否正在被使用
+
+    :param port:
+        端口号
+    :return:
+        查找成功返回True, 否则返回False
+    """
+    cmd = "netstat -nl | grep ':%s '" % (port)
+    ret = cup.shell.ShellExec().run(cmd, 10)
+    if 0 != ret['returncode']:
+        return False
+    stdout = ret['stdout'].strip()
+    if 0 == len(stdout):
+        return False
+    else:
+        return True
+
+
+def is_process_used_port(process_path, port):
+    """
+    判断特定进程是否使用某个端口
+
+    :param process_path:
+        源程序运行启动的路径
+    :param port:
+        端口
+    :return:
+        查找成功返回True, 否则返回False
+    """
+    # find the pid from by port
+    cmd = "netstat -nlp | grep ':%s '|awk -F ' ' '{print $7}'|\
+        cut -d \"/\" -f1" % (port)
+    ret = cup.shell.ShellExec().run(cmd, 10)
+    if 0 != ret['returncode']:
+        return False
+    stdout = ret['stdout'].strip()
+    if 0 == len(stdout):
+        return False
+    dst_pid = stdout.strip()
+    # check the path
+    path = os.path.abspath(process_path)
+    for sel_path in ['exe', 'cwd']:
+        cmd = 'ls -l /proc/%s/%s|awk \'{print $11}\' ' % (dst_pid, sel_path)
+        ret = cup.shell.ShellExec().run(cmd, 10)
+        pid_path = ret['stdout'].strip().strip()
+        if 0 == pid_path.find(path):
+            return True
+    return False
+>>>>>>> origin/master
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

@@ -93,7 +93,11 @@ if __name__ == '__main__':
         cup.log.ROTATION, 1024 * 1024 * 500, False
     )
     difi = CDifiPostCenter(self_ipport[0], self_ipport[1])
+<<<<<<< HEAD
     difi.setup()
+=======
+    # difi.setup()
+>>>>>>> origin/master
     thd = threading.Thread(target=difi.run)
     thd.start()
     difi.post_a_msg()
