@@ -10,24 +10,15 @@
     Liu.Jia Guannan Ma
 :create_date:
     2014
-<<<<<<< HEAD
-:last_date:
-    2014
-=======
->>>>>>> origin/master
 :descrition:
     Complex conf support
 """
 
 import os
 import time
-<<<<<<< HEAD
-import shutil
-=======
 import copy
 import shutil
 from xml.dom import minidom
->>>>>>> origin/master
 # import subprocess
 import json
 
@@ -420,50 +411,6 @@ class Configure2Dict(object):  # pylint: disable=R0903
 
     2. sections
 
-<<<<<<< HEAD
-    2.1 global section
-
-        - if key:value is not under any [section], it is under the global layer
-            by default
-        - global section is the 0th layer section
-
-        e.g.
-        test.conf:
-            # test.conf
-            global-key: value
-            global-key1: value1
-
-    2.2 child section
-        - [section1] means a child section under Global. And it's the
-            1st layer section
-        - [.section2] means a child section under the nearest section
-            above. It's the 2nd layer section.
-        - [..section3] means a child section under the nearest section
-            above. And the prefix .. means it is the 3rd layer section
-
-        e.g.:
-        test.conf:
-
-        global-key: value
-        [section]
-            host:  abc.com
-            port:  8080
-            [.section_child]
-                child_key: child_value
-                [..section_child_child]
-                    control: ssh
-                    [...section_child_child_child]
-                        wow_key:  wow_value
-
-    2.3 section access method
-        get_dict method will convert conf into a ConfDict which is derived
-
-        from python dict.
-
-        - Access the section with confdict['section']['section-child'].
-        - Access the section with confdict.get_ex('section') with (value,
-            comments)
-=======
         2.1 global section
 
             - if key:value is not under any [section], it is under the global layer
@@ -507,44 +454,10 @@ class Configure2Dict(object):  # pylint: disable=R0903
             - Access the section with confdict['section']['section-child'].
             - Access the section with confdict.get_ex('section') with (value,
                 comments)
->>>>>>> origin/master
 
 
     3. key:value and key:value array
 
-<<<<<<< HEAD
-    3.1 key:value
-        key:value can be set under Global section which is closely after the
-        1st line with no [section] above.
-
-        key:value can also be set under sections.
-
-        E.g.
-            # test.conf
-            key1: value1
-            [section]
-                key_section: value_in_section
-                [.seciton]
-                    key_section_child: value_section_child
-
-    3.2 key:value arrays
-        key:value arrays can be access with confdict['section']['disk'].
-
-        You will get a ConfList derived from python list.
-
-        # test.conf
-        # Global layer, key:value
-        host: abc.com
-        port: 12345
-        # 1st layer [monitor]
-        @disk: /home/data0
-        @disk: /home/data1
-        [section]
-            @disk: /home/disk/disk1
-            @disk: /home/disk/disk2
-
-    4. Example
-=======
         3.1 key:value
             key:value can be set under Global section which is closely after the
             1st line with no [section] above.
@@ -576,7 +489,6 @@ class Configure2Dict(object):  # pylint: disable=R0903
 
     4. Example
     ::
->>>>>>> origin/master
         # test.conf
         # Global layer, key:value
         host: abc.com
@@ -600,7 +512,7 @@ class Configure2Dict(object):  # pylint: disable=R0903
                     default: exit
     """
 
-    def __init__(self, configure_file, remove_comments=True):
+    def __init__(self, configure_file, remove_comments=True, separator=':'):
         """
         @param configure_file:
             configure file path
@@ -624,6 +536,7 @@ class Configure2Dict(object):  # pylint: disable=R0903
         self._dict = ConfDict()
         self._remove_comments = remove_comments
         self._blank_and_comments = {}
+        self._separator = separator
 
     def _strip_value(self, value):
         if self._remove_comments:
@@ -647,8 +560,11 @@ class Configure2Dict(object):  # pylint: disable=R0903
             # @disk : /home/disk1
             # @disk : /home/disk2
             # conf_dict_now[key[1:]] = [value]
-            conf_array = ConfList()
-            conf_dict_now.set_ex(key[1:], conf_array, rev_comments)
+            if not key[1:] in conf_dict_now:
+                conf_array = ConfList()
+                conf_dict_now.set_ex(key[1:], conf_array, rev_comments)
+            else:
+                conf_array = conf_dict_now[key[1:]]
             conf_array.append_ex(value, [])
             rev_comments = []
             num += 1
@@ -730,6 +646,7 @@ class Configure2Dict(object):  # pylint: disable=R0903
             while isinstance(conf_dict_now, list):  # [], find the working dict
                 conf_dict_now = conf_dict_now[-1]
             # line with (key : value)
+            # line with (@key : value)
             if isinstance(line, tuple):  # key value
                 num, comments = self._handle_key_value_tuple(
                     num, conf_dict_now, comments
@@ -752,7 +669,7 @@ class Configure2Dict(object):  # pylint: disable=R0903
                 elif level > len(conf_layer_stack) + 1:
                     raise ArrayFormatError(line)
                 elif level == len(conf_layer_stack) + 1:
-                    # new group
+                    # new grou for
                     if key[0] == '@':
                         key = key[1:]
                         conflist = ConfList()
@@ -818,12 +735,8 @@ class Configure2Dict(object):  # pylint: disable=R0903
         if key[0] == '@':
             key = key[1:]
         for char in key:
-<<<<<<< HEAD
-            if not char.isalnum() and char != '_' and char != '-':
-=======
             if not char.isalnum() and char != '_' \
                     and char != '-' and char != '.':
->>>>>>> origin/master
                 raise KeyFormatError(key)
 
     # Check the [GROUP] key format
@@ -859,6 +772,7 @@ class Configure2Dict(object):  # pylint: disable=R0903
                 continue
             key, value = line.split(':', 1)
             key = key.strip()
+            value = value.strip(' \t')
             # if remove_comments is True, delete comments in value.
 
             self._check_key_valid(key)
@@ -927,7 +841,7 @@ class Dict2Configure(object):
     # The separator between a field and its value
     @classmethod
     def _get_field_value_sep(cls):
-        return ' : '
+        return ':'
 
     # The separator between each line
     @classmethod
@@ -961,55 +875,39 @@ class Dict2Configure(object):
         with open(conf_file, 'w') as fhandle:
             fhandle.write(self._get_write_string())
 
-<<<<<<< HEAD
-    def _comp_write_keys(self, valuex, valuey):
-=======
     # pylint: disable=R0911
     @classmethod
     def _comp_write_keys(cls, valuex, valuey):
+        _py_type = [bool, int, float]
+
         if type(valuex) == type(valuey):
             return 0
-        if isinstance(valuex, str):
-            return -1
-        if isinstance(valuey, str):
-            return 1
 
->>>>>>> origin/master
+        for py_type in _py_type:
+            if isinstance(valuex, py_type):
+                return -1
+
+        for py_type in _py_type:
+            if isinstance(valuey, str):
+                return 1
+
         if isinstance(valuex, list) and isinstance(valuey, list):
             try:
                 if isinstance(valuex[0], dict) or isinstance(valuex[0], list):
                     return 1
                 else:
                     return -1
-<<<<<<< HEAD
-            except:
-                return -1
-            else:
-                return -1
-
-        if type(valuex) == type(valuey):
-            return 0
-
-        if isinstance(valuex, list) and isinstance(valuey, str):
-            return 1
-
-=======
             # pylint: disable=W0703
             except Exception:
                 return -1
             else:
                 return -1
-        if isinstance(valuex, list) and isinstance(valuey, str):
-            return 1
->>>>>>> origin/master
+        # if isinstance(valuex, list) and isinstance(valuey, str):
+        #     return 1
         if isinstance(valuex, dict):
             return 1
         if isinstance(valuey, dict):
             return -1
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/master
         return 1
 
     # pylint: disable=R0912
@@ -1133,8 +1031,6 @@ class Dict2Configure(object):
         return 1
 
 
-<<<<<<< HEAD
-=======
 class HdfsXmlConf(object):
     """
     hdfs xmlconf modifier.
@@ -1186,13 +1082,13 @@ class HdfsXmlConf(object):
                     'value'
                 )[0].childNodes[0].nodeValue
             except IndexError:
-                tmpdict['value'] = ' '
+                tmpdict['value'] = None
             try:
                 tmpdict['description'] = pro.getElementsByTagName(
                     'description'
                 )[0].childNodes[0].nodeValue
             except IndexError:
-                tmpdict['description'] = ' '
+                tmpdict['description'] = None
             self._confdict[
                 pro.getElementsByTagName('name')[0].childNodes[0].nodeValue
             ] = tmpdict
@@ -1217,18 +1113,23 @@ class HdfsXmlConf(object):
         properties = dom.getElementsByTagName('property')
         tmpdict = copy.deepcopy(new_confdict)
 
+        # modify if name exists
         for pro in properties:
             name = pro.getElementsByTagName('name')[0].childNodes[0].nodeValue
             valuenode = pro.getElementsByTagName('value')[0]
             if name in tmpdict:
                 if valuenode.firstChild is None:
-                    valuenode.appendChild(dom.createTextNode(''))
-                valuenode.firstChild.replaceWholeText(tmpdict[name]['value'])
+                    if tmpdict[name]['value'] is not None:
+                        valuenode.appendChild(dom.createTextNode(''))
+                        valuenode.firstChild.replaceWholeText(
+                            tmpdict[name]['value']
+                        )
                 del tmpdict[name]
             else:
                 parent = pro.parentNode
                 parent.insertBefore(dom.createComment(pro.toxml()), pro)
                 parent.removeChild(pro)
+
         configuration_node = dom.getElementsByTagName('configuration')[0]
         for name in tmpdict:
             new_pro = dom.createElement('property')
@@ -1237,7 +1138,10 @@ class HdfsXmlConf(object):
             new_pro.appendChild(new_name)
             # value in the new property
             new_value = dom.createElement('value')
-            new_value.appendChild(dom.createTextNode(tmpdict[name]['value']))
+            if new_value is not None:
+                new_value.appendChild(
+                    dom.createTextNode(tmpdict[name]['value'])
+                )
             new_pro.appendChild(new_value)
             # description
             new_desc = dom.createElement('description')
@@ -1265,7 +1169,6 @@ class HdfsXmlConf(object):
         self._confdict = kvs
 
 
->>>>>>> origin/master
 def _main_hanle():
     dict4afs = Configure2Dict('/tmp/metaserver.conf')
     dictafs = dict4afs.get_dict()

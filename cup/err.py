@@ -108,22 +108,14 @@ class ShellException(BaseCupException):
         super(self.__class__, self).__init__(msg)
 
 
-<<<<<<< HEAD
-class NoSuchFileOrDir(BaseCupException):
-    """
-    文件或者目录不存在
-=======
 class IOException(BaseCupException):
     """
     IO related exceptions inside cup
->>>>>>> origin/master
     """
     def __init__(self, msg=''):
         super(self.__class__, self).__init__(msg)
 
 
-<<<<<<< HEAD
-=======
 class NoSuchFileOrDir(IOException):
     """
     文件或者目录不存在
@@ -132,7 +124,6 @@ class NoSuchFileOrDir(IOException):
         super(NoSuchFileOrDir, self).__init__(msg)
 
 
->>>>>>> origin/master
 class ThreadTermException(BaseCupException):
     """
         结束线程相关的err
@@ -149,9 +140,6 @@ class NotInitialized(BaseCupException):
         msg = 'Not initialized: %s' % msg
         super(self.__class__, self).__init__(msg)
 
-<<<<<<< HEAD
-=======
 
 
->>>>>>> origin/master
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

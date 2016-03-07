@@ -24,10 +24,7 @@
 # from cup.util.misc import CAck, check_type, check_not_none
 
 
-<<<<<<< HEAD
-=======
 from cup.util import autowait
->>>>>>> origin/master
 from cup.util import conf
 from cup.util import constants
 from cup.util import context

@@ -12,14 +12,10 @@
 :create_date:
     2014
 :modify_date:
-    2014
+    2015.3.4
 """
 
-<<<<<<< HEAD
-VERSION = '1.4.0'
-=======
-VERSION = '1.4.2'
->>>>>>> origin/master
+VERSION = '1.5.1'
 AUTHOR = 'nfs-qa@baidu.com'
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

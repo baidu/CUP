@@ -21,22 +21,28 @@
 import os
 import time
 import shutil
+import platform
 
 import cup
-<<<<<<< HEAD
-
-
-__all__ = ['rm', 'rmrf', 'is_proc_exist', 'kill', 'backup_file']
-=======
+from cup import decorators
 from cup import err
 
 
-__all__ = [
-    'rm', 'rmrf', 'is_proc_exist', 'kill', 'backup_file',
-    'is_process_used_port', 'is_port_used', 'is_path_contain_file'
-]
->>>>>>> origin/master
+# linux only import
+if platform.system() == 'Linux':
+    __all__ = [
+        'rm', 'rmrf', 'is_proc_exist', 'kill', 'backup_file',
+        'is_process_used_port', 'is_port_used', 'is_path_contain_file',
+        'contains_file'
+    ]
+# universal import (platform indepedent)
+else:
+    __all__ = [
+        'contains_file', 'backup_file'
+    ]
 
+
+# linux functionalities {{
 
 # pylint: disable=C0103
 def rm(name):
@@ -46,49 +52,29 @@ def rm(name):
     """
     try:
         os.remove(name)
-    except OSError as e:
-        cup.log.warn("rm oserror")
+    except OSError as error:
+        cup.log.warn("rm oserror: %s" % error)
 
 
-<<<<<<< HEAD
-def rmrf(fpath):
-=======
 def rmrf(fpath, safemode=True):
->>>>>>> origin/master
     """
     可使用pythn自带的shutil.rmtree 不推荐使用这个函数
     :param fpath:
         删除的路径
     """
-<<<<<<< HEAD
-    shutil.rmtree(fpath)
-=======
-    if safemode:
-        if os.path.normpath(os.path.abspath(fpath)) == '/':
-            raise err.ShellException('cannot rmtree root / under safemode')
-    if os.path.isfile(fpath):
-        os.unlink(fpath)
-    else:
-        shutil.rmtree(fpath)
->>>>>>> origin/master
-    # """
-    # rmrf一个path目录。 遇到symlink, 不Follow symlink.
-    # """
-    # try:
-    #     # os.removedirs(name)
-    #     if os.path.isdir(fpath):
-    #         for root, dirs, files in os.walk(fpath, topdown=False):
-    #             for name in files:
-    #                 os.remove(os.path.join(root, name))
-    #                 print  os.path.join(root, name)
-    #             for name in dirs:
-    #                 os.rmdir(os.path.join(root, name))
-    #                 print "delete %s" % (os.path.join(root, name))
-    #         os.rmdir(fpath)
-    #     else:
-    #         os.remove(fpath)
-    # except OSError as e:
-    #     print 'OSError:%s' % e
+    @decorators.needlinux
+    def _real_rmrf(fpath, safemode):
+        """
+        real rmrf
+        """
+        if safemode:
+            if os.path.normpath(os.path.abspath(fpath)) == '/':
+                raise err.ShellException('cannot rmtree root / under safemode')
+        if os.path.isfile(fpath):
+            os.unlink(fpath)
+        else:
+            shutil.rmtree(fpath)
+    return _real_rmrf(fpath, safemode)
 
 
 def is_proc_exist(path, name):
@@ -102,40 +88,29 @@ def is_proc_exist(path, name):
     :return:
         存在返回True， 不存在返回False
     """
-    path = os.path.realpath(os.path.abspath(path))
-    # path = os.path.realpath(
-    #   os.popen('cd ' + path + ' && pwd').read().strip()
-    # )
-<<<<<<< HEAD
-    cmd = 'ps -ef|grep %s|grep -v grep|grep -v vim |grep -v less| grep -v vi|\
-            grep -v cat|grep -v more|grep -v tail|awk \'{print $2}\'' % (name)
-=======
-    cmd = 'ps -ef|grep %s|grep -v "^grep "|grep -v "^vim "|grep -v "^less "|\
-        grep -v "^vi "|grep -v "^cat "|grep -v "^more "|grep -v "^tail "|\
-        awk \'{print $2}\'' % (name)
->>>>>>> origin/master
-    ret = cup.shell.ShellExec().run(cmd, 10)
-    pids = ret['stdout'].strip().split('\n')
-    if len(pids) == 0 or len(pids) == 1 and len(pids[0]) == 0:
-        return False
-    for pid in pids:
-<<<<<<< HEAD
-        cmd = 'ls -l /proc/%s/cwd|awk \'{print $11}\' ' % (pid)
+    @decorators.needlinux
+    def _real_is_proc_exist(path, name):
+        """
+        _real_is_proc_exist
+        """
+        path = os.path.realpath(os.path.abspath(path))
+        cmd = 'ps -ef|grep %s|grep -v "^grep "|grep -v "^vim "|grep -v "^less "|\
+            grep -v "^vi "|grep -v "^cat "|grep -v "^more "|grep -v "^tail "|\
+            awk \'{print $2}\'' % (name)
         ret = cup.shell.ShellExec().run(cmd, 10)
-        pid_path = ret['stdout'].strip().strip()
-        if pid_path.find(path) == 0:
-            # print '%s is exist: %s' % (name, path)
-            return True
-=======
-        for sel_path in ["cwd", "exe"]:
-            cmd = 'ls -l /proc/%s/%s|awk \'{print $11}\' ' % (pid, sel_path)
-            ret = cup.shell.ShellExec().run(cmd, 10)
-            pid_path = ret['stdout'].strip().strip()
-            if pid_path.find(path) == 0:
-                # print '%s is exist: %s' % (name, path)
-                return True
->>>>>>> origin/master
-    return False
+        pids = ret['stdout'].strip().split('\n')
+        if len(pids) == 0 or len(pids) == 1 and len(pids[0]) == 0:
+            return False
+        for pid in pids:
+            for sel_path in ["cwd", "exe"]:
+                cmd = 'ls -l /proc/%s/%s|awk \'{print $11}\' ' % (pid, sel_path)
+                ret = cup.shell.ShellExec().run(cmd, 10)
+                pid_path = ret['stdout'].strip().strip()
+                if pid_path.find(path) == 0:
+                    # print '%s is exist: %s' % (name, path)
+                    return True
+        return False
+    return _real_is_proc_exist(path, name)
 
 
 def _kill_child(pid, sign):
@@ -233,10 +208,13 @@ def backup_folder(srcpath, foldername, dstpath, label=None):
         '%s/%s' % (dstpath, foldername + '.' + label)
     )
 
-<<<<<<< HEAD
-=======
 
-def is_path_contain_file(dstpath, dstfile, recursive=False):
+def is_path_contain_file(dstpath, dstfile, recursive=False, follow_link=False):
+    """同contains_file"""
+    return contains_file(dstpath, dstfile, recursive, follow_link)
+
+
+def contains_file(dstpath, dstfile, recursive=False, follow_link=False):
     """
     判断目录是否存在指定的文件
 
@@ -249,17 +227,21 @@ def is_path_contain_file(dstpath, dstfile, recursive=False):
     :return:
         查找成功返回True, 否则返回False
     """
-    cmd = "find %s -name '%s'" % (dstpath, dstfile)
-    if False == recursive:
-        cmd = "%s -maxdepth 1" % (cmd)
-    ret = cup.shell.ShellExec().run(cmd, 10)
-    if 0 != ret['returncode']:
-        return False
-    stdout = ret['stdout'].strip()
-    if 0 == len(stdout):
+    path = os.path.normpath(dstpath)
+    fpath = os.path.normpath(dstfile.strip())
+    fullpath = '{0}/{1}'.format(path, dstfile.strip())
+    fullpath = os.path.normpath(fullpath)
+    if recursive:
+        for (_, __, fnames) in os.walk(path, followlinks=follow_link):
+            for filename in fnames:
+                if filename == fpath:
+                    return True
         return False
     else:
-        return True
+        if os.path.exists(fullpath):
+            return True
+        else:
+            return False
 
 
 def is_port_used(port):
@@ -312,5 +294,6 @@ def is_process_used_port(process_path, port):
         if 0 == pid_path.find(path):
             return True
     return False
->>>>>>> origin/master
+
+# end linux functionalities }}
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

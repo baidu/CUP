@@ -29,10 +29,11 @@ import re
 import time
 
 import cup
+from cup import oper
 
 
 def wait_until_file_exist(
-    dst_path, file_name, max_wait_sec=10, interval_sec=0.5, recursive=False
+    dst_path, file_name, max_wait_sec=10, interval_sec=2, recursive=False
 ):
     """
     等待文件存在直到超时
@@ -44,7 +45,7 @@ def wait_until_file_exist(
     :param max_wait_sec:
         最长等待时间，如果超过此时间，直接返回False,默认10s
     :param interval_sec:
-        重试的间隔时间，默认0.5s
+        重试的间隔时间，默认2
     :param recursive:
         是否这次递归查找，默认False
     :return:
@@ -53,7 +54,7 @@ def wait_until_file_exist(
     curr_wait_sec = 0
 
     while curr_wait_sec < max_wait_sec:
-        if cup.oper.is_path_contain_file(dst_path, file_name, recursive):
+        if oper.contains_file(dst_path, file_name, recursive):
             return True
         curr_wait_sec += interval_sec
         time.sleep(interval_sec)
@@ -278,7 +279,41 @@ def wait_until_process_killed(
     return False
 
 
-# ---------------------------------------------------------------------------#
+def _wait_until_return(func,
+        boolean, max_wait_sec, interval_sec=0.5, *args, **kwargs
+    ):
+    """
+    wait until function return true
+    """
+    curr_wait_sec = 0
+
+    while curr_wait_sec < max_wait_sec:
+        if func(*args, **kwargs) == boolean:
+            return True
+        else:
+            time.sleep(interval_sec)
+            curr_wait_sec += interval_sec
+    return False
+
+
+def wait_return_true(func, max_wait_sec, interval_sec=0.5, *args, **kwargs):
+    """
+    wait until func return true or max_wait_sec passes.
+    """
+    return _wait_until_return(
+        func, True, max_wait_sec, interval_sec, *args, **kwargs
+    )
+
+
+def wait_return_false(func, max_wait_sec, interval_sec=0.5, *args, **kwargs):
+    """
+    wait until func return False or max_wait_sec passes.
+    """
+    return _wait_until_return(
+        func, False, max_wait_sec, interval_sec, *args, **kwargs
+    )
+
+
 def __check_reg_str_contain(file_reader, reg_str):
     """
     检查文件中是否存在特定正则字符串(按行匹配)

@@ -32,9 +32,9 @@ class Singleton(object):  # pylint: disable=R0903
     """
     Singleton你的类.
     用法如下::
-        import cup
+        from cup import decorators
 
-        @cup.decorator.Singleton
+        @decorators.Singleton
         class YourClass(object):
             def __init__(self):
             pass
@@ -76,13 +76,17 @@ def py_versioncheck(function, version):
 
 def needlinux(function):
     """
-    :platform: Linux
     只支持linux的python修饰符, 用来表明这个函数只能运行在linux系统上.
     如果函数运行在非linux平台, raise cup.err.DecoratorException
 
-    用法如下::
-        import cup
-        @cup.decorator.needlinux
+    :platform:
+        Linux
+
+    用法如下
+    ::
+
+        from cup import decorators
+        @decorators.needlinux
         def your_func():
             pass
     """
@@ -99,9 +103,7 @@ class TraceUsedTime(object):
     """
     追踪函数的耗时情况
     如果init过cup.log.init_comlog, 会打印到log文件。
-    example:
-
-    ::
+    example::
         import time
 
         from cup import decorators
