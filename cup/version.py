@@ -15,7 +15,11 @@
     2014
 """
 
+<<<<<<< HEAD
 VERSION = '1.4.0'
+=======
+VERSION = '1.4.2'
+>>>>>>> origin/master
 AUTHOR = 'nfs-qa@baidu.com'
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

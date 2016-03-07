@@ -29,6 +29,10 @@ import threading
 import subprocess
 
 import cup
+<<<<<<< HEAD
+=======
+from cup import err
+>>>>>>> origin/master
 from cup.shell import expect
 
 __all__ = [
@@ -43,7 +47,12 @@ __all__ = [
     'forkexe_shell',
     'execshell_withpipe_ex',
     'execshell_withpipe_str',
+<<<<<<< HEAD
     'ShellExec'
+=======
+    'ShellExec',
+    'rmtree'
+>>>>>>> origin/master
 ]
 
 _DEPRECATED_MSG = '''Plz use class cup.shell.ShellExec instead. Function %s
@@ -310,6 +319,27 @@ def del_if_exist(path):
         raise IOError('Does not support deleting the type 4 the path')
 
 
+<<<<<<< HEAD
+=======
+def rmtree(path, ignore_errors=False, onerror=None, safemode=True):
+    """
+    safe rmtree.
+
+    safemode, by default is True, which forbids:
+
+    1. not allowing rmtree root "/"
+
+    """
+    if safemode:
+        if os.path.normpath(os.path.abspath(path)) == '/':
+            raise err.ShellException('cannot rmtree root / under safemode')
+    if os.path.isfile(path):
+        return os.unlink(path)
+    else:
+        return shutil.rmtree(path, ignore_errors, onerror)
+
+
+>>>>>>> origin/master
 def shell_diff(srcfile, dstfile):
     """
     调用shell环境的diff命令diff两个文件， 回返diff信息。
@@ -318,4 +348,50 @@ def shell_diff(srcfile, dstfile):
     cmd = 'diff %s %s' % (srcfile, dstfile)
     return os.system(cmd)
 
+<<<<<<< HEAD
+=======
+
+def get_pid(process_path, grep_string):
+    """
+    will return immediately after find the pid which matches
+
+    1. ps -ef|grep %s|grep -v grep|grep -vE "^[vim|less|vi|tail|cat|more] "
+    '|awk '{print $2}'
+
+    2. workdir is the same as ${process_path}
+
+    :param process_path:
+        process that runs on
+    :param grep_string:
+        ps -ef|grep ${grep_string}
+    :return:
+        return None if not found. Otherwise, return the pid
+
+    """
+    cmd = (
+        'ps -ef|grep %s|grep -v grep|grep -vE "^[vim|less|vi|tail|cat|more] "'
+        '|awk \'{print $2}\''
+    ) % (grep_string)
+    ret = cup.shell.ShellExec().run(cmd, 10)
+    pids = ret['stdout'].strip().split('\n')
+    if len(pids) == 0 or len(pids) == 1 and len(pids[0]) == 0:
+        return None
+    for pid in pids:
+        for sel_path in ["cwd", "exe"]:
+            cmd = 'ls -l /proc/%s/%s|awk \'{print $11}\' ' % (pid, sel_path)
+            ret = cup.shell.ShellExec().run(cmd, 10)
+            pid_path = ret['stdout'].strip().strip()
+            if pid_path.find(process_path) == 0:
+                return pid
+    return None
+
+
+def _test():
+    pass
+
+
+if __name__ == '__main__':
+    _test()
+
+>>>>>>> origin/master
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

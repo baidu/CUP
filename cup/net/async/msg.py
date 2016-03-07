@@ -26,6 +26,20 @@ from cup.net.async import common
 __all__ = ['CMsgType', 'CMsgFlag', 'CNetMsg', 'CAckMsg']
 
 
+<<<<<<< HEAD
+=======
+# TODO serilize the msg
+# class MsgSerilizer(object):
+#     def __init__(self, body):
+#         pass
+#
+#     def serilize(self):
+#         pass
+#
+#     def deserlize(self, pack):
+#         pass
+
+>>>>>>> origin/master
 @cup.decorators.Singleton
 class CMsgType(object):
     """
@@ -395,7 +409,11 @@ class CNetMsg(object):
 
     def get_from_addr(self):
         """
+<<<<<<< HEAD
         get from addr
+=======
+        get from addr. ((ip, port), (stub, future))
+>>>>>>> origin/master
         """
         if self._fromaddr is None:
             pack = self._convert_bytes2uint(self._data['from'])

@@ -113,6 +113,7 @@ class SmtpMailer(object):  # pylint: disable=R0903
         )
         mailer.sendmail(
             [
+<<<<<<< HEAD
                 'abc@baidu.com',
                 'cde@baidu.com',
                 'fff@baidu.com'
@@ -120,6 +121,14 @@ class SmtpMailer(object):  # pylint: disable=R0903
             'test_img',
             (
                 'testset <img src="http://baidu.com/main/'
+=======
+                'maguannan@baidu.com',
+                'file-qa@baidu.com'
+            ],
+            'test_img',
+            (
+                'testset <img src="http://abc/main/'
+>>>>>>> origin/master
                 'wp-content/uploads/2013/06/monkeyc.jpg"></img>'
             ),
             ['/home/work/test.txt']
