@@ -8,7 +8,7 @@
       * requests https://github.com/kennethreitz/requests (under Apache V2 license)
       * pymysql https://github.com/PyMySQL/PyMySQL (under MIT license)   
 3. Docs | 文档
-    最新文档：http://qxu1141900061.my3w.com/docs/cup/index.html
+    最新文档：http://docs.iobusy.com/docs/cup/
                                                                                                        
 基础库代码结构说明:                                                                                    
 cup                                                                                                    
