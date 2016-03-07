@@ -1,11 +1,12 @@
-<<<<<<< HEAD
-1. Installation                                                                                        
+1. Installation   - 安装                                                                                     
     - run # python setup.py install                                                                    
                                                                                                        
 2. Reference                                                                                           
     - CUP use pexpect and httplib.                                                                     
       * Pexpect http://pexpect.sourceforge.net/ (under MIT license)                                    
       * Httplib2 http://code.google.com/p/httplib2/ (under MIT license)   
+      * requests https://github.com/kennethreitz/requests (under Apache V2 license)
+      * pymysql https://github.com/PyMySQL/PyMySQL (under MIT license)   
 3. Docs | 文档
     最新文档：http://qxu1141900061.my3w.com/docs/cup/index.html
                                                                                                        
@@ -23,7 +24,7 @@ cup
 |-- platforms.py            模块|module             跨平台相关保留module                               
 |-- res                     目录|package            机器资源信息获取、进程信息获取、监控等             
 |-- shell                   目录|package            shell操作、跨机执行、跨机数据传输等                
-|-- services                目录|package            心跳机制                                           
+|-- services                目录|package            心跳机制、执行器、buffer缓存                                          
 |-- thirdp                  目录|package            第三方库： pexpect、httplib2、                     
 |-- timeplus.py             模块|module             时间操作函数                                       
 |-- unittest.py             模块|module             UT测试相关、assert、noseClass                      
@@ -31,8 +32,21 @@ cup
 |-- version.py              模块|module             CUP版本号管理   
 
 docs中有详细的网页版库文档， 欢迎查看。 
-=======
-CUP 1.4.2.0 released.
+CUP 1.5.1.0 released.
+
+Version: 1.5.1                                                                                      
+    * [New] cup.log - add xxx_if                                                                    
+    * [New] cup.thirdp - replace MySQLdb with pymysql.                                              
+        Use can still use "from cup.thirdp import MySQLdb"                                          
+    * [New] cup.util.conf - bug fix                                                                 
+                                                                                                    
+Version: 1.5.0                                                                                      
+    * [New] cup.jenkinslib - add jenkins lib with which you can operate on jenkins jobs             
+    * [New] cup.log.parse - parse string line logged by cup.log.XXX                                 
+    * [New] cup.unittest.assert_startswith                                                          
+    * [New] cup.oper - add contains_file which searchs a file and return its existence              
+    * [Bug] cup.util.conf - fix "key comparation order" bug for Configure2Dict                      
+    * [Bug] cup.util.conf - fix HdfsXmlConf "eletemnt without value. e.g. <value/>    
 
 Version: 1.4.2.0
 * [Bug] oper.is_proc_exist. fix a bug in which an editor, (vim vi, for example) may be incorrectly caught)
@@ -48,4 +62,3 @@ Version: 1.4.2.0
 
 
 使用说明 =>   https://github.com/BaiduQA/CUP/wiki
->>>>>>> origin/master
