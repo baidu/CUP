@@ -1121,9 +1121,9 @@ class HdfsXmlConf(object):
                 if valuenode.firstChild is None:
                     if tmpdict[name]['value'] is not None:
                         valuenode.appendChild(dom.createTextNode(''))
-                        valuenode.firstChild.replaceWholeText(
-                            tmpdict[name]['value']
-                        )
+                valuenode.firstChild.replaceWholeText(
+                    tmpdict[name]['value']
+                )
                 del tmpdict[name]
             else:
                 parent = pro.parentNode
