@@ -2,6 +2,7 @@ Version: 1.5.1
 	* [New] cup.log - add xxx_if 
 	* [New] cup.thirdp - replace MySQLdb with pymysql. 
 		Use can still use "from cup.thirdp import MySQLdb"
+	* [Bug] HdfsXmlConf bug. Configure2Dict disorder bug
 
 Version: 1.5.0
 	* [New] cup.jenkinslib - add jenkins lib with which you can operate on jenkins jobs

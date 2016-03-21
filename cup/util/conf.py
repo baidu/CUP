@@ -625,8 +625,10 @@ class Configure2Dict(object):  # pylint: disable=R0903
                 conf_layer_stack.append(conf_dict_now[groupkey])
         return comments
 
-    # GLOBAL level 1 [groupA] level 2 [.@groupB] level 3
-    # [..@groupC] level 4
+    # GLOBAL level 1
+    # [groupA] level 2
+    #     [.@groupB] level 3
+    #         [..@groupC] level 4
     # pylint: disable=R0912, R0915
     def get_dict(self):
         """
@@ -637,6 +639,7 @@ class Configure2Dict(object):  # pylint: disable=R0903
         conf_layer_stack = [self._dict]
         num = 0
         length = len(self._lines)
+        last_list_key = None
         while num < length:
             line = self._lines[num]
             if self._handle_comments(comments, line):
@@ -646,7 +649,7 @@ class Configure2Dict(object):  # pylint: disable=R0903
             while isinstance(conf_dict_now, list):  # [], find the working dict
                 conf_dict_now = conf_dict_now[-1]
             # line with (key : value)
-            # line with (@key : value)
+            # or line with (@key : value)
             if isinstance(line, tuple):  # key value
                 num, comments = self._handle_key_value_tuple(
                     num, conf_dict_now, comments
@@ -659,8 +662,9 @@ class Configure2Dict(object):  # pylint: disable=R0903
                     # GLOBAL is the 1st level
                     level = 1
                     conf_layer_stack = [self._dict]
-                # if sth below level cannot be computed as len(line) - len(key)
+
                 # [Group1.SubGroup1] sub-key: Value
+                # if sth below level cannot be computed as len(line) - len(key)
                 elif '.' in key:  # conf_layer_stack back to [self._dict]
                     conf_layer_stack = [self._dict]
                     comments = self._handle_group_keys(
@@ -685,9 +689,12 @@ class Configure2Dict(object):  # pylint: disable=R0903
                     while isinstance(conf_dict_now, list):
                         conf_dict_now = conf_dict_now[-1]
                     if key[0] == '@':
-                        key = key[1:]
-                        if key in conf_dict_now:   # the same group
+                        tmpkey = key[1:]
+                        if tmpkey in conf_dict_now:   # the same group
                             # pylint: disable=E1101
+                            # conf_dict_now[tmpkey] = ConfDict()
+                            if tmpkey != last_list_key:
+                                conf_layer_stack[-1] = conf_dict_now[tmpkey]
                             conf_layer_stack[-1].append_ex(
                                 ConfDict(), comments
                             )
@@ -695,10 +702,11 @@ class Configure2Dict(object):  # pylint: disable=R0903
                         else:  # different group
                             conflist = ConfList()
                             conflist.append(ConfDict())
-                            conf_dict_now.set_ex(key, conflist, comments)
-                            # conf_dict_now.set_ex(key, conflist, [])
+                            conf_dict_now.set_ex(tmpkey, conflist, comments)
+                            # conf_dict_now.set_ex(tmpkey, conflist, [])
                             comments = []
-                            conf_layer_stack[-1] = conf_dict_now[key]
+                            conf_layer_stack[-1] = conf_dict_now[tmpkey]
+                        last_list_key = tmpkey
                     else:
                         conf_dict_now.set_ex(key, ConfDict(), comments)
                         comments = []
@@ -708,15 +716,16 @@ class Configure2Dict(object):  # pylint: disable=R0903
                     while isinstance(conf_dict_now, list):
                         conf_dict_now = conf_dict_now[-1]
                     if key[0] == '@':
-                        key = key[1:]
-                        if key in conf_dict_now:  # the same group
-                            conf_layer_stack[level - 1].append(ConfDict())
+                        tmpkey = key[1:]
+                        if tmpkey in conf_dict_now:  # the same group
+                            tmpdict = ConfDict()
+                            conf_layer_stack[level - 1].append(tmpdict)
                         else:  # different group
                             # comments
                             conflist = ConfList()
                             conflist.append(ConfDict())
-                            conf_dict_now.set_ex(key, conflist, [])
-                            conf_layer_stack[level - 1] = conf_dict_now[key]
+                            conf_dict_now.set_ex(tmpkey, conflist, [])
+                            conf_layer_stack[level - 1] = conf_dict_now[tmpkey]
                     else:
                         conf_dict_now.set_ex(key, ConfDict(), comments)
                         comments = []
@@ -1118,12 +1127,17 @@ class HdfsXmlConf(object):
             name = pro.getElementsByTagName('name')[0].childNodes[0].nodeValue
             valuenode = pro.getElementsByTagName('value')[0]
             if name in tmpdict:
+                need_modify = False
                 if valuenode.firstChild is None:
                     if tmpdict[name]['value'] is not None:
                         valuenode.appendChild(dom.createTextNode(''))
-                valuenode.firstChild.replaceWholeText(
-                    tmpdict[name]['value']
-                )
+                        need_modify = True
+                else:
+                    need_modify = True
+                if need_modify:
+                    valuenode.firstChild.replaceWholeText(
+                        tmpdict[name]['value']
+                    )
                 del tmpdict[name]
             else:
                 parent = pro.parentNode
