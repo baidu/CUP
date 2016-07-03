@@ -66,6 +66,18 @@ class Device(object):
         """
         return pickle.dumps(self._dict_info)
 
+    def deserilize(self, binary):
+        """
+        deserilize it from binary
+        """
+        try:
+            self._dict_info = pickle.loads(binary)
+            return True
+        # pylint: disable=W0703
+        except Exception as error:
+            log.warn('deserilize linux device error, msg:%s' % error)
+            return False
+
     def get_dict_resinfo(self):
         """
         get dict of resource info
@@ -116,6 +128,7 @@ class LinuxHost(Device):
             self._dict_info['cpu_idle'] = cpuinfo.idle
             # pylint: disable=E1101
             self._dict_info['mem_inuse'] = meminfo.total - meminfo.free
+            self._dict_info['mem_total'] = meminfo.total
 
     def set_linux_res_bydict(self, info_dict):
         """
@@ -230,8 +243,6 @@ class HeartbeatService(object):
         activate a device in HeartBeat Service.
         Add one if it's new to hbs.
         """
-        device.set_last_healthy()
-        self._devices[key] = device
 
     def adjust_judge_lost_time(self, time_in_sec):
         """
@@ -245,7 +256,7 @@ class HeartbeatService(object):
         self._judge_lost = time_in_sec
         return
 
-    def refresh(self, key, resource=None):
+    def refresh(self, key, device_obj=None):
         """
         :param key:
             refresh the device by key
@@ -254,22 +265,29 @@ class HeartbeatService(object):
             else, fresh the last_healthy time of the device
         """
         assert type(key) == str, 'needs to be a str'
-        device = self._devices.get(key)
-        if device is None:
-            log.warn('Device not found, key:%s' % key)
-            return False
-        device.set_last_healthy()
-        if resource is not None:
-            device.refresh_resouce(resource)
-            log.debug(
-                'Heartbeat: Device %s refreshed with resource. '
+        got_device = self._devices.get(key)
+        if got_device is None:
+            log.info(
+                'New device found:%s. To add it into heartbeat service'
+                % key
             )
+            new_device = Device(key)
+            new_device.set_last_healthy()
+            self._devices[key] = new_device
         else:
-            log.debug(
-                'Heartbeat: Device %s only refreshed with heartbeat. '
-                'Resource not refreshed'
-            )
-        return True
+            if device_obj is None:
+                got_device.set_last_healthy()
+                log.info(
+                    'Heartbeat: Device %s only refreshed with heartbeat. '
+                    'Resource not refreshed' % key
+                )
+            else:
+                log.info(
+                    'Heartbeat: Device %s refreshed with resource. '
+                    % key
+                )
+                self._devices[key] = device_obj
+                device_obj.set_last_healthy()
 
     def get_lost(self):
         """
@@ -314,7 +332,8 @@ class HeartbeatService(object):
             try:
                 tmp_dict = {}
                 tmp_dict['key'] = dkey
-                tmp_dict['last_healthy'] = self._devices[dkey].get_last_healthy()
+                tmp_dict['last_healthy'] = self._devices[dkey].get_last_healthy(
+                )
                 del self._lost_devices[dkey]
                 log.info('end - empty_lost devices')
                 info_dict['devices']['lost'].append(tmp_dict)

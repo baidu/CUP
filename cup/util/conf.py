@@ -629,13 +629,16 @@ class Configure2Dict(object):  # pylint: disable=R0903
     # [groupA] level 2
     #     [.@groupB] level 3
     #         [..@groupC] level 4
+
+
     # pylint: disable=R0912, R0915
-    def get_dict(self):
+    def get_dict(self, ignore_error=False):
         """
-        get conf_dict which you can use to access conf info
+        get conf_dict which you can use to access conf info. If ignore_error
+         == True, CUP will parse the conf file without catching exceptions
         """
         comments = []
-        self._get_input_lines()
+        self._get_input_lines(ignore_error)
         conf_layer_stack = [self._dict]
         num = 0
         length = len(self._lines)
@@ -648,21 +651,16 @@ class Configure2Dict(object):  # pylint: disable=R0903
             conf_dict_now = conf_layer_stack[-1]  # conf_dict_now is current
             while isinstance(conf_dict_now, list):  # [], find the working dict
                 conf_dict_now = conf_dict_now[-1]
-            # line with (key : value)
-            # or line with (@key : value)
             if isinstance(line, tuple):  # key value
                 num, comments = self._handle_key_value_tuple(
                     num, conf_dict_now, comments
                 )
             else:
                 key = line.lstrip('.')
-                # determine the level of the key
-                level = len(line) - len(key) + 2
-                if key == 'GLOBAL':
-                    # GLOBAL is the 1st level
+                level = len(line) - len(key) + 2  # determine the level
+                if key == 'GLOBAL': # GLOBAL is the 1st level
                     level = 1
                     conf_layer_stack = [self._dict]
-
                 # [Group1.SubGroup1] sub-key: Value
                 # if sth below level cannot be computed as len(line) - len(key)
                 elif '.' in key:  # conf_layer_stack back to [self._dict]
@@ -721,7 +719,6 @@ class Configure2Dict(object):  # pylint: disable=R0903
                             tmpdict = ConfDict()
                             conf_layer_stack[level - 1].append(tmpdict)
                         else:  # different group
-                            # comments
                             conflist = ConfList()
                             conflist.append(ConfDict())
                             conf_dict_now.set_ex(tmpkey, conflist, [])
@@ -753,8 +750,41 @@ class Configure2Dict(object):  # pylint: disable=R0903
         for groupkey in key.split('.'):
             self._check_key_valid(groupkey)
 
+    def _handle_include_syntx(self, line, ignore_error):
+        """handle $include file.conf """
+        if ignore_error:
+            try:
+                include_file = line.split()[-1].strip('"')
+                include_dict = Configure2Dict(include_file).get_dict(
+                    ignore_error
+                )
+                if '$include' not in self._dict:
+                    newdict = ConfDict()
+                    self._dict.set_ex('$include', newdict, '')
+                    newdict.set_ex(
+                        include_file, include_dict, ''
+                    )
+            # pylint: disable=W0703
+            # Does not know exact exception type
+            except Exception:
+                cup.log.warn(
+                    'failed to handle include file, line:{0}'.format(
+                        line)
+                )
+        else:
+            include_file = line.split()[-1].strip('"')
+            include_dict = Configure2Dict(include_file).get_dict(
+                ignore_error
+            )
+            if '$include' not in self._dict:
+                newdict = ConfDict()
+                self._dict.set_ex('$include', newdict, '')
+                newdict.set_ex(
+                    include_file, include_dict, ''
+                )
+
     # Read in the file content, with format check
-    def _get_input_lines(self):  # pylint: disable=R0912,R0915
+    def _get_input_lines(self, ignore_error):  # pylint: disable=R0912,R0915
         """
         read conf lines
         """
@@ -770,6 +800,10 @@ class Configure2Dict(object):  # pylint: disable=R0903
                 line = '__comments__:%s' % '\n'
             if line.startswith('#'):
                 line = '__comments__:%s\n' % line
+                continue
+            if line.startswith('$include'):
+                self._handle_include_syntx(line, ignore_error)
+                continue
             # if it's a section
             if line.startswith('['):
                 if not line.endswith(']'):
@@ -779,7 +813,8 @@ class Configure2Dict(object):  # pylint: disable=R0903
                 self._check_groupkey_valid(key)  # check if key is valid
                 self._lines.append(line)
                 continue
-            key, value = line.split(':', 1)
+            # key, value = line.split(':', 1)
+            key, value = line.split(self._separator, 1)
             key = key.strip()
             value = value.strip(' \t')
             # if remove_comments is True, delete comments in value.
@@ -791,44 +826,47 @@ class Configure2Dict(object):  # pylint: disable=R0903
             else:
                 if key != '__comments__':
                     value = self._strip_value(value)
-            tmp_value = ''
-            # reserve escape in the value string
-            escape = False
-            for single in value:
-                if escape:
-                    if single == '0':
-                        tmp_value += '\0'
-                    elif single == 'n':
-                        tmp_value += '\n'
-                    elif single == 'r':
-                        tmp_value += '\r'
-                    elif single == 't':
-                        tmp_value += '\t'
-                    elif single == 'v':
-                        tmp_value += '\v'
-                    elif single == 'a':
-                        tmp_value += '\a'
-                    elif single == 'b':
-                        tmp_value += '\b'
-                    elif single == 'f':
-                        tmp_value += '\f'
-                    elif single == "'":
-                        tmp_value += "'"
-                    elif single == '"':
-                        tmp_value += '"'
+            if value.startswith('"'):
+                tmp_value = ''
+                # reserve escape in the value string
+                escape = False
+                for single in value:
+                    if escape:
+                        if single == '0':
+                            tmp_value += '\0'
+                        elif single == 'n':
+                            tmp_value += '\n'
+                        elif single == 'r':
+                            tmp_value += '\r'
+                        elif single == 't':
+                            tmp_value += '\t'
+                        elif single == 'v':
+                            tmp_value += '\v'
+                        elif single == 'a':
+                            tmp_value += '\a'
+                        elif single == 'b':
+                            tmp_value += '\b'
+                        elif single == 'd':
+                            tmp_value += r'\d'
+                        elif single == 'f':
+                            tmp_value += '\f'
+                        elif single == "'":
+                            tmp_value += "'"
+                        elif single == '"':
+                            tmp_value += '"'
+                        elif single == '\\':
+                            tmp_value += '\\'
+                        else:
+                            # raise ValueFormatError(line)
+                            pass
+                        escape = False
                     elif single == '\\':
-                        tmp_value += '\\'
+                        escape = True
                     else:
-                        # raise ValueFormatError(line)
-                        pass
-                    escape = False
-                elif single == '\\':
-                    escape = True
-                else:
-                    tmp_value += single
-            if escape:
-                raise ValueFormatError(line)
-            value = tmp_value
+                        tmp_value += single
+                if escape:
+                    raise ValueFormatError(line)
+                value = tmp_value
             self._lines.append((key, value))
         fhanle.close()
 
@@ -841,16 +879,15 @@ class Dict2Configure(object):
     ##
     # @param dict the conf dict, make sure the type format is right
     #
-    def __init__(self, conf_dict):
+    def __init__(self, conf_dict, separator=':'):
         self._dict = None
         self.set_dict(conf_dict)
         self._level = 0
         self._str = ''
+        self._separator = separator
 
-    # The separator between a field and its value
-    @classmethod
-    def _get_field_value_sep(cls):
-        return ':'
+    def _get_field_value_sep(self):
+        return self._separator
 
     # The separator between each line
     @classmethod
@@ -887,7 +924,7 @@ class Dict2Configure(object):
     # pylint: disable=R0911
     @classmethod
     def _comp_write_keys(cls, valuex, valuey):
-        _py_type = [bool, int, float]
+        _py_type = [bool, int, float, str, unicode]
 
         if type(valuex) == type(valuey):
             return 0
@@ -897,7 +934,7 @@ class Dict2Configure(object):
                 return -1
 
         for py_type in _py_type:
-            if isinstance(valuey, str):
+            if isinstance(valuey, py_type):
                 return 1
 
         if isinstance(valuex, list) and isinstance(valuey, list):
@@ -932,7 +969,16 @@ class Dict2Configure(object):
                     _dict[x], _dict[y]
                 )
             )
+        if '$include' in order_keys:
+            for filepath in _dict['$include']:
+                self._str += '$include "{0}"{1}'.format(
+                    filepath, self._get_linesep()
+                )
+            order_keys.remove('$include')
         for key in order_keys:
+            if key == '$include':
+                cup.log.warn('cup.conf does not support $include writeback yet')
+                continue
             try:
                 item = _dict.get_ex(key)
                 value = item[0]
@@ -1189,9 +1235,11 @@ def _main_hanle():
     print json.dumps(dictafs, sort_keys=True, indent=4)
 
 if __name__ == "__main__":
+    pass
     # conf = CConf(g_prodUnitRuntime + 'Unitserver0/conf/','UnitServer.conf')
     # conf.update({'MasterPort':'1234','ProxyPortDelta':'0'})
     # conf.addAfterKeywordIfNoexist(
     #     'SnapshotPatchLimit', ('DelServerPerHourLimit', '99')
     # )
-    _main_hanle()
+
+# vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

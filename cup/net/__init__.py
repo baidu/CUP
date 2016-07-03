@@ -131,14 +131,13 @@ def set_sock_reusable(sock, resuable=True):
     """
     设置socket的端口是否可被重复使用， 默认resuable==True
     """
+    value = 0
     if resuable:
         value = 1
-    else:
-        value = 0
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, value)
 
 
-def set_sock_linger(sock):
+def set_sock_linger(sock, l_onoff=1, l_linger=0):
     """
     关闭socket的linger参数。
     实际产生的效果如下:
@@ -150,8 +149,8 @@ def set_sock_linger(sock):
             struct.pack('ii', 0, 0)
         )
     """
-    l_onoff = 0
-    l_linger = 0
+    # l_onoff = 1
+    # l_linger = 0
     sock.setsockopt(
         socket.SOL_SOCKET, socket.SO_LINGER, struct.pack(
             'ii', l_onoff, l_linger

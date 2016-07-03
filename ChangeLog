@@ -1,16 +1,3 @@
-<<<<<<< HEAD
-Version: 1.4.1.0
- - Under development: 
-   * autosleep
-   * hdfs/ftp operation
-   * unittest assert_log_regex assert_regex
-
- - cup.bidu
-	* [Bug] sms cannot handle \n as line separator
- - cup.log
-	* [Enhancement] change check existence of logfile to try - except.
-
-=======
 Version: 1.4.2.0
 	* [Bug] oper.is_proc_exist. fix a bug while check proc exist
 	* [New] Add cup.services.executor. Exec and delay_exec service
@@ -34,7 +21,6 @@ Version: 1.4.1.0 - [not existent on github.com]
 	* [Bug] cup.util.conf - A sort method bug
 	* [Bug] sms cannot handle \n as line separator
 	
->>>>>>> origin/master
 Version: 1.2.0
  - unittest  
 	* [New] Add assert_not_eq

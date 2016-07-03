@@ -9,17 +9,13 @@
 :authors:
     Guannan Ma maguannan@baidu.com @mythmgn
 :create_date:
-    2014/04/05 17:23:06
+    [% date('%c') %]
 :modify_date:
 
 :description:
 
 """
-from cup.thirdp import pymysql
-
-# pylint: disable=W0104
-# import pymysql as MySQLdb
-pymysql.install_as_MySQLdb
-
+from . import pymysql
+pymysql.install_as_MySQLdb()
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent
