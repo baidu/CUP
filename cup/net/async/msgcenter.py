@@ -17,6 +17,7 @@
 """
 
 import time
+import socket
 import threading
 import abc
 
@@ -52,20 +53,24 @@ class IMessageCenter(object):
         """
         setup the message center
         """
-        self._bind_port()
+        try:
+            self._bind_port()
+            return True
+        except socket.error as error:
+            cup.log.error('bind error:{0}'.format(error))
+            return False
 
     def dump_stat(self):
         """
         dump message center class
         """
         cup.log.info('dump_stat service started')
-        while(self._stop is not True):
-            time.sleep(10)
+        while not self._stop:
+            time.sleep(30)
             self._stat_cond.acquire()
             self._conn_mgr.dump_stats()
             self._stat_cond.wait(self._stat_intvl)
             self._stat_cond.release()
-
         cup.log.info('dump_stat service stopped')
 
     def post_msg(self, msg):
@@ -85,7 +90,8 @@ class IMessageCenter(object):
         """
         default handle for msgcenter
         """
-        cup.log.debug('Get a msg that other cannot handle')
+        cup.log.warn('Get a msg that other cannot handle. Will skip it')
+        del msg
 
     def _run_conn_manager(self):
         self._conn_mgr.poll()
@@ -106,20 +112,29 @@ class IMessageCenter(object):
         self._stat_cond.acquire()
         self._stat_cond.notify()
         self._stat_cond.release()
-        cup.log.info('msg center stopped')
+        cup.log.info('msgcenter stopped')
 
     def run(self):
         """
         run the msgcenter
         """
+        if not self.setup():
+            return False
         thd_conn_man = threading.Thread(target=self._run_conn_manager, args=())
         thd_conn_man.start()
         thd_stat = threading.Thread(target=self.dump_stat, args=())
         thd_stat.start()
+        ind = 0
         while not self._stop:
             msg = self._conn_mgr.get_recv_msg()
+            ind += 1
+            if ind >= 10000:
+                recv_queue = self._conn_mgr.get_recv_queue()
+                cup.log.info('recv queue size:{0}'.format(recv_queue.qsize()))
+                ind = 0
             if msg is not None:
                 self.handle(msg)
-                del msg
+            msg = None
+        return True
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

@@ -19,9 +19,9 @@ import threading
 
 # from cup import decorators
 
-SMALL_BLOCK_SIZE =  1024 # kb
-MEDIUM_BLOCK_SIZE = 8192   # 8K
-LARGE_BLOCK_SIZE = 1 * 1024 * 1024  # 1M
+SMALL_BLOCK_SIZE =  4096 # kb
+MEDIUM_BLOCK_SIZE = (128 + 4) * 1024   # 8K
+LARGE_BLOCK_SIZE = 1 * 1024 * 1024 + SMALL_BLOCK_SIZE  # 1M
 
 SMALL_BLOCK = 0
 MEDIUM_BLOCK = 1
@@ -56,7 +56,7 @@ class Buffer(object):
                 loop_size = self._block_size
             else:
                 loop_size = length - ind
-            self._items[item_ind] = content[ind: loop_size]
+            self._items[item_ind].extend(content[ind: loop_size])
             item_ind += 1
             ind += loop_size
         self._length = length
@@ -64,14 +64,16 @@ class Buffer(object):
 
     def get(self):
         """
-        return (True, content, length) if succeed
+        return (True, (content, block_size, total_length)) if succeed
 
         Otherwise, return (False, err_msg, None)
         """
+        rev = None
         if self._length != -1:
-            return (True, self._items, self._length)
+            rev = (True, (self._items, self._block_size, self._length))
         else:
-            return (False, 'not initialized yet', None)
+            rev = (False, ('not initialized yet', self._block_size, None))
+        return rev
 
     def get_uniq_id(self):
         """
@@ -92,7 +94,7 @@ class BufferPool(object):
     buffer pool class which will ease memory fragment
     """
     def __init__(
-        self, block_size, pool_size, extendable=False
+        self, pool_size, block_size=MEDIUM_BLOCK_SIZE, extendable=False
     ):
         if block_size not in (
             SMALL_BLOCK_SIZE, MEDIUM_BLOCK_SIZE, LARGE_BLOCK_SIZE

@@ -1,8 +1,15 @@
-Version: 1.5.1
+Version: 1.5.3 - Starting from 2016.6 to XXX
+	* [New] cup.util.conf - support $include "conf_file" syntax [write/read]
+	* [Enhancement] cup.net.async - enhance network write/read speed
+	* [Improvement] - Improve cup.log performance
+
+Version: 1.5.1 && 1.5.2
 	* [New] cup.log - add xxx_if 
 	* [New] cup.thirdp - replace MySQLdb with pymysql. 
-		Use can still use "from cup.thirdp import MySQLdb"
-	* [Bug] HdfsXmlConf bug. Configure2Dict disorder bug
+		* from cup.thirdp import pymysql
+		* import MySQLdb
+	* [New] cup.util.generator - get_random_str
+	* [Bug] cup.util.conf - bug fix
 
 Version: 1.5.0
 	* [New] cup.jenkinslib - add jenkins lib with which you can operate on jenkins jobs

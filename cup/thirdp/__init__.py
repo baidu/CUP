@@ -11,6 +11,10 @@ import sys
 import platform
 from cup import version
 
+sys.path.insert(
+    0, os.path.dirname(os.path.abspath(__file__)) + '/'
+)
+
 # pylint:disable=R0911
 def _check_if_import_scientistlib():
     # Only CUP 1.4.0  support numpy scipy.......

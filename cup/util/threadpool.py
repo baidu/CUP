@@ -319,14 +319,15 @@ class ThreadPool(object):
         stat['thread_num'] = len(self._threads)
         return stat
 
-    def dump_stats(self):
+    def dump_stats(self, print_stdout=False):
         """
         打印当前threadpool的状态信息到log 和stdout
         其中状态信息来自于get_stats函数
         """
         stat = self.get_stats()
-        print stat
-        cup.log.info('Threadpool stat: %s' % stat)
+        if print_stdout:
+            print stat
+        cup.log.info('ThreadPool Stat %s: %s' % (self._name, stat))
         cup.log.debug('queue: %s' % self._jobqueue.queue)
         cup.log.debug('waiters: %s' % self._waiters)
         cup.log.debug('workers: %s' % self._working)

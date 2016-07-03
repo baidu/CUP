@@ -130,7 +130,7 @@ class SmtpMailer(object):  # pylint: disable=R0903
     _COMMA_SPLITTER = ','
 
     def __init__(
-        self, sender, server='mail2-in.baidu.com', port=25, is_html=False
+        self, sender, server, port=25, is_html=False
     ):
         """
         """

@@ -19,6 +19,7 @@
 import json
 
 import cup
+from cup import log
 from cup.util import misc
 from cup.net.async import common
 
@@ -114,7 +115,7 @@ class CNetMsg(object):
     """
 
     # length 8
-    MSG_SIGN = r'SAGIT0\1'
+    MSG_SIGN = 'CUP012-3'
 
     _ORDER = [
         'head', 'flag', 'len', 'from', 'to', 'type', 'uniq_id', 'body'
@@ -144,14 +145,10 @@ class CNetMsg(object):
         self._is_postmsg = is_postmsg
         self._need_head = False
         self._data = {}
-
-
         self._readindex = 0
         self._writeindex = 0
         self._msg_finish = False
-
         self._context = None
-
         self._msglen = None
         self._bodylen = None
         self._type = None
@@ -159,8 +156,16 @@ class CNetMsg(object):
         self._uniqid = None
         self._fromaddr = None
         self._toaddr = None
+        self._dumpdata = None
 
-        self._dumpdata = ''
+    def __del__(self):
+        """del the msg"""
+        if 'body' in self._data:
+            del self._data['body']
+        if self._data is not None:
+            del self._data
+        if self._dumpdata is not None:
+            del self._dumpdata
 
     def get_order_counts(self):
         """
@@ -174,6 +179,13 @@ class CNetMsg(object):
             i = 1
         else:
             i = 0
+        log.debug('msg index:{0}'.format(
+            index)
+        )
+        log.debug('msg index type:{0}'.format(
+            self._ORDER[index])
+        )
+
         while ind >= 0:
             ind -= self._ORDER_BYTES[i]
             if ind > 0:
@@ -212,17 +224,17 @@ class CNetMsg(object):
             b_ind += 1
         return num
 
-    # TODO Check if the msg is valid especially the first one
-    # maguannan $2015.1.1$
     def push_data(self, data):
         """
-        push data into the msg
+        push data into the msg. Return pushed length.
+
+        Return -1 if we should shutdown the socket channel.
         """
         if self._msg_finish:
-            cup.log.warn('The CNetMsg has already been pushed enough data')
+            log.warn('The CNetMsg has already been pushed enough data')
             return 0
         if len(data) == 0:
-            cup.log.warn(
+            log.warn(
                 'You just pushed into the msg with a zero-length data'
             )
             return 0
@@ -230,42 +242,44 @@ class CNetMsg(object):
         data_ind = 0
         data_max = len(data)
         order, offsite = self._get_msg_order_ind(self._readindex)
-        msg_type = self._ORDER[order]
+        data_key = self._ORDER[order]
         while sign:
             msg_data_loop_end = False
-            # One loop handle one msg_type until there all the data is handled.
+            # One loop handle one data_key until there all the data is handled.
             try:
-                self._data[msg_type]
+                self._data[data_key]
             except KeyError:
-                self._data[msg_type] = ''
+                self._data[data_key] = ''
             loop_data_max = (
-                self._ORDER_BYTES[order] - len(self._data[msg_type])
+                self._ORDER_BYTES[order] - len(self._data[data_key])
             )
             if (data_max - data_ind) >= loop_data_max:
                 # can fill up the msg
-                self._data[msg_type] += (
+                self._data[data_key] += (
                     data[data_ind: loop_data_max + data_ind]
                 )
                 data_ind += loop_data_max
                 msg_data_loop_end = True
                 self._readindex += loop_data_max
-                if msg_type != 'body':
-                    cup.log.debug(
-                        'msg_type:%s full filled. data:%s' % (
-                            msg_type, self._data[msg_type]
-                        )
+                if data_key != 'body':
+                    log.debug(
+                        'data_key {0} full filled'.format(data_key)
                     )
+                    if data_key == 'head':
+                        if self._data[data_key] != self.MSG_SIGN:
+                            return -1
                 else:
-                    cup.log.debug('body_len:%d' % len(self._data['body']))
+                    pass
+                    # log.debug('body_len:%d' % len(self._data['body']))
             else:
                 # cannot fill up the msg in this round
                 sign = False
                 push_bytes = data_max - data_ind
-                self._data[msg_type] += data[data_ind: data_max]
+                self._data[data_key] += data[data_ind: data_max]
                 self._readindex += push_bytes
                 data_ind += push_bytes
 
-            if (msg_type == 'len') and (msg_data_loop_end):
+            if (data_key == 'len') and (msg_data_loop_end):
                 # set up the length of the body
                 total_len = self._convert_bytes2uint(self._data['len'])
                 if self._need_head:
@@ -274,18 +288,15 @@ class CNetMsg(object):
                     self._ORDER_BYTES[7] = (
                         total_len - self._SIZE_EXCEPT_HEAD_BODY
                     )
-
-                cup.log.debug('total len %d' % total_len)
-
+                log.debug('total len %d' % total_len)
             if msg_data_loop_end and (order == self._ORDER_COUNTS - 1):
                 self._msg_finish = True
                 sign = False
-                cup.log.debug('congratulations. This msg has been fullfilled')
+                log.debug('congratulations. This msg has been fullfilled')
             elif msg_data_loop_end and order < self._ORDER_COUNTS:
                 order += 1
-                msg_type = self._ORDER[order]
-                cup.log.debug('This round has finished')
-
+                data_key = self._ORDER[order]
+                log.debug('This round has finished')
         return data_ind
 
     def _addr2pack(self, ip_port, stub_future):
@@ -313,7 +324,7 @@ class CNetMsg(object):
         self._need_head = b_need
         if self._is_postmsg and self._need_head:
             self._data['head'] = self.MSG_SIGN
-        cup.log.debug('to set msg need head:%s' % str(self._need_head))
+        log.debug('to set msg need head:%s' % str(self._need_head))
 
     @classmethod
     def _check_addr(cls, ip_port, stub_future):
@@ -337,7 +348,7 @@ class CNetMsg(object):
             if i == 0 and not self._need_head:
                 continue
             tempstr += self._data[self._ORDER[i]]
-        self._dumpdata = tempstr + self._data['body']
+        self._dumpdata = '{0}{1}'.format(tempstr, self._data['body'])
 
     def set_from_addr(self, ip_port, stub_future):
         """

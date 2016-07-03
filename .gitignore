@@ -1,7 +1,4 @@
-
 # matach all python pyc files
 *.pyc
-<<<<<<< HEAD
 .svn
-=======
->>>>>>> origin/master
+cup/bidu

@@ -32,6 +32,8 @@ Singleton类。初始化需要传入一个用来生成字符集的string.
 
 """
 import os
+import random
+import string
 import threading
 
 import cup
@@ -81,5 +83,10 @@ class CGeneratorMan(object):
         self._nind += 1
         self._nlock.release()
         return temp
+
+    @classmethod
+    def get_random_str(cls, length):
+        """get random str by length"""
+        return ''.join(random.choice(string.lowercase) for i in range(length))
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

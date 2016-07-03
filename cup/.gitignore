@@ -1,6 +1,0 @@
-
-# matach all python pyc files
-*.pyc
-bidu
-MySQLdb
-_mysql*

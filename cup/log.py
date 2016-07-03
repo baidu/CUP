@@ -54,6 +54,14 @@ CRITICAL = logging.CRITICAL
 G_INITED_LOGGER = []
 
 
+# pylint:disable=C0103
+info = logging.info
+warn = logging.warn
+error = logging.error
+debug = logging.debug
+critical = logging.critical
+
+
 class _Singleton(object):  # pylint: disable=R0903
     """
     Singleton你的类.
@@ -118,6 +126,7 @@ class _LoggerMan(object):
     def _reset_logger(self, logger):
         del self._pylogger
         self._pylogger = logger
+        logging.root = logger
 
     def is_initalized(self):
         """
@@ -146,7 +155,8 @@ class _LoggerMan(object):
         self._maxsize = maxsize
         # '%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(message)s'
         formatter = logging.Formatter(
-            '%(levelname)s: %(asctime)s %(message)s'
+            '%(levelname)s: %(asctime)s * '
+            '[%(process)d:%(thread)d] [%(filename)s:%(lineno)s] %(message)s'
         )
         if bprint_console:
             streamhandler = logging.StreamHandler()
@@ -254,7 +264,8 @@ def init_comlog(
     """
     loggerman = _LoggerMan()
     if loggerman.is_initalized() is False:
-        loggerman._setlogger(logging.getLogger(loggername))
+        # loggerman._setlogger(logging.getLogger(loggername))
+        loggerman._setlogger(logging.getLogger())
         if os.path.exists(logfile) is False:
             if platforms.is_linux():
                 os.mknod(logfile)
@@ -329,78 +340,78 @@ def _fail_handle(msg, e):
     print '%s\nerror:%s' % (msg, e)
 
 
-def info(msg, back_trace_len=0):
-    """
-    logging.INFO的日志打印
-    """
-    try:
-        msg = _log_file_func_info(msg, back_trace_len)
-        loggerman = _LoggerMan()
-        loggerman._getlogger().info(msg)
-    except err.LoggerException:
-        return
-    except Exception as e:
-        _fail_handle(msg, e)
-
-
-def debug(msg, back_trace_len=0):
-    """
-    :param msg:
-        logging.DEBUG级别的日志打印。
-    :param back_trace_len:
-        为扩展预留的参数， 正常使用可忽略。
-
-    """
-    try:
-        msg = _log_file_func_info(msg, back_trace_len)
-        loggerman = _LoggerMan()
-        loggerman._getlogger().debug(msg)
-    except err.LoggerException:
-        return
-    except Exception as e:
-        _fail_handle(msg, e)
-
-
-def warn(msg, back_trace_len=0):
-    """
-    logging.WARN级别的日志打印
-    """
-    try:
-        msg = _log_file_func_info(msg, back_trace_len)
-        loggerman = _LoggerMan()
-        loggerman._getlogger().warn(msg)
-    except err.LoggerException:
-        return
-    except Exception as e:
-        _fail_handle(msg, e)
-
-
-def error(msg, back_trace_len=0):
-    """
-    logging.ERROR级别的日志打印
-    """
-    try:
-        msg = _log_file_func_info(msg, back_trace_len)
-        loggerman = _LoggerMan()
-        loggerman._getlogger().error(msg)
-    except err.LoggerException:
-        return
-    except Exception as error:
-        _fail_handle(msg, error)
-
-
-def critical(msg, back_trace_len=0):
-    """
-    logging.CRITICAL级别的日志打印
-    """
-    try:
-        msg = _log_file_func_info(msg, back_trace_len)
-        loggerman = _LoggerMan()
-        loggerman._getlogger().critical(msg)
-    except err.LoggerException:
-        return
-    except Exception as e:
-        _fail_handle(msg, e)
+# def info(msg, back_trace_len=0):
+#     """
+#     logging.INFO的日志打印
+#     """
+#     try:
+#         msg = _log_file_func_info(msg, back_trace_len)
+#         loggerman = _LoggerMan()
+#         loggerman._getlogger().info(msg)
+#     except err.LoggerException:
+#         return
+#     except Exception as e:
+#         _fail_handle(msg, e)
+#
+#
+# def debug(msg, back_trace_len=0):
+#     """
+#     :param msg:
+#         logging.DEBUG级别的日志打印。
+#     :param back_trace_len:
+#         为扩展预留的参数， 正常使用可忽略。
+#
+#     """
+#     try:
+#         msg = _log_file_func_info(msg, back_trace_len)
+#         loggerman = _LoggerMan()
+#         loggerman._getlogger().debug(msg)
+#     except err.LoggerException:
+#         return
+#     except Exception as e:
+#         _fail_handle(msg, e)
+#
+#
+# def warn(msg, back_trace_len=0):
+#     """
+#     logging.WARN级别的日志打印
+#     """
+#     try:
+#         msg = _log_file_func_info(msg, back_trace_len)
+#         loggerman = _LoggerMan()
+#         loggerman._getlogger().warn(msg)
+#     except err.LoggerException:
+#         return
+#     except Exception as e:
+#         _fail_handle(msg, e)
+#
+#
+# def error(msg, back_trace_len=0):
+#     """
+#     logging.ERROR级别的日志打印
+#     """
+#     try:
+#         msg = _log_file_func_info(msg, back_trace_len)
+#         loggerman = _LoggerMan()
+#         loggerman._getlogger().error(msg)
+#     except err.LoggerException:
+#         return
+#     except Exception as error:
+#         _fail_handle(msg, error)
+#
+#
+# def critical(msg, back_trace_len=0):
+#     """
+#     logging.CRITICAL级别的日志打印
+#     """
+#     try:
+#         msg = _log_file_func_info(msg, back_trace_len)
+#         loggerman = _LoggerMan()
+#         loggerman._getlogger().critical(msg)
+#     except err.LoggerException:
+#         return
+#     except Exception as e:
+#         _fail_handle(msg, e)
 
 
 def setloglevel(logginglevel):
@@ -494,14 +505,11 @@ if __name__ == '__main__':
     )
     cup.log.info('test info')
     cup.log.debug('test debug')
-    cup.log.debug('中文')
+    cup.log.info('中文'.decode('utf8'))
     cup.log.reinit_comlog(
         're-test', cup.log.DEBUG, './re.test.log',
         cup.log.ROTATION, 102400000, False
     )
-    cup.log.info('re:test info')
-    cup.log.debug('re:test debug')
-    cup.log.debug('re:中文')
     cup.log.reinit_comlog(
         're-test', cup.log.DEBUG, './re.test.log',
         cup.log.ROTATION, 102400000, False
