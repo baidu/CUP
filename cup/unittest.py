@@ -12,9 +12,9 @@
 :create_date:
     2014
 :last_date:
-    2014
-:descrition:
-    Null
+    2016.7.6
+:changelog:
+    - 2016.7.6 Adjust cup.log.xxx func calls
 """
 
 import os
@@ -45,7 +45,7 @@ def _assert_bool(val, exp, errmsg=''):
     if (val is not exp):
         msg = 'got %s, expect %s\nUser ErrMsg: %s' % (val, exp, errmsg)
         try:
-            cup.log.critical(msg, 1)
+            cup.log.critical(msg)
         # pylint: disable=W0703
         except Exception:
             pass
@@ -83,7 +83,7 @@ def assert_eq(val, exp, errmsg=''):
     if (val != exp):
         msg = 'got %s, expect %s\nUser ErrMsg: %s' % (val, exp, errmsg)
         try:
-            cup.log.critical(msg, 1)
+            cup.log.critical(msg)
         # pylint: disable=W0703
         except Exception:
             pass
@@ -99,7 +99,7 @@ def assert_not_eq(val, exp, errmsg=''):
             val, errmsg
         )
         try:
-            cup.log.critical(msg, 1)
+            cup.log.critical(msg)
         # pylint: disable=W0703
         except Exception:
             pass
@@ -122,7 +122,7 @@ def assert_eq_one(val, array, errmsg=''):
             val, str_arr, errmsg
         )
         try:
-            cup.log.critical(msg, 1)
+            cup.log.critical(msg)
         # pylint: disable=W0703
         except Exception:
             pass
@@ -153,7 +153,7 @@ def assert_lt(val, exp, errmsg=''):
             val, exp, errmsg
         )
         try:
-            cup.log.critical(msg, 1)
+            cup.log.critical(msg)
         # pylint: disable=W0703
         except Exception:
             pass
@@ -170,7 +170,7 @@ def assert_gt(val, exp, errmsg=''):
             val, exp, errmsg
         )
         try:
-            cup.log.critical(msg, 1)
+            cup.log.critical(msg)
         except Exception:
             pass
         assert False, msg
@@ -184,7 +184,7 @@ def assert_ge(val, exp, errmsg=''):
         msg = 'got %s, expect greater than (or equal to) %s\n User ErrMsg:%s'\
             % (val, exp, errmsg)
         try:
-            cup.log.critical(msg, 1)
+            cup.log.critical(msg)
         # pylint: disable=W0703
         except Exception:
             pass
@@ -200,7 +200,7 @@ def assert_le(val, exp, errmsg=''):
             val, exp, errmsg
         )
         try:
-            cup.log.critical(msg, 1)
+            cup.log.critical(msg)
         # pylint: disable=W0703
         except Exception:
             pass
@@ -215,7 +215,7 @@ def assert_ne(val, exp, errmsg=''):
         msg = 'Expect non-equal, got two equal values %s:%s\nUser Errmsg: %s' \
             % (val, exp, errmsg)
         try:
-            cup.log.critical(msg, 1)
+            cup.log.critical(msg)
         # pylint: disable=W0703
         except Exception:
             pass
