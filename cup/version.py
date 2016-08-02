@@ -15,7 +15,7 @@
     2015.3.4
 """
 
-VERSION = '1.5.1'
+VERSION = '1.5.3'
 AUTHOR = 'nfs-qa@baidu.com'
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

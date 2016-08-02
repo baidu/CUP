@@ -31,6 +31,7 @@ import sys
 # import traceback
 
 import cup
+from cup import log
 from cup.util import context
 
 _CONTEXT_TRACKER = context.ContextTracker4Thread()
@@ -168,10 +169,10 @@ class ThreadPool(object):
             state_list.remove(worker_thread)
 
     def _log_err_context(self, context):
-        cup.log.warn(
+        log.warn(
             'Seems a call with context failed. See the context info'
         )
-        cup.log.warn(str(context))
+        log.warn(str(context))
 
     def _worker(self):
         """
@@ -195,18 +196,18 @@ class ThreadPool(object):
                     success = True
                 except Exception as error:
                     success = False
-                    cup.log.warn(
+                    log.warn(
                         'Func failed, func:%s, error_msg: %s'  %
                         (str(function), str(error))
                     )
                     if result_callback is None:
-                        cup.log.warn('This func does not have callback.')
+                        log.warn('This func does not have callback.')
                         _CONTEXT_TRACKER.call_with_context(
                             context, self._log_err_context, context
                         )
                         result = None
                     else:
-                        result = str(error)
+                        result = error
 
                 del function, args, kwargs
             # when out of  "with scope",
@@ -220,7 +221,7 @@ class ThreadPool(object):
                     )
                 except Exception as e:
                     # traceback.print_exc(file=sys.stderr)
-                    cup.log.warn(
+                    log.warn(
                         'result_callback func failed, callback func:%s,'
                         'err_msg:%s' % (str(result_callback), str(e))
                     )
@@ -327,9 +328,9 @@ class ThreadPool(object):
         stat = self.get_stats()
         if print_stdout:
             print stat
-        cup.log.info('ThreadPool Stat %s: %s' % (self._name, stat))
-        cup.log.debug('queue: %s' % self._jobqueue.queue)
-        cup.log.debug('waiters: %s' % self._waiters)
-        cup.log.debug('workers: %s' % self._working)
-        cup.log.debug('total: %s' % self._threads)
+        log.info('ThreadPool Stat %s: %s' % (self._name, stat))
+        log.debug('queue: %s' % self._jobqueue.queue)
+        log.debug('waiters: %s' % self._waiters)
+        log.debug('workers: %s' % self._working)
+        log.debug('total: %s' % self._threads)
         return stat

@@ -10,12 +10,13 @@
     Guannan Ma
 :create_date:
     2014
-:last_date:
-    2014
+:modify_date:
+    2016.7.21
 :descrition:
     network related module
 """
 
+import sys
 import socket
 import struct
 import warnings
@@ -37,7 +38,9 @@ __all__ = [
     'set_sock_reusable',
     'set_sock_linger',
     'set_sock_quickack',
-    'async'
+    'async',
+    'localport_free',
+    'port_listened'
 ]
 
 
@@ -169,5 +172,30 @@ def set_sock_quickack(sock):
     """
     sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
     sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_QUICKACK, 1)
+
+
+def localport_free(port, is_ipv6=False):
+    """judge if a port is used. IPV4, by default"""
+    return port_listened(get_local_hostname(), port, is_ipv6)
+
+
+def port_listened(host, port, is_ipv6=False):
+    """check if the port is being listened on the host"""
+    if is_ipv6:
+        raise NotImplementedError('ipv6 not supported yet')
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(1)
+    free = False
+    try:
+        result = sock.connect_ex((host, port))
+        if result == 0:
+            free = True
+    # pylint: disable=W0703
+    except Exception as err:
+        sys.stderr.write(err)
+        sys.stderr.flush()
+    finally:
+        sock.close()
+    return free
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent
