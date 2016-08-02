@@ -12,9 +12,9 @@
 :create_date:
     2014
 :last_date:
-    2016.7.6
-:changelog:
-    - 2016.7.6 Adjust cup.log.xxx func calls
+    2014
+:descrition:
+    Null
 """
 
 import os

@@ -1,7 +1,11 @@
 Version: 1.5.3 - Starting from 2016.6 to XXX
 	* [New] cup.util.conf - support $include "conf_file" syntax [write/read]
-	* [Enhancement] cup.net.async - enhance network write/read speed
+	* [New] port free check. Listened port probe.
+	* [Enhancement] cup.net.async - enhance network write/read speed. 
+		Example provided
 	* [Improvement] - Improve cup.log performance
+	* [Enhancement] cup.util.threadpool, callback function will receive
+		Exception object (param result) if it encounters error.
 
 Version: 1.5.1 && 1.5.2
 	* [New] cup.log - add xxx_if 
