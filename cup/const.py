@@ -8,10 +8,6 @@
 """
 :authors:
     Guannan Ma maguannan@baidu.com @mythmgn
-:create_date:
-    2015.09.07
-:modify_date:
-    2015.09.07
 :description:
     for const value
 """

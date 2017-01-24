@@ -1,4 +1,16 @@
-Version: 1.5.3 - Starting from 2016.6 to XXX
+Version: 1.5.5 - staring from 11.18 ~ 
+	* [Enhancement] debug method for executor
+	* [async] CNeedAckMsg & retry mechnism added. CAckMsg added
+
+Version: 1.5.4 - Starting from 2016.9 ~ 2016.11.11
+	* [Enhancement] generator supports staring point
+	* [Enhancement] catch exception socket.gaierror when it encounters network
+		instability
+	* [Bug] Set up splitter other thant colon in a Configure2Dict with blanks and comments 
+	* [Async] Support automatic msg retry
+	* [Async] Support ack msg
+
+Version: 1.5.3 - Starting from 2016.6 to 2016.8
 	* [New] cup.util.conf - support $include "conf_file" syntax [write/read]
 	* [New] port free check. Listened port probe.
 	* [Enhancement] cup.net.async - enhance network write/read speed. 

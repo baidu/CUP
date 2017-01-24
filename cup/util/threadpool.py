@@ -128,6 +128,7 @@ class ThreadPool(object):
         :param **kw:
             func函数需要的kwargs参数
         """
+        # log.info('add 1job[{0}]'.format(func))
         self.add_1job_with_callback(None, func, *args, **kwargs)
 
     def add_1job_with_callback(self, result_callback, func, *args, **kwargs):

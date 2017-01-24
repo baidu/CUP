@@ -11,7 +11,7 @@
 :create_date:
     2013
 :last_date:
-    2014
+    2016
 :descrition:
     **Guannan just made a wraper out of pexpect.**
     The original copyright belongs to the author of pexpect module.
@@ -43,14 +43,13 @@ def _do_expect_ex(passwd, command, timeout=100, b_print_stdout=True):
             pobj.sendline(passwd)
         ret = pobj.expect(pexpect.EOF)
     except pexpect.TIMEOUT:
-        print 'Connection timeout'
+        sys.stderr.write('Connection timeout\n')
         ret = 1
     except pexpect.EOF:
-        print 'Connection exit'
         pobj.close()
         ret = pobj.exitstatus
     except Exception as error:
-        print "Connection close", error
+        sys.stderr.write('Connection close, error:%s\n' % error)
         ret = -1
     ret = {
         'exitstatus': ret,

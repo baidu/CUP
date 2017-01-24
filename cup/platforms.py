@@ -9,10 +9,6 @@
 """
 :author:
     Guannan Ma maguannan@baidu.com @mythmgn
-:create_date:
-    2014
-:last_date:
-    2014
 :descrition:
     cross-platform functions related module
 """

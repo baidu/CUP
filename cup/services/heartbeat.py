@@ -8,10 +8,8 @@
 """
 :author:
     Guannan Ma maguannan@baidu.com @mythmgn
-:create_date:
-    2014
-:last_date:
-    2014
+:last_modify_date:
+    2016.9.12
 :descrition:
     heartbeat related module
 """
@@ -19,6 +17,7 @@
 import time
 import pickle
 import platform
+import threading
 
 from cup import log
 from cup import net
@@ -100,8 +99,12 @@ class LinuxHost(Device):
         :param init_this_host:
             if init_this_host is True, will initialize the object by this linux
             . Otherwise, you need to initialize it by yourself.
+        :exception socket.gaierror :
+            if we cannot get the ip of the host, the object construction
+            may raise socket.gaierror exception.
+            You have to code {try:  catch socket.gaierror as err:}
         """
-        super(self.__class__, self).__init__(name)
+        Device.__init__(self, name)
         # -1 means initialized
         self._dict_info = {
             'iface':   iface,
@@ -231,6 +234,7 @@ class HeartbeatService(object):
         :param keep_lost:
             whether we store lost deivce info
         """
+        self._lock = threading.Lock()
         self._judge_lost = judge_lost_in_sec
         self._devices = {}
         if keep_lost:
@@ -238,21 +242,31 @@ class HeartbeatService(object):
         else:
             self._lost_devices = None
 
-    def activate(self, key, device):
+    def is_device_registered(self, key, including_dead=False):
         """
-        activate a device in HeartBeat Service.
-        Add one if it's new to hbs.
+        tell if the device is registered
         """
+        ret = False
+        self._lock.acquire()
+        if key in self._devices:
+            ret = True
+        if not ret and including_dead and self._lost_devices is not None \
+                and key in self._lost_devices:
+            ret = True
+        self._lock.release()
+        return ret
 
     def adjust_judge_lost_time(self, time_in_sec):
         """
         adjust judge_lost_in_sec
         """
+        self._lock.acquire()
         log.info(
             'heartbeat service judge_lost_in_sec changed, old %d, new %d' % (
                 self._judge_lost, time_in_sec
             )
         )
+        self._lock.release()
         self._judge_lost = time_in_sec
         return
 
@@ -265,6 +279,7 @@ class HeartbeatService(object):
             else, fresh the last_healthy time of the device
         """
         assert type(key) == str, 'needs to be a str'
+        self._lock.acquire()
         got_device = self._devices.get(key)
         if got_device is None:
             log.info(
@@ -288,6 +303,7 @@ class HeartbeatService(object):
                 )
                 self._devices[key] = device_obj
                 device_obj.set_last_healthy()
+        self._lock.release()
 
     def get_lost(self):
         """
@@ -295,6 +311,7 @@ class HeartbeatService(object):
         """
         now = time.time()
         lost_devices = []
+        self._lock.acquire()
         for dkey in self._devices.keys():
             device = self._devices[dkey]
             if now - device.get_last_healthy() > self._judge_lost:
@@ -303,6 +320,7 @@ class HeartbeatService(object):
                 del self._devices[dkey]
                 lost_devices.append(device)
                 log.warn('heartbeat lost, device:%s' % dkey)
+        self._lock.release()
         return lost_devices
 
     def cleanup_oldlost(self, dump_file=None):
@@ -313,13 +331,16 @@ class HeartbeatService(object):
             if dump_file is not None, we will store devices info into dump_file
             Otherwise, we will cleanup the lost devices only.
         """
+        self._lock.acquire()
         log.info('start - empty_lost devices, dump_file:%s' % dump_file)
         if self._lost_devices is None:
             log.info('end - does not keep_lost devices, return')
+            self._lock.release()
             return
         if dump_file is None:
             self._lost_devices = {}
             log.info('end - does not have dump_file, return')
+            self._lock.release()
             return
         info_dict = {}
         info_dict['devices'] = {}
@@ -341,6 +362,7 @@ class HeartbeatService(object):
                 log.warn('failed to dump lost_file, error:%s' % str(error))
         conf_writer = conf.Dict2Configure(info_dict)
         conf_writer.write_conf(dump_file)
+        self._lock.release()
         return
 
 

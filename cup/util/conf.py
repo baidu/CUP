@@ -797,9 +797,9 @@ class Configure2Dict(object):  # pylint: disable=R0903
             line = line.strip()
             # if it's a blank line or a line with comments only
             if line == '':
-                line = '__comments__:%s' % '\n'
+                line = '__comments__%s%s' % (self._separator, '\n')
             if line.startswith('#'):
-                line = '__comments__:%s\n' % line
+                line = '__comments__%s%s\n' % (self._separator, line)
                 continue
             if line.startswith('$include'):
                 self._handle_include_syntx(line, ignore_error)

@@ -62,6 +62,14 @@ class CGeneratorMan(object):
         self._nlock = threading.Lock()
         self._nind = 0
 
+    def reset_uniqid_start(self, num=0):
+        """
+        reset next uniqid to which genman starts from.
+        """
+        self._lock.acquire()
+        self._nind = num
+        self._lock.release()
+
     def get_uniqname(self):
         """
         获得一个线程安全的unique字符串
@@ -88,5 +96,11 @@ class CGeneratorMan(object):
     def get_random_str(cls, length):
         """get random str by length"""
         return ''.join(random.choice(string.lowercase) for i in range(length))
+
+    @classmethod
+    def get_uuid(cls):
+        """get random uuid"""
+        import uuid
+        uuid.uuid4()
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

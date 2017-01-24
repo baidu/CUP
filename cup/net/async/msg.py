@@ -8,15 +8,12 @@
 """
 :author:
     Guannan Ma
-:create_date:
-    2014
-:last_date:
-    2016.6
 :descrition:
     netmsg related module
 """
 
 import json
+import pickle
 
 import cup
 from cup import log
@@ -24,7 +21,33 @@ from cup.util import misc
 from cup.net.async import common
 
 
+MSG_RESENDING_FLAG = 0
+MSG_RESEND_SUCCESS = 1
+MSG_TIMEOUT_TO_DELETE = 2
+MSG_DELETE_FLAG = 3
+
+
 __all__ = ['CMsgType', 'CMsgFlag', 'CNetMsg', 'CAckMsg']
+
+
+MSG_TYPE2NUM = {
+        'HEART_BEAT': 1,
+        'RESOURCE_ACQUIRE': 2,
+        'RESOURCE_RELEASE': 3,
+        'ACK_OK': 4,
+        'ACK_FAILURE': 5,
+        'ACK_HEART_BEAT': 6,
+        'ACK_CREATE': 7,
+        'NEED_ACK': 8
+}
+
+
+MSG_FLAG2NUM = {
+    'FLAG_URGENT': 0X00000001,
+    'FLAG_NORMAL': 0X00000002,
+    'FLAG_NEEDACK':0X00000004,
+    'FLAG_ACK': 0X00000008,
+}
 
 
 # TODO serilize the msg
@@ -104,7 +127,7 @@ class CNetMsg(object):
         flag: System use only.
         type: System will use type > 65535. Users will use type <=65535
 
-        #head 0, \SAGIT\0\1 for building connection
+        #head  CUP012-3 for building connection
         #len - uint64
         #fromip,port, stub -uint64
         #toip,port, stub   -uint64
@@ -127,11 +150,7 @@ class CNetMsg(object):
 
     # Default flags
     MSG_FLAG_MAN = CMsgFlag()
-    _MSG_FLAGS = {
-        'URGENT': 0x00000001,
-        'NORMAL': 0X00000002
-    }
-    MSG_FLAG_MAN.register_flags(_MSG_FLAGS)
+    MSG_FLAG_MAN.register_flags(MSG_FLAG2NUM)
 
     # Default types.
     MSGTYPE = CMsgType()
@@ -141,7 +160,7 @@ class CNetMsg(object):
     MSGTYPE.register_types(_SYS_MSG_TYPES)
 
     def __init__(self, is_postmsg=True):
-        super(self.__class__, self).__init__()
+        #super(self.__class__, self).__init__()
         self._is_postmsg = is_postmsg
         self._need_head = False
         self._data = {}
@@ -152,11 +171,19 @@ class CNetMsg(object):
         self._msglen = None
         self._bodylen = None
         self._type = None
-        self._flag = None
         self._uniqid = None
         self._fromaddr = None
         self._toaddr = None
         self._dumpdata = None
+        self._flag = None
+        # self._retry_interval = None
+        # self._function = None
+        # self._last_retry_time = None
+        # self._del_timeout = None
+        if is_postmsg:
+            self.set_flag(
+                MSG_FLAG2NUM['FLAG_NORMAL']
+            )
 
     def __del__(self):
         """del the msg"""
@@ -185,7 +212,6 @@ class CNetMsg(object):
         log.debug('msg index type:{0}'.format(
             self._ORDER[index])
         )
-
         while ind >= 0:
             ind -= self._ORDER_BYTES[i]
             if ind > 0:
@@ -312,8 +338,13 @@ class CNetMsg(object):
         set flag for the msg
         """
         # misc.check_type(flag, int)
-        self._data['flag'] = self._asign_uint2byte_bybits(flag, 32)
         self._flag = flag
+        self._data['flag'] = self._asign_uint2byte_bybits(flag, 32)
+
+    def add_flag(self, flag):
+        """add flag into the msg"""
+        self._flag = self._flag | flag
+        self._data['flag'] = self._asign_uint2byte_bybits(self._flag, 32)
 
     def set_need_head(self, b_need=False):
         """
@@ -340,6 +371,7 @@ class CNetMsg(object):
         body_len = len(self._data['body'])
         self._ORDER_BYTES[7] = body_len
         self._msglen = body_len + size_except_body
+        log.debug('msglen is {0}'.format(self._msglen))
         self._data['len'] = self._asign_uint2byte_bybits(
             self._msglen, 64
         )
@@ -522,6 +554,104 @@ class CNetMsg(object):
         else:
             return False
 
+    #this function is only used by msg which need to be ack
+    #need ack msg
+    def pre_resend(self):
+        """
+        set writeindex
+        """
+        self._writeindex = 0
+
+
+# pylint: disable=R0904
+class CNeedAckMsg(CNetMsg):
+    """
+    Class need ack msg
+    """
+    def __init__(self, retry_interval, total_timeout, function):
+        """
+        :param function:
+            Whether succeed or not, the framework will invoke the function
+            passed in.
+        """
+        CNetMsg.__init__(self, is_postmsg=True)
+        self._retry_interval = retry_interval
+        self._total_timeout = total_timeout
+        self._function = function
+        self._last_retry_time = None
+        self._resend_flag = MSG_RESENDING_FLAG
+        self.add_flag(MSG_FLAG2NUM['FLAG_NEEDACK'])
+        # self.set_body(pickle.dumps(msg_info))
+        self._errmsg = None
+
+    def set_resend_flag(self, handle_flag):
+        """
+        set msg handle flag
+        """
+        self._resend_flag = handle_flag
+
+    def set_errmsg(self, errmsg):
+        """set errmsg when we encounter errors sending it out"""
+        self._errmsg = errmsg
+
+    def get_errmsg(self):
+        """get errmsg if we encounter errors sending it out"""
+        return self._errmsg
+
+    def set_total_timeout(self, total_timeout):
+        """
+        set total_timeout
+        """
+        self._total_timeout = total_timeout
+
+    def set_retry_interval(self, retry_interval):
+        """
+        set retry_interval
+        """
+        self._retry_interval = retry_interval
+
+    def set_callback_function(self, function):
+        """
+        set function
+        """
+        self._function = function
+
+    def set_last_retry_time(self, last_retry_time):
+        """
+        set last_retry_time
+        """
+        self._last_retry_time = last_retry_time
+
+    def get_total_timeout(self):
+        """
+        get total_timeout
+        """
+        return self._total_timeout
+
+    def get_retry_interval(self):
+        """
+        get retry_interval
+        """
+        return self._retry_interval
+
+    def get_callback_function(self):
+        """
+        get callback function
+        """
+        return self._function
+
+    def get_last_retry_time(self):
+        """
+        get last_retry_time
+        """
+        return self._last_retry_time
+
+    def get_resend_flag(self):
+        """
+        get msg handle flag
+        """
+        return self._resend_flag
+
 
 # pylint: disable=R0904
 class CAckMsg(CNetMsg):
@@ -530,15 +660,9 @@ class CAckMsg(CNetMsg):
     """
     def __init__(self, is_postmsg=True):
         super(self.__class__, self).__init__(is_postmsg)
+        self.add_flag(MSG_FLAG2NUM['FLAG_ACK'])
 
-    def set_body(self, map_ack):
-        """
-        set body
-        """
-        body = json.dumps(map_ack)
-        self._data['body'] = body
-
-    def set_ack(self, status, msg):
+    def set_ack(self, status, info):
         """
         :param status:
             status of the msg
@@ -547,14 +671,14 @@ class CAckMsg(CNetMsg):
         """
         ack = {}
         ack['status'] = status
-        ack['msg'] = msg
-        self.set_body(json.dumps(ack))
+        ack['info'] = info
+        self.set_body(pickle.dumps(ack))
 
     def get_ack(self):
         """
         get ack
         """
-        body = json.loads(self._data['body'])
+        body = pickle.loads(self._data['body'])
         return body
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

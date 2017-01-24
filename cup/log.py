@@ -9,10 +9,6 @@
 """
 :author:
     Guannan Ma
-:create_date:
-    2014
-:last_date:
-    2014
 :descrition:
     common log related module
 """

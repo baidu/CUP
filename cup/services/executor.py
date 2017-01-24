@@ -8,8 +8,6 @@
 """
 :authors:
     Guannan Ma maguannan@baidu.com @mythmgn
-:create_date:
-    2015/07/01
 :description:
     1. Delay-execute sth after several seconds
 
@@ -33,6 +31,9 @@ URGENCY_NORMAL = 1
 URGENCY_LOW = 2
 
 class ExecutionService(object):
+    """
+    execution service
+    """
     def __init__(
         self, delay_exe_thdnum=3, queue_exec_thdnum=4
     ):
@@ -62,6 +63,7 @@ class ExecutionService(object):
 
         You can use urgency := executor.URGENCY_NORMAL, by default
         """
+        log.debug('got delay exec, func:{0}'.format(function))
         task_data = (urgency, (function, args, kwargs))
         timer = threading.Timer(
             delay_time_insec, self._do_delay_exe,
@@ -84,11 +86,13 @@ class ExecutionService(object):
             try:
                 item = func_queue.get(timeout=check_interval)
             except queue.Empty:
-                log.debug('no item found in exec queue')
+                # log.debug('no item found in exec queue')
                 continue
             try:
                 _, (function, argvs, kwargs) = item
                 # pylint: disable=W0142
+                if func_queue is self.__delay_queue:
+                    log.debug('to delay exec func:{0}'.format(function))
                 function(*argvs, **kwargs)
             # pylint: disable=W0703
             # we can NOT predict the exception type
@@ -135,10 +139,12 @@ class ExecutionService(object):
             Otherwise, the function will not hang, but tell you whether it's
             succeeded stopped. (True for stoped, False for not stopped yet)
         """
+        log.info('to stop executor')
         self.__status = 2
         if wait_workerstop:
             self.__thdpool.stop()
         else:
             self.__thdpool.try_stop()
+        log.info('end stopping executor')
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent
