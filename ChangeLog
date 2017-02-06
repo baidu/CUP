@@ -1,3 +1,18 @@
+
+Version: 1.5.1                                                                                      
+    * [New] cup.log - add xxx_if                                                                    
+    * [New] cup.thirdp - replace MySQLdb with pymysql.                                              
+        Use can still use "from cup.thirdp import MySQLdb"                                          
+    * [New] cup.util.conf - bug fix                                                                 
+                                                                                                    
+Version: 1.5.0                                                                                      
+    * [New] cup.jenkinslib - add jenkins lib with which you can operate on jenkins jobs             
+    * [New] cup.log.parse - parse string line logged by cup.log.XXX                                 
+    * [New] cup.unittest.assert_startswith                                                          
+    * [New] cup.oper - add contains_file which searchs a file and return its existence              
+    * [Bug] cup.util.conf - fix "key comparation order" bug for Configure2Dict                      
+    * [Bug] cup.util.conf - fix HdfsXmlConf "eletemnt without value. e.g. <value/>    
+
 Version: 1.4.2.0
 	* [Bug] oper.is_proc_exist. fix a bug while check proc exist
 	* [New] Add cup.services.executor. Exec and delay_exec service
