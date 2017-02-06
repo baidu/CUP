@@ -11,6 +11,11 @@
     http://docs.iobusy.com/docs/cup/
 
 
+* 具体使用说明请移步Wiki: https://github.com/BaiduQA/CUP/wiki
+
+
+
+
 基础库代码结构说明:                                                                                    
 CUP                                                                                                    
     |-- bidu                    目录| package            baidu服务相关                 
@@ -32,4 +37,4 @@ CUP
     |-- util                    目录|package             线程池、可打断线程、Public/Configure配置文件python实现、数据生成器
     |-- version.py              模块|module              CUP版本号管理   
 
-具体使用说明请移步Wiki: https://github.com/BaiduQA/CUP/wiki
+
