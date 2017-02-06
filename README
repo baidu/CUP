@@ -8,57 +8,28 @@
       * requests https://github.com/kennethreitz/requests (under Apache V2 license)
       * pymysql https://github.com/PyMySQL/PyMySQL (under MIT license)   
 3. Docs | 文档
-    最新文档：http://docs.iobusy.com/docs/cup/
-                                                                                                       
+    http://docs.iobusy.com/docs/cup/
+
+
 基础库代码结构说明:                                                                                    
-cup                                                                                                    
-|-- bidu                    目录| package           baidu服务相关                 
-|-- cache.py                模块|module             缓存相关                                           
-|-- decorators.py           module                  通用修饰符                                         
-|-- err.py                  module                  CUP内部Exception处理                               
-|-- __init__.py             module                  CUP import处理模块                                 
-|-- log.py                  module                  CUP logging                                        
-|-- mail.py                 module                  CUP Email 发送模块                                 
-|-- net                     目录|package            网络操作、资源、异步通信框架                       
-|-- oper.py                 模块|module             各类混杂操作opertions                              
-|-- platforms.py            模块|module             跨平台相关保留module                               
-|-- res                     目录|package            机器资源信息获取、进程信息获取、监控等             
-|-- shell                   目录|package            shell操作、跨机执行、跨机数据传输等                
-|-- services                目录|package            心跳机制、执行器、buffer缓存                                          
-|-- thirdp                  目录|package            第三方库： pexpect、httplib2、                     
-|-- timeplus.py             模块|module             时间操作函数                                       
-|-- unittest.py             模块|module             UT测试相关、assert、noseClass                      
-|-- util                    目录|package            线程池、可打断线程、Public/Configure配置文件python实现、数据生成器
-|-- version.py              模块|module             CUP版本号管理   
+CUP                                                                                                    
+    |-- bidu                    目录| package            baidu服务相关                 
+    |-- cache.py                模块|module              缓存相关                                           
+    |-- decorators.py           module                  通用修饰符                                         
+    |-- err.py                  module                  CUP内部Exception处理                               
+    |-- __init__.py             module                  CUP import处理模块                                 
+    |-- log.py                  module                  CUP logging                                        
+    |-- mail.py                 module                  CUP Email 发送模块                                 
+    |-- net                     目录|package             网络操作、资源、异步通信框架                       
+    |-- oper.py                 模块|module              各类混杂操作opertions                              
+    |-- platforms.py            模块|module              跨平台相关保留module                               
+    |-- res                     目录|package             机器资源信息获取、进程信息获取、监控等             
+    |-- shell                   目录|package             shell操作、跨机执行、跨机数据传输等                
+    |-- services                目录|package             心跳机制、执行器、buffer缓存                                          
+    |-- thirdp                  目录|package             第三方库： pexpect、httplib2、                     
+    |-- timeplus.py             模块|module              时间操作函数                                       
+    |-- unittest.py             模块|module              UT测试相关、assert、noseClass                      
+    |-- util                    目录|package             线程池、可打断线程、Public/Configure配置文件python实现、数据生成器
+    |-- version.py              模块|module              CUP版本号管理   
 
-docs中有详细的网页版库文档， 欢迎查看。 
-CUP 1.5.1.0 released.
-
-Version: 1.5.1                                                                                      
-    * [New] cup.log - add xxx_if                                                                    
-    * [New] cup.thirdp - replace MySQLdb with pymysql.                                              
-        Use can still use "from cup.thirdp import MySQLdb"                                          
-    * [New] cup.util.conf - bug fix                                                                 
-                                                                                                    
-Version: 1.5.0                                                                                      
-    * [New] cup.jenkinslib - add jenkins lib with which you can operate on jenkins jobs             
-    * [New] cup.log.parse - parse string line logged by cup.log.XXX                                 
-    * [New] cup.unittest.assert_startswith                                                          
-    * [New] cup.oper - add contains_file which searchs a file and return its existence              
-    * [Bug] cup.util.conf - fix "key comparation order" bug for Configure2Dict                      
-    * [Bug] cup.util.conf - fix HdfsXmlConf "eletemnt without value. e.g. <value/>    
-
-Version: 1.4.2.0
-* [Bug] oper.is_proc_exist. fix a bug in which an editor, (vim vi, for example) may be incorrectly caught)
-* [New] cup.services.executor. New Queue_Exec and delay_exec service
-* [New] cup.services.buffers. Buffer releated feature. For easing memory fragment.	
-* [Enhancement] remove traceback in cup.util.threadpool
-* [Enhancement] cup.log.reinit_comlog, if loggername has inited, raise ValueError
-* [New] cup.log.get_inited_loggername, get has inited loggername
-* [New] cup.shell.rmtree - add safemode support for shutil.rmtree
-* [New] cup.const - add const value support inside cup
-* [New] cup.conf - add HdfsConf support
-* [New] cup.shell.get_pid - get process id by process_path and grep_string
-
-
-使用说明 =>   https://github.com/BaiduQA/CUP/wiki
+具体使用说明请移步Wiki: https://github.com/BaiduQA/CUP/wiki
