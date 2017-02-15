@@ -1,4 +1,7 @@
-1. Installation   - 安装                                                                                     
+* Visit Wiki to see more details: https://github.com/BaiduQA/CUP/wiki
+
+
+1. Installation                                                                                    
     - run # python setup.py install                                                                    
                                                                                                        
 2. Reference                                                                                           
@@ -7,16 +10,15 @@
       * Httplib2 http://code.google.com/p/httplib2/ (under MIT license)   
       * requests https://github.com/kennethreitz/requests (under Apache V2 license)
       * pymysql https://github.com/PyMySQL/PyMySQL (under MIT license)   
-3. Docs | 文档
+3. Doc
     http://docs.iobusy.com/docs/cup/
 
 
-* 具体使用说明请移步Wiki: https://github.com/BaiduQA/CUP/wiki
 
 
 
-
-基础库代码结构说明:                                                                                    
+* 访问wiki获取更多信息
+* 基础库代码结构说明:                                                                                    
 CUP                                                                                                    
     |-- bidu                    目录| package            baidu服务相关                 
     |-- cache.py                模块|module              缓存相关                                           
