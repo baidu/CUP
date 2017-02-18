@@ -7,7 +7,7 @@
 # #############################################################
 """
 :authors:
-    Guannan Ma maguannan@baidu.com @mythmgn
+    Guannan Ma maguannan @mythmgn
 :description:
     1. Delay-execute sth after several seconds
 

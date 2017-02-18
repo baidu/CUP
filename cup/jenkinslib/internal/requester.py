@@ -7,7 +7,7 @@
 """
 This module provides some requester to access jenkins.
 
-Authors: liushuxian(liushuxian@baidu.com)
+Authors: liushuxian(liushuxian)
 Date:    2015/01/20
 """
 

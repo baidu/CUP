@@ -7,7 +7,7 @@
 # #############################################################
 """
 :authors:
-    Guannan Ma maguannan@baidu.com @mythmgn
+    Guannan Ma maguannan @mythmgn
 :description:
     for const value
 """
@@ -39,7 +39,7 @@ import sys
 # pylint: disable=C0103,W0201
 _const_obj = _const()
 _const_obj.VERSION = '1.4.2'
-_const_obj.AUTHOR = 'nfs-qa@baidu.com'
+_const_obj.AUTHOR = 'nfs-qa'
 sys.modules[__name__] = _const_obj
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

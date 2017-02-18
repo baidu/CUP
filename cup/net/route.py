@@ -7,7 +7,7 @@
 # #############################################################################
 """
 :author:
-    YangGuang yangguang07@baidu.com
+    YangGuang yangguang07
 :create_date:
     2014
 :last_date:

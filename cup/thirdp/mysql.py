@@ -7,7 +7,7 @@
 # #############################################################
 """
 :authors:
-    Guannan Ma maguannan@baidu.com @mythmgn
+    Guannan Ma maguannan @mythmgn
 :create_date:
     [% date('%c') %]
 :modify_date:

@@ -7,7 +7,7 @@
 """
 This module defines all excptions of this project.
 
-Authors: liushuxian(liushuxian@baidu.com)
+Authors: liushuxian(liushuxian)
 Date:    2015/01/20
 """ 
 

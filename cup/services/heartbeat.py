@@ -7,7 +7,7 @@
 # #############################################################################
 """
 :author:
-    Guannan Ma maguannan@baidu.com @mythmgn
+    Guannan Ma maguannan @mythmgn
 :last_modify_date:
     2016.9.12
 :descrition:

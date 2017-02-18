@@ -8,7 +8,7 @@
 
 """
 :author:
-    Guannan Ma maguannan@baidu.com @mythmgn
+    Guannan Ma maguannan @mythmgn
 :descrition:
     cross-platform functions related module
 """

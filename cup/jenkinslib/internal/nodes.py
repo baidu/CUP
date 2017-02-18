@@ -9,7 +9,7 @@ This module provides Nodes object.
 
 Nodes is a container of Node.
 
-Authors: liushuxian(liushuxian@baidu.com)
+Authors: liushuxian(liushuxian)
 Date:    2015/05/14
 """
 

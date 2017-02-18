@@ -7,7 +7,7 @@
 """
 This module provides Node object.
 
-Authors: liushuxian(liushuxian@baidu.com)
+Authors: liushuxian(liushuxian)
 Date:    2015/05/14
 """ 
 
