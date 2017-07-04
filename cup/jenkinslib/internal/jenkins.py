@@ -9,7 +9,7 @@ This module provides Jenkins object.
 
 Authors: liushuxian(liushuxian)
 Date:    2015/01/20
-""" 
+"""
 
 import os
 

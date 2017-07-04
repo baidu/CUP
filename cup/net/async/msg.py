@@ -18,6 +18,7 @@ import pickle
 import cup
 from cup import log
 from cup.util import misc
+from cup.util import generator
 from cup.net.async import common
 
 
@@ -49,17 +50,6 @@ MSG_FLAG2NUM = {
     'FLAG_ACK': 0X00000008,
 }
 
-
-# TODO serilize the msg
-# class MsgSerilizer(object):
-#     def __init__(self, body):
-#         pass
-#
-#     def serilize(self):
-#         pass
-#
-#     def deserlize(self, pack):
-#         pass
 
 @cup.decorators.Singleton
 class CMsgType(object):
@@ -132,7 +122,7 @@ class CNetMsg(object):
         #fromip,port, stub -uint64
         #toip,port, stub   -uint64
         #msg_type          -uint32
-        #uniqid            -uint64
+        #uniqid            -128bit [64bit ip, port, 64 bit, uniqid]
         #body           -no limit (length:uint64)
 
     """
@@ -143,9 +133,9 @@ class CNetMsg(object):
     _ORDER = [
         'head', 'flag', 'len', 'from', 'to', 'type', 'uniq_id', 'body'
     ]
-    _ORDER_BYTES = [8, 4, 8, 16, 16, 4, 8, 0]
-    _SIZE_EXCEPT_BODY = 64
-    _SIZE_EXCEPT_HEAD_BODY = 56
+    _ORDER_BYTES = [8, 4, 8, 16, 16, 4, 16, 0]
+    _SIZE_EXCEPT_BODY = 72
+    _SIZE_EXCEPT_HEAD_BODY = 64
     _ORDER_COUNTS = 8
 
     # Default flags
@@ -176,14 +166,22 @@ class CNetMsg(object):
         self._toaddr = None
         self._dumpdata = None
         self._flag = None
-        # self._retry_interval = None
-        # self._function = None
-        # self._last_retry_time = None
         # self._del_timeout = None
+        self._resend_flag = None
+        self._resend_times = 0
         if is_postmsg:
             self.set_flag(
                 MSG_FLAG2NUM['FLAG_NORMAL']
             )
+
+        # for CNeedAckMsg
+        self._errmsg = None
+        self._retry_interval = None
+        self._total_timeout = None
+        self._last_retry_time = None
+        self._callback_func = None
+        self._resend_flag = MSG_RESENDING_FLAG
+
 
     def __del__(self):
         """del the msg"""
@@ -206,12 +204,10 @@ class CNetMsg(object):
             i = 1
         else:
             i = 0
-        log.debug('msg index:{0}'.format(
-            index)
-        )
-        log.debug('msg index type:{0}'.format(
-            self._ORDER[index])
-        )
+        log.debug('msg index:{0}'.format(index))
+        # log.debug('msg index type:{0}'.format(
+        #     self._ORDER[index])
+        # )
         while ind >= 0:
             ind -= self._ORDER_BYTES[i]
             if ind > 0:
@@ -243,7 +239,7 @@ class CNetMsg(object):
 
     @classmethod
     def _convert_bytes2uint(cls, str_data):
-        num = 0L
+        num = 0
         b_ind = 0
         for i in str_data:
             num += pow(256, b_ind) * ord(i)
@@ -268,6 +264,7 @@ class CNetMsg(object):
         data_ind = 0
         data_max = len(data)
         order, offsite = self._get_msg_order_ind(self._readindex)
+        log.debug('msg data index:{0}, offsite: {1}'.format(order, offsite))
         data_key = self._ORDER[order]
         while sign:
             msg_data_loop_end = False
@@ -296,7 +293,6 @@ class CNetMsg(object):
                             return -1
                 else:
                     pass
-                    # log.debug('body_len:%d' % len(self._data['body']))
             else:
                 # cannot fill up the msg in this round
                 sign = False
@@ -341,6 +337,18 @@ class CNetMsg(object):
         self._flag = flag
         self._data['flag'] = self._asign_uint2byte_bybits(flag, 32)
 
+    def set_resend_flag(self, handle_flag):
+        """
+        set msg handle flag
+        """
+        self._resend_flag = handle_flag
+
+    def get_resend_flag(self):
+        """
+        get msg handle flag
+        """
+        return self._resend_flag
+
     def add_flag(self, flag):
         """add flag into the msg"""
         self._flag = self._flag | flag
@@ -377,7 +385,7 @@ class CNetMsg(object):
         )
         tempstr = ''
         for i in xrange(0, self._ORDER_COUNTS - 1):
-            if i == 0 and not self._need_head:
+            if i == 0 and (not self._need_head):
                 continue
             tempstr += self._data[self._ORDER[i]]
         self._dumpdata = '{0}{1}'.format(tempstr, self._data['body'])
@@ -413,7 +421,8 @@ class CNetMsg(object):
         set msg unique id
         """
         # misc.check_type(uniq_id, int)
-        self._data['uniq_id'] = self._asign_uint2byte_bybits(uniq_id, 64)
+        log.debug('uniq_id: {0}'.format(uniq_id))
+        self._data['uniq_id'] = self._asign_uint2byte_bybits(uniq_id, 128)
         self._uniqid = uniq_id
 
     def set_body(self, body):
@@ -533,12 +542,20 @@ class CNetMsg(object):
         """
         if length <= 0:
             return
+        log.debug('to get {0} write bytes from msg, '
+            '_writeindex:{1}, msg total_len: {2}'.format(
+            length, self._writeindex, len(self._dumpdata)
+            )
+        )
         return self._dumpdata[self._writeindex: self._writeindex + length]
 
     def seek_write(self, length_ahead):
         """
         seek foreward by length
         """
+        log.debug('to seek msg length {0}, now index {1}'.format(
+            length_ahead, self._writeindex)
+        )
         self._writeindex += length_ahead
         if self._writeindex > self.get_msg_len():
             raise cup.err.AsyncMsgError(
@@ -561,34 +578,6 @@ class CNetMsg(object):
         set writeindex
         """
         self._writeindex = 0
-
-
-# pylint: disable=R0904
-class CNeedAckMsg(CNetMsg):
-    """
-    Class need ack msg
-    """
-    def __init__(self, retry_interval, total_timeout, function):
-        """
-        :param function:
-            Whether succeed or not, the framework will invoke the function
-            passed in.
-        """
-        CNetMsg.__init__(self, is_postmsg=True)
-        self._retry_interval = retry_interval
-        self._total_timeout = total_timeout
-        self._function = function
-        self._last_retry_time = None
-        self._resend_flag = MSG_RESENDING_FLAG
-        self.add_flag(MSG_FLAG2NUM['FLAG_NEEDACK'])
-        # self.set_body(pickle.dumps(msg_info))
-        self._errmsg = None
-
-    def set_resend_flag(self, handle_flag):
-        """
-        set msg handle flag
-        """
-        self._resend_flag = handle_flag
 
     def set_errmsg(self, errmsg):
         """set errmsg when we encounter errors sending it out"""
@@ -614,7 +603,7 @@ class CNeedAckMsg(CNetMsg):
         """
         set function
         """
-        self._function = function
+        self._callback_func = function
 
     def set_last_retry_time(self, last_retry_time):
         """
@@ -638,7 +627,7 @@ class CNeedAckMsg(CNetMsg):
         """
         get callback function
         """
-        return self._function
+        return self._callback_func
 
     def get_last_retry_time(self):
         """
@@ -646,11 +635,38 @@ class CNeedAckMsg(CNetMsg):
         """
         return self._last_retry_time
 
-    def get_resend_flag(self):
+    def set_retry_times(self, num):
+        """set msg retry times"""
+        self._resend_times = num
+
+    def add_retry_times(self):
+        """add retry times"""
+        self._resend_times += 1
+
+    def get_retry_times(self):
+        """get retry times"""
+        return self._resend_times
+
+
+# pylint: disable=R0904
+class CNeedAckMsg(CNetMsg):
+    """
+    Class need ack msg
+    """
+    def __init__(self, retry_interval, total_timeout, function):
         """
-        get msg handle flag
+        :param function:
+            Whether succeed or not, the framework will invoke the function
+            passed in.
         """
-        return self._resend_flag
+        CNetMsg.__init__(self, is_postmsg=True)
+        self.add_flag(MSG_FLAG2NUM['FLAG_NEEDACK'])
+        self._retry_interval = retry_interval
+        self._total_timeout = total_timeout
+        self._last_retry_time = None
+        self._callback_func = function
+        self._resend_flag = MSG_RESENDING_FLAG
+
 
 
 # pylint: disable=R0904
@@ -659,26 +675,16 @@ class CAckMsg(CNetMsg):
     ack msg example
     """
     def __init__(self, is_postmsg=True):
-        super(self.__class__, self).__init__(is_postmsg)
+        CNetMsg.__init__(self, is_postmsg)
         self.add_flag(MSG_FLAG2NUM['FLAG_ACK'])
 
-    def set_ack(self, status, info):
-        """
-        :param status:
-            status of the msg
-        :param msg:
 
-        """
-        ack = {}
-        ack['status'] = status
-        ack['info'] = info
-        self.set_body(pickle.dumps(ack))
+if __name__ == '__main__':
+    gen = generator.CycleIDGenerator('127.0.0.1', '5000')
+    gen_id = gen.next_id()
+    str_num =  CNetMsg._asign_uint2byte_bybits(gen_id, 128)
+    print gen_id
+    print len(str_num)
 
-    def get_ack(self):
-        """
-        get ack
-        """
-        body = pickle.loads(self._data['body'])
-        return body
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

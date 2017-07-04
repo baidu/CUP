@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*
 # #############################################################################
 #
-#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved
+#  Copyright (c) Baidu.com,  Inc. All Rights Reserved
 #
 # #############################################################################
 
 """
 :author:
-    Guannan Ma maguannan@baidu.com @mythmgn
+    Guannan Ma @mythmgn
 :descrition:
     decorators related module
 """

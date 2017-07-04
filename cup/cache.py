@@ -96,11 +96,13 @@ class KvCache(object):
         """
         Delete all expired items
         """
+        expired_keys = None
         with self._lock_release(b_rw_lock=True):
             expired_keys = self._get_expired_keys()
             for key in expired_keys:
                 del self._kv_data[key]
                 cup.log.debug('key:%s cleaned up' % key)
+        return expired_keys
 
     def get_expired(self):
         """

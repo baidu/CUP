@@ -17,6 +17,7 @@
 """
 
 import sys
+import time
 import socket
 import struct
 import warnings
@@ -27,6 +28,7 @@ except ImportError as error:
     pass
 
 from cup.net import async
+from cup import log
 from cup import platforms
 
 
@@ -88,10 +90,22 @@ def get_hostip(hostname=None):
     :param hostname:
         机器的hostname, 默认为None代表不传值， 函数将自动获取当前机器的ip
     """
-    if hostname is None:
-        hostname = get_local_hostname()
-    return str(socket.gethostbyname(hostname))
-
+    times = 0
+    ipaddr = None
+    got = False
+    while times < 10:
+        try:
+            if hostname is None:
+                hostname = get_local_hostname()
+            ipaddr = str(socket.gethostbyname(hostname))
+            got = True
+            break
+        except socket.gaierror:
+            times += 1
+            time.sleep(0.1)
+    if not got:
+        log.error('failed to get socket hostname for {0}'.format(hostname))
+    return ipaddr
 
 def set_sock_keepalive_linux(
         sock, after_idle_sec=1, interval_sec=3, max_fails=5

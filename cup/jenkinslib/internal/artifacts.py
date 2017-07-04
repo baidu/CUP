@@ -102,7 +102,7 @@ class Artifacts(ArtifactsBase):
 
 class FTPArtifacts(ArtifactsBase):
     """Represents artifacts on FTP.
-    
+
     Because ftp connection is used, close should be called if connected.
     It is recommended to use with as like:
             with FTPArtifacts(build) as af:
@@ -197,7 +197,7 @@ class FTPArtifacts(ArtifactsBase):
                     raise exceptin.FtpError(err)
                 except IOError as err:
                     raise exceptin.FtpError(err)
-        
+
         if ftp:
             do_download(ftp)
         elif self.ftp:

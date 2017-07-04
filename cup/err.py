@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*
 # #############################################################################
 #
-#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved
+#  Copyright (c) Baidu.com,  Inc. All Rights Reserved
 #
 # #############################################################################
 
 """
 :author:
-    Guannan Ma maguannan@baidu.com @mythmgn
+    Guannan Ma @mythmgn
 :descrition:
     error related module
 """
@@ -55,7 +55,7 @@ class ResException(BaseCupException):
     cup.res相关的Exception
     """
     def __init__(self, msg):
-        super(self.__class__, self).__init__(msg)
+        BaseCupException.__init__(self, msg)
 
 
 class NoSuchProcess(ResException):
@@ -63,7 +63,7 @@ class NoSuchProcess(ResException):
     通用Exception, 找不到这个进程
     """
     def __init__(self, pid, str_process_name):
-        super(self.__class__, self).__init__(
+        ResException.__init__(self,
             'NoSuchProcess, pid %d, proc_name:%s' % (pid, str_process_name)
         )
 
@@ -73,7 +73,7 @@ class AccessDenied(ResException):
     通用Exception, 权限相关的异常Exception类
     """
     def __init__(self, str_resouce):
-        super(self.__class__, self).__init__(
+        ResException.__init__(self,
             'Resouce access denied: %s' % str_resouce
         )
 
@@ -84,7 +84,7 @@ class NetException(BaseCupException):
     通用网络相关Exception
     """
     def __init__(self, msg=''):
-        super(self.__class__, self).__init__(msg)
+        BaseCupException.__init__(self, msg)
 
 
 class AsyncMsgError(NetException):
@@ -92,7 +92,7 @@ class AsyncMsgError(NetException):
     cup.net.async异步消息相关的异常Exception类
     """
     def __init__(self, msg=''):
-        super(self.__class__, self).__init__(msg)
+        NetException.__init__(self, msg)
 
 
 # ## Shell related exceptions ####
@@ -101,7 +101,7 @@ class ShellException(BaseCupException):
     cup.shell相关的Exception
     """
     def __init__(self, msg=''):
-        super(self.__class__, self).__init__(msg)
+        BaseCupException.__init__(self, msg)
 
 
 class IOException(BaseCupException):
@@ -109,7 +109,7 @@ class IOException(BaseCupException):
     IO related exceptions inside cup
     """
     def __init__(self, msg=''):
-        super(self.__class__, self).__init__(msg)
+        BaseCupException.__init__(self, msg)
 
 
 class NoSuchFileOrDir(IOException):
@@ -117,7 +117,7 @@ class NoSuchFileOrDir(IOException):
     文件或者目录不存在
     """
     def __init__(self, msg=''):
-        super(NoSuchFileOrDir, self).__init__(msg)
+        IOException.__init__(self, msg)
 
 
 class ThreadTermException(BaseCupException):
@@ -125,7 +125,7 @@ class ThreadTermException(BaseCupException):
         结束线程相关的err
     """
     def __init__(self, msg=''):
-        super(self.__class__, self).__init__(msg)
+        BaseCupException.__init__(self, msg)
 
 
 class NotInitialized(BaseCupException):
@@ -134,8 +134,6 @@ class NotInitialized(BaseCupException):
     """
     def __init__(self, msg=''):
         msg = 'Not initialized: %s' % msg
-        super(self.__class__, self).__init__(msg)
-
-
+        BaseCupException.__init__(self, msg)
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

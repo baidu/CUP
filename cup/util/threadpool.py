@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*
 # #############################################################################
 #
-#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved
+#  Copyright (c) Baidu.com,  Inc. All Rights Reserved
 #
 # #############################################################################
 """
@@ -24,15 +24,16 @@ try:
 except ImportError:
     # pylint: disable=F0401
     import queue
+import sys
+import copy
+import time
 import contextlib
 import threading
-import copy
-import sys
-# import traceback
 
 import cup
 from cup import log
 from cup.util import context
+from cup.util import thread
 
 _CONTEXT_TRACKER = context.ContextTracker4Thread()
 
@@ -42,7 +43,8 @@ class ThreadPool(object):
     Threadpool class
     """
 
-    _THREAD_FACTORY = threading.Thread
+    # _THREAD_FACTORY = threading.Thread
+    _THREAD_FACTORY = thread.CupThread
     _CURRENT_THREAD = staticmethod(threading.current_thread)
     _WORKER_STOP_SIGN = object()
 
@@ -239,20 +241,37 @@ class ThreadPool(object):
         # remove this thread from the list
         self._threads.remove(current_thd)
 
-    def stop(self):
+    def stop(self, force_stop=False):
         """
         停止线程池， 该操作是同步操作， 会夯住一直等到线程池所有线程退出。
-        """
-        self._joined = True
-        threads = copy.copy(self._threads)
-        while self._workers:
-            self._jobqueue.put(self._WORKER_STOP_SIGN)
-            self._workers -= 1
 
-        # and let's just make sure
-        # FIXME: threads that have died before calling stop() are not joined.
-        for thread in threads:
-            thread.join()
+        :force_stop:
+            if force_stop is True, try to stop the threads in the pool
+            immediately (and this may do damage to the logic)
+        """
+        if not force_stop:
+            self._joined = True
+            threads = copy.copy(self._threads)
+            while self._workers:
+                self._jobqueue.put(self._WORKER_STOP_SIGN)
+                self._workers -= 1
+
+            # and let's just make sure
+            # FIXME: threads that have died before calling stop() are not joined.
+            for thread in threads:
+                thread.join()
+        else:
+            for thd in self._threads:
+                thd.terminate()
+            retry = False
+            times = 0
+            while (not retry and (times <= 100)):
+                for thd in self._threads:
+                    if thd.isAlive():
+                        thd.terminate()
+                        retry = True
+                time.sleep(0.1)
+                times += 1
 
     def try_stop(self, check_interval=0.1):
         """
@@ -270,7 +289,7 @@ class ThreadPool(object):
             thread.join(check_interval)
 
         for thread in threads:
-            if thread.isAlive:
+            if thread.isAlive():
                 return False
 
         return True

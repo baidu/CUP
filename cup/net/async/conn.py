@@ -81,6 +81,12 @@ class CConnContext(object):  # pylint: disable=R0902
         self._readlock = threading.Lock()
         self._writelock = threading.Lock()
 
+        self._retry_interval = None
+        self._total_timeout = None
+        self._last_retry_time = None
+        self._function = None
+        self._resend_flag = None
+
     def to_destroy(self):
         """
         destroy context
@@ -143,7 +149,7 @@ class CConnContext(object):  # pylint: disable=R0902
         if ret < 0:
             log.warn(
                 'receive an wrong socket msg, to close the peer:{0}'.format(
-                    self._sock.get_peerinfo()
+                    self.get_peerinfo()
                 )
             )
             self.to_destroy()
@@ -360,6 +366,18 @@ class CConnContext(object):  # pylint: disable=R0902
         """return sending queue"""
         return self._send_queue
 
+    # def set_retry_times(self, num):
+    #     """set msg retry times"""
+    #     self._resend_times = num
+
+    # def add_retry_times(self):
+    #     """add retry times"""
+    #     self._resend_times += 1
+
+    # def get_retry_times(self):
+    #     """get retry times"""
+    #     return self._resend_times
+
 
 # pylint: disable=R0902
 class CConnectionManager(object):
@@ -404,7 +422,7 @@ class CConnectionManager(object):
         self._mlock = threading.Lock()
         # _needack_context_queue
         # infinite queue  TODO:  may change it in the future
-        self._needack_context_queue = queue.PriorityQueue()
+        self._needack_context_queue = queue.Queue()
         self._dict_lock = threading.Lock()
         self._needack_context_dict = {}
         self._executor = executor.ExecutionService(
@@ -445,7 +463,7 @@ class CConnectionManager(object):
         """
         get neekack dict
         """
-        log.info('push ack ok msg into needack_queue.')
+        log.debug('push ack ok msg into needack_queue.')
         self._needack_context_queue.put(msg)
 
     def bind(self):
@@ -484,7 +502,7 @@ class CConnectionManager(object):
         context = None
         sock = None
         if isinstance(msg, async_msg.CNeedAckMsg):
-            log.info('CNeedAckMsg is to be sent. msg_type:%d,'
+            log.debug('CNeedAckMsg is to be sent. msg_type:%d,'
                 'msg_flag:%d, msg_dest:%s, uniqid:%d' %
                 (
                     msg.get_msg_type(),
@@ -493,10 +511,12 @@ class CConnectionManager(object):
                     msg.get_uniq_id()
                 )
             )
-            now_timestamp = time.time()
-            msg.set_last_retry_time(now_timestamp)
-            msg.set_resend_flag(async_msg.MSG_RESENDING_FLAG)
-            self._needack_context_queue.put(msg)
+            msg.set_need_head(b_need=False)
+            if msg.get_last_retry_time() is None:
+                msg.set_last_retry_time(time.time())
+            # if not in the self._needack_context_dict
+            if msg.get_retry_times() <= 0:
+                self._needack_context_queue.put(msg)
         try:
             context = self._peer2context[peer]
         except KeyError:
@@ -625,7 +645,7 @@ class CConnectionManager(object):
             log.info('end clean up peerinfo:{0}'.format(peerinfo))
         if context is None:
             return
-        log.info('to del context as socket is not normal')
+        # log.info('to del context as socket is not normal')
         self._mlock.acquire()
         try:
             peerinfo = context.get_peerinfo()
@@ -722,14 +742,27 @@ class CConnectionManager(object):
         """
         self._thdpool.dump_stats()
 
-    def stop(self):
+    def _async_stop(self, force_stop):
+        """
+        to async stop thread pool and executor"""
+        stop_pool = threading.Thread(
+            target=self._thdpool.stop, args=(force_stop, )
+        )
+        stop_pool.start()
+        stop_executor = threading.Thread(
+            target=self._executor.stop, args=(force_stop, )
+        )
+        stop_executor.start()
+        stop_pool.join()
+        stop_executor.join()
+
+    def stop(self, force_stop=False):
         """
         stop the connection manager
         """
         log.info('to stop the connection manager')
         self._stopsign = True
-        self._thdpool.stop()
-        self._executor.stop()
+        self._async_stop(force_stop)
         log.info('connection manager stopped')
 
     def get_recv_msg_ind(self):
@@ -907,11 +940,13 @@ class CConnectionManager(object):
         # log.debug('This msg _need_head:%s' % msg._need_head)
         while not self._stopsign:
             data = msg.get_write_bytes(self.NET_RW_SIZE)
-            # log.debug('get_write_bytes_len: %d' % len(data))
+            log.debug('msg get_write_bytes_len to be sent: %d' % len(data))
             try:
                 succ_len = sock.send(data)
-                # log.debug('succeed to send length:%d' % succ_len)
+                log.debug('succeed to send length:%d' % succ_len)
                 msg.seek_write(succ_len)
+            except err.AsyncMsgError as error:
+                log.debug('has seek out of msg len, continue')
             except socket.error as error:
                 err = error.args[0]
                 if err == errno.EAGAIN:
@@ -936,25 +971,23 @@ class CConnectionManager(object):
                     break
             except Exception as error:
                 log.error(
-                    'Socket error happend, error:%s,  context info %s' %
-                    (str(error), context.get_context_info())
+                    'Socket error happend, error:%s,  context info %s, trace:%s' %
+                    (str(error), context.get_context_info(), traceback.format_exc())
                 )
                 context.to_destroy()
                 break
             finally:
                 del data
-            log.debug('%d bytes has been sent' % succ_len)
             if msg.is_msg_already_sent():
                 log.info(
                     'end sending out a msg: msg_type:%d, msg_len:%d,'
-                    'msg_flag:%d, msg_dest:%s, uniqid:%d, dict:%s' %
+                    'msg_flag:%d, msg_dest:%s, uniqid:%d' %
                     (
                         msg.get_msg_type(),
                         msg.get_msg_len(),
                         msg.get_flag(),
                         str(msg.get_to_addr()),
-                        msg.get_uniq_id(),
-                        msg._data
+                        msg.get_uniq_id()
                     )
                 )
                 # if we have successfully send out a msg. Then move to next one
@@ -996,10 +1029,15 @@ class CConnectionManager(object):
         # pylint: disable=W0703
         except Exception as error:
             log.debug(
-                'seems error happend for context:%s Peerinfo:%s:%s' %
-                (str(error), peerinfo[0], peerinfo[1])
+                'seems error happend for context:%s Peerinfo:%s:%s\n, %s' %
+                (str(error), peerinfo[0], peerinfo[1], traceback.format_exc())
             )
             self._finish_write_callback(False, context)
+
+    def _get_resend_msg_key(self, ip, port, uniq_id):
+        """generate resend msg key"""
+        key = '{0}_{1}_{2}'.format(ip, port, uniq_id)
+        return key
 
     def _check_needack_queue(self):
         """
@@ -1008,51 +1046,56 @@ class CConnectionManager(object):
         log.debug('start check needack_queue')
         msg_item = None
         ack_flag = async_msg.MSG_FLAG2NUM['FLAG_ACK']
-        try:
-            msg_item = self._needack_context_queue.get_nowait()
-        except queue.Empty:
-            log.debug('no need ack msg found yet')
-        if msg_item is not None:
-            toaddr = None
-            # if msg_item.get_resend_flag() == async_msg.MSG_SEND_FLAG:
-            # if msg_item.get_msg_type() == \
-            #   self._type_man.getnumber_bytype('ACK_OK'):
+        while True:
+            msg_item = None
+            try:
+                msg_item = self._needack_context_queue.get_nowait()
+            except queue.Empty:
+                log.debug('no need ack msg found yet')
+                break
             ack_success = False
+            toaddr = None
+            uniq_id = msg_item.get_uniq_id()
+            toaddr = msg_item.get_to_addr()[0]
             if msg_item.get_flag() & ack_flag == ack_flag:
                 # if msg_item is a ack msg
-                log.info('receive ack msg for CNeedAckMsg')
+                log.info(
+                    'msgack received, stop resending '
+                    'msguniq_id:{0}'.format(uniq_id)
+                )
                 msg_item.set_resend_flag(async_msg.MSG_RESEND_SUCCESS)
                 toaddr = msg_item.get_from_addr()[0]
                 ack_success = True
-            else:
-                # to be sent msg
-                toaddr = msg_item.get_to_addr()[0]
             to_ip = toaddr[0]
             to_port = toaddr[1]
-            uniq_id = msg_item.get_uniq_id()
-            msg_key = str(to_ip) + '_' + str(to_port) + '_' + str(uniq_id)
-            log.info('msg key[{0}]'.format(msg_key))
-            if msg_key in self._needack_context_dict:
-                # log.warn('msg[%s] is in the needack_context_dict' % msg_key)
-                msg_item.set_callback_function(
-                    self._needack_context_dict[msg_key].get_callback_function()
-                )
-            if ack_success and (msg_key in self._needack_context_dict):
-                # set up resending msg_item that has been acked successful
-                tmp_msg = self._needack_context_dict[msg_key]
-                tmp_msg.set_resend_flag(async_msg.MSG_RESEND_SUCCESS)
-            if not ack_success and (msg_item.get_resend_flag() == \
-                    async_msg.MSG_RESEND_SUCCESS):
-                pass
-            else:
+            msg_key = self._get_resend_msg_key(to_ip, to_port, uniq_id)
+            if ack_success:
+                if msg_key in self._needack_context_dict:
+                    last_msg = self._needack_context_dict[msg_key]
+                    del self._needack_context_dict[msg_key]
+                    log.info(
+                        'got ack-msg, del resending msg:{0}'.format(
+                            uniq_id
+                        )
+                    )
+                    self._executor.queue_exec(
+                        last_msg.get_callback_function(),
+                        executor.URGENCY_NORMAL,
+                        last_msg, True
+                    )
+                else:
+                    log.warn(
+                        'got duplicate ack-msg, msg_id:{0}'.format(uniq_id)
+                    )
+                continue
+            # not ack_success + not in  context_dict
+            if msg_key not in self._needack_context_dict:
                 self._needack_context_dict[msg_key] = msg_item
-        del_key_list = []
+        time_out_list = []
         # self._dict_lock.acquire()
-        log.debug('need ack context_dict, keys:{0}'.format(self._needack_context_dict.keys()))
         for key in self._needack_context_dict.keys():
             msg_item = self._needack_context_dict[key]
             msg_flag = msg_item.get_resend_flag()
-            log.info('msg handle flag: {0} '.format(msg_flag))
             msg_info = 'msg_type:%d, msg_flag:%d, msg_dest:%s,uniqid:%d' % (
                 msg_item.get_msg_type(),
                 msg_item.get_flag(),
@@ -1060,36 +1103,42 @@ class CConnectionManager(object):
                 msg_item.get_uniq_id()
             )
             if msg_flag == async_msg.MSG_RESEND_SUCCESS:
-                del_key_list.append(key)
+                time_out_list.append(key)
+                log.debug(
+                    'del succ-msg from resending queue: {0}'.format(msg_info)
+                )
             elif msg_flag == async_msg.MSG_RESENDING_FLAG:
                 msg_total_timeout = msg_item.get_total_timeout()
                 # if msg resending timeouts
                 if msg_total_timeout <= 0:
                     msg_item.set_resend_flag(async_msg.MSG_TIMEOUT_TO_DELETE)
-                    log.error('timeout, failed netmsg:{0}'.format(msg_info))
-                    del_key_list.append(key)
+                    log.error(
+                        'timeout, failed to get ack for netmsg:{0}'.format(
+                            msg_info)
+                    )
+                    time_out_list.append(key)
                 else:
                     msg_last_retry_time = msg_item.get_last_retry_time()
                     msg_retry_interval = msg_item.get_retry_interval()
-                    elapse_time = time.time() - msg_last_retry_time
+                    now = time.time()
+                    elapse_time = now - msg_last_retry_time
                     if elapse_time >= msg_retry_interval:
+                        # update total_timeout
                         msg_item.set_total_timeout(
                             msg_total_timeout - elapse_time
                         )
+                        msg_item.set_last_retry_time(now)
                         log.info('to resend CNeedAckMsg: {0}'.format(msg_info))
                         msg_item.pre_resend()
+                        msg_item.add_retry_times()
                         self.push_msg2sendqueue(msg_item)
-        for key in del_key_list:
-            successful = False
-            errmsg = None
-            if msg_item.get_resend_flag() == async_msg.MSG_RESEND_SUCCESS:
-                successful = True
+        for key in time_out_list:
             msg_item = self._needack_context_dict[key]
             del self._needack_context_dict[key]
             self._executor.queue_exec(
                 msg_item.get_callback_function(),
                 executor.URGENCY_NORMAL,
-                msg_item, successful
+                msg_item, False
             )
         # self._dict_lock.release()
 
@@ -1100,7 +1149,7 @@ class CConnectionManager(object):
         log.debug('start check msg ack info.')
         self._check_needack_queue()
         self._executor.delay_exec(
-            2,   # todo set the check_time to ?
+            3,   # todo set the check_time to ?
             self.do_check_msg_ack_loop,
             urgency=executor.URGENCY_HIGH
         )

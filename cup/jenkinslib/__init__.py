@@ -45,7 +45,7 @@ usage:
     jenkins.enable_ftp('ftp.baidu.com', 'cup', 'password', 22)
     with build.ftp_artifacts as af:
         af['artifacts_path'].download('./local_path')
-""" 
+"""
 
 import os
 from cup.jenkinslib import internal

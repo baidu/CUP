@@ -151,7 +151,7 @@ class _LoggerMan(object):
         self._maxsize = maxsize
         # '%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(message)s'
         formatter = logging.Formatter(
-            '%(levelname)s: %(asctime)s * '
+            '%(levelname)s:\t %(asctime)s * '
             '[%(process)d:%(thread)d] [%(filename)s:%(lineno)s] %(message)s'
         )
         if bprint_console:

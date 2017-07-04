@@ -8,17 +8,17 @@
 
 """
 :author:
-    Guannan Ma maguannan@baidu.com @mythmgn
+    Guannan Ma @mythmgn
 :descrition:
     cross-platform functions related module
 """
 
+import select
 import platform
 
 __all__ = [
     'is_linux',
-    'is_windows',
-    'is_mac'
+    'is_windows'
 ]
 
 
@@ -49,15 +49,12 @@ def is_windows():
 
 def is_mac():
     """
-    @return:
-	True or False
-    Check if you are running on mac.
+    is mac os
     """
-    
-    if platform.platform.startswith("darwin"):
-	return True
+    if hasattr(select, 'kqueue'):
+        return True
     else:
-	return False
+        return False
 
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

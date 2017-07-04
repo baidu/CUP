@@ -1,4 +1,10 @@
-Version: 1.5.5 - staring from 11.18 ~ 
+Version 1.5.6 - starting from  2017.3.1 ~
+	* [Enhancement] async enhancement for stability
+	* [New] CycleIDGenerator for generating universally unique_id (ip, port
+		encoded as part of the id)
+	* [Enhancement] cup.net.async exits more quickly than before
+
+Version: 1.5.5 - staring from 11.18 ~ 2017.3.1
 	* [Enhancement] debug method for executor
 	* [async] CNeedAckMsg & retry mechnism added. CAckMsg added
 

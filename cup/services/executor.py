@@ -62,6 +62,9 @@ class ExecutionService(object):
         delay_execute function after delay_time seconds
 
         You can use urgency := executor.URGENCY_NORMAL, by default
+
+        :TODO:
+            consider about stopping timers when invoking stop function
         """
         log.debug('got delay exec, func:{0}'.format(function))
         task_data = (urgency, (function, args, kwargs))
