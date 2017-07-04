@@ -7,7 +7,7 @@
 """
 This module provides Queue object.
 
-Authors: liushuxian(liushuxian@baidu.com)
+Authors: liushuxian(liushuxian)
 Date:    2015/01/21
 """ 
 

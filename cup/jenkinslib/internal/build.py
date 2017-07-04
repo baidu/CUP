@@ -7,9 +7,9 @@
 """
 This module provides Build object.
 
-Authors: liushuxian(liushuxian@baidu.com)
+Authors: liushuxian(liushuxian)
 Date:    2015/01/21
-""" 
+"""
 
 import contextlib
 import logging
@@ -67,7 +67,7 @@ class Build(base.JenkinsBase):
     @property
     def description(self):
         """get description of build if exists, otherwise None.
-        
+
         Returns:
             description info of this build, encoding in utf-8.
             return None if not exists.
@@ -77,7 +77,7 @@ class Build(base.JenkinsBase):
     @description.setter
     def description(self, description=""):
         """submit description to this build.
-        
+
         Args:
             description: description content, should encode in utf-8.
         """
@@ -138,7 +138,7 @@ class Build(base.JenkinsBase):
 
     def block(self):
         """block until this build stop running.
-        
+
         Do not use this method too often,
         because it will request jenkins server every second.
         """
@@ -152,7 +152,7 @@ class Build(base.JenkinsBase):
 
     def block_until_complete(self, delay=15, timeout=None):
         """block until this build stop running.
-        
+
         Args:
             delay: check status every `delay` seconds, default is 15s.
             timeout: wait `timeout` seconds at most, default is forever.
@@ -278,7 +278,7 @@ class Build(base.JenkinsBase):
     @property
     def timestamp(self):
         """get build timestamp."""
-        return self._data["timestamp"] / 1000.0        
+        return self._data["timestamp"] / 1000.0
 
     @property
     def console(self):

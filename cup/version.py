@@ -16,6 +16,6 @@
 """
 
 VERSION = '1.5.4'
-AUTHOR = 'nfs-qa@baidu.com'
+AUTHOR = 'nfs-qa'
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

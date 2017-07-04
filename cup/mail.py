@@ -109,9 +109,9 @@ class SmtpMailer(object):  # pylint: disable=R0903
         )
         mailer.sendmail(
             [
-                'maguannan@baidu.com',
-                'liuxuan05@baidu.com',
-                'zhaominghao@baidu.com'
+                'maguannan',
+                'liuxuan05',
+                'zhaominghao'
             ],
             'test_img',
             (
@@ -234,8 +234,8 @@ class SmtpMailer(object):  # pylint: disable=R0903
 
         """
         errmsg = None
-        self._check_type(recipients, [str, list])
-        self._check_type(subject, [str])
+        # self._check_type(recipients, [str, list])
+        # self._check_type(subject, [str])
         toaddrs = []
         # self._check_type(body, [str])
         if self._is_html:
@@ -244,7 +244,7 @@ class SmtpMailer(object):  # pylint: disable=R0903
             msg_body = text.MIMEText(body, 'plain', _charset='utf-8')
         outer = multipart.MIMEMultipart()
         outer['Subject'] = subject
-        if type(recipients) == list:
+        if isinstance(recipients, list):
             outer['To'] = self._COMMA_SPLITTER.join(recipients)
             toaddrs.extend(recipients)
         else:

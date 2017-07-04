@@ -9,7 +9,7 @@ This module provides Promotions object.
 
 Promotions is a container of Promotion.
 
-Authors: liushuxian(liushuxian@baidu.com)
+Authors: liushuxian(liushuxian)
 Date:    2015/02/05
 """ 
 

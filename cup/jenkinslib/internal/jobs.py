@@ -9,7 +9,7 @@ This module provides Jobs object.
 
 Jobs is a container of Job.
 
-Authors: liushuxian(liushuxian@baidu.com)
+Authors: liushuxian(liushuxian)
 Date:    2015/01/20
 """ 
 

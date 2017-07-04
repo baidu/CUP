@@ -7,9 +7,9 @@
 """
 This module provides Jenkins object.
 
-Authors: liushuxian(liushuxian@baidu.com)
+Authors: liushuxian(liushuxian)
 Date:    2015/01/20
-""" 
+"""
 
 import ast
 import logging
@@ -27,7 +27,7 @@ class JenkinsBase(object):
 
     def __init__(self, url, poll=True, static=False):
         """initialize
-        
+
         Args:
             url: url address of jenkins objects.
             poll: poll out api info while initialization.

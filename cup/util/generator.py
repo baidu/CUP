@@ -34,6 +34,8 @@ Singleton类。初始化需要传入一个用来生成字符集的string.
 import os
 import random
 import string
+import socket
+import struct
 import threading
 
 import cup
@@ -102,5 +104,53 @@ class CGeneratorMan(object):
         """get random uuid"""
         import uuid
         uuid.uuid4()
+
+
+class CycleIDGenerator(object):
+    """
+    cycle id generator. 128bit
+
+    64bit [ip, port, etc] 64bit[auto increment id]
+    """
+    def __init__(self, ip, port):
+        """
+        ip, port will be encoded into the ID
+        """
+        self._ip = ip
+        self._port = port
+        self._lock = threading.Lock()
+        packed = socket.inet_aton(self._ip)
+        tmp = struct.unpack("!L", packed)[0] << 96
+        self._pre_num = tmp | (int(self._port) << 64)
+        self._max_id = 0X1 << 63
+        self._next_id = 0
+
+    def reset_nextid(self, nextid):
+        """reset nextid that will return to you"""
+        self._lock.acquire()
+        if nextid > self._max_id:
+            self._lock.release()
+            return False
+        self._next_id = nextid
+        self._lock.release()
+        return True
+
+    def next_id(self):
+        """get next id"""
+        self._lock.acquire()
+        num = self._pre_num | self._next_id
+        if self._next_id == self._max_id:
+            self._next_id = 0
+        else:
+            self._next_id += 1
+        self._lock.release()
+        return num
+
+    @classmethod
+    def id2_hexstring(cls, num):
+        """return hex of the id"""
+        str_num = str(hex(num))
+        return str_num
+
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

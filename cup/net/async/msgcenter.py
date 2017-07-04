@@ -16,12 +16,13 @@
     msg center related module
 """
 
+import abc
 import time
 import socket
 import threading
-import abc
 
 import cup
+from cup import log
 from cup.net.async import conn
 from cup.net.async import msg as async_msg
 
@@ -72,7 +73,13 @@ class IMessageCenter(object):
         """
         cup.log.info('dump_stat service started')
         while not self._stop:
-            time.sleep(30)
+            ind = 0
+            while ind < 30:
+                ind += 1
+                time.sleep(1)
+                if self._stop:
+                    cup.log.info('dump_stat service stopped')
+                    return
             self._stat_cond.acquire()
             self._conn_mgr.dump_stats()
             self._stat_cond.wait(self._stat_intvl)
@@ -118,8 +125,22 @@ class IMessageCenter(object):
         """
         default handle for msgcenter
         """
-        cup.log.warn('Get a msg that other cannot handle. Will skip it')
-        del msg
+        msg_ackflag = async_msg.MSG_FLAG2NUM['FLAG_ACK']
+        if msg_ackflag & msg.get_flag() == msg_ackflag:
+            # no need to handle it
+            pass
+        else:
+            log.warn(
+                'got a msg that you cannot hanlde, default will skip it. '
+                'msg received, type:%d, flag:%d, from:%s, uniqid:%d' %
+                (
+                    msg.get_msg_type(),
+                    msg.get_flag(),
+                    str(msg.get_from_addr()),
+                    msg.get_uniq_id()
+                )
+            )
+            del msg
 
     def _run_conn_manager(self):
         cup.log.info('run conn manager poll')
@@ -136,12 +157,12 @@ class IMessageCenter(object):
         """
         return self._stop
 
-    def stop(self):
+    def stop(self, force_stop=False):
         """
         stop the message center
         """
         cup.log.info('To stop the msgcenter')
-        self._conn_mgr.stop()
+        self._conn_mgr.stop(force_stop)
         self._stop = True
         self._stat_cond.acquire()
         self._stat_cond.notify()
@@ -189,11 +210,20 @@ class IMessageCenter(object):
                 #     self._post_ackok_msg(msg_from_addr, msg_to_addr, msg_uniq_id)
                 #     cup.log.info('handle msg in msgcenter run')
                 #     self.handle(msg)
+                log.info(
+                    'msg received, type:%d, flag:%d, from:%s, uniqid:%d' %
+                    (
+                        msg.get_msg_type(),
+                        msg.get_flag(),
+                        str(msg.get_from_addr()),
+                        msg.get_uniq_id()
+                    )
+                )
                 ind += 1
                 if msg_ackflag & msg.get_flag() == msg_ackflag:
                     self._conn_mgr.push_msg2needack_queue(msg)
-                else:
-                    self.handle(msg)
+                # else:
+                self.handle(msg)
             msg = None
         return True
 

@@ -7,7 +7,7 @@
 # #############################################################
 """
 :authors:
-    Guannan Ma maguannan@baidu.com @mythmgn
+    Guannan Ma @mythmgn
 :description:
 
 """

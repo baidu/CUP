@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*
 """
     @author Guannan Ma
-    @brief
-    @note
 """
 
 import sys

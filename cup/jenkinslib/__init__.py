@@ -13,7 +13,7 @@ This library uses defensive programming with EAFP principle.
 Kinds of exceptions based on jenkins.Error may be raise.
 You should use this library with try ... except.
 
-Authors: liushuxian(liushuxian@baidu.com)
+Authors: liushuxian(liushuxian)
 Date:    2015/01/21
 
 usage:
@@ -45,7 +45,7 @@ usage:
     jenkins.enable_ftp('ftp.baidu.com', 'cup', 'password', 22)
     with build.ftp_artifacts as af:
         af['artifacts_path'].download('./local_path')
-""" 
+"""
 
 import os
 from cup.jenkinslib import internal
