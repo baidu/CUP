@@ -5,3 +5,4 @@ cup/bidu
 build.sh
 *.py.original
 .DS_Store
+*.*~
