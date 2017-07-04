@@ -8,7 +8,7 @@
 
 """
 :author:
-    Guannan Ma maguannan @mythmgn
+    Guannan Ma maguannan@baidu.com @mythmgn
 :descrition:
     cross-platform functions related module
 """
@@ -17,7 +17,8 @@ import platform
 
 __all__ = [
     'is_linux',
-    'is_windows'
+    'is_windows',
+    'is_mac'
 ]
 
 
@@ -48,9 +49,15 @@ def is_windows():
 
 def is_mac():
     """
-    TODO:
+    @return:
+	True or False
+    Check if you are running on mac.
     """
-    pass
+    
+    if platform.platform.startswith("darwin"):
+	return True
+    else:
+	return False
 
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

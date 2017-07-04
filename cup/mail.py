@@ -109,9 +109,9 @@ class SmtpMailer(object):  # pylint: disable=R0903
         )
         mailer.sendmail(
             [
-                'maguannan',
-                'liuxuan05',
-                'zhaominghao'
+                'abc@baidu.com',
+                'def@baidu.com',
+                'ggg@baidu.com'
             ],
             'test_img',
             (
