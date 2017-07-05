@@ -11,25 +11,28 @@
 :create_date:
     2014
 :last_date:
-    2014
+    2017/01/24 11:42:03
 :descrition:
     shell related module
 """
 
 import os
-import random
+import time
 import sys
 import shutil
 import signal
-import traceback
+import random
 import hashlib
-import collections
 import warnings
+import datetime
 import threading
+import traceback
 import subprocess
+import collections
 
 import cup
 from cup import err
+from cup.res import linux
 from cup.shell import expect
 
 __all__ = [
@@ -45,11 +48,27 @@ __all__ = [
     'execshell_withpipe_ex',
     'execshell_withpipe_str',
     'ShellExec',
-    'rmtree'
+    'rmtree',
+    'Asynccontent'
 ]
 
 _DEPRECATED_MSG = '''Plz use class cup.shell.ShellExec instead. Function %s
  deprecated'''
+
+
+class Asynccontent(object):
+    """
+    make a Argcontent to async_run u have to del it after using it
+    """
+    def __init__(self):
+        self.cmd = None
+        self.timeout = None
+        self.pid = None
+        self.ret = None
+        self.child_list = []
+        self.__cmdthd = None
+        self.__monitorthd = None
+        self.__subpro = None
 
 
 class ShellExec(object):  # pylint: disable=R0903
@@ -65,6 +84,105 @@ class ShellExec(object):  # pylint: disable=R0903
     def __init__(self):
         self._subpro = None
         self._subpro_data = None
+
+    def __kill_process(self, pid):
+        os.kill(pid, signal.SIGKILL)
+
+    def kill_all_process(self, async_content):
+        """
+        to kill all process
+        """
+        for pid in async_content.child_list:
+            self.__kill_process(pid)
+
+    def get_async_run_status(self, async_content):
+        """
+        get the command's status
+        """
+        try:
+            async_process = linux.Process(async_content.pid)
+            res = async_process.get_process_status()
+        except err.NoSuchProcess:
+            res = "process is destructor"
+        return res
+
+    def get_async_run_res(self, async_content):
+        """
+        if the process is still running the res shoule be None,None,0
+        """
+        return async_content.ret
+
+    def async_run(self, cmd, timeout):
+        """
+        async_run
+        return a dict {uuid:pid}
+        self.argcontent{cmd,timeout,ret,cmdthd,montor}
+        timeout:returncode:999
+        cmd is running returncode:-999
+        """
+
+        def _signal_handle():
+            """
+            signal setup
+            """
+            signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+
+        def _target(argcontent):
+            argcontent.__subpro = subprocess.Popen(
+                    argcontent.cmd, shell=True, stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    preexec_fn=_signal_handle)
+
+            #parent = psutil.Process(argcontent.__subpro.pid)
+            parent = linux.Process(argcontent.__subpro.pid)
+            children = parent.children(True)
+            ret_dict = []
+            for process in children:
+                #ret_dict.append(process.pid)
+                ret_dict.append(process)
+            argcontent.child_list = ret_dict
+
+        def _monitor(start_time, argcontent):
+            while(int(time.mktime(datetime.datetime.now().timetuple())) - int(start_time) <
+                    int(argcontent.timeout)):
+                time.sleep(1)
+                if argcontent.__subpro.poll() is not None:
+                    self._subpro_data = argcontent.__subpro.communicate()
+                    argcontent.ret['returncode'] = argcontent.__subpro.returncode
+                    argcontent.ret['stdout'] = self._subpro_data[0]
+                    argcontent.ret['stderr'] = self._subpro_data[1]
+                    return
+            str_warn = (
+                'Shell "%s"execution timout:%d. To kill it' % (argcontent.cmd,
+                    argcontent.timeout)
+            )
+            argcontent.__subpro.terminate()
+            argcontent.ret['returncode'] = 999
+            argcontent.ret['stderr'] = str_warn
+
+            for process in argcontent.child_list:
+                self.__kill_process(process)
+            del argcontent.child_list[:]
+
+        argcontent = Asynccontent()
+        argcontent.cmd = cmd
+        argcontent.timeout = timeout
+        argcontent.ret = {
+            'stdout': None,
+            'stderr': None,
+            'returncode': -999
+        }
+        argcontent.__cmdthd = threading.Thread(target=_target, args=(argcontent,))
+        argcontent.__cmdthd.start()
+        start_time = int(time.mktime(datetime.datetime.now().timetuple()))
+        argcontent.__cmdthd.join(0.1)
+        argcontent.pid = argcontent.__subpro.pid
+        argcontent.__monitorthd = threading.Thread(target=_monitor,
+                args=(start_time, argcontent))
+        argcontent.__monitorthd.start()
+        #this join should be del if i can make if quicker in Process.children
+        argcontent.__cmdthd.join(0.5)
+        return argcontent
 
     def run(self, cmd, timeout):
         """
@@ -128,6 +246,11 @@ class ShellExec(object):  # pylint: disable=R0903
             ret['returncode'] = 999
             ret['stderr'] = str_warn
         else:
+            self._subpro.wait()
+            times = 0
+            while self._subpro.returncode is None and times < 10:
+                time.sleep(1)
+                times += 1
             ret['returncode'] = self._subpro.returncode
             assert type(self._subpro_data) == tuple, \
                 'self._subpro_data should be a tuple'

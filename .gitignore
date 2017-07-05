@@ -6,3 +6,4 @@ build.sh
 *.py.original
 .DS_Store
 *.*~
+*.log

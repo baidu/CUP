@@ -58,7 +58,7 @@ class TestMyCase(unittest.CUTCase):
 
     def _lost_heartbeat(self):
         hostname = net.get_local_hostname()
-        self._hb.activate(hostname, heartbeat.Device(hostname))
+        self._hb.refresh(hostname, heartbeat.Device(hostname))
         lost_devices = self._hb.get_lost()
         self._check(hostname, lost_devices, should_in=False)
         time.sleep(6)

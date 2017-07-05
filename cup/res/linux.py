@@ -525,6 +525,60 @@ def wrap_exceptions(fun):
             raise error
     return wrapper
 
+CLOCK_TICKS = os.sysconf("SC_CLK_TCK")
+def boot_time():
+    """Return the system boot time expressed in seconds since the epoch.
+    """
+    with open('/proc/stat', 'rb') as f:
+        for line in f:
+            if line.startswith(b'btime'):
+                ret = float(line.strip().split()[1])
+                return ret
+        raise RuntimeError("line 'btime' not found in /proc/stat")
+
+
+def pids():
+    """Returns a list of PIDs currently running on the system."""
+    return [int(x) for x in os.listdir(b'/proc') if x.isdigit()]
+
+_pmap = {}
+
+
+def process_iter():
+    """Return a generator yielding a Process instance for all
+    running processes.
+
+    Every new Process instance is only created once and then cached
+    into an internal table which is updated every time this is used.
+
+    Cached Process instances are checked for identity so that you're
+    safe in case a PID has been reused by another process, in which
+    case the cached instance is updated.
+
+    yuetian:
+    1.the origion use a check_running function to check weather
+    PID has been reused by another process in which case yield a new
+    Process instance
+    hint:i did not use check_running function because the container of
+    pid is set
+
+    2.the origion use a sorted list(_pmap.items()) +
+        list(dict.fromkeys(new_pids).items()
+    to get pid and proc to make res.proc is only a instance of a pid Process
+    hint(bugs):i did not use fromkeys(new_pids) because i did not get the meanning
+    of using proc
+    """
+    pid_set = set(pids())
+
+    for pid in pid_set:
+        try:
+            check_process = Process(pid)
+            res = check_process.get_process_name()
+        except cup.err.NoSuchProcess:
+            pass
+        else:
+            yield check_process
+
 
 # pylint: disable=R0904
 class Process(object):
@@ -532,11 +586,91 @@ class Process(object):
     Linux中进程的抽象类， 可以进行进程的信息获取。
     """
 
-    __slots__ = ["_pid", "_process_name"]
+    __slots__ = ["_pid", "_process_name", "_create_time"]
 
     def __init__(self, pid):
         self._pid = pid
         self._process_name = None
+        self._create_time = None
+        if not os.path.lexists("/proc/%s/exe" % self._pid):
+            raise cup.err.NoSuchProcess(self._pid, self._process_name)
+        else:
+            self._create_time = self.create_time()
+
+    def create_time(self):
+        """return -1 represent the process does not exists
+        """
+        #if not os.path.lexists("/proc/%s/exe" % self._pid):
+        #    raise cup.err.NoSuchProcess(self._pid, self._process_name)
+        #else:
+        try:
+            with open("/proc/%s/stat" % self._pid, 'rb') as f:
+                st = f.read().strip()
+        except IOError:
+            return -1
+        else:
+            st = st[st.rfind(b')') + 2:]
+            st = st[st.rfind(b')') + 2:]
+            values = st.split(b' ')
+            bt = boot_time()
+            return (float(values[19]) / CLOCK_TICKS) + bt
+
+    def children(self, recursive=False):
+        """Return the children of this process as a list of Process
+        instances, pre-emptively checking whether PID has been reused.
+        If recursive is True return all the parent descendants.
+
+        Example (A == this process):
+
+         A ─┐
+            │
+            ├─ B (child) ─┐
+            │             └─ X (grandchild) ─┐
+            │                                └─ Y (great grandchild)
+            ├─ C (child)
+            └─ D (child)
+        """
+        ppid_map = None
+        ret = []
+        if not recursive:
+            # 'slow' version, common to all platforms except Windows
+            for p in process_iter():
+                #try:
+                if p.get_process_ppid() == self._pid:
+                    # if child happens to be older than its parent
+                    # (self) it means child's PID has been reused
+                    if self.create_time() <= p.create_time():
+                        ret.append(p._pid)
+                #except (cup.err.NoSuchProcess):
+                #    pass
+        else:
+            # construct a dict where 'values' are all the processes
+            # having 'key' as their parent
+            table = collections.defaultdict(list)
+            for p in process_iter():
+                try:
+                    table[p.get_process_ppid()].append(p)
+                except (cup.err.NoSuchProcess):
+                    pass
+            # At this point we have a mapping table where table[self.pid]
+            # are the current process' children.
+            # Below, we look for all descendants recursively, similarly
+            # to a recursive function call.
+            checkpids = [self._pid]
+            for pid in checkpids:
+                for child in table[pid]:
+                    try:
+                        # if child happens to be older than its parent
+                        # (self) it means child's PID has been reused
+                        intime = self.create_time() <= child.create_time()
+                    except (cup.err.NoSuchProcess):
+                        pass
+                    else:
+                        if intime:
+                            ret.append(child._pid)
+                            if child._pid not in checkpids:
+                                checkpids.append(child._pid)
+        return ret
 
     @wrap_exceptions
     def get_process_name(self):

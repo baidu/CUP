@@ -8,10 +8,8 @@
     @LastModif: 2014-09-02 13:19:58
     @Note:
 """
-<<<<<<< HEAD
 import time
 
-=======
 import os
 import sys
 import time
@@ -19,7 +17,6 @@ import time
 _NOW_PATH = os.path.dirname(os.path.abspath(__file__)) + '/'
 sys.path.insert(0, _NOW_PATH + '../')
 
->>>>>>> origin/master
 import cup
 from cup import cache
 from cup import unittest
