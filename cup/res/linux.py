@@ -86,7 +86,7 @@ def get_kernel_version():
     versions = cup.shell.execshell_withpipe_str(cmd, False)
     version = reg.findall(versions)[0]
 
-    return tuple(version.split('.'))
+    return tuple([int(info) for info in version.split('.')])
 
 
 @cup.decorators.needlinux

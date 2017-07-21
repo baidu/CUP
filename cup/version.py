@@ -8,14 +8,14 @@
 
 """
 :author:
-    Guannan Ma maguannan@baidu.com @mythmgn
+    Guannan Ma maguannan @mythmgn
 :create_date:
     2014
 :modify_date:
-    2015.3.4
+    2017.7.21
 """
 
-VERSION = '1.5.4'
+VERSION = '1.5.6'
 AUTHOR = 'nfs-qa'
 
-# vi:set tw=0 ts=4 sw=4 nowrap fdm=indent
+# vi:set tw=0 ts=4 sw=4 nowrap fdm=indent 

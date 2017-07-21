@@ -3,6 +3,10 @@ Version 1.5.6 - starting from  2017.3.1 ~
 	* [New] CycleIDGenerator for generating universally unique_id (ip, port
 		encoded as part of the id)
 	* [Enhancement] cup.net.async exits more quickly than before
+	* [Bug] cup.net.async - Fix CPU-utilization too high bug
+	* [Bug] cup.net.async - Fix getting-peerinfo bug
+	* [Bug] cup.res.linux - Kernel version was returned with a tuple
+		('2', '6', '32') which should be (2, 6, 32)
 
 Version: 1.5.5 - staring from 11.18 ~ 2017.3.1
 	* [Enhancement] debug method for executor

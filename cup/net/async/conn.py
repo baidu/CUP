@@ -188,7 +188,6 @@ class CConnContext(object):  # pylint: disable=R0902
         """
         get the net msg being received
         """
-        # log.debug('to get recving_msg')
         #  if no recving msg pending there, create one.
         if self._recving_msg is None:
             self._recving_msg = async_msg.CNetMsg(is_postmsg=False)
@@ -211,10 +210,6 @@ class CConnContext(object):  # pylint: disable=R0902
         """
         if self._sending_msg is None or \
                 self._sending_msg.is_msg_already_sent():
-            # log.debug('to move2next_sending_msg')
-            # if self._sending_msg is not None:
-            #     # del self._sending_msg
-            #     pass
             try:
                 item = self._send_queue.get_nowait()
                 msg = item[2]
@@ -227,7 +222,6 @@ class CConnContext(object):  # pylint: disable=R0902
                     str(error)
                 )
                 log.error(errmsg)
-                # self._lock.release()
                 raise CConnectionManager.QueueError(errmsg)
             self._sending_msg = msg
         else:
@@ -366,18 +360,6 @@ class CConnContext(object):  # pylint: disable=R0902
         """return sending queue"""
         return self._send_queue
 
-    # def set_retry_times(self, num):
-    #     """set msg retry times"""
-    #     self._resend_times = num
-
-    # def add_retry_times(self):
-    #     """add retry times"""
-    #     self._resend_times += 1
-
-    # def get_retry_times(self):
-    #     """get retry times"""
-    #     return self._resend_times
-
 
 # pylint: disable=R0902
 class CConnectionManager(object):
@@ -410,7 +392,6 @@ class CConnectionManager(object):
         self._fileno2context = {}
         self._context2fileno_peer = {}
         self._peer2context = {}
-        #  self._kp_params = keepalive_params
 
         min_thds, max_thds = thdpool_param
         self._thdpool = threadpool.ThreadPool(
@@ -783,12 +764,12 @@ class CConnectionManager(object):
         """
         get recv msg from queue
         """
-        # log.debug('to fetch a msg from recv_queue for handle function')
+        log.debug('to fetch a msg from recv_queue for handle function')
         try:
-            msg = self._recv_queue.get_nowait()[1]
-            # msg = self._recv_queue.get()[1]
+            # should use block-mode, othwersie the while loop in the upper
+            # code scope will crazily occupy a full cpu-core capacity.
+            msg = self._recv_queue.get(block=True, timeout=0.5)[1]
         except queue.Empty as error:
-            # log.debug('The recv queue is empty')
             msg = None
         except TypeError as error:
             log.error('type error, seems received SIGTERM, err:{0}'.format(
@@ -808,9 +789,6 @@ class CConnectionManager(object):
 
     def _finish_read_callback(self, succ, result):
         context = result
-        # log.debug(
-        #     'context:%s, succ:%s' % (context.get_context_info(), succ)
-        # )
         if context.is_detroying():
             # destroy the context and socket
             context.release_readlock()
@@ -834,10 +812,6 @@ class CConnectionManager(object):
         if not context.try_readlock():
             return
 
-        # log.debug(
-        #     'succeed to acquire readlock, to add the \
-        #     readjob into the threadpool'
-        # )
         try:
             self._do_read(context)
             self._finish_read_callback(True, context)
@@ -926,7 +900,6 @@ class CConnectionManager(object):
             log.debug('conetext is none')
             return
         self._thdpool.add_1job(self.add_write_job, context)
-        # self.add_write_job(context)
 
     def _do_write(self, context):
         """write into interface sending buffer"""
@@ -937,7 +910,6 @@ class CConnectionManager(object):
             return context
         # log.debug('To enter write loop until eagin')
         # pylint:disable=w0212
-        # log.debug('This msg _need_head:%s' % msg._need_head)
         while not self._stopsign:
             data = msg.get_write_bytes(self.NET_RW_SIZE)
             log.debug('msg get_write_bytes_len to be sent: %d' % len(data))
@@ -1092,7 +1064,6 @@ class CConnectionManager(object):
             if msg_key not in self._needack_context_dict:
                 self._needack_context_dict[msg_key] = msg_item
         time_out_list = []
-        # self._dict_lock.acquire()
         for key in self._needack_context_dict.keys():
             msg_item = self._needack_context_dict[key]
             msg_flag = msg_item.get_resend_flag()
@@ -1140,7 +1111,6 @@ class CConnectionManager(object):
                 executor.URGENCY_NORMAL,
                 msg_item, False
             )
-        # self._dict_lock.release()
 
     def do_check_msg_ack_loop(self):
         """

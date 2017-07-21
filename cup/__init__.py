@@ -22,8 +22,8 @@ from cup import err
 from cup import mail
 from cup import net
 from cup import version
-if sys.platform.startswith('linux'):
-    from cup import shell
+# if sys.platform.startswith('linu'):
+#     from cup import shell
 from cup import timeplus as time
 # pylint: disable=W0404
 # For backwards compatity
