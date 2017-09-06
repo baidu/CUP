@@ -1,4 +1,4 @@
-Version 1.5.6 - starting from  2017.3.1 ~
+Version 1.5.6 - starting from  2017.3.1 ~ 2017.9.5
 	* [Enhancement] async enhancement for stability
 	* [New] CycleIDGenerator for generating universally unique_id (ip, port
 		encoded as part of the id)
