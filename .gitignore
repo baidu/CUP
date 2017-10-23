@@ -9,4 +9,6 @@ build.sh
 *.log
 cup/net/async/msgcenter_dict.py
 cup.tar
+cup.zip
+cup.tar.gz
 tmp
