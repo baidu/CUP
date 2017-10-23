@@ -7,7 +7,6 @@ build.sh
 .DS_Store
 *.*~
 *.log
-
 cup/net/async/msgcenter_dict.py
-
 cup.tar
+tmp

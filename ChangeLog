@@ -1,3 +1,27 @@
+Version 1.6.0 - Under development, not released yet.  starting from 2017.9.6 ~ 
+    * [Enhancement] cup.mail enhanced for analyzing cc and bcc lists.                                                           
+                                                                                                                   
+Version 1.5.6 - starting from  2017.3.1 ~ 2017.9.5                                                                 
+    * [Enhancement] async enhancement for stability                                                                
+    * [New] CycleIDGenerator for generating universally unique_id (ip, port                         
+        encoded as part of the id)                                                                                 
+    * [Enhancement] cup.net.async exits more quickly than before                                                   
+    * [Bug] cup.net.async - Fix CPU-utilization too high bug                                                       
+    * [Bug] cup.net.async - Fix getting-peerinfo bug                                                               
+    * [Bug] cup.res.linux - Kernel version was returned with a tuple                                
+        ('2', '6', '32') which should be (2, 6, 32)                                                                
+                                                                                                                   
+Version: 1.5.5 - staring from 11.18 ~ 2017.3.1                                                                                                                                                                
+    * [Enhancement] debug method for executor                                                                      
+    * [async] CNeedAckMsg & retry mechnism added. CAckMsg added                                                    
+                                                                                                                   
+Version: 1.5.4 - Starting from 2016.9 ~ 2016.11.11                                                                 
+    * [Enhancement] generator supports staring point                                                               
+    * [Enhancement] catch exception socket.gaierror when it encounters network                      
+        instability                                                                                                
+    * [Bug] Set up splitter other thant colon in a Configure2Dict with blanks and comments          
+    * [Async] Support automatic msg retry                                                                          
+    * [Async] Support ack msg       
 
 Version: 1.5.1                                                                                      
     * [New] cup.log - add xxx_if                                                                    

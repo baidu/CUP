@@ -254,7 +254,7 @@ class SmtpMailer(object):  # pylint: disable=R0903
             if type(cc) == str:
                 outer['Cc'] = cc
                 toaddrs.append(cc)
-            elif type(cc) == list:
+            elif isinstance(cc, list):
                 outer['Cc'] = self._COMMA_SPLITTER.join(cc)
                 toaddrs.extend(cc)
             else:
@@ -263,7 +263,7 @@ class SmtpMailer(object):  # pylint: disable=R0903
             if type(bcc) == str:
                 outer['Bcc'] = bcc
                 toaddrs.append(bcc)
-            elif type(bcc) == list:
+            elif isinstance(bcc, list):
                 outer['Bcc'] = self._COMMA_SPLITTER.join(bcc)
                 toaddrs.extend(bcc)
             else:
