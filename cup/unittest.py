@@ -18,6 +18,7 @@ import traceback
 import logging
 
 import cup
+from cup import err
 
 __all__ = [
     'assert_true',
@@ -32,6 +33,7 @@ __all__ = [
     'assert_ne',
     'CUTCase',
     'CCaseExecutor',
+    'expect_raise'
 ]
 
 
@@ -459,5 +461,16 @@ class CCaseExecutor(object):
         print '========================'
         print '======== Passed ========'
         print '========================'
+
+
+def expect_raise(function, exception, *argc, **kwargs):
+    """expect raise exception"""
+    try:
+        function(*argc, **kwargs)
+    except exception:
+        pass
+    else:
+        raise err.ExpectFailure(exception, None)
+
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

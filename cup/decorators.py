@@ -12,16 +12,16 @@
 :descrition:
     decorators related module
 """
-
-from datetime import datetime as datetime_in
-import platform
+import os
 import time
+import platform
 import threading
 from functools import wraps
+from datetime import datetime as datetime_in
 
 import cup
 
-__all__ = ['Singleton', 'needlinux', 'TraceUsedTime']
+__all__ = ['Singleton', 'needlinux', 'TraceUsedTime', 'needlinux', 'needposix']
 
 
 class Singleton(object):  # pylint: disable=R0903
@@ -93,6 +93,26 @@ def needlinux(function):
         )
     return function
 
+
+def needposix(function):
+    """
+    only support posix
+
+    :platform:
+        Posix compatible
+
+    example
+    ::
+        from cup import decorators
+        @decorators.needposix
+        def your_func():
+            pass
+    """
+    if os.name != 'posix':
+        raise cup.err.DecoratorException(
+            'The system is not posix-based'
+        )
+    return function
 
 # pylint:disable=R0903
 class TraceUsedTime(object):

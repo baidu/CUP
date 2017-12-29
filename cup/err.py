@@ -16,7 +16,7 @@
 __all__ = [
     'BaseCupException', 'DecoratorException', 'LoggerException',
     'ResException', 'NoSuchProcess', 'AccessDenied', 'NetException',
-    'AsyncMsgError', 'ThreadTermException'
+    'AsyncMsgError', 'ThreadTermException', 'LockFileError'
 ]
 
 
@@ -134,6 +134,24 @@ class NotInitialized(BaseCupException):
     """
     def __init__(self, msg=''):
         msg = 'Not initialized: %s' % msg
+        BaseCupException.__init__(self, msg)
+
+
+class LockFileError(BaseCupException):
+    """
+    LockFileError
+    """
+    def __init__(self, msg=''):
+        msg = 'LockFileError: %s' % msg
+        BaseCupException.__init__(self, msg)
+
+
+class ExpectFailure(BaseCupException):
+    """
+    Expect failure for cup.unittest
+    """
+    def __init__(self, expect, got):
+        msg = 'expect failure, expect {0}, got {1}'.format(expect, got)
         BaseCupException.__init__(self, msg)
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent
