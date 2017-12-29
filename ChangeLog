@@ -1,43 +1,58 @@
-Version 1.6.0 - Under development, not released yet.  starting from 2017.9.6 ~ 
-    * [Enhancement] cup.mail enhanced for analyzing cc and bcc lists.                                                           
-                                                                                                                   
-Version 1.5.6 - starting from  2017.3.1 ~ 2017.9.5                                                                 
-    * [Enhancement] async enhancement for stability                                                                
-    * [New] CycleIDGenerator for generating universally unique_id (ip, port                         
-        encoded as part of the id)                                                                                 
-    * [Enhancement] cup.net.async exits more quickly than before                                                   
-    * [Bug] cup.net.async - Fix CPU-utilization too high bug                                                       
-    * [Bug] cup.net.async - Fix getting-peerinfo bug                                                               
-    * [Bug] cup.res.linux - Kernel version was returned with a tuple                                
-        ('2', '6', '32') which should be (2, 6, 32)                                                                
-                                                                                                                   
-Version: 1.5.5 - staring from 11.18 ~ 2017.3.1                                                                                                                                                                
-    * [Enhancement] debug method for executor                                                                      
-    * [async] CNeedAckMsg & retry mechnism added. CAckMsg added                                                    
-                                                                                                                   
-Version: 1.5.4 - Starting from 2016.9 ~ 2016.11.11                                                                 
-    * [Enhancement] generator supports staring point                                                               
-    * [Enhancement] catch exception socket.gaierror when it encounters network                      
-        instability                                                                                                
-    * [Bug] Set up splitter other thant colon in a Configure2Dict with blanks and comments          
-    * [Async] Support automatic msg retry                                                                          
-    * [Async] Support ack msg       
+Version 1.6.0 - starting from 2017.9.6 ~ 2017.12.29
+	* [New] MsgBroker - Add a broker for handling system failures
+	* [New] cup.
+	* [Bug] Linux Resource Query Bug - related to data columuns
+	* [Bug] cup.net.async - socket cannot be got.
+	* [Enhancement] cup.net.async - CUP utilization enhancement
 
-Version: 1.5.1                                                                                      
-    * [New] cup.log - add xxx_if                                                                    
-    * [New] cup.thirdp - replace MySQLdb with pymysql.                                              
-        Use can still use "from cup.thirdp import MySQLdb"                                          
-    * [New] cup.util.conf - bug fix                                                                 
-                                                                                                    
-Version: 1.5.0                                                                                      
-    * [New] cup.jenkinslib - add jenkins lib with which you can operate on jenkins jobs             
-    * [New] cup.log.parse - parse string line logged by cup.log.XXX                                 
-    * [New] cup.unittest.assert_startswith                                                          
-    * [New] cup.oper - add contains_file which searchs a file and return its existence              
-    * [Bug] cup.util.conf - fix "key comparation order" bug for Configure2Dict                      
-    * [Bug] cup.util.conf - fix HdfsXmlConf "eletemnt without value. e.g. <value/>    
+Version 1.5.6 - starting from  2017.3.1 ~ 2017.9.5
+	* [Enhancement] async enhancement for stability
+	* [New] CycleIDGenerator for generating universally unique_id (ip, port
+		encoded as part of the id)
+	* [Enhancement] cup.net.async exits more quickly than before
+	* [Bug] cup.net.async - Fix CPU-utilization too high bug
+	* [Bug] cup.net.async - Fix getting-peerinfo bug
+	* [Bug] cup.res.linux - Kernel version was returned with a tuple
+		('2', '6', '32') which should be (2, 6, 32)
 
-Version: 1.4.2.0
+Version: 1.5.5 - staring from 11.18 ~ 2017.3.1
+	* [Enhancement] debug method for executor
+	* [async] CNeedAckMsg & retry mechnism added. CAckMsg added
+
+Version: 1.5.4 - Starting from 2016.9 ~ 2016.11.11
+	* [Enhancement] generator supports staring point
+	* [Enhancement] catch exception socket.gaierror when it encounters network
+		instability
+	* [Bug] Set up splitter other thant colon in a Configure2Dict with blanks and comments 
+	* [Async] Support automatic msg retry
+	* [Async] Support ack msg
+
+Version: 1.5.3 - Starting from 2016.6 to 2016.8
+	* [New] cup.util.conf - support $include "conf_file" syntax [write/read]
+	* [New] port free check. Listened port probe.
+	* [Enhancement] cup.net.async - enhance network write/read speed. 
+		Example provided
+	* [Improvement] - Improve cup.log performance
+	* [Enhancement] cup.util.threadpool, callback function will receive
+		Exception object (param result) if it encounters error.
+
+Version: 1.5.1 && 1.5.2
+	* [New] cup.log - add xxx_if 
+	* [New] cup.thirdp - replace MySQLdb with pymysql. 
+		* from cup.thirdp import pymysql
+		* import MySQLdb
+	* [New] cup.util.generator - get_random_str
+	* [Bug] cup.util.conf - bug fix
+
+Version: 1.5.0
+	* [New] cup.jenkinslib - add jenkins lib with which you can operate on jenkins jobs
+	* [New] cup.log.parse - parse string line logged by cup.log.XXX
+	* [New] cup.unittest.assert_startswith
+	* [New] cup.oper - add contains_file which searchs a file and return its existence
+	* [Bug] cup.util.conf - fix "key comparation order" bug for Configure2Dict
+	* [Bug] cup.util.conf - fix HdfsXmlConf "eletemnt without value. e.g. <value/>
+
+Version: 1.4.2
 	* [Bug] oper.is_proc_exist. fix a bug while check proc exist
 	* [New] Add cup.services.executor. Exec and delay_exec service
 	* [New] Add cup.services.buffers. Buffer releated feature. For easing
@@ -51,7 +66,7 @@ Version: 1.4.2.0
 	* [New]  cup.conf - add HdfsConf support
 	* [New]  cup.shell.get_pid - get process id by process_path and grep_string
 
-Version: 1.4.1.0 - [not existent on github.com]
+Version: 1.4.1
 	* [New] assert_boundary, assert_local_file_eq 2015/4/19
 	* [New] Log level [warnning error fatal] splitted into file.log.wf
 	* [New] Hdfs
