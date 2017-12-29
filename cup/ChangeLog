@@ -1,3 +1,10 @@
+Version 1.6.0 - starting from 2017.9.6 ~ 2017.12.29
+	* [New] MsgBroker - Add a broker for handling system failures
+	* [New] cup.
+	* [Bug] Linux Resource Query Bug - related to data columuns
+	* [Bug] cup.net.async - socket cannot be got.
+	* [Enhancement] cup.net.async - CUP utilization enhancement
+
 Version 1.5.6 - starting from  2017.3.1 ~ 2017.9.5
 	* [Enhancement] async enhancement for stability
 	* [New] CycleIDGenerator for generating universally unique_id (ip, port

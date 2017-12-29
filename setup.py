@@ -12,6 +12,7 @@
 import os
 import re
 import sys
+import textwrap
 import traceback
 from distutils.core import setup
 
@@ -48,7 +49,27 @@ def _find_packages(prefix=''):
 setup(
     name=__name__,
     version=__version__,
+    description='A common useful python library',
+    long_description=(
+        'Wish CUP to be a popular common useful python-lib in the world! '
+        '(Currently, Most popular python lib in baidu)'
+    ),
+    url='https://github.com/baidu/CUP/',
     author=__author__,
+    maintainer='Guannan Ma mythmgn@gmail.com @mythmgn',
+    author_email='mythmgn@gmail.com',
+    classifiers=textwrap.dedent("""
+        Development Status :: 5 - Production/Stable
+        Intended Audience :: Developers
+        License :: OSI Approved ::  Apache License Version 2
+        Operating System :: Linux Macos Unix
+        Programming Language :: Python :: 2.6
+        Programming Language :: Python :: 2.7
+        Topic :: Software Development :: Libraries :: Python Modules
+        Topic :: Utilities
+        """).strip().splitlines(),
+    license='Apache 2',
+    keywords='library common',
     packages=_find_packages(__name__),
     package_data={'': ['*.so']}
 )
