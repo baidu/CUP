@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*
 """
 :authors:
-    Guannan Ma maguannan@baidu.com @mythmgn
+    Guannan Ma maguannan @mythmgn
 :create_date:
     2016.5.10
 :description:
