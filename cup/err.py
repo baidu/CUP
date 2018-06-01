@@ -16,7 +16,8 @@
 __all__ = [
     'BaseCupException', 'DecoratorException', 'LoggerException',
     'ResException', 'NoSuchProcess', 'AccessDenied', 'NetException',
-    'AsyncMsgError', 'ThreadTermException', 'LockFileError'
+    'AsyncMsgError', 'ThreadTermException', 'LockFileError',
+    'NotImplementedYet'
 ]
 
 
@@ -153,5 +154,24 @@ class ExpectFailure(BaseCupException):
     def __init__(self, expect, got):
         msg = 'expect failure, expect {0}, got {1}'.format(expect, got)
         BaseCupException.__init__(self, msg)
+
+
+class NotImplementedYet(BaseCupException):
+    """
+    Not implemented yet
+    """
+    def __init__(self, msg=''):
+        msg = 'The functionality is not implemented yet, {0}'.format(msg)
+        BaseCupException.__init__(self, msg)
+
+
+class ConfigError(BaseCupException):
+    """
+    ConfigError
+    """
+    def __init__(self, msg=''):
+        msg = 'Configuration Error: {0}'.format(msg)
+        BaseCupException.__init__(self, msg)
+
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

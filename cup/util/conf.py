@@ -8,8 +8,6 @@
 """
 :author:
     Liu.Jia Guannan Ma
-:create_date:
-    2014
 :descrition:
     Complex conf support
 """
@@ -742,7 +740,7 @@ class Configure2Dict(object):  # pylint: disable=R0903
             key = key[1:]
         for char in key:
             if not char.isalnum() and char != '_' \
-                    and char != '-' and char != '.':
+                    and char != '-' and char != '.' and char != '$':
                 raise KeyFormatError(key)
 
     # Check the [GROUP] key format
@@ -806,6 +804,8 @@ class Configure2Dict(object):  # pylint: disable=R0903
                 continue
             # if it's a section
             if line.startswith('['):
+                if line.find('#') > 0:
+                    line = line[:line.find('#')].strip()
                 if not line.endswith(']'):
                     raise LineFormatError('Parse line error, line:\n' + line)
                 line = line[1:-1]

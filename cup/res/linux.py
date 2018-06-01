@@ -15,15 +15,16 @@
 """
 
 import os
-import errno
-import sys
 import re
-import collections
-import warnings
+import sys
 import time
+import errno
 import socket
 import base64
 import struct
+import threading
+import warnings
+import collections
 
 import cup
 
@@ -81,11 +82,8 @@ def get_kernel_version():
     e.g.('2', '6', '32'):
 
     """
-    reg = re.compile(r'\d{1}\.\d{1,2}\.\d{1,3}')
-    cmd = '/bin/uname -a'
-    versions = cup.shell.execshell_withpipe_str(cmd, False)
-    version = reg.findall(versions)[0]
-
+    versions = os.uname()[2]
+    version = versions[0: versions.find('_')]
     return tuple([int(info) for info in version.split('.')])
 
 
@@ -193,10 +191,17 @@ _CPU_COLUMNS = [
 ]
 
 
-def _get_cpu_columns():
-    version = get_kernel_version()
-    if version >= (2, 6, 33):
-        _CPU_COLUMNS.append('guest_nice')
+# def _get_cpu_columns():
+#     version = get_kernel_version()
+#     if version >= (2, 6, 33):
+#         _CPU_COLUMNS.append('guest_nice')
+
+_COLUMN_LOCK = threading.Lock()
+
+_COLUMN_LOCK.acquire()
+if get_kernel_version() >= (2, 6, 33) and _CPU_COLUMNS.count('guest_nice') <= 0:
+    _CPU_COLUMNS.append('guest_nice')
+_COLUMN_LOCK.release()
 
 
 class CPUInfo(collections.namedtuple('CPUInfo', _CPU_COLUMNS)):

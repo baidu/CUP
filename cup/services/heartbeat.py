@@ -92,7 +92,7 @@ class LinuxHost(Device):
     """
     a linux host resource
     """
-    def __init__(self, name, init_this_host=False, iface='eth0'):
+    def __init__(self, name, init_this_host=False, iface='eth0', port=0):
         """
         :param name:
             name of the LinuxHost
@@ -109,6 +109,7 @@ class LinuxHost(Device):
         self._dict_info = {
             'iface':   iface,
             'ipaddr': '0.0.0.0',
+            'port': 0,
             'hostname': net.get_local_hostname(),
             'cpu_idle': -1,
             'mem_inuse': -1,        # MB
@@ -119,6 +120,7 @@ class LinuxHost(Device):
 
         if init_this_host:
             self._dict_info['ipaddr'] = net.get_hostip()
+            self._dict_info['port'] = port
             cpuinfo = linux.get_cpu_usage(1)
             meminfo = linux.get_meminfo()
             self._dict_info['net_in'] = linux.get_net_recv_speed(
@@ -167,6 +169,12 @@ class LinuxHost(Device):
         return ip information
         """
         return self._dict_info['ipaddr']
+
+    def get_ip_port(self):
+        """
+        return ip:port
+        """
+        return self._dict_info['ipaddr'] + ':' + str(self._dict_info['port'])
 
     def set_cpu_idle(self, idle_rate):
         """

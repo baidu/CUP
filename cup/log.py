@@ -17,7 +17,9 @@ __all__ = [
     'debug', 'info', 'warn', 'critical',
     'init_comlog', 'setloglevel',
     'ROTATION', 'INFINITE',
-    'reinit_comlog', 'get_inited_loggername', 'parse'
+    'reinit_comlog', 'get_inited_loggername', 'parse',
+    'backtrace_info', 'backtrace_debug', 'backtrace_error',
+    'backtrace_critical'
 ]
 
 
@@ -336,78 +338,78 @@ def _fail_handle(msg, e):
     print '%s\nerror:%s' % (msg, e)
 
 
-# def info(msg, back_trace_len=0):
-#     """
-#     logging.INFO的日志打印
-#     """
-#     try:
-#         msg = _log_file_func_info(msg, back_trace_len)
-#         loggerman = _LoggerMan()
-#         loggerman._getlogger().info(msg)
-#     except err.LoggerException:
-#         return
-#     except Exception as e:
-#         _fail_handle(msg, e)
-#
-#
-# def debug(msg, back_trace_len=0):
-#     """
-#     :param msg:
-#         logging.DEBUG级别的日志打印。
-#     :param back_trace_len:
-#         为扩展预留的参数， 正常使用可忽略。
-#
-#     """
-#     try:
-#         msg = _log_file_func_info(msg, back_trace_len)
-#         loggerman = _LoggerMan()
-#         loggerman._getlogger().debug(msg)
-#     except err.LoggerException:
-#         return
-#     except Exception as e:
-#         _fail_handle(msg, e)
-#
-#
-# def warn(msg, back_trace_len=0):
-#     """
-#     logging.WARN级别的日志打印
-#     """
-#     try:
-#         msg = _log_file_func_info(msg, back_trace_len)
-#         loggerman = _LoggerMan()
-#         loggerman._getlogger().warn(msg)
-#     except err.LoggerException:
-#         return
-#     except Exception as e:
-#         _fail_handle(msg, e)
-#
-#
-# def error(msg, back_trace_len=0):
-#     """
-#     logging.ERROR级别的日志打印
-#     """
-#     try:
-#         msg = _log_file_func_info(msg, back_trace_len)
-#         loggerman = _LoggerMan()
-#         loggerman._getlogger().error(msg)
-#     except err.LoggerException:
-#         return
-#     except Exception as error:
-#         _fail_handle(msg, error)
-#
-#
-# def critical(msg, back_trace_len=0):
-#     """
-#     logging.CRITICAL级别的日志打印
-#     """
-#     try:
-#         msg = _log_file_func_info(msg, back_trace_len)
-#         loggerman = _LoggerMan()
-#         loggerman._getlogger().critical(msg)
-#     except err.LoggerException:
-#         return
-#     except Exception as e:
-#         _fail_handle(msg, e)
+def backtrace_info(msg, back_trace_len=0):
+    """
+    logging.INFO的日志打印
+    """
+    try:
+        msg = _log_file_func_info(msg, back_trace_len)
+        loggerman = _LoggerMan()
+        loggerman._getlogger().info(msg)
+    except err.LoggerException:
+        return
+    except Exception as e:
+        _fail_handle(msg, e)
+
+
+def backtrace_debug(msg, back_trace_len=0):
+    """
+    :param msg:
+        logging.DEBUG级别的日志打印。
+    :param back_trace_len:
+        为扩展预留的参数， 正常使用可忽略。
+
+    """
+    try:
+        msg = _log_file_func_info(msg, back_trace_len)
+        loggerman = _LoggerMan()
+        loggerman._getlogger().debug(msg)
+    except err.LoggerException:
+        return
+    except Exception as e:
+        _fail_handle(msg, e)
+
+
+def backtrace_warn(msg, back_trace_len=0):
+    """
+    logging.WARN级别的日志打印
+    """
+    try:
+        msg = _log_file_func_info(msg, back_trace_len)
+        loggerman = _LoggerMan()
+        loggerman._getlogger().warn(msg)
+    except err.LoggerException:
+        return
+    except Exception as e:
+        _fail_handle(msg, e)
+
+
+def backtrace_error(msg, back_trace_len=0):
+    """
+    logging.ERROR级别的日志打印
+    """
+    try:
+        msg = _log_file_func_info(msg, back_trace_len)
+        loggerman = _LoggerMan()
+        loggerman._getlogger().error(msg)
+    except err.LoggerException:
+        return
+    except Exception as error:
+        _fail_handle(msg, error)
+
+
+def backtrace_critical(msg, back_trace_len=0):
+    """
+    logging.CRITICAL级别的日志打印
+    """
+    try:
+        msg = _log_file_func_info(msg, back_trace_len)
+        loggerman = _LoggerMan()
+        loggerman._getlogger().critical(msg)
+    except err.LoggerException:
+        return
+    except Exception as e:
+        _fail_handle(msg, e)
 
 
 def setloglevel(logginglevel):
