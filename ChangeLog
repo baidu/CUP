@@ -1,6 +1,23 @@
+Version 1.6.1 - starting from 2018.2.5 ~ 2018.6.1
+	* [New] cup.shell.is_proc_alive - Add optional to abandon vim|less|vi|tail|cat|more or custom filter	
+	* [Bug] cup.shell.get_pid - Fix grep to surely abandon vim|less|vi|tail|cat|more 
+	* [New] cup.log - Add support for stack manipulation, which can pop out function calls.
+	* [New] cup.err - Add UnImplemented exception class.
+	* [New] cup.exfile - Support temp files which will be removed immediately after the variable life ends.
+	* [Enhancement] cup.util.conf - support $ in a conf key
+	* [Doc] cup.shell - Fix doc bug. 
+	* [New] cup.shell - Add grep support string with space
+	* [New] cup.storage.obj - Support common object storage apis including ftp, s3
+	* [Bug] cup.res.linux - Getting cpuinfo has bugs (new kernel 3.10)
+	* [Enhancement] - cup.util.threadpool, add daemon_threads as the parameter
+		that you can use to let the threadpool threads behave like daemon-thread
+		(when the main thread exits, it exits as well)
+	* [Enhancement] - cup.util.conf - support conf line "[.test] # comments" 
+
 Version 1.6.0 - starting from 2017.9.6 ~ 2017.12.29
+	* [New] cup.bidu.icafe - interact with baidu icafe.
 	* [New] MsgBroker - Add a broker for handling system failures
-	* [New] cup.exfile - Add Lockfile support 
+	* [New] cup.
 	* [Bug] Linux Resource Query Bug - related to data columuns
 	* [Bug] cup.net.async - socket cannot be got.
 	* [Enhancement] cup.net.async - CUP utilization enhancement
