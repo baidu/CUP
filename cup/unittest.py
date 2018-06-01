@@ -17,7 +17,7 @@ import hashlib
 import traceback
 import logging
 
-import cup
+from cup import log
 from cup import err
 
 __all__ = [
@@ -41,7 +41,7 @@ def _assert_bool(val, exp, errmsg=''):
     if (val is not exp):
         msg = 'got %s, expect %s\nUser ErrMsg: %s' % (val, exp, errmsg)
         try:
-            cup.log.critical(msg)
+            log.backtrace_critical(msg, 2)
         # pylint: disable=W0703
         except Exception:
             pass
@@ -79,7 +79,7 @@ def assert_eq(val, exp, errmsg=''):
     if (val != exp):
         msg = 'got %s, expect %s\nUser ErrMsg: %s' % (val, exp, errmsg)
         try:
-            cup.log.critical(msg)
+            log.backtrace_critical(msg, 1)
         # pylint: disable=W0703
         except Exception:
             pass
@@ -95,7 +95,7 @@ def assert_not_eq(val, exp, errmsg=''):
             val, errmsg
         )
         try:
-            cup.log.critical(msg)
+            log.backtrace_critical(msg, 1)
         # pylint: disable=W0703
         except Exception:
             pass
@@ -118,7 +118,7 @@ def assert_eq_one(val, array, errmsg=''):
             val, str_arr, errmsg
         )
         try:
-            cup.log.critical(msg)
+            log.backtrace_critical(msg, 1)
         # pylint: disable=W0703
         except Exception:
             pass
@@ -149,7 +149,7 @@ def assert_lt(val, exp, errmsg=''):
             val, exp, errmsg
         )
         try:
-            cup.log.critical(msg)
+            log.backtrace_critical(msg, 1)
         # pylint: disable=W0703
         except Exception:
             pass
@@ -166,7 +166,7 @@ def assert_gt(val, exp, errmsg=''):
             val, exp, errmsg
         )
         try:
-            cup.log.critical(msg)
+            log.backtrace_critical(msg, 1)
         except Exception:
             pass
         assert False, msg
@@ -180,7 +180,7 @@ def assert_ge(val, exp, errmsg=''):
         msg = 'got %s, expect greater than (or equal to) %s\n User ErrMsg:%s'\
             % (val, exp, errmsg)
         try:
-            cup.log.critical(msg)
+            log.backtrace_critical(msg, 1)
         # pylint: disable=W0703
         except Exception:
             pass
@@ -196,7 +196,7 @@ def assert_le(val, exp, errmsg=''):
             val, exp, errmsg
         )
         try:
-            cup.log.critical(msg)
+            log.backtrace_critical(msg, 1)
         # pylint: disable=W0703
         except Exception:
             pass
@@ -211,7 +211,7 @@ def assert_ne(val, exp, errmsg=''):
         msg = 'Expect non-equal, got two equal values %s:%s\nUser Errmsg: %s' \
             % (val, exp, errmsg)
         try:
-            cup.log.critical(msg)
+            log.backtrace_critical(msg, 1)
         # pylint: disable=W0703
         except Exception:
             pass
@@ -301,9 +301,9 @@ class CUTCase(object):
         else:
             debuglevel = logging.INFO
 
-        cup.log.init_comlog(
+        log.init_comlog(
             'test_case', debuglevel,
-            logfile, cup.log.ROTATION, 5242880, b_logstd
+            logfile, log.ROTATION, 5242880, b_logstd
         )
 
     def setup(self):
@@ -467,6 +467,7 @@ def expect_raise(function, exception, *argc, **kwargs):
     """expect raise exception"""
     try:
         function(*argc, **kwargs)
+        raise err.ExpectFailure(exception, None)
     except exception:
         pass
     else:

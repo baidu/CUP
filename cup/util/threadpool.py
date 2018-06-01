@@ -8,15 +8,11 @@
 """
 :author:
     Guannan Ma
-:create_date:
-    2014
-:last_date:
-    2014
 :descrition:
-    Guannan ported threadpool from twisted.python.
+    Guannan back-ported threadpool from twisted.python.
     Mit License applied for twisted.
     http://www.opensource.org/licenses/mit-license.php
-    if any concern, plz contact Guannan at mythmgn@gmail.com
+    if any concern, plz contact Guannan (mythmgn@gmail.com)
 """
 
 try:
@@ -24,13 +20,11 @@ try:
 except ImportError:
     # pylint: disable=F0401
     import queue
-import sys
 import copy
 import time
 import contextlib
 import threading
 
-import cup
 from cup import log
 from cup.util import context
 from cup.util import thread
@@ -38,6 +32,7 @@ from cup.util import thread
 _CONTEXT_TRACKER = context.ContextTracker4Thread()
 
 
+# pylint: disable=R0902
 class ThreadPool(object):
     """
     Threadpool class
@@ -48,13 +43,20 @@ class ThreadPool(object):
     _CURRENT_THREAD = staticmethod(threading.current_thread)
     _WORKER_STOP_SIGN = object()
 
-    def __init__(self, minthreads=5, maxthreads=20, name=None):
+    def __init__(
+        self, minthreads=5, maxthreads=20, name=None,
+        daemon_threads=False
+    ):
         """
         创建一个线程池。
         :param minthreads:
             最少多少个线程在工作。
         :param maxthreads:
             最多多少个线程在工作
+        :param daemon_threads:
+            线程池内的线程是否是daemon threads, 默认是False.
+            如果设置为True, 线程池里面的线程会随着主线程退出而退出，
+            请无比了解清楚什么是daemon_threads在开启使用.
         """
         assert minthreads > 0, 'minimum must be >= 0 '
         assert minthreads <= maxthreads, 'minimum is greater than maximum'
@@ -65,6 +67,7 @@ class ThreadPool(object):
         self._started = False
         self._workers = 0
         self._name = None
+        self._daemon_thread = daemon_threads
         # Queue is a thread-safe queue
         self._jobqueue = queue.Queue(0)
         self._min = minthreads
@@ -90,6 +93,8 @@ class ThreadPool(object):
         self._workers += 1
         name = "PoolThread-%s-%s" % (self._name or id(self), self._workers)
         new_thd = self._THREAD_FACTORY(target=self._worker, name=name)
+        if self._daemon_thread:
+            new_thd.daemon = True
         self._threads.append(new_thd)
         new_thd.start()
 
@@ -104,6 +109,8 @@ class ThreadPool(object):
         """
         For pickling an instance from a serilized string
         """
+        # pylint: disable=W0201
+        # set up state for it
         self.__dict__ = state
         self.__class__.__init__(self, self._min, self._max)
 
@@ -114,6 +121,7 @@ class ThreadPool(object):
         return state
 
     def _start_decent_workers(self):
+        """ start decent/proper number of thread workers"""
         need_size = self._jobqueue.qsize() + len(self._working)
         # Create enough, but not too many
         while self._workers < min(self._max, need_size):

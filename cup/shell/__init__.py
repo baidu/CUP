@@ -2,16 +2,12 @@
 # -*- coding: utf-8 -*
 # #############################################################################
 #
-#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved
+#  Copyright (c) Baidu.com,  Inc. All Rights Reserved
 #
 # #############################################################################
 """
 :author:
     Guannan Ma
-:create_date:
-    2014
-:last_date:
-    2017/01/24 11:42:03
 :descrition:
     shell related module
 """
@@ -74,7 +70,8 @@ class Asynccontent(object):
 class ShellExec(object):  # pylint: disable=R0903
     """
     用来执行shell的类。 用法如下:
-    shellexec = cup.shell.ShellExec()
+    from cup import shell
+    shellexec = shell.ShellExec()
     # timeout=None, 一直等待直到命令执行完
     shellexec.run('/bin/ls', timeout=None)
     # timeout>=0, 等待固定时间，如超时未结束terminate这个shell命令。
@@ -339,16 +336,29 @@ def execshell_withpipe_exwitherr(cmd, b_printcmd=True):
     return lines
 
 
-def is_proc_alive(procname, is_whole_word=False):
+def is_proc_alive(procname, is_whole_word=False, is_server_tag=False, filters=False):
     """
     通过ps -ef|grep -w procname$ |grep -v grep|wc -l 判断进程是否存在
     相关函数有: cup.oper.is_proc_exist(path, name)
     """
     # print procName
     if is_whole_word:
-        cmd = 'ps -ef|grep -w %s$ |grep -v grep|wc -l' % procname
+        cmd = "ps -ef|grep -w '%s'$ |grep -v grep" % procname
     else:
-        cmd = 'ps -ef|grep -w %s |grep -v grep|wc -l' % procname
+        cmd = "ps -ef|grep -w '%s' |grep -v grep" % procname
+
+    if is_server_tag:
+        cmd += '|grep -vwE "vim |less |vi |tail |cat |more "'
+
+    if filters:
+        if type(filters) == str:
+            cmd += "|grep -v '%s'" % filters
+        elif type(filters) == list:
+            for i, task in enumerate(filters):
+                cmd += "|grep -v '%s'" % task
+
+    cmd += '|wc -l'
+
     # print cmd
     rev = execshell_withpipe_str(cmd, False)
     if int(rev) > 0:
@@ -480,7 +490,7 @@ def get_pid(process_path, grep_string):
 
     """
     cmd = (
-        'ps -ef|grep %s|grep -v grep|grep -vE "^[vim|less|vi|tail|cat|more] "'
+        'ps -ef|grep \'%s\'|grep -v grep|grep -vwE "vim |less |vi |tail |cat |more "'
         '|awk \'{print $2}\''
     ) % (grep_string)
     ret = cup.shell.ShellExec().run(cmd, 10)

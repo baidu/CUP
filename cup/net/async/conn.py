@@ -35,6 +35,7 @@ except ImportError:
 
 import cup
 from cup import log
+from cup import err as cuperr
 from cup.util import misc
 from cup.util import threadpool
 from cup.services import executor
@@ -917,7 +918,7 @@ class CConnectionManager(object):
                 succ_len = sock.send(data)
                 log.debug('succeed to send length:%d' % succ_len)
                 msg.seek_write(succ_len)
-            except err.AsyncMsgError as error:
+            except cuperr.AsyncMsgError as error:
                 log.debug('has seek out of msg len, continue')
             except socket.error as error:
                 err = error.args[0]
@@ -981,7 +982,7 @@ class CConnectionManager(object):
             log.info('failed to get peerinfo, return')
             return
         if not context.try_writelock():
-            log.info(
+            log.debug(
                 'Another thread is writing the context, return. '
                 'Peerinfo:%s:%s' %
                 (peerinfo[0], peerinfo[1])
