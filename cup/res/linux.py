@@ -84,7 +84,7 @@ def get_kernel_version():
     """
     versions = os.uname()[2]
     # version = versions[0: versions.find('_')]
-    return tuple([info for info in version.split('.')])
+    return tuple([info for info in versions.split('.')])
 
 
 @cup.decorators.needlinux
