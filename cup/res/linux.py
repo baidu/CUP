@@ -83,8 +83,8 @@ def get_kernel_version():
 
     """
     versions = os.uname()[2]
-    version = versions[0: versions.find('_')]
-    return tuple([int(info) for info in version.split('.')])
+    # version = versions[0: versions.find('_')]
+    return tuple([info for info in version.split('.')])
 
 
 @cup.decorators.needlinux
@@ -199,7 +199,7 @@ _CPU_COLUMNS = [
 _COLUMN_LOCK = threading.Lock()
 
 _COLUMN_LOCK.acquire()
-if get_kernel_version() >= (2, 6, 33) and _CPU_COLUMNS.count('guest_nice') <= 0:
+if get_kernel_version() >= ('2', '6', '33') and _CPU_COLUMNS.count('guest_nice') <= 0:
     _CPU_COLUMNS.append('guest_nice')
 _COLUMN_LOCK.release()
 
