@@ -125,6 +125,7 @@ def get_cpu_nums():
         raise RuntimeError("couldn't determine platform's NUM_CPUS")
     return num
 
+
 @cup.decorators.needlinux
 def get_disk_usage_all(raw=False):
     """
@@ -1463,6 +1464,8 @@ if '__main__' == __name__:
     print get_boottime_since_epoch()
     print get_cpu_nums()
     print get_kernel_version()
+    print get_disk_usage_all()
+    print get_disk_info()
 
     # resouce info
     print get_cpu_usage(2)
