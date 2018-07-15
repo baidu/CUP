@@ -1,19 +1,5 @@
 #!/bin/env python  pylint: disable=C0302
 # -*- coding: utf-8 -*
-"""
-:author:
-    Giampaolo Rodola of psutil
-:descrition:
-    The class [Process] is back ported from python open-source project
-    [psutil]. Guannan finished porting in early 2014.
-    Here is the original license applied.
-:copyright:
-    Psutil.
-    Copyright (c) 2009, Giampaolo Rodola'. All rights reserved.
-    Use of this source code is governed by a BSD-style license
-    that can be found in the LICENSE file.
-"""
-
 import os
 import re
 import sys
@@ -82,7 +68,7 @@ def get_disk_usage_all(raw=False):
 def get_disk_info():
     """
     :return:
-        拿到Linux系统的所有磁盘信息
+        拿到macOS系统的所有磁盘信息
     """
     info = os.popen("df -lh")
     allDiskInfo = []
