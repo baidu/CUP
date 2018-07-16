@@ -13,8 +13,8 @@
 3. Doc
     http://docs.iobusy.com/docs/cup/
 
-* 访问wiki获取更多信息
-* 基础库代码结构说明:                                                                                    
+* Visit wiki to get examples.
+* Structure:                                                                                    
 CUP                                                                                                    
     |-- cache.py                module              Memory cache related module                                           
     |-- decorators.py           module              Decorators of python                                       
