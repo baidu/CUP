@@ -126,6 +126,67 @@ def get_cpu_nums():
     return num
 
 
+@cup.decorators.needlinux
+def get_disk_usage_all(raw=False):
+    """
+    :param raw:
+        是否返回以Byte为单位的数据，默认为False
+    :return:
+        拿到/目录的使用信息， 回返是一个字典
+    """
+    byteToGb = 1024 * 1024 * 1024
+    byteToMb = 1024 * 1024
+    st = os.statvfs("/")
+    free = st.f_bavail * st.f_frsize 
+    total = st.f_blocks * st.f_frsize 
+    unit = "Byte"
+    #为数据转换单位
+    if not raw:
+        if total > byteToGb:
+            free, total = \
+                free / byteToGb, total / byteToGb
+            unit = "GB"
+        elif total > byteToMb:
+            free, total = \
+                free / byteToMb, total / byteToMb
+            unit = "MB"
+    return {
+        "totalSpace": total, 
+        "usedSpace": total - free, 
+        "freeSpace": free,
+        "unit":unit
+    }
+
+
+@cup.decorators.needlinux
+def get_disk_info():
+    """
+    :return:
+        拿到Linux系统的所有磁盘信息
+    """
+    info = os.popen("df -lh")
+    allDiskInfo = []
+    for line in enumerate(info.readlines()):
+        if line[0] != 0:
+            blockInfo = []
+            for block in line[1].split(" "):
+                if len(block) != 0:
+                    blockInfo.append(block)
+            allDiskInfo.append({
+                "FileSystem":  blockInfo[0],
+                "Size":        blockInfo[1],
+                "Used":        blockInfo[2],
+                "Available":   blockInfo[3],
+                "Percentage":  blockInfo[4],
+                })
+        else:
+            continue
+    try:
+        return allDiskInfo
+    except:
+        raise RuntimeError("couldn't find disk")
+
+        
 class MemInfo(collections.namedtuple('vmem', ' '.join([
         # all platforms
         'total', 'available', 'percent', 'used', 'free',
@@ -1403,6 +1464,8 @@ if '__main__' == __name__:
     print get_boottime_since_epoch()
     print get_cpu_nums()
     print get_kernel_version()
+    print get_disk_usage_all()
+    print get_disk_info()
 
     # resouce info
     print get_cpu_usage(2)
