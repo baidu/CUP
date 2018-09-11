@@ -1,14 +1,10 @@
 #!/bin/env python
 # -*- coding: utf-8 -*
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Liuxuan,
 """
-
-    @FileName: setup.py
-    @Author: liuxuan05
-    @CreatTime: 2014-10-22 13:25:59
-    @LastModif: 2014-10-22 13:54:37
-    @Note:
+installation py
 """
-
 import os
 import re
 import sys
@@ -26,9 +22,9 @@ except Exception:
     print traceback.print_exc()
     exit(-1)
 
-
 # Guannan add windows platform support on 2014/11/4 20:04
 def _find_packages(prefix=''):
+    """find pckages"""
     packages = []
     path = '.'
     prefix = prefix
@@ -71,7 +67,17 @@ setup(
     license='Apache 2',
     keywords='library common',
     packages=_find_packages(__name__),
-    package_data={'': ['*.so']}
+    package_data={
+        '': [
+            '*.so', '*.pyo',
+            # for matplotlib
+            '*.ttf', '*.afm', '*.png', '*.svg', '*.xpm',
+            'Matplotlib.nib/classes.nib', 'Matplotlib.nib/info.nib',
+            'Matplotlib.nib/keyedobjects.nib',
+            'mpl-data/lineprops.glade',
+            'mpl-data/matplotlibrc',
+        ]
+    }
 )
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent
