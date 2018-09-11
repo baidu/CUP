@@ -25,9 +25,9 @@ CUP
     |-- net                     package             Network operations, such as net handler parameter tuning                       
     |-- oper.py                 module              Mixin operations                              
     |-- platforms.py            module              Cross-platform operations                              
-    |-- res                     package             Resource usage queries (all that you can find in /proc)、Prcoess info query、etc            
-    |-- shell                   package             Shell Operations、cross-machines execution、cross-hosts data transfer               
-    |-- services                package             Heartbeat service、Threadpool based function executor service、file service、etc                                          
+    |-- res                     package             Resource usage queries (in /proc)、Prcoess query、etc            
+    |-- shell                   package             Shell Operations、cross-hosts execution              
+    |-- services                package             Heartbeat、Threadpool based executors、file service、etc                                          
     |-- thirdp                  package             Third-party modules： pexpect、httplib2                   
     |-- timeplus.py             module              Time related module                                       
     |-- unittest.py             module              Unittest、assert、noseClass                      
