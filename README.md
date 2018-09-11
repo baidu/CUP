@@ -47,7 +47,7 @@ print meminfo.available
 ## WIKI
 https://github.com/Baidu/CUP/wiki
 
-## 基础库代码结构说明:
+## code directory tree:
 
 ```text
 cup
