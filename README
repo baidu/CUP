@@ -13,26 +13,25 @@
 3. Doc
     http://docs.iobusy.com/docs/cup/
 
-* 访问wiki获取更多信息
-* 基础库代码结构说明:                                                                                    
+* Visit wiki to get examples.
+* Structure:                                                                                    
 CUP                                                                                                    
-    |-- bidu                    目录| package            baidu服务相关                 
-    |-- cache.py                模块|module              缓存相关                                           
-    |-- decorators.py           module                  通用修饰符                                         
-    |-- err.py                  module                  CUP内部Exception处理                               
-    |-- __init__.py             module                  CUP import处理模块                                 
-    |-- log.py                  module                  CUP logging                                        
-    |-- mail.py                 module                  CUP Email 发送模块                                 
-    |-- net                     目录|package             网络操作、资源、异步通信框架                       
-    |-- oper.py                 模块|module              各类混杂操作opertions                              
-    |-- platforms.py            模块|module              跨平台相关保留module                               
-    |-- res                     目录|package             机器资源信息获取、进程信息获取、监控等             
-    |-- shell                   目录|package             shell操作、跨机执行、跨机数据传输等                
-    |-- services                目录|package             心跳机制、执行器、buffer缓存                                          
-    |-- thirdp                  目录|package             第三方库： pexpect、httplib2、                     
-    |-- timeplus.py             模块|module              时间操作函数                                       
-    |-- unittest.py             模块|module              UT测试相关、assert、noseClass                      
-    |-- util                    目录|package             线程池、可打断线程、Public/Configure配置文件python实现、数据生成器
-    |-- version.py              模块|module              CUP版本号管理   
+    |-- cache.py                module              Memory cache related module                                           
+    |-- decorators.py           module              Decorators of python                                       
+    |-- err.py                  module              Exception classes for CUP                              
+    |-- __init__.py             module              Default __init__.py                                 
+    |-- log.py                  module              CUP logging                                        
+    |-- mail.py                 module              CUP Email module (send emails)                               
+    |-- net                     package             Network operations, such as net handler parameter tuning                       
+    |-- oper.py                 module              Mixin operations                              
+    |-- platforms.py            module              Cross-platform operations                              
+    |-- res                     package             Resource usage queries (all that you can find in /proc)、Prcoess info query、etc            
+    |-- shell                   package             Shell Operations、cross-machines execution、cross-hosts data transfer               
+    |-- services                package             Heartbeat service、Threadpool based function executor service、file service、etc                                          
+    |-- thirdp                  package             Third-party modules： pexpect、httplib2                   
+    |-- timeplus.py             module              Time related module                                       
+    |-- unittest.py             module              Unittest、assert、noseClass                      
+    |-- util                    package             ThreadPool、Interruptable-Thread、Rich configuration、etc
+    |-- version.py              module              CUP Version  
 
 
