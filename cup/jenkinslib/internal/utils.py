@@ -1,14 +1,9 @@
-# -*- coding: utf-8 -*-
-################################################################################
-#
-# Copyright (c) 2015 Baidu.com, Inc. All Rights Reserved
-#
-################################################################################
+#!/usr/bin/env python
+# -*- coding: utf-8 -*
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: liushuxian(liushuxian)
 """
 This module provides utils of jenkins.
-
-Authors: liushuxian(liushuxian)
-Date:    2015/01/20
 """
 
 STATUS_FAIL = "FAIL"

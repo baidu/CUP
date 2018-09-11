@@ -1,15 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*
-# #############################################################################
-#
-#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved
-#
-# #############################################################################
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
 """
-:author:
-    Guannan Ma
+common function module for cup.net.async
 """
-
 import socket
 import struct
 

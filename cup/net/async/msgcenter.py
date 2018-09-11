@@ -1,17 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*
-# #############################################################################
-#
-#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved
-#
-# #############################################################################
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
 """
-:author:
-    Guannan Ma
-:create_date:
-    2014
-:last_date:
-    2014
 :descrition:
     msg center related module
 """
@@ -191,25 +182,6 @@ class IMessageCenter(object):
                 cup.log.info('recv queue size:{0}'.format(recv_queue.qsize()))
                 ind = 0
             if msg is not None:
-                # msg_addr = msg.get_to_addr()[0]
-                # msg_ip = msg_addr[0]
-                # msg_port = msg_addr[1]
-                # uniq_id = msg.get_uniq_id()
-                # msg_key = str(msg_ip) + '_' + str(msg_port) + '_' + str(uniq_id)
-                # cup.log.info('msg[{0}] is already sent'.format(msg_key))
-                # if msg.get_msg_type() == self._type_man.getnumber_bytype('HEART_BEAT') or \
-                #         msg.get_msg_type() == self._type_man.getnumber_bytype('ACK_HEART_BEAT'):
-                #     cup.log.info('get heart_beat msg')
-                # elif msg.get_msg_type() == self._type_man.getnumber_bytype('ACK_OK'):
-                #     cup.log.info('recv ack ok msg')
-                #     self._conn_mgr.push_msg2needack_queue(msg)
-                # elif msg.get_msg_type() == self._type_man.getnumber_bytype('NEED_ACK'):
-                #     msg_to_addr = msg.get_to_addr()
-                #     msg_from_addr = msg.get_from_addr()
-                #     msg_uniq_id = msg.get_uniq_id()
-                #     self._post_ackok_msg(msg_from_addr, msg_to_addr, msg_uniq_id)
-                #     cup.log.info('handle msg in msgcenter run')
-                #     self.handle(msg)
                 log.info(
                     'msg received, type:%d, flag:%d, from:%s, uniqid:%d' %
                     (

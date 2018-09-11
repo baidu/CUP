@@ -1,22 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*
-# #############################################################
-#
-#  Copyright (c) Baidu.com, Inc. All Rights Reserved
-#
-# #############################################################
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
 """
-:authors:
-    Guannan Ma maguannan @mythmgn
 :description:
     Msg Broker Service. Every component of a process can produce_msg
 """
-# from cup import decorators
 
 
 MSG_ERROR_DISK_ERROR = 1
 
-__all__ = ['BrokerCenter']
+__all__ = ['BrokerCenter', 'SystemErrmsgBroker']
 
 
 MSG_TYPE_FATAL = 0

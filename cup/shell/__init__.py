@@ -1,13 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*
-# #############################################################################
-#
-#  Copyright (c) Baidu.com,  Inc. All Rights Reserved
-#
-# #############################################################################
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn), Zhao Minghao, Zhange Yuetian
 """
-:author:
-    Guannan Ma
 :descrition:
     shell related module
 """

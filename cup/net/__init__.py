@@ -1,21 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*
-# #############################################################################
-#
-#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved
-#
-# #############################################################################
+# Copyright: [CUP] - See LICENSE for details.
 """
-:author:
-    Guannan Ma
-:create_date:
-    2014
-:modify_date:
-    2016.7.21
 :descrition:
     network related module
 """
-
 import sys
 import time
 import socket

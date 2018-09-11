@@ -1,20 +1,14 @@
-# -*- coding: utf-8 -*-
-################################################################################
-#
-# Copyright (c) 2015 Baidu.com, Inc. All Rights Reserved
-#
-################################################################################
+#!/usr/bin/env python
+# -*- coding: utf-8 -*
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: liushuxian(liushuxian)
 """
 This module provides PromotionBuild object.
-
-Authors: liushuxian(liushuxian)
-Date:    2015/01/30
-""" 
+"""
 
 import contextlib
 import logging
 
-import cup
 from cup.jenkinslib.internal import base
 from cup.jenkinslib.internal import exception
 from cup.jenkinslib.internal import utils
@@ -43,7 +37,7 @@ class PromotionBuild(base.JenkinsBase):
 
     def _poll(self, tree=None):
         """poll out api info.
-        
+
         Add param 'depth', so we can get more information of upstream and downstream.
         """
         url = self.python_api_url(self.url)
@@ -76,7 +70,7 @@ class PromotionBuild(base.JenkinsBase):
     @property
     def description(self):
         """get description of build if exists, otherwise None.
-        
+
         Returns:
             description info of this build, encoding in utf-8.
             return None if not exists.
@@ -86,7 +80,7 @@ class PromotionBuild(base.JenkinsBase):
     @description.setter
     def description(self, description=""):
         """submit description to this build.
-        
+
         Args:
             description: description content, should encode in utf-8.
         """
@@ -136,7 +130,7 @@ class PromotionBuild(base.JenkinsBase):
 
     def block(self):
         """block until this build stop running.
-        
+
         Do not use this method too often,
         because it will request jenkins server every second.
         """
@@ -150,7 +144,7 @@ class PromotionBuild(base.JenkinsBase):
 
     def block_until_complete(self, delay=15, timeout=None):
         """block until this build stop running.
-        
+
         Args:
             delay: check status every `delay` seconds, default is 15s.
             timeout: wait `timeout` seconds at most, default is forever.
@@ -234,7 +228,7 @@ class PromotionBuild(base.JenkinsBase):
     @property
     def timestamp(self):
         """get build timestamp."""
-        return self._data["timestamp"] / 1000.0        
+        return self._data["timestamp"] / 1000.0
 
     @property
     def console(self):

@@ -1,20 +1,12 @@
-# -*- coding: utf-8 -*-
-################################################################################
-#
-# Copyright (c) 2015 Baidu.com, Inc. All Rights Reserved
-#
-################################################################################
+#!/usr/bin/env python
+# -*- coding: utf-8 -*
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: liushuxian,
 """
 This module provides Queue object.
+"""
 
-Authors: liushuxian(liushuxian)
-Date:    2015/01/21
-""" 
-
-import logging
 import time
-
-import cup
 from cup.jenkinslib.internal import base
 from cup.jenkinslib.internal import exception
 
@@ -179,7 +171,7 @@ class QueueItem(base.JenkinsBase):
             build = self.build
             if build:
                 return build.is_running
-        except exceptin.NotBuiltYet:
+        except exception.NotBuiltYet:
             return False
         return False
 

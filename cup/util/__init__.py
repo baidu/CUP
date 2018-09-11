@@ -1,17 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*
-# #############################################################################
-#
-#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved
-#
-# #############################################################################
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
 """
-:author:
-    Guannan Ma maguannan @mythmgn
-:create_date:
-    2014
-:last_date:
-    2014
 :descrition:
     utilization related module
 """
@@ -51,6 +42,5 @@ def check_not_none(param):
     同cup.util.misc.check_type. 请使用前者
     """
     misc.check_not_none(param)
-
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

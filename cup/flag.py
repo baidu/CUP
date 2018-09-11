@@ -1,13 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*
-# #############################################################
-#
-#  Copyright (c) 2014 Baidu.com, Inc. All Rights Reserved
-#
-# #############################################################
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
 """
-:authors:
-    Guannan Ma @mythmgn
 :description:
 
 """

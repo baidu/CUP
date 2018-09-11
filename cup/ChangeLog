@@ -12,7 +12,7 @@ Version 1.6.1 - starting from 2018.2.5 ~ 2018.6.1
 	* [Enhancement] - cup.util.threadpool, add daemon_threads as the parameter
 		that you can use to let the threadpool threads behave like daemon-thread
 		(when the main thread exits, it exits as well)
-	* [Enhancement] - cup.util.conf - support conf line "[.test] # comments" 
+	* [Enhancement] - conf.util.conf - support conf line "[.test] # comments" 
 
 Version 1.6.0 - starting from 2017.9.6 ~ 2017.12.29
 	* [New] cup.bidu.icafe - interact with baidu icafe.

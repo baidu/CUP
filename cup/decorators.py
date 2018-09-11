@@ -1,14 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*
-# #############################################################################
-#
-#  Copyright (c) Baidu.com,  Inc. All Rights Reserved
-#
-# #############################################################################
-
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
 """
-:author:
-    Guannan Ma @mythmgn
 :descrition:
     decorators related module
 """

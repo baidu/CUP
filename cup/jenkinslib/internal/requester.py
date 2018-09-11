@@ -1,17 +1,11 @@
-# -*- coding: utf-8 -*-
-################################################################################
-#
-# Copyright (c) 2015 Baidu.com, Inc. All Rights Reserved
-#
-################################################################################
+#!/usr/bin/env python
+# -*- coding: utf-8 -*
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: liushuxian(liushuxian)
 """
 This module provides some requester to access jenkins.
-
-Authors: liushuxian(liushuxian)
-Date:    2015/01/20
 """
 
-import cup
 from cup.thirdp import requests
 from cup.jenkinslib.internal import exception
 
@@ -45,7 +39,7 @@ class Requester(object):
             Response object.
         """
         requests_kwargs = self.__build_request(params=params, headers=headers,
-                                               data=data, files=files, 
+                                               data=data, files=files,
                                                allow_redirects=allow_redirects)
         try:
             return requests.post(url, **requests_kwargs)

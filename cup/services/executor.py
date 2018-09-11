@@ -1,13 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*
-# #############################################################
-#
-#  Copyright (c) 2014 Baidu.com, Inc. All Rights Reserved
-#
-# #############################################################
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
 """
-:authors:
-    Guannan Ma maguannan @mythmgn
 :description:
     1. Delay-execute sth after several seconds
 
@@ -24,7 +19,6 @@ import traceback
 
 from cup.util import threadpool
 from cup import log
-# import Queue as queue
 
 URGENCY_HIGH = 0
 URGENCY_NORMAL = 1
@@ -106,7 +100,7 @@ class ExecutionService(object):
                 )
                 log.warn('error type:{0}'.format(type(error)))
                 log.warn(traceback.format_exc())
-        log.info(
+        log.debug(
             '%s worker thread exited as the service is stopping' % worker_name
         )
 

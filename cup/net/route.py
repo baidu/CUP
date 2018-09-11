@@ -1,17 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*
-# #############################################################################
-#
-#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved
-#
-# #############################################################################
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: YangGuang
 """
-:author:
-    YangGuang yangguang07
-:create_date:
-    2014
-:last_date:
-    2014
 :descrition:
     host route info related module
 """

@@ -1,14 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*
-# #############################################################################
-#
-#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved
-#
-# #############################################################################
-
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
 """
-:author:
-    Guannan Ma
 :descrition:
     mail related modules. **Recommand using SmtpMailer**
 """
@@ -109,9 +103,9 @@ class SmtpMailer(object):  # pylint: disable=R0903
         )
         mailer.sendmail(
             [
-                'abc@xxx.com',
-                'def@aaa.com',
-                'bcd@bbb.com'
+                'maguannan@xxx.com',
+                'liuxuan05@xxx.com',
+                'zhaominghao@xxx.com'
             ],
             'test_img',
             (

@@ -1,16 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*
-# #############################################################################
-#
-#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved
-#
-# #############################################################################
-
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
 """
-:author:
-    Guannan Ma maguannan @mythmgn
+:desc:
+    unittest module
 """
-
 import os
 import sys
 import hashlib
@@ -38,6 +33,7 @@ __all__ = [
 
 
 def _assert_bool(val, exp, errmsg=''):
+    """assert bool, val should be exp (either True or False)"""
     if (val is not exp):
         msg = 'got %s, expect %s\nUser ErrMsg: %s' % (val, exp, errmsg)
         try:
@@ -144,7 +140,7 @@ def assert_lt(val, exp, errmsg=''):
     """
     assert_lt, expect val < exp
     """
-    if val > exp:
+    if val >= exp:
         msg = 'got %s, expect less than %s\nUser ErrMsg: %s' % (
             val, exp, errmsg
         )
