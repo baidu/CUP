@@ -1,15 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*
-# #############################################################################
-#
-#  Copyright (c) Baidu.com,  Inc. All Rights Reserved
-#
-# #############################################################################
 """
 :author:
     Guannan Ma
+
 :descrition:
     cache related module
+
+:copyright:
+    Copyright [CUP] - See LICENSE for details.
 """
 
 import time

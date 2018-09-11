@@ -1,20 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*
-# #############################################################################
-#
-#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved
-#
-# #############################################################################
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn)
 """
-:author:
-    Guannan Ma
 :descrition:
     netmsg related module
 """
-
-import json
-import pickle
-
 import cup
 from cup import log
 from cup.util import misc

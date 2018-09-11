@@ -1,14 +1,9 @@
-# -*- coding: utf-8 -*-
-################################################################################
-#
-# Copyright (c) 2015 Baidu.com, Inc. All Rights Reserved
-#
-################################################################################
+#!/usr/bin/env python
+# -*- coding: utf-8 -*
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: liushuxian(liushuxian)
 """
 This module provides Artifacts and FTPArtifacts object.
-
-Authors: liushuxian(liushuxian)
-Date:    2015/01/21
 """
 
 import ftplib
@@ -17,7 +12,6 @@ import pprint
 import socket
 import urlparse
 
-import cup
 from cup.jenkinslib.internal import exception
 
 
@@ -194,9 +188,9 @@ class FTPArtifacts(ArtifactsBase):
                     with open(save_path, "w+") as fd:
                         ftp_conn.retrbinary(u"RETR %s" % self.path, fd.write)
                 except OSError as err:
-                    raise exceptin.FtpError(err)
+                    raise exception.FtpError(err)
                 except IOError as err:
-                    raise exceptin.FtpError(err)
+                    raise exception.FtpError(err)
 
         if ftp:
             do_download(ftp)

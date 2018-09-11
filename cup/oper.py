@@ -1,18 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*
-# #############################################################################
-#
-#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved
-#
-# #############################################################################
-
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Zhao Minghao,
 """
-:author:
-    Zhao Minghao
-:create_date:
-    2014
-:last_date:
-    2014
 :descrition:
     operations related module
 """

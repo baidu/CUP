@@ -1,22 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*
-# #############################################################
-#
-#  Copyright (c) Baidu.com, Inc. All Rights Reserved
-#
-# #############################################################
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
 """
-:authors:
-    Guannan Ma maguannan @mythmgn
 :description:
-
-    """
+    Object related storage
+"""
 
 import abc
 import logging
 
 from cup import log
 from cup import err
+
+
+__all__ = ['AFSObjectSystem', 'S3ObjectSystem']
+
 
 class ObjectInterface(object):
     """

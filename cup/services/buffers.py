@@ -1,23 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*
-# #############################################################
-#
-#  Copyright (c) 2014 Baidu.com, Inc. All Rights Reserved
-#
-# #############################################################
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
 """
-:authors:
-    Guannan Ma maguannan @mythmgn
-:create_date:
-    2015/07/07 21:23:06
-:modify_date:
-
 :description:
-
+    buffer pool
 """
 import threading
-
-# from cup import decorators
 
 SMALL_BLOCK_SIZE =  4096 # kb
 MEDIUM_BLOCK_SIZE = (128 + 4) * 1024   # 8K

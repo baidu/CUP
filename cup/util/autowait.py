@@ -1,18 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*
-# #############################################################################
-#
-#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved
-#
-# #############################################################################
-
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Qiang Liu, Guannan Ma
 """
-:author:
-    Qiang Liu
-:create_date:
-    2015
-:last_date:
-    2015
 :descrition:
     auto wait related modules.
 """

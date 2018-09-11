@@ -1,14 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*
-# #############################################################################
-#
-#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved
-#
-# #############################################################################
-
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
 """
-:author:
-    Guannan Ma
 :descrition:
     common log related module
 """
@@ -154,7 +148,7 @@ class _LoggerMan(object):
         # '%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(message)s'
         formatter = logging.Formatter(
             '%(levelname)s:\t %(asctime)s * '
-            '[%(process)d:%(thread)d] [%(filename)s:%(lineno)s] %(message)s'
+            '[%(process)d:%(thread)x] [%(filename)s:%(lineno)s] %(message)s'
         )
         if bprint_console:
             streamhandler = logging.StreamHandler()

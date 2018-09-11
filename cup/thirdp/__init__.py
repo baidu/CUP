@@ -1,10 +1,10 @@
-#!/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
 """
-    @author Guannan Ma
-    @brief
-        thirdp is short for thirdparty.
-        thridp package是来自第三方的python库集合。 比如pexpect. mysql
+    thirdp is short for thirdparty.
+    thridp package是来自第三方的python库集合。 比如pexpect. mysql
 """
 import os
 import sys
@@ -17,6 +17,7 @@ sys.path.insert(
 
 # pylint:disable=R0911
 def _check_if_import_scientistlib():
+    """check if it contains scientist lib"""
     # Only CUP 1.4.0  support numpy scipy.......
     if version.VERSION == '1.4.0':
         return True
@@ -44,18 +45,14 @@ if _check_if_import_scientistlib():
     ctypes.cdll.LoadLibrary(_LIB_PATH + '/../../libpython2.7.so')
     # ====== for numpy - scipy
     ctypes.cdll.LoadLibrary(_LIB_PATH + '/libgcc_s.so')
-    # ctypes.cdll.LoadLibrary(_LIB_PATH + '/libgcc_s.so.1')
     ctypes.cdll.LoadLibrary(_LIB_PATH + '/libgmp.so')
     ctypes.cdll.LoadLibrary(_LIB_PATH + '/libquadmath.so')
-    # ctypes.cdll.LoadLibrary(_LIB_PATH + '/libquadmath.so.0')
     ctypes.cdll.LoadLibrary(_LIB_PATH + '/libgfortran.so')
-    # ctypes.cdll.LoadLibrary(_LIB_PATH + '/libgfortran.so.3')
     ctypes.cdll.LoadLibrary(_LIB_PATH + '/libblas.so')
     ctypes.cdll.LoadLibrary(_LIB_PATH + '/libmpfr.so')
     ctypes.cdll.LoadLibrary(_LIB_PATH + '/libgmpxx.so')
     ctypes.cdll.LoadLibrary(_LIB_PATH + '/liblapack.so')
     ctypes.cdll.LoadLibrary(_LIB_PATH + '/libmpc.so')
-    # ctypes.cdll.LoadLibrary(_LIB_PATH + '/../../libpython2.7.so.1.0')
     # ====== end numpy -scipy
     # ====== for opencv
     ctypes.cdll.LoadLibrary(_LIB_PATH + '/../../cv/libopencv_core.so')
@@ -74,8 +71,6 @@ if _check_if_import_scientistlib():
     ctypes.cdll.LoadLibrary(_LIB_PATH + '/../../cv/libopencv_nonfree.so')
     ctypes.cdll.LoadLibrary(_LIB_PATH + '/../../cv/libopencv_contrib.so')
     # ====== end opencv
-
-
     sys.path.insert(
         0, os.path.dirname(os.path.abspath(__file__)) + '/../../cup_thirdp/'
     )

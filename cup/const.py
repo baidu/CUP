@@ -1,20 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*
-# #############################################################
-#
-#  Copyright (c) Baidu.com, Inc. All Rights Reserved
-#
-# #############################################################
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
 """
-:authors:
-    Guannan Ma @mythmgn
-:description:
-    for const value
+:desc:
+    const variable for internal use
 """
 import cup
 
 # pylint:disable = R0903
 class _const(object):
+    """
+    internal const class
+    """
     class ConstError(cup.err.BaseCupException):
         """
         const error

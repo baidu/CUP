@@ -1,19 +1,13 @@
-# -*- coding: utf-8 -*-
-################################################################################
-#
-# Copyright (c) 2015 Baidu.com, Inc. All Rights Reserved
-#
-################################################################################
+#!/usr/bin/env python
+# -*- coding: utf-8 -*
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: liushuxian(liushuxian)
 """
 This module provides Promotions object.
 
 Promotions is a container of Promotion.
+"""
 
-Authors: liushuxian(liushuxian)
-Date:    2015/02/05
-""" 
-
-import cup
 from cup.jenkinslib.internal import base
 from cup.jenkinslib.internal import exception
 
@@ -54,7 +48,7 @@ class Promotions(base.JenkinsBase):
         for row in self._data.get('processes', []):
             if row["name"] == promotion_name:
                 return self.get_jenkins_obj().Promotion(row['url'], promotion_name, self.job)
-            
+
         raise exception.UnknownPromotion(promotion_name)
 
     def __contains__(self, promotion_name):

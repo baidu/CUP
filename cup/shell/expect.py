@@ -1,22 +1,12 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*
-# #############################################################################
-#
-#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved
-#
-# #############################################################################
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
 """
-:author:
-    Guannan Ma
-:create_date:
-    2013
-:last_date:
-    2016
 :descrition:
     **Guannan just made a wraper out of pexpect.**
     The original copyright belongs to the author of pexpect module.
     See it at http://pexpect.sourceforge.net/pexpect.html
-
 """
 import os
 import sys
@@ -149,7 +139,7 @@ def go_with_scp(
         fd.write(command)
     if not os.path.exists(host_file):
         return ret
-    ret = lscp(host_file, hostname, username, passwd, remote_file, timeout)
+    ret = lscp(host_file, hostname, username, passwd, remote_file, timeout, b_print_stdout)
     if not _judge_ret(ret, 'scp ret:'):
         return ret
     cmd = ' sh %s ' % remote_file
@@ -160,7 +150,7 @@ def go_with_scp(
         ret['result'] = 'rm -f host_file fail, ret:%s' % res
         return ret
     cmd = ' rm -f %s ' % remote_file
-    res = go_ex(hostname, username, passwd, cmd, 10)
+    res = go_ex(hostname, username, passwd, cmd, 10, b_print_stdout)
     if not _judge_ret(res, 'rm -f remote_file ret:'):
         return res
     return ret

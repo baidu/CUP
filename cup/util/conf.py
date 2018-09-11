@@ -1,15 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*
-# #############################################################################
-#
-#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved
-#
-# #############################################################################
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Liu.Jia@baidu, Guannan Ma (@mythmgn),
 """
-:author:
-    Liu.Jia Guannan Ma
 :descrition:
-    Complex conf support
+    Complex and constructive conf support
 """
 
 import os

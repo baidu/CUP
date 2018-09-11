@@ -1,15 +1,10 @@
-# -*- coding: utf-8 -*-
-################################################################################
-#
-# Copyright (c) 2015 Baidu.com, Inc. All Rights Reserved
-#
-################################################################################
+#!/usr/bin/env python
+# -*- coding: utf-8 -*
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: liushuxian(liushuxian)
 """
 This module provides Job object.
-
-Authors: liushuxian(liushuxian)
-Date:    2015/01/20
-""" 
+"""
 
 import json
 import logging
@@ -187,11 +182,11 @@ class Job(base.JenkinsBase):
             build_type:
                 firstBuild
                 lastBuild
-                lastStableBuild                                                                     
+                lastStableBuild
                 lastSuccessfulBuild
                 lastCompletedBuild
                 lastFailedBuild
-        """                                             
+        """
         data = self.poll(tree='%s[number]' % build_type)
 
         info = data.get(build_type)
@@ -243,11 +238,11 @@ class Job(base.JenkinsBase):
 
     def get_build(self, build_number, depth=None):
         """get build by number.
-        
+
         Also support special build:
                 firstBuild
                 lastBuild
-                lastStableBuild                                                                     
+                lastStableBuild
                 lastSuccessfulBuild
                 lastCompletedBuild
                 lastFailedBuild
@@ -303,7 +298,7 @@ class Job(base.JenkinsBase):
         Also support special build:
                 firstBuild
                 lastBuild
-                lastStableBuild                                                                     
+                lastStableBuild
                 lastSuccessfulBuild
                 lastCompletedBuild
                 lastFailedBuild
@@ -335,7 +330,7 @@ class Job(base.JenkinsBase):
     @property
     def config_text(self):
         """get config.xml text of job.
-        
+
         Returns:
             config.xml text in Unicode type.
             You can encode it in 'utf-8' or 'gb18030'.

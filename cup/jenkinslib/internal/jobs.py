@@ -1,19 +1,12 @@
-# -*- coding: utf-8 -*-
-################################################################################
-#
-# Copyright (c) 2015 Baidu.com, Inc. All Rights Reserved
-#
-################################################################################
+#!/usr/bin/env python
+# -*- coding: utf-8 -*
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: liushuxian(liushuxian)
 """
 This module provides Jobs object.
-
 Jobs is a container of Job.
+"""
 
-Authors: liushuxian(liushuxian)
-Date:    2015/01/20
-""" 
-
-import cup
 from cup.jenkinslib.internal import exception
 
 

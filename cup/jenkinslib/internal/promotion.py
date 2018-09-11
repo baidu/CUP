@@ -1,19 +1,13 @@
-# -*- coding: utf-8 -*-
-################################################################################
-#
-# Copyright (c) 2015 Baidu.com, Inc. All Rights Reserved
-#
-################################################################################
+#!/usr/bin/env python
+# -*- coding: utf-8 -*
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: liushuxian(liushuxian)
 """
 This module provides Promotion object.
-
-Authors: liushuxian(liushuxian)
-Date:    2015/01/30
-""" 
+"""
 
 import logging
 
-import cup
 from cup.jenkinslib.internal import base
 from cup.jenkinslib.internal import exception
 
@@ -66,11 +60,11 @@ class Promotion(base.JenkinsBase):
             build_type:
                 firstBuild
                 lastBuild
-                lastStableBuild                                                                     
+                lastStableBuild
                 lastSuccessfulBuild
                 lastCompletedBuild
                 lastFailedBuild
-        """                                             
+        """
         data = self.poll(tree='%s[number]' % build_type)
 
         info = data.get(build_type)
@@ -122,11 +116,11 @@ class Promotion(base.JenkinsBase):
 
     def get_build(self, build_number, depth=None):
         """get build by number.
-        
+
         Also support special build:
                 firstBuild
                 lastBuild
-                lastStableBuild                                                                     
+                lastStableBuild
                 lastSuccessfulBuild
                 lastCompletedBuild
                 lastFailedBuild
@@ -176,11 +170,11 @@ class Promotion(base.JenkinsBase):
 
     def __getitem__(self, build_number):
         """get build by number.
-        
+
         Also support special build:
                 firstBuild
                 lastBuild
-                lastStableBuild                                                                     
+                lastStableBuild
                 lastSuccessfulBuild
                 lastCompletedBuild
                 lastFailedBuild

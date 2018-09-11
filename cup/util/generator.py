@@ -1,18 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*
-# #############################################################################
-#
-#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved
-#
-# #############################################################################
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
 """
-:author:
-    Guannan Ma
-:create_date:
-    2014
-:last_date:
-    2014
-
 class CGeneratorMan(object)
 ===========================
 用来生成各类唯一数，字符集，线程安全的自增uint的类。

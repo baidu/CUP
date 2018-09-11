@@ -1,13 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*
-# #############################################################################
-#
-#  Copyright (c) 2014 Baidu.com,  Inc. All Rights Reserved
-#
-# #############################################################################
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma
 """
-:author:
-    Guannan Ma
 :descrition:
     connection related module
 
@@ -17,7 +12,7 @@
        queue. 1 thread per context(ip, port).
 
     Notice that _do_write will only TRY to send out some data. It might
-    encounter TCP/IP stack full of data in the send queue of
+    encounter TCP/IP stack full of data in the SEND buffer-queue of
     the network interface
 """
 
@@ -260,17 +255,6 @@ class CConnContext(object):  # pylint: disable=R0902
             self._is_1st_send_msg = False
         else:
             msg.set_need_head(False)
-            # log.debug(
-            #     'put msg into context, msg_type:ACK, msg_flag:%d,'
-            #     'msg_src:%s, msg_dest:%s, uniqid:%d' %
-            #     (
-                #         msg.get_flag(),
-                #         str(msg.get_from_addr()),
-                #         str(msg.get_to_addr()),
-                #         msg.get_uniq_id()
-                #     )
-                # )
-                # pylint: disable=W0212
             msg._set_msg_len()
         urgency = 1
         is_urgent = flag & async_msg.MSG_FLAG2NUM['FLAG_URGENT']
@@ -366,7 +350,6 @@ class CConnContext(object):  # pylint: disable=R0902
 class CConnectionManager(object):
     """
         connaddr. Convert ip:port  into a 64-bit hex.
-
     """
     NET_RW_SIZE = 131072
     # NET_RW_SIZE = 4096
@@ -393,11 +376,9 @@ class CConnectionManager(object):
         self._fileno2context = {}
         self._context2fileno_peer = {}
         self._peer2context = {}
-
         min_thds, max_thds = thdpool_param
         self._thdpool = threadpool.ThreadPool(
-            min_thds, max_thds, name='network_write_read'
-        )
+            min_thds, max_thds, name='network_write_read')
         self._recv_queue = queue.PriorityQueue(0)
         self._stopsign = False
         self._recv_msg_ind = 0
@@ -557,7 +538,6 @@ class CConnectionManager(object):
             self._handle_new_send(context)
             return ret
 
-
     def connect(self, peer):
         """
         :param peer:
@@ -609,8 +589,8 @@ class CConnectionManager(object):
     def _handle_error_del_context(self, context):
         def _cleanup_context(send_queue, peerinfo):
             """cleanup context"""
-            log.info('to cleanup socket, peer:{0}'.format(peerinfo))
-            log.info(
+            log.debug('to cleanup socket, peer:{0}'.format(peerinfo))
+            log.debug(
                 'cleanup: send_queue of socket size:{0}'.format(
                     send_queue.qsize()
                 )
@@ -622,12 +602,8 @@ class CConnectionManager(object):
                     del msg
                 except queue.Empty:
                     break
-            # pylint: disable=W0212
-            # need cleanup
-            log.info('end clean up peerinfo:{0}'.format(peerinfo))
         if context is None:
             return
-        # log.info('to del context as socket is not normal')
         self._mlock.acquire()
         try:
             peerinfo = context.get_peerinfo()
@@ -636,11 +612,8 @@ class CConnectionManager(object):
                 (peerinfo[0], peerinfo[1])
             )
             fileno_peer = self._context2fileno_peer[context]
-            log.info('socket info: %s' % str(fileno_peer[1]))
-
             try:
                 sock = context.get_sock()
-                # sock.shutdown(socket.SHUT_RDWR)
                 sock.close()
                 context.set_sock(None)
             except socket.error as error:
@@ -649,7 +622,6 @@ class CConnectionManager(object):
                 )
             except Exception as error:
                 log.warn('failed to close socket:{0}'.format(error))
-
             try:
                 self._epoll.unregister(fileno_peer[0])
             except Exception as error:  # pylint: disable=W0703
@@ -657,10 +629,10 @@ class CConnectionManager(object):
                     'epoll unregister error:%s, peerinfo:%s' %
                     (str(error), str(fileno_peer[1]))
                 )
-            log.info('socket closed')
             del self._fileno2context[fileno_peer[0]]
             del self._peer2context[fileno_peer[1]]
             del self._context2fileno_peer[context]
+            log.info('socket closed')
         except Exception as error:
             pass
         finally:
@@ -845,7 +817,7 @@ class CConnectionManager(object):
                     )
                     return context
                 else:
-                    log.warn(
+                    log.debug(
                         'Socket error happend, error:%s,  peer info %s' %
                         (str(error), context.get_context_info())
                     )
@@ -952,17 +924,7 @@ class CConnectionManager(object):
             finally:
                 del data
             if msg.is_msg_already_sent():
-                log.info(
-                    'end sending out a msg: msg_type:%d, msg_len:%d,'
-                    'msg_flag:%d, msg_dest:%s, uniqid:%d' %
-                    (
-                        msg.get_msg_type(),
-                        msg.get_msg_len(),
-                        msg.get_flag(),
-                        str(msg.get_to_addr()),
-                        msg.get_uniq_id()
-                    )
-                )
+                log.info('sent out a msg uniqid:{0}'.format(msg.get_uniq_id()))
                 # if we have successfully send out a msg. Then move to next one
                 msg = context.try_move2next_sending_msg()
                 if msg is None:
@@ -1046,11 +1008,6 @@ class CConnectionManager(object):
                 if msg_key in self._needack_context_dict:
                     last_msg = self._needack_context_dict[msg_key]
                     del self._needack_context_dict[msg_key]
-                    log.info(
-                        'got ack-msg, del resending msg:{0}'.format(
-                            uniq_id
-                        )
-                    )
                     self._executor.queue_exec(
                         last_msg.get_callback_function(),
                         executor.URGENCY_NORMAL,

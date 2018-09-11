@@ -1,19 +1,14 @@
 #!/bin/env python  pylint: disable=C0302
 # -*- coding: utf-8 -*
-"""
-:author:
-    Giampaolo Rodola of psutil
-:descrition:
-    The class [Process] is back ported from python open-source project
-    [psutil]. Guannan finished porting in early 2014.
-    Here is the original license applied.
-:copyright:
-    Psutil.
-    Copyright (c) 2009, Giampaolo Rodola'. All rights reserved.
-    Use of this source code is governed by a BSD-style license
-    that can be found in the LICENSE file.
-"""
-
+# Authors: Giampaolo Rodola of psutil
+#     The class [Process] is back ported from python open-source project
+#     psutil. Guanna Ma back ported it to py-cup.
+#     If any concern, plz contact mythmgn@gmail.com
+#     Here is the original license applied.
+# :Copyright - (Psutil)
+#     Copyright (c) 2009, Giampaolo Rodola'. All rights reserved.
+#     Use of this source code is governed by a BSD-style license
+#     that can be found in the LICENSE file.
 import os
 import re
 import sys
@@ -83,8 +78,8 @@ def get_kernel_version():
 
     """
     versions = os.uname()[2]
-    version = versions[0: versions.find('_')]
-    return tuple([int(info) for info in version.split('.')])
+    # version = versions[0: versions.find('_')]
+    return tuple([info for info in versions.split('.')])
 
 
 @cup.decorators.needlinux
@@ -191,15 +186,11 @@ _CPU_COLUMNS = [
 ]
 
 
-# def _get_cpu_columns():
-#     version = get_kernel_version()
-#     if version >= (2, 6, 33):
-#         _CPU_COLUMNS.append('guest_nice')
-
 _COLUMN_LOCK = threading.Lock()
 
 _COLUMN_LOCK.acquire()
-if get_kernel_version() >= (2, 6, 33) and _CPU_COLUMNS.count('guest_nice') <= 0:
+if get_kernel_version() >= ('2', '6', '33') and \
+        _CPU_COLUMNS.count('guest_nice') <= 0:
     _CPU_COLUMNS.append('guest_nice')
 _COLUMN_LOCK.release()
 
@@ -222,7 +213,8 @@ class CPUInfo(collections.namedtuple('CPUInfo', _CPU_COLUMNS)):
         ::
             import cup
             # 计算60内cpu的使用情况。
-            cpuinfo = cup.res.linux.get_cpu_usage(intvl_in_sec=60)
+            from cup.res import linux
+            cpuinfo = linux.get_cpu_usage(intvl_in_sec=60)
             print cpuinfo.usr
     """
 
@@ -1408,9 +1400,9 @@ if '__main__' == __name__:
     print get_cpu_usage(2)
     print get_meminfo()
     print get_swapinfo()
-    print get_net_through('eth1')
-    print get_net_transmit_speed('eth1', 5)
-    print get_net_recv_speed('eth1', 5)
+    print get_net_through('xgbe0')
+    print get_net_transmit_speed('xgbe0', 5)
+    print get_net_recv_speed('xgbe0', 5)
     print net_io_counters()
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent
