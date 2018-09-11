@@ -38,6 +38,11 @@ def _find_packages(prefix=''):
                 packages.append(
                     re.sub('^[^A-z0-9_]', '', root.replace('\\', '.'))
                 )
+            else:
+                packages.append(
+                    re.sub('^[^A-z0-9_]', '', root.replace('/', '.'))
+                )
+
     print packages
     return packages
 

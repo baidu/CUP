@@ -23,7 +23,7 @@ import collections
 
 import cup
 from cup import err
-from cup.res import linux
+# from cup.res import linux
 from cup.shell import expect
 
 __all__ = [
@@ -92,6 +92,7 @@ class ShellExec(object):  # pylint: disable=R0903
         get the command's status
         """
         try:
+            from cup.res import linux
             async_process = linux.Process(async_content.pid)
             res = async_process.get_process_status()
         except err.NoSuchProcess:
@@ -126,6 +127,7 @@ class ShellExec(object):  # pylint: disable=R0903
                     preexec_fn=_signal_handle)
 
             #parent = psutil.Process(argcontent.__subpro.pid)
+            from cup.res import linux
             parent = linux.Process(argcontent.__subpro.pid)
             children = parent.children(True)
             ret_dict = []
