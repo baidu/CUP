@@ -109,7 +109,7 @@ print meminfo.available
     - Install python-nose before running the tests
     - run `cd ./cup_tests; nosetests -s`
 
-## 像CUP贡献代码
+## 向CUP贡献代码
 直接在github中提交patch就可以了
     - Commit code to GITHUB, https://github.com/baidu/CUP
     - Need to check pep8 and pylint rules before you start a pull request
