@@ -9,8 +9,10 @@
     python setup.py install
 ```
 
-### 3. Usage
+### 3. Doc & Wiki
+
 Visit Wiki to see more details: https://github.com/Baidu/CUP/wiki
+
 Vist Doc site to see py-docs: http://docs.iobusy.com/docs/cup/
 
 ```python
