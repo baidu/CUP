@@ -3,8 +3,10 @@
 # Copyright: [CUP] - See LICENSE for details.
 # Authors: Guannan Ma (@mythmgn),
 """
-:descrition:
-    mail related modules. **Recommand using SmtpMailer**
+:description:
+    mail related modules.
+
+    **Recommand using SmtpMailer**
 """
 
 __all__ = ['mutt_sendmail', 'SmtpMailer']
@@ -22,32 +24,33 @@ from email.mime import text
 
 import cup
 from cup import log
+from cup import shell
+from cup import decorators
 
 
 def mutt_sendmail(  # pylint: disable=R0913,W0613
     tostr, subject, body, attach, content_is_html=False
 ):
     """
-    请注意。mutt_sendmail不推荐被使用，除非无法使用此module的SmtpMailer.
+    Plz notice this function is not recommanded to use. Use SmtpMailer instead.
 
     :param  exec_cwd:
-        切换到exec_cwd目录，然后发送邮件。 发送之后会回到原来的workdir.
-        如果不期望切换目录， 请传入''
+        exec working directory. Plz use
     :param tostr:
-        收件人列表， 可多人。 用,分隔
+        recipt list, separated by ,
     :param subject:
-        邮件主题
+        subject
     :param body:
-        邮件内容
+        email content
     :param attach:
-        邮件附件，可多项，用,分割。
+        email attachment
     :param content_is_html:
-        邮件内容是否是html格式的
+        is htm mode opened
     :return:
-        执行成功返回True, 否则返回False, 并打印错误到stderr
+        return True on success, False otherwise
     """
-    cup.decorators.needlinux(mutt_sendmail)
-    shell = cup.shell.ShellExec()
+    decorators.needlinux(mutt_sendmail)
+    shell = shell.ShellExec()
     temp_cwd = os.getcwd()
 
     str_att = ''
@@ -86,26 +89,25 @@ def mutt_sendmail(  # pylint: disable=R0913,W0613
 
 class SmtpMailer(object):  # pylint: disable=R0903
     """
-    :param sender: 设置发送人邮箱
+    :param sender:  mail sender
     :param server: smtp的mailserver
     :param port: port
-    :param is_html: body是否是html.
+    :param is_html:  is html enabled
 
-    如下有个支持html嵌入图片以及附件的例子
-    我厂的smtp server hostname请自行babel搜索smtp服务器
+    smtp server examples
     ::
 
-        import cup
-        mailer = cup.mail.SmtpMailer(
+        from cup import mail
+        mailer = mail.SmtpMailer(
             'xxx@xxx.com',
             'xxxx.smtp.xxx.com',
             is_html=True
         )
         mailer.sendmail(
             [
-                'maguannan@xxx.com',
-                'liuxuan05@xxx.com',
-                'zhaominghao@xxx.com'
+                'maguannan',
+                'liuxuan05',
+                'zhaominghao'
             ],
             'test_img',
             (
@@ -120,7 +122,7 @@ class SmtpMailer(object):  # pylint: disable=R0903
     _COMMA_SPLITTER = ','
 
     def __init__(
-        self, sender, server, port=25, is_html=False
+        self, sender, server='mail2-in.baidu.com', port=25, is_html=False
     ):
         """
         """
@@ -132,7 +134,7 @@ class SmtpMailer(object):  # pylint: disable=R0903
 
     def setup(self, sender, server, port=25, is_html=False):
         """
-        可在运行过程中更改发送设置
+        change parameters during run-time
         """
         self._server = server
         self._port = port
@@ -206,26 +208,22 @@ class SmtpMailer(object):  # pylint: disable=R0903
         cc=None, bcc=None
     ):
         """
-        发送邮件.
+        send mail
 
         :param recipients:
-            支持传入一个邮件接收者(string), 或者邮件接受者list
+            "list" of recipients. See the example above
         :param subject:
-            邮件主题
+            subject
         :param body:
-            邮件正文
+            body of the mail
         :param attachments:
-            支持传入一个附件(string类型,邮件路径)或者附件list路径列表.
-            请注意, 需要传入绝对路径!
+            "list" of attachments. Plz use absolute file path!
         :param cc:
-            抄送列表. 可以传入一个string类型邮件抄送者. 也可以是一个
-            list，里面每一个item是一个抄送者
+            cc list
         :param bcc:
-            密送列表. 可以传入一个string类型邮件密送地址. 也可以是一个
-            list，里面每一个item是一个密送地址
+            bcc list
         :return:
-            发送成功返回(True, None)的tuple, 失败返回(False, error_msg)的tuple
-
+            return (True, None) on success, return (False, error_msg) otherwise
         """
         errmsg = None
         # self._check_type(recipients, [str, list])

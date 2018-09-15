@@ -1,16 +1,18 @@
 # matach all python pyc files
 *.pyc
 .svn
-cup/bidu
 build.sh
 *.py.original
 .DS_Store
 *.*~
 *.log
+tmp
+
+cup/bidu
 cup/net/async/msgcenter_dict.py
 cup.tar
 cup.zip
 cup.tar.gz
-tmp
-
 cup/ChangeLog.bak
+
+build/*

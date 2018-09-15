@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*
 """
-:descrition:
+:description:
     Guannan back-ported threadpool from twisted.python.
     if any concern, plz contact Guannan (mythmgn@gmail.com)
 

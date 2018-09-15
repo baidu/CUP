@@ -3,7 +3,7 @@
 # Copyright: [CUP] - See LICENSE for details.
 # Authors: Guannan Ma (@mythmgn),
 """
-:descrition:
+:description:
     **Guannan just made a wraper out of pexpect.**
     The original copyright belongs to the author of pexpect module.
     See it at http://pexpect.sourceforge.net/pexpect.html

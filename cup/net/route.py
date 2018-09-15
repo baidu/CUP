@@ -3,7 +3,7 @@
 # Copyright: [CUP] - See LICENSE for details.
 # Authors: YangGuang
 """
-:descrition:
+:description:
     host route info related module
 """
 

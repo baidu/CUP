@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*
 """
-:descrition:
+:description:
     heartbeat related module
     *test-case-name: twisted.python.test.test_constants*
     Copyright (c) Twisted Matrix Laboratories.

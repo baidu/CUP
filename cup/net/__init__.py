@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*
 # Copyright: [CUP] - See LICENSE for details.
 """
-:descrition:
+:description:
     network related module
 """
 import sys

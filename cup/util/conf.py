@@ -3,7 +3,7 @@
 # Copyright: [CUP] - See LICENSE for details.
 # Authors: Liu.Jia@baidu, Guannan Ma (@mythmgn),
 """
-:descrition:
+:description:
     Complex and constructive conf support
 """
 

@@ -3,7 +3,7 @@
 # Copyright: [CUP] - See LICENSE for details.
 # Author: Zhaominghao, Guannan Ma
 """
-:descrition:
+:description:
     cup thread module
 """
 

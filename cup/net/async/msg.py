@@ -3,7 +3,7 @@
 # Copyright: [CUP] - See LICENSE for details.
 # Authors: Guannan Ma (@mythmgn)
 """
-:descrition:
+:description:
     netmsg related module
 """
 import cup
