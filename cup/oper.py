@@ -3,7 +3,7 @@
 # Copyright: [CUP] - See LICENSE for details.
 # Authors: Zhao Minghao,
 """
-:descrition:
+:description:
     operations related module
 """
 
@@ -21,9 +21,11 @@ from cup import err
 # linux only import
 if platform.system() == 'Linux':
     __all__ = [
-        'rm', 'rmrf', 'is_proc_exist', 'kill', 'backup_file',
-        'is_process_used_port', 'is_port_used', 'is_path_contain_file',
-        'contains_file'
+        'rm', 'rmrf',
+        'kill',
+        'is_process_used_port', 'is_port_used', 'is_proc_exist',
+        'is_proc_exist', 'is_process_running',
+        'contains_file', 'backup_file'
     ]
 # universal import (platform indepedent)
 else:
@@ -48,9 +50,10 @@ def rm(name):
 
 def rmrf(fpath, safemode=True):
     """
-    可使用pythn自带的shutil.rmtree 不推荐使用这个函数
     :param fpath:
-        删除的路径
+        files/direcotry to be deleted.
+    :param safemode:
+        True by default. You cannot delete root / when safemode is True
     """
     @decorators.needlinux
     def _real_rmrf(fpath, safemode):
@@ -67,16 +70,17 @@ def rmrf(fpath, safemode=True):
     return _real_rmrf(fpath, safemode)
 
 
-def is_proc_exist(path, name):
+def is_process_running(path, name):
     """
-    通过name找到该进程的pid. 之后通过传入的path匹配/proc进程目录底下的cwd文件，
-    如果cwd也包含该path目录。 则认为proc进程存在， return True, 否则False
+    Judge if the executable is running by comparing /proc files.
+    :platforms:
+        linux only. Will raise exception if running on other platforms
     :param path:
-        源程序运行启动的路径
+        executable current working direcotry
     :param name:
-        源程序名称
+        executable name
     :return:
-        存在返回True， 不存在返回False
+        return True if the process is running. Return False otherwise.
     """
     @decorators.needlinux
     def _real_is_proc_exist(path, name):
@@ -103,6 +107,10 @@ def is_proc_exist(path, name):
     return _real_is_proc_exist(path, name)
 
 
+# for compatibility. Do not delete this line:
+is_proc_exist = is_process_running
+
+
 def _kill_child(pid, sign):
     cmd = 'ps -ef|grep %s|grep -v grep|awk \'{print $2,$3}\'' % (pid)
     ret = cup.shell.ShellExec().run(cmd, 10)
@@ -126,17 +134,16 @@ def _kill_child(pid, sign):
 
 def kill(path, name, sign='', b_kill_child=False):
     """
-    通过和is_proc_exist一样的检查顺序找到这个进程， 然后根据向该进程发送sign.
-    sign不赋值， 默认 kill pid, 赋值 kill -sign pid.
-    b_kill_child  是否递归删除子进程
+    will judge if the process is running by calling function
+    (is_process_running), then send kill signal to this process
     :param path:
-        源程序运行启动的路径
+        executable current working direcotry (cwd)
     :param name:
-        源程序名称
+        executable name
     :param sign:
-        kill 程序发送的信号量， 支持空、9,、18、19
+        kill sign, e.g. 9 for SIGKILL, 15 for SIGTERM
     :b_kill_child:
-        杀死当前进程的时候是否递归删除子进程
+        kill child processes or not. False by default.
     """
     path = os.path.realpath(os.path.abspath(path))
     # path = os.path.abspath(path)
@@ -167,10 +174,11 @@ def kill(path, name, sign='', b_kill_child=False):
 
 def backup_file(srcpath, filename, dstpath, label=None):
     """
-    把srcpath目录下的filename文件备份到dstpath目录下。 备份名字变为
-    dstpath/filename.label   label默认是(None), 可不传入，函数自动
-    把label变成当前时间.
-    如果dstpath不存在， 函数会尝试创建目录。如果创建失败， raise IOError
+    Backup srcpath/filename to dstpath/filenamne.label.
+    If label is None, cup will use time.strftime('%H:%M:S')
+
+    :dstpath:
+        will create the folder if no existence
     """
     if label is None:
         label = time.strftime('%H:%M:%S')
@@ -184,10 +192,7 @@ def backup_file(srcpath, filename, dstpath, label=None):
 def backup_folder(srcpath, foldername, dstpath, label=None):
 
     """
-    把srcpath目录下的folder文件夹备份到dstpath目录下。 备份名字变为
-    dstpath/foldername.label   label默认是(None), 可不传入，函数自动
-    把label变成当前时间.
-    如果dstpath不存在， 函数会尝试创建目录。如果创建失败， raise IOError
+    same to backup_file except it's a FOLDER not a FILE.
     """
     if label is None:
         label = time.strftime('%H:%M:%S')
@@ -200,26 +205,29 @@ def backup_folder(srcpath, foldername, dstpath, label=None):
 
 
 def is_path_contain_file(dstpath, dstfile, recursive=False, follow_link=False):
-    """同contains_file"""
+    """
+    use contains_file instead. Kept still for compatibility purpose
+
+    """
     return contains_file(dstpath, dstfile, recursive, follow_link)
 
 
-def contains_file(dstpath, dstfile, recursive=False, follow_link=False):
+def contains_file(dstpath, expected_name, recursive=False, follow_link=False):
     """
-    判断目录是否存在指定的文件
+    judge if the dstfile is in dstpath
 
     :param dstpath:
-        目标目录
+        search path
     :param dstfile:
-        目标文件
+        file
     :param recursive:
-        是否支持递归查找，默认False
+        search recursively or not. False by default.
     :return:
-        查找成功返回True, 否则返回False
+        return True on success, False otherwise
     """
     path = os.path.normpath(dstpath)
-    fpath = os.path.normpath(dstfile.strip())
-    fullpath = '{0}/{1}'.format(path, dstfile.strip())
+    fpath = os.path.normpath(expected_name.strip())
+    fullpath = '{0}/{1}'.format(path, expected_name.strip())
     fullpath = os.path.normpath(fullpath)
     if recursive:
         for (_, __, fnames) in os.walk(path, followlinks=follow_link):
@@ -236,34 +244,38 @@ def contains_file(dstpath, dstfile, recursive=False, follow_link=False):
 
 def is_port_used(port):
     """
-    判断端口是否正在被使用
-
+    judge if the port is used or not (It's not 100% sure as next second, some
+    other process may steal the port as soon after this function returns)
+    :platform:
+        linux only (netstat command used inside)
     :param port:
-        端口号
+        expected port
     :return:
-        查找成功返回True, 否则返回False
+        return True if the port is used, False otherwise
     """
-    cmd = "netstat -nl | grep ':%s '" % (port)
-    ret = cup.shell.ShellExec().run(cmd, 10)
-    if 0 != ret['returncode']:
-        return False
-    stdout = ret['stdout'].strip()
-    if 0 == len(stdout):
-        return False
-    else:
-        return True
+    @decorators.needlinux
+    def __is_port_used(port):
+        """internal func"""
+        cmd = "netstat -nl | grep ':%s '" % (port)
+        ret = cup.shell.ShellExec().run(cmd, 10)
+        if 0 != ret['returncode']:
+            return False
+        stdout = ret['stdout'].strip()
+        if 0 == len(stdout):
+            return False
+        else:
+            return True
+    return __is_port_used(port)
 
 
 def is_process_used_port(process_path, port):
     """
-    判断特定进程是否使用某个端口
+    judge if a process is using the port
 
     :param process_path:
-        源程序运行启动的路径
-    :param port:
-        端口
+        process current working direcotry (cwd)
     :return:
-        查找成功返回True, 否则返回False
+        Return True if process matches
     """
     # find the pid from by port
     cmd = "netstat -nlp | grep ':%s '|awk -F ' ' '{print $7}'|\

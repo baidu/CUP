@@ -3,7 +3,7 @@
 # Copyright: [CUP] - See LICENSE for details.
 # Authors: Guannan Ma (@mythmgn),
 """
-:descrition:
+:description:
     error related module
 """
 
@@ -38,7 +38,7 @@ class DecoratorException(BaseCupException):
 # ## Log related exceptions ####
 class LoggerException(BaseCupException):
     """
-    cup.log相关的Exception
+    Exception for logging, especially for cup.log
     """
     def __init__(self, msg):
         super(self.__class__, self).__init__(msg)
@@ -47,7 +47,7 @@ class LoggerException(BaseCupException):
 # ## Resouce related exceptions ####
 class ResException(BaseCupException):
     """
-    cup.res相关的Exception
+    Resource releated Exception
     """
     def __init__(self, msg):
         BaseCupException.__init__(self, msg)
@@ -55,7 +55,7 @@ class ResException(BaseCupException):
 
 class NoSuchProcess(ResException):
     """
-    通用Exception, 找不到这个进程
+    No such Process Exception
     """
     def __init__(self, pid, str_process_name):
         ResException.__init__(self,
@@ -65,7 +65,7 @@ class NoSuchProcess(ResException):
 
 class AccessDenied(ResException):
     """
-    通用Exception, 权限相关的异常Exception类
+    Access Denied
     """
     def __init__(self, str_resouce):
         ResException.__init__(self,
@@ -76,7 +76,7 @@ class AccessDenied(ResException):
 # ## Net related exceptions ####
 class NetException(BaseCupException):
     """
-    通用网络相关Exception
+    Network releated Exception
     """
     def __init__(self, msg=''):
         BaseCupException.__init__(self, msg)
@@ -84,7 +84,7 @@ class NetException(BaseCupException):
 
 class AsyncMsgError(NetException):
     """
-    cup.net.async异步消息相关的异常Exception类
+    cup.net.async msg related Exception
     """
     def __init__(self, msg=''):
         NetException.__init__(self, msg)
@@ -93,7 +93,7 @@ class AsyncMsgError(NetException):
 # ## Shell related exceptions ####
 class ShellException(BaseCupException):
     """
-    cup.shell相关的Exception
+    Exception for cup.shell
     """
     def __init__(self, msg=''):
         BaseCupException.__init__(self, msg)
@@ -109,7 +109,7 @@ class IOException(BaseCupException):
 
 class NoSuchFileOrDir(IOException):
     """
-    文件或者目录不存在
+    No such file or directory
     """
     def __init__(self, msg=''):
         IOException.__init__(self, msg)
@@ -117,7 +117,7 @@ class NoSuchFileOrDir(IOException):
 
 class ThreadTermException(BaseCupException):
     """
-        结束线程相关的err
+        Thread termination error
     """
     def __init__(self, msg=''):
         BaseCupException.__init__(self, msg)
@@ -125,7 +125,7 @@ class ThreadTermException(BaseCupException):
 
 class NotInitialized(BaseCupException):
     """
-    没有初始化
+    Not initialized yet
     """
     def __init__(self, msg=''):
         msg = 'Not initialized: %s' % msg

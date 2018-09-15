@@ -3,10 +3,9 @@
 # Copyright: [CUP] - See LICENSE for details.
 # Authors: Guannan Ma (@mythmgn), Zhao Minghao, Zhange Yuetian
 """
-:descrition:
+:description:
     shell related module
 """
-
 import os
 import time
 import sys

@@ -3,7 +3,7 @@
 # Copyright: [CUP] - See LICENSE for details.
 # Authors: Guannan Ma (@mythmgn),
 """
-:descrition:
+:description:
     cross-platform functions related module
 """
 
@@ -12,15 +12,17 @@ import platform
 
 __all__ = [
     'is_linux',
-    'is_windows'
+    'is_windows',
+    'is_mac'
 ]
 
 
 def is_linux():
     """
-    @return:
-        True or False
     Check if you are running on Linux.
+
+    :return:
+        True or False
     """
     if platform.platform().startswith('Linux'):
         return True
@@ -30,9 +32,10 @@ def is_linux():
 
 def is_windows():
     """
-    @return:
-        True or False
     Check if you are running on Windows.
+
+    :return:
+        True or False
     """
 
     if platform.platform().startswith('Windows'):

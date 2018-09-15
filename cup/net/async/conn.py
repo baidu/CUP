@@ -3,7 +3,7 @@
 # Copyright: [CUP] - See LICENSE for details.
 # Authors: Guannan Ma
 """
-:descrition:
+:description:
     connection related module
 
     1. There's only 1 thread reading/receiving data from the interface.

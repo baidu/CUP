@@ -3,7 +3,7 @@
 # Copyright: [CUP] - See LICENSE for details.
 # Authors: Guannan Ma (@mythmgn),
 """
-:descrition:
+:description:
     decorators related module
 """
 import os
@@ -20,8 +20,9 @@ __all__ = ['Singleton', 'needlinux', 'TraceUsedTime', 'needlinux', 'needposix']
 
 class Singleton(object):  # pylint: disable=R0903
     """
-    Singleton你的类.
-    用法如下::
+    Make your class singetonself.
+
+    example::
         from cup import decorators
 
         @decorators.Singleton
@@ -66,13 +67,13 @@ def py_versioncheck(function, version):
 
 def needlinux(function):
     """
-    只支持linux的python修饰符, 用来表明这个函数只能运行在linux系统上.
-    如果函数运行在非linux平台, raise cup.err.DecoratorException
+    make sure the func is only used on linux.
+    Raise cup.err.DecoratorException otherwise.
 
     :platform:
         Linux
 
-    用法如下
+    example
     ::
 
         from cup import decorators
@@ -114,7 +115,7 @@ def needmac(function):
     only support macOS
 
     :platform:
-        macOS compatible
+        macOS
 
     example
     ::
@@ -134,8 +135,10 @@ def needmac(function):
 # pylint:disable=R0903
 class TraceUsedTime(object):
     """
-    追踪函数的耗时情况
-    如果init过cup.log.init_comlog, 会打印到log文件。
+    Trace used time inside a function.
+
+    Will print to LOGFILE if you initialized logging with cup.log.init_comlog.
+
     example::
         import time
 
@@ -164,17 +167,16 @@ class TraceUsedTime(object):
     def __init__(self, b_print_stdout=False, enter_msg='', leave_msg=''):
         """
         :param b_print_stdout:
-            自动打印到由cup.log.init_comlog设置的logfile中，
-            如果init_comlog未被调用和初始化，则不会打印。
-            如果b_print_stdout=True, 则会同时打印时间追踪日志到stdout.
+            When b_print_stdout is True, CUP will print to both LOGFILE
+            that passed to cup.log.init_comlog and stdout
 
         :param enter_msg:
-            会在函数进入时期也同步打印的msg
+            entrance msg before invoking the function
 
         :param leave_msg:
-            会在函数离开时期同步打印的msg
+            exist msg after leaving the function
 
-        建议如果不使用cup.log.init_comlog打日志的话，则b_print_stdout=True
+        If you never use cup.log.init_comlog, make sure b_print_stdout == True
         """
         self._b_print_stdout = b_print_stdout
         self._enter_msg = enter_msg
@@ -209,6 +211,7 @@ class TraceUsedTime(object):
 # Things below for unittest
 @TraceUsedTime(False)
 def _test_trace_time():
+    """test trace time"""
     print 'now', time.time(), datetime_in.now()
     time.sleep(3)
     print 'then', time.time(), datetime_in.now()

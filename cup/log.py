@@ -3,7 +3,7 @@
 # Copyright: [CUP] - See LICENSE for details.
 # Authors: Guannan Ma (@mythmgn),
 """
-:descrition:
+:description:
     common log related module
 """
 
@@ -56,7 +56,7 @@ critical = logging.critical
 
 class _Singleton(object):  # pylint: disable=R0903
     """
-    Singleton你的类.
+    internal use for logging.  Plz use @Singoleton in cup.decorators
     """
     _LOCK = threading.Lock()
 
@@ -75,7 +75,7 @@ class _Singleton(object):  # pylint: disable=R0903
 # pylint: disable=R0903
 class _MsgFilter(logging.Filter):
     """
-    消息过滤器，过滤掉大于等于指定级别的消息
+    Msg filters by log levels
     """
     def __init__(self, msg_level=logging.WARNING):
         self.msg_level = msg_level
@@ -217,26 +217,28 @@ def init_comlog(
     gen_wf=False
 ):  # too many arg pylint: disable=R0913
     """
-    初始化日志函数
+    Initialize your logging
 
     :param loggername:
-        这个logger的名字
+        Unique logger name
     :param loglevel:
-        一共四种 log.DEBUG log.INFO log.ERROR log.CRITICAL
+        4 default levels: log.DEBUG log.INFO log.ERROR log.CRITICAL
     :param logfile:
-        log文件的位置,如不存在，会尝试创建该文件
+        log file. Will try to create it if no existence
     :param logtype:
-        支持两种cup.log.ROTATION cup.log.INFINITE
-        ROTATION会在文件大小达到maxlogsize的时候进行switch.
-        一共会switch 30个文件, 然后在这30个文件里面ROTATION的写
-        INFINITE会一直写log文件
+        Two type candidiates: log.ROTATION and log.INFINITE
+
+        log.ROTATION will let logfile switch to a new one (30 files at most).
+        When logger reaches the 30th logfile, will overwrite from the
+        oldest to the most recent.
+
+        log.INFINITE will write on the logfile infinitely
     :param maxlogsize:
-        logfile的最大文件大小(单位byte).超过会进行覆盖写或者switch.
+        maxmum log size with byte
     :param b_printcmd:
-        打印日志到logfile的同时,是否打印到stdout.
+        print to stdout or not?
     :param gen_wf:
-        将级别大于等于WARNING的消息打印到${logfile}.wf中.
-    请注意，打印日志时要么打印unicode字符，要么打印Python默认的UTF8的字符
+        print log msges with level >= WARNING to file (${logfile}.wf)
 
     *E.g.*
     ::
@@ -286,11 +288,9 @@ def reinit_comlog(
     gen_wf=False
 ):  # too many arg pylint: disable=R0913
     """
-    重新设置comlog, 参与意义同init_comlog.
-
-    reinit_comlog会重新设置整个进程的参数， 但请注意loggername一定不能与
-
-    原来的loggername相同，相同的loggername会raise ValueError
+    reinitalize logging system, paramters same to init_comlog.
+    reinit_comlog will reset all logging parameters，
+    Make sure you used a different loggername from the old one!
     """
     global G_INITED_LOGGER
     if loggername in G_INITED_LOGGER:
@@ -319,7 +319,7 @@ def reinit_comlog(
 
 def get_inited_loggername():
     """
-    获取所有已经init的loggername
+    get initialized logger name
     """
     global G_INITED_LOGGER
     return G_INITED_LOGGER
@@ -334,7 +334,7 @@ def _fail_handle(msg, e):
 
 def backtrace_info(msg, back_trace_len=0):
     """
-    logging.INFO的日志打印
+    info with backtrace support
     """
     try:
         msg = _log_file_func_info(msg, back_trace_len)
@@ -348,11 +348,7 @@ def backtrace_info(msg, back_trace_len=0):
 
 def backtrace_debug(msg, back_trace_len=0):
     """
-    :param msg:
-        logging.DEBUG级别的日志打印。
-    :param back_trace_len:
-        为扩展预留的参数， 正常使用可忽略。
-
+    debug with backtrace support
     """
     try:
         msg = _log_file_func_info(msg, back_trace_len)
@@ -366,7 +362,7 @@ def backtrace_debug(msg, back_trace_len=0):
 
 def backtrace_warn(msg, back_trace_len=0):
     """
-    logging.WARN级别的日志打印
+    warning msg with backtrace support
     """
     try:
         msg = _log_file_func_info(msg, back_trace_len)
@@ -380,7 +376,7 @@ def backtrace_warn(msg, back_trace_len=0):
 
 def backtrace_error(msg, back_trace_len=0):
     """
-    logging.ERROR级别的日志打印
+    error msg with backtarce support
     """
     try:
         msg = _log_file_func_info(msg, back_trace_len)
@@ -394,7 +390,7 @@ def backtrace_error(msg, back_trace_len=0):
 
 def backtrace_critical(msg, back_trace_len=0):
     """
-    logging.CRITICAL级别的日志打印
+    logging.CRITICAL with backtrace support
     """
     try:
         msg = _log_file_func_info(msg, back_trace_len)
@@ -408,10 +404,7 @@ def backtrace_critical(msg, back_trace_len=0):
 
 def setloglevel(logginglevel):
     """
-    进程运行时更改loglevel
-
-    :param logginglevel:
-        四种, 同init_comlog的loglevel
+    change log level during runtime
     """
     loggerman = _LoggerMan()
     loggerman._getlogger().setLevel(logginglevel)

@@ -3,16 +3,9 @@
 # Copyright: [CUP] - See LICENSE for details.
 # Authors: Guannan Ma (@mythmgn),
 """
-:descrition:
+:description:
     utilization related module
 """
-
-# from cup.util.conf import CConf
-# from cup.util.conf import CConfModer
-# from cup.util.generator import CGeneratorMan
-# from cup.util.threadpool import ThreadPool
-
-# from cup.util.misc import CAck, check_type, check_not_none
 
 
 from cup.util import autowait
@@ -21,8 +14,9 @@ from cup.util import constants
 from cup.util import context
 from cup.util import generator
 from cup.util import misc
-from cup.util import threadpool
 
+# for downward compatibility. Recommand "from cup.services import threadpool"
+from cup.services import threadpool
 CConf = conf.CConf
 CConfModer = conf.CConfModer
 CGeneratorMan = generator.CGeneratorMan

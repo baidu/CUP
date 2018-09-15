@@ -3,7 +3,7 @@
 # Copyright: [CUP] - See LICENSE for details.
 # Authors: Qiang Liu, Guannan Ma
 """
-:descrition:
+:description:
     auto wait related modules.
 """
 
