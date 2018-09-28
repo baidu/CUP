@@ -58,7 +58,7 @@ _TCP_STATUSES = {
 def get_boottime_since_epoch():
     """
     :return:
-        回返自从epoch以来的时间。 以秒记.
+        return boot time (seconds) since epoch
     """
     fp = open('/proc/stat', 'r')
     try:
@@ -73,8 +73,7 @@ def get_boottime_since_epoch():
 @cup.decorators.needlinux
 def get_kernel_version():
     """
-    拿到Linux系统的kernel信息， 回返是一个三元组
-    e.g.('2', '6', '32'):
+    get linux kernel verions, e.g.('2', '6', '32'):
 
     """
     versions = os.uname()[2]
@@ -85,7 +84,7 @@ def get_kernel_version():
 @cup.decorators.needlinux
 def get_cpu_nums():
     """
-    回返机器的CPU个数信息
+    get cpu nums
     """
     try:
         return os.sysconf("SC_NPROCESSORS_ONLN")
@@ -125,25 +124,26 @@ def get_cpu_nums():
 def get_disk_usage_all(raw=False):
     """
     :param raw:
-        是否返回以Byte为单位的数据，默认为False
+        if raw is True, will use Byte as the measure. Automatically use
+        MB/GB otherwise.
+
     :return:
-        拿到/目录的使用信息， 回返是一个字典
+        return a dict of disk usage
     """
-    byteToGb = 1024 * 1024 * 1024
-    byteToMb = 1024 * 1024
+    byte2gb = 1024 * 1024 * 1024
+    byte2mb = 1024 * 1024
     st = os.statvfs("/")
     free = st.f_bavail * st.f_frsize
     total = st.f_blocks * st.f_frsize
     unit = "Byte"
-    #为数据转换单位
     if not raw:
-        if total > byteToGb:
+        if total > byte2gb:
             free, total = \
-                free / byteToGb, total / byteToGb
+                free / byte2gb, total / byte2gb
             unit = "GB"
-        elif total > byteToMb:
+        elif total > byte2mb:
             free, total = \
-                free / byteToMb, total / byteToMb
+                free / byte2mb, total / byte2mb
             unit = "MB"
     return {
         "totalSpace": total,
@@ -157,7 +157,7 @@ def get_disk_usage_all(raw=False):
 def get_disk_info():
     """
     :return:
-        拿到Linux系统的所有磁盘信息
+        get disk info of the system
     """
     info = os.popen("df -lh")
     allDiskInfo = []
@@ -191,17 +191,17 @@ class MemInfo(collections.namedtuple('vmem', ' '.join([
         'buffers',
         'cached']))):
     """
-    get_meminfo函数取得系统Mem信息的回返信息。 是个namedtuple
+    get_meminfo will get memory info (a namedtuple returned:
         total, available, percent, used, free,
         active,
         inactive,
         buffers,
-        cached是她的属性
+        cached)
 
     E.g.:
     ::
-        import cup
-        meminfo = cup.res.linux.get_meminfo()
+        from cup.res import linux
+        meminfo = linux.get_meminfo()
         print meminfo.total
         print meminfo.available
     """
@@ -258,8 +258,8 @@ _COLUMN_LOCK.release()
 
 class CPUInfo(collections.namedtuple('CPUInfo', _CPU_COLUMNS)):
     """
-        CPUInfo是在调用get_cpu_usage返回的python namedtuple.
-        返回值中的如下属性可以直接访问:
+        CPUInfo is used for get_cpu_usage function. The following attr will be
+        in the namedtuple:
         usr,
         nice,
         system,
@@ -273,7 +273,7 @@ class CPUInfo(collections.namedtuple('CPUInfo', _CPU_COLUMNS)):
         I.g.
         ::
             import cup
-            # 计算60内cpu的使用情况。
+            # count cpu usage
             from cup.res import linux
             cpuinfo = linux.get_cpu_usage(intvl_in_sec=60)
             print cpuinfo.usr
@@ -315,8 +315,8 @@ def _get_cput_by_stat():
 @cup.decorators.needlinux
 def get_cpu_usage(intvl_in_sec=1):
     """
-    取得下个intvl_in_sec时间内的CPU使用率信息
-    回返CPUInfo
+    get cpu usage statistics during a time period (intvl_in_sec), return a
+    namedtuple CPUInfo
     """
     cup.unittest.assert_ge(intvl_in_sec, 1)
     ret = []
@@ -341,7 +341,7 @@ def get_cpu_usage(intvl_in_sec=1):
 @cup.decorators.needlinux
 def get_meminfo():
     """
-    获得当前系统的内存信息， 回返MemInfo数据结构。
+    get system memory info
     """
     total = free = buffers = cached = active = inactive = None
     fp = open('/proc/meminfo', 'r')
@@ -401,14 +401,14 @@ class SWAPINFO(
     )
 ):
     """
-    get_swapinfo函数回返的数据结构信息。 total,free,used,sin,sout是她的属性
+    get_swapinfo will return a SWAPINFO
     """
 
 
 @cup.decorators.needlinux
 def get_swapinfo():
     """
-    获得当前系统的swap信息
+    get swamp info of the system
     """
     fp = open('/proc/swaps', 'r')
     reg = '([\\/A-Za-z0-9]+)[\\s]+([a-z]+)[\\s]+([0-9]+)'\
@@ -459,11 +459,10 @@ def get_swapinfo():
 @cup.decorators.needlinux
 def net_io_counters():
     """
-    回返系统中每一个（包括回环lo）网络使用统计信息。
-    其中每个网卡list的信息包含
+    get network statistics with a list of namedtuple
     (bytes_sent, bytes_recv, packets_sent, packets_recv,
                          errin, errout, dropin, dropout)
-    回返信息示例
+    example
     ::
        {
            'lo':
@@ -509,7 +508,7 @@ def net_io_counters():
 @cup.decorators.needlinux
 def get_net_through(str_interface):
     """
-    获取网卡的收发包的统计信息。 回返结果为(rx_bytes, tx_bytes)
+    get network interface statistics by a interface (eth0, e,g,)
     """
     rx_bytes = tx_bytes = -1
     fp = open('/proc/net/dev', 'r')
@@ -531,7 +530,7 @@ def get_net_through(str_interface):
 @cup.decorators.needlinux
 def get_net_transmit_speed(str_interface, intvl_in_sec=1):
     """
-    获得网卡在intvl_in_sec时间内的网络发包速度
+    get network interface write/read speed
 
     E.g.
     ::
@@ -560,7 +559,6 @@ def get_net_recv_speed(str_interface, intvl_in_sec):
 
 def wrap_exceptions(fun):
     """
-    内部使用函数， 普通使用者可忽略
     Decorator which translates bare OSError and IOError exceptions
     into cup.err.NoSuchProcess and cup.err.AccessDenied.
     """
@@ -641,7 +639,7 @@ def process_iter():
 # pylint: disable=R0904
 class Process(object):
     """
-    Linux中进程的抽象类， 可以进行进程的信息获取。
+    Process info query (given a pid)
     """
 
     __slots__ = ["_pid", "_process_name", "_create_time"]
@@ -733,7 +731,7 @@ class Process(object):
     @wrap_exceptions
     def get_process_name(self):
         """
-        获得进程名. 取自proc目录的stat文件
+        get process name of the process (for daemon process only)
         """
         fhandle = open("/proc/%s/stat" % self._pid)
         try:
@@ -746,7 +744,8 @@ class Process(object):
 
     def get_process_exe(self):
         """
-        获得进程的Exe信息。 如果这个进程是个daemon，请使用get_process_name
+        get executable info of the process. If the process is a daemon, use
+        get_process_name instead!
         """
         try:
             exe = os.readlink("/proc/%s/exe" % self._pid)
@@ -780,7 +779,7 @@ class Process(object):
     @wrap_exceptions
     def get_process_cmdline(self):
         """
-        获得进程的cmdline. 取自proc目录cmdline文件
+        get cmdline
         """
         fhandle = open("/proc/%s/cmdline" % self._pid)
         try:
@@ -802,8 +801,7 @@ class Process(object):
     @wrap_exceptions
     def get_process_io_counters(self):
         """
-        获得进程在各个网卡上的网络传输统计信息.
-        回返数据结构参考net_io_counters函数
+        get io statistics info of network adapters.
         """
         if not os.path.exists('/proc/%s/io' % os.getpid()):
             raise NotImplementedError("couldn't find /proc/%s/io (kernel "
@@ -841,7 +839,7 @@ class Process(object):
     @wrap_exceptions
     def get_cpu_times(self):
         """
-        获得进程的utime和stime. 回返一个含有utime和stime属性的数据结构
+        get cpu times, return with a namedtuple (utime, stime)
         """
         f = open("/proc/%s/stat" % self._pid)
         try:
@@ -858,7 +856,7 @@ class Process(object):
     @wrap_exceptions
     def get_process_create_time(self):
         """
-        获得进程创建时间
+        get process create time
         """
         f = open("/proc/%s/stat" % self._pid)
         try:
@@ -887,8 +885,8 @@ class Process(object):
     @wrap_exceptions
     def get_memory_info(self):
         """
-        获得进程的meminfo. 回返数据结构包含 rss vms shared text lib data dirty
-        的属性。 可以进行 return_obj.rss方式获取。
+        get memory info, return with a namedtuple (
+        rss vms shared text lib data dirty)
         """
         f = open("/proc/%s/statm" % self._pid)
         try:
@@ -940,7 +938,7 @@ class Process(object):
 
     def get_memory_maps(self):
         """
-        获取memory map的信息。 取自proc目录的smaps
+        get memory map (from /proc smaps file)
         """
         # Return process's mapped memory regions as a list of nameduples.
         # Fields are explained in 'man proc'; here is an updated (Apr 2012)
@@ -1024,7 +1022,7 @@ class Process(object):
     @wrap_exceptions
     def get_process_cwd(self):
         """
-        获得进程的cwd
+        get process current working direcotry
         """
         path = os.readlink("/proc/%s/cwd" % self._pid)
         return path.replace('\x00', '')
@@ -1036,13 +1034,11 @@ class Process(object):
             'unvol'
         ]
     )
-
     @wrap_exceptions
     def get_num_ctx_switches(self):
         """
-        获取进程的context 切换信息。 取自proc目录的status文件。
-        voluntary_ctxt_switches和nonvoluntary_ctxt_switches
-        回返一个含有vol, unvol属性的namedtuple
+        get process context switch info (from /proc status file), return
+        with a namedtuple (vol, unvol)
         """
         vol = unvol = None
         f = open("/proc/%s/status" % self._pid)
@@ -1064,7 +1060,7 @@ class Process(object):
     @wrap_exceptions
     def get_process_num_threads(self):
         """
-        获得进程运行线程数目
+        get threads num of this process
         """
         f = open("/proc/%s/status" % self._pid)
         try:
@@ -1087,8 +1083,8 @@ class Process(object):
     @wrap_exceptions
     def get_process_threads(self):
         """
-        获得线程详细信息， 返回一个list
-        每个list包含一个含有thread_id, utime, stime属性的namedtuple
+        get threads that is current using, return with a namedtuple (
+        thread_id, utime, stime)
         """
         thread_ids = os.listdir("/proc/%s/task" % self._pid)
         thread_ids.sort()
@@ -1136,7 +1132,7 @@ class Process(object):
     @wrap_exceptions
     def get_process_status(self):
         """
-        获得当前process的status信息. 取自proc目录status文件的State
+        get status of the current process (info from /proc/xxx/status)
         """
         f = open("/proc/%s/status" % self._pid)
         try:
@@ -1160,8 +1156,8 @@ class Process(object):
     @wrap_exceptions
     def get_open_files(self):
         """
-        获得opened file信息。
-              """
+        get opened file info
+        """
         retlist = []
         files = os.listdir("/proc/%s/fd" % self._pid)
         hit_enoent = False
@@ -1258,11 +1254,13 @@ class Process(object):
     @wrap_exceptions
     def get_connections(self, kind='inet'):
         """
-        回返进程的网络链接信息， 回返信息为list, 每个list item为含有
-        fd family type laddr raddr status属性的namedtuple
+        get network connection info, each item contains a namedtuple
+        (fd family type laddr raddr status)
 
         :param kind:
-            默认kind='inet'
+            kind='inet' by default
+        :return:
+            a list of network connection info
         """
 
         # Return connections opened by process as a list of namedtuples.
@@ -1335,14 +1333,14 @@ class Process(object):
     @wrap_exceptions
     def get_num_fds(self):
         """
-        获得opened fd的数量
+        get opened file descriptor num
         """
         return len(os.listdir("/proc/%s/fd" % self._pid))
 
     @wrap_exceptions
     def get_process_ppid(self):
         """
-        进程的父进程pid
+        get parent process id
         """
         f = open("/proc/%s/status" % self._pid)
         try:
@@ -1366,8 +1364,7 @@ class Process(object):
     @wrap_exceptions
     def get_process_uids(self):
         """
-        拿到进程的uid信息。回返数据结构为包含real, effective, saved的namedtuple
-        对含有sticky bit的进程非常有用。
+        get uid info of the process, will return a namedtuple
         """
         f = open("/proc/%s/status" % self._pid)
         try:
@@ -1391,7 +1388,8 @@ class Process(object):
     @wrap_exceptions
     def get_process_gids(self):
         """
-        获得进程的gid信息. namedtuple, 含有real, effective, saved属性.
+        get process gid, namedtuple will be returned
+        (with attrs .real .effective .saved)
         """
         f = open("/proc/%s/status" % self._pid)
         try:

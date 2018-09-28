@@ -90,12 +90,7 @@ class CConf(object):
 
 class CConfModer(object):
     """
-    历史遗留类. 请忽略.
-    操作我厂configure公共库conf的类。
-    主要调用cfmod这个工具进行.
-    推荐使用Configure2Dict转换成dict,在使用Dict2Configure类来操作conf文件.
-    如果只是简单的更新某个key, 可以使用此类.
-
+    deprecated. Recommand using Configure2Dict / Dict2Configure
     """
     def __init__(self, toolpath):
         if not os.path.exists(toolpath):
@@ -112,9 +107,7 @@ class CConfModer(object):
         cmd = "%s -c %s -u %s:%s " % (self._modtool, confpath, key, val)
         try_times = 0
         while True:
-            # ret = subprocess.call(cmd, shell=True)
             ret = cup.shell.ShellExec().run(cmd, 120)
-            # print ret
             if(
                 ret['returncode'] == 0
                 or not ret['returncode']
@@ -131,8 +124,7 @@ class CConfModer(object):
 
     def updatekvlist(self, confpath, kvlist):
         """
-        更新confpath文件里的内容。 kvlist是一个list.
-        list里面每一个item是一个dict { 'key' : 'xxx:xx:xx', 'value' : 'updated'}
+        update a list of key/value
         """
         strcmd = ''
         for key_value in kvlist:
@@ -157,7 +149,7 @@ class CConfModer(object):
 
     def addkv(self, confpath, key, val):
         """
-        增加某个key/value到confpath
+        add key value into a conf
         """
         cmd = "%s -c %s -i %s:%s &>/dev/null" % (
             self._modtool, confpath, key, val
@@ -188,7 +180,7 @@ class CConfModer(object):
 
     def delkv(self, confpath, key):
         """
-        删除confpath文件中的某个key
+        del a key from a conf file
         """
         cmd = "%s -c %s -d %s " % (self._modtool, confpath, key)
         try_times = 0
@@ -218,7 +210,7 @@ class CConfModer(object):
 
 class ArrayFormatError(cup.err.BaseCupException):
     """
-    数组类型错误
+    array format error for Configure2Dict
     """
     def __init__(self, errmsg):
         super(self.__class__, self).__init__(errmsg)
@@ -274,7 +266,7 @@ class ConfListSetItemError(cup.err.BaseCupException):
 
 class ConfList(list):
     """
-    增加一个conf的数组属性. 以ConfList的数据方式表现
+    Conf list attributes.
 
     e.g.
 
@@ -283,7 +275,6 @@ class ConfList(list):
     """
     def __init__(self):
         super(self.__class__, self).__init__()
-        # list.__init__(self, [int(x) for x in itr])
         self._ind = 0
         self._comments = []
 
@@ -310,14 +301,17 @@ class ConfList(list):
         del self._comments[index]
 
     def append(self, item):
+        """append item"""
         self.append_ex(item, [])
 
     def insert(self, ind, item):
+        """plz do not use this function"""
         raise ConfDictSetItemError(
             'Do not support "insert". Use "append" instead'
         )
 
     def extend(self, seqs):
+        """plz do not use extend"""
         raise ConfDictSetItemError(
             'Do not support "extend". Use "append" instead'
         )

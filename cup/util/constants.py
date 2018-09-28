@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*
 """
 :description:
-    heartbeat related module
+    constant related module
     *test-case-name: twisted.python.test.test_constants*
     Copyright (c) Twisted Matrix Laboratories.
     See LICENSE for details.

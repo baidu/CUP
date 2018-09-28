@@ -15,8 +15,13 @@ import cup
 from cup.thirdp import pexpect
 
 
+__all__ = [
+    'go', 'go_ex', 'checkssh', 'go_with_scp', 'lscp', 'dscp'
+]
+
+
 def _do_expect_ex(passwd, command, timeout=100, b_print_stdout=True):
-    # ret 0 success 1 timeout others -1
+    """ret 0 success 1 timeout others -1"""
     ret = 0
     try:
         pobj = pexpect.spawn('/bin/bash', ['-c', command], timeout=timeout)
@@ -61,15 +66,16 @@ def _do_expect_ex(passwd, command, timeout=100, b_print_stdout=True):
 
 
 def _do_expect(passwd, command, timeout=100, b_print_stdout=True):
+    """ invoke _do_expect_ex"""
     ret = _do_expect_ex(passwd, command, timeout, b_print_stdout)
     return (ret['exitstatus'], ret['result'])
 
 
 def checkssh(hostname, username, passwd):
     """
-    判断ssh的连通性， 成功的话返回True, 否则False
+    check if we can ssh to hostname. Return True if succeed, False otherwise.
     """
-    ret, rev = go(
+    _, rev = go(
         hostname, username, passwd, 'echo "testSSH"',
         timeout=8, b_print_stdout=False
     )
@@ -83,17 +89,7 @@ def go(
     hostname, username, passwd, command='', timeout=800, b_print_stdout=True
 ):
     """
-    回返在hostname机器上执行的shell命令结果信息
-    历史兼容函数。 推荐使用go_ex
-    command 有较多转义字符的，不推荐使用go，推荐使用go_with_scp
-
-    :param timeout:
-        执行命令超时时间， 默认800秒
-
-    :return:
-        类型tuple:  (ret, return_string)
-        ret 是本机执行远程命令的返回值
-        return_string 是远程执行这条shell的输出值
+    deprecated, recommand using go_ex or go_with_scp
     """
     cmd = """ssh %s@%s '%s'""" % (username, hostname, command)
     return _do_expect(passwd, cmd, timeout, b_print_stdout)
@@ -112,19 +108,20 @@ def go_with_scp(
     timeout=800, b_print_stdout=True
 ):
     """
-    回返在hostname机器上执行的shell命令结果信息,
-    方式是：把command 写入本机文件，然后scp到远端机器，然后到远端执行此文件
-    相比go_ex 和 go 而言，多了如下参数
+    Recommand using this function to remotely execute cmds.
+
+    go_witch_scp will write a temp script file and scp to hostname:[host_tmp].
+    Then execute it and get the result back.
 
     :param host_tmp:
-        本次保存command内容的文件目录
+        temp folder for keeping the temporary script file (contains the cmd)
     :param remote_tmp:
-        远端保持command内容的文件目录
+        remote temp folder for keeping the temporary script file
     :param timeout:
-        执行命令超时时间， 默认800秒
+        timeout
 
     :return:
-        dict.有 'exitstatus' 'remote_exitstatus' 'result' 三项输出内容
+        a dict with keys ('exitstatus' 'remote_exitstatus' 'result')
 
     """
     ret = {
@@ -135,8 +132,8 @@ def go_with_scp(
     tmp_filename = cup.util.CGeneratorMan().get_uniqname()
     host_file = host_tmp + '/' + tmp_filename
     remote_file = remote_tmp + '/' + tmp_filename
-    with open(host_file, 'w') as fd:
-        fd.write(command)
+    with open(host_file, 'w') as fhandle:
+        fhandle.write(command)
     if not os.path.exists(host_file):
         return ret
     ret = lscp(host_file, hostname, username, passwd, remote_file, timeout, b_print_stdout)
@@ -160,16 +157,14 @@ def go_ex(
     hostname, username, passwd, command='', timeout=800, b_print_stdout=True
 ):
     """
-    回返在hostname机器上执行的shell命令结果信息,
-    相比go而言， 回返信息更丰富，且按照dict方式回返.
-    command 有较多转义字符的，不推荐使用go，推荐使用go_witch_scp
+    Run [command] on remote [hostname] and return result. If you have a lot
+    of escape sign in the command, recommand using go_with_scp
 
     :param timeout:
-        执行命令超时时间， 默认800秒
+        execution timeout, by default 800 seconds
 
     :return:
-        dict.有 'exitstatus' 'remote_exitstatus' 'result' 三项输出内容
-
+        return a dict with keys ('exitstatus' 'remote_exitstatus' 'result')
     """
     cmd = """ssh %s@%s '%s'""" % (username, hostname, command)
     ret = _do_expect_ex(passwd, cmd, timeout, b_print_stdout)
@@ -181,11 +176,10 @@ def lscp(
     timeout=800, b_print_stdout=True
 ):
     """
-    拷贝src到hostname的dst目录下。
+    copy [localhost]:src to [hostname]:[dst]
 
     :return:
-        dict.有 'exitstatus' 'remote_exitstatus' 'result' 三项输出内容
-
+        return a dict with keys ('exitstatus' 'remote_exitstatus' 'result')
     """
     cmd = 'scp -r %s %s@%s:%s' % (src, username, hostname, dst)
     return _do_expect_ex(passwd, cmd, timeout, b_print_stdout)
@@ -193,7 +187,7 @@ def lscp(
 
 def lscp_prod(scpstr, passwd, dst_path, timeout=800, b_print_stdout=True):
     """
-    兼容过去版本函数， 不推荐使用。
+    deprecated. Kept here for compatibility only.
     """
     cmd = 'scp -r ' + scpstr + ' ' + dst_path
     return _do_expect(passwd, cmd, timeout, b_print_stdout)
@@ -203,11 +197,10 @@ def dscp(
     hostname, username, passwd, src, dst, timeout=9000, b_print_stdout=False
 ):
     """
-    拷贝hostname, src目录到本地的dst目录。 采取scp -r的模式。
+    copy [hostname]:[src] to [localhost]:[dst].
 
     :return:
-        dict.有 'exitstatus' 'remote_exitstatus' 'result' 三项输出内容
-
+        return a dict with keys ('exitstatus' 'remote_exitstatus' 'result')
     """
     cmd = 'scp -r %s@%s:%s %s' % (username, hostname, src, dst)
     return _do_expect_ex(passwd, cmd, timeout, b_print_stdout)

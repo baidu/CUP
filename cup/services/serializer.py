@@ -628,6 +628,4 @@ class LocalFileSerilizer(BaseSerilizer):
                         raise IOError('encounter bad records, raise exception')
         return recordlist
 
-
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent
-
