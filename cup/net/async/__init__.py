@@ -4,7 +4,7 @@
 # Authors: Guannan Ma (@mythmgn),
 """
 :description:
-    **Async Module是python tcp异步消息框架.**
+    **Async Module is a tcp framework for asynchrous network msg tranfering**
 """
 
 # TODO:

@@ -3,7 +3,7 @@
 # Copyright: [CUP] - See LICENSE for details.
 # Authors: Guannan Ma (@mythmgn),
 """
-:description:
+:descrition:
     msg center related module
 """
 
@@ -12,7 +12,6 @@ import time
 import socket
 import threading
 
-import cup
 from cup import log
 from cup.net.async import conn
 from cup.net.async import msg as async_msg
@@ -45,6 +44,7 @@ class IMessageCenter(object):
         self._type_man.register_types(async_msg.MSG_TYPE2NUM)
 
     def _bind_port(self):
+        """bind port for message center"""
         self._conn_mgr.bind()
 
     def setup(self):
@@ -55,27 +55,27 @@ class IMessageCenter(object):
             self._bind_port()
             return True
         except socket.error as error:
-            cup.log.error('bind error:{0}'.format(error))
+            log.error('bind error:{0}'.format(error))
             return False
 
     def dump_stat(self):
         """
         dump message center class
         """
-        cup.log.info('dump_stat service started')
+        log.info('mysql dump_stat service started')
         while not self._stop:
             ind = 0
             while ind < 30:
                 ind += 1
                 time.sleep(1)
                 if self._stop:
-                    cup.log.info('dump_stat service stopped')
+                    log.info('msgcenter dump_stat service stopped')
                     return
             self._stat_cond.acquire()
             self._conn_mgr.dump_stats()
             self._stat_cond.wait(self._stat_intvl)
             self._stat_cond.release()
-        cup.log.info('dump_stat service stopped')
+        log.info('msgcenter dump_stat service stopped')
 
     def post_msg(self, msg):
         """
@@ -83,18 +83,22 @@ class IMessageCenter(object):
         """
         self._conn_mgr.push_msg2sendqueue(msg)
 
+    def close_socket(self, msg, recv_socket=True):
+        """close the socket by msg"""
+        self._conn_mgr.close_socket(msg, recv_socket)
+
     def _post_ackok_msg(self, to_addr, from_addr, uniq_id):
         """
         create an ack msg
         """
-        cup.log.info('post ack ok msg.')
+        log.info('post ack ok msg.')
         msg = async_msg.CNetMsg(is_postmsg=True)
         msg.set_to_addr(to_addr[0], to_addr[1])
         msg.set_from_addr(from_addr[0], from_addr[1])
         msg.set_msg_type(self._type_man.getnumber_bytype('ACK_OK'))
-        msg.set_flag(1)
+        msg.set_flag(async_msg.MSG_FLAG2NUM['FLAG_NORMAL'])
         msg.set_uniq_id(uniq_id)
-        msg.set_body('')
+        msg.set_body('0')
         self.post_msg(msg)
 
     def pre_handle(self, msg, function):
@@ -110,7 +114,7 @@ class IMessageCenter(object):
         handle function which should be implemented by
         sub-class.
         """
-        cup.log.info('handle in msgcenter')
+        log.info('handle in msgcenter')
 
     def default_handle(self, msg):  # pylint: disable=W0613,R0201
         """
@@ -134,13 +138,11 @@ class IMessageCenter(object):
             del msg
 
     def _run_conn_manager(self):
-        cup.log.info('run conn manager poll')
+        """
+        run conn manager
+        """
+        log.info('run conn manager poll')
         self._conn_mgr.poll()
-
-    # def _run_conn_msg_check_loop(self):
-    #     cup.log.info('run conn manager check msg')
-    #     # self._conn_mgr.run_executor()
-    #     # self._conn_mgr.do_check_msg_ack_loop()
 
     def is_stopping(self):
         """
@@ -152,13 +154,13 @@ class IMessageCenter(object):
         """
         stop the message center
         """
-        cup.log.info('To stop the msgcenter')
+        log.info('To stop the msgcenter')
         self._conn_mgr.stop(force_stop)
         self._stop = True
         self._stat_cond.acquire()
         self._stat_cond.notify()
         self._stat_cond.release()
-        cup.log.info('msgcenter stopped')
+        log.info('msgcenter stopped')
 
     def run(self):
         """
@@ -170,32 +172,36 @@ class IMessageCenter(object):
         thd_conn_man.start()
         thd_stat = threading.Thread(target=self.dump_stat, args=())
         thd_stat.start()
-        # if self._check_flag == CHECK_ON:
-        #     cup.log.info('start run check msg transfer thread.')
-        #     self._run_conn_msg_check_loop()
         ind = 0
         msg_ackflag = async_msg.MSG_FLAG2NUM['FLAG_ACK']
         while not self._stop:
             msg = self._conn_mgr.get_recv_msg()
             if ind >= 10000:
                 recv_queue = self._conn_mgr.get_recv_queue()
-                cup.log.info('recv queue size:{0}'.format(recv_queue.qsize()))
+                log.info('msgcenter netmsg queue size:{0}'.format(
+                    recv_queue.qsize()))
                 ind = 0
             if msg is not None:
-                log.info(
-                    'msg received, type:%d, flag:%d, from:%s, uniqid:%d' %
-                    (
-                        msg.get_msg_type(),
-                        msg.get_flag(),
-                        str(msg.get_from_addr()),
-                        msg.get_uniq_id()
+                try:
+                    log.info(
+                        'msg received, type:%d, flag:%d, from:%s, uniqid:%d' %
+                        (
+                            msg.get_msg_type(),
+                            msg.get_flag(),
+                            str(msg.get_from_addr()),
+                            msg.get_uniq_id()
+                        )
                     )
-                )
-                ind += 1
-                if msg_ackflag & msg.get_flag() == msg_ackflag:
-                    self._conn_mgr.push_msg2needack_queue(msg)
-                # else:
-                self.handle(msg)
+                    ind += 1
+                    if msg_ackflag & msg.get_flag() == msg_ackflag:
+                        self._conn_mgr.push_msg2needack_queue(msg)
+                    self.handle(msg)
+                # pylint: disable=W0703
+                except Exception as err:
+                    log.error(
+                        'get a msg that cannot be handled.'
+                        'Seems network err:{0}'.format(err)
+                    )
             msg = None
         return True
 
