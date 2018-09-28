@@ -6,6 +6,8 @@
 :description:
     netmsg related module
 """
+import os
+
 import cup
 from cup import log
 from cup.util import misc
@@ -23,14 +25,14 @@ __all__ = ['CMsgType', 'CMsgFlag', 'CNetMsg', 'CAckMsg']
 
 
 MSG_TYPE2NUM = {
-        'HEART_BEAT': 1,
-        'RESOURCE_ACQUIRE': 2,
-        'RESOURCE_RELEASE': 3,
-        'ACK_OK': 4,
-        'ACK_FAILURE': 5,
-        'ACK_HEART_BEAT': 6,
-        'ACK_CREATE': 7,
-        'NEED_ACK': 8
+    'HEART_BEAT': 1,
+    'RESOURCE_ACQUIRE': 2,
+    'RESOURCE_RELEASE': 3,
+    'ACK_OK': 4,
+    'ACK_FAILURE': 5,
+    'ACK_HEART_BEAT': 6,
+    'ACK_CREATE': 7,
+    'NEED_ACK': 8
 }
 
 
@@ -124,7 +126,7 @@ class CNetMsg(object):
     _ORDER = [
         'head', 'flag', 'len', 'from', 'to', 'type', 'uniq_id', 'body'
     ]
-    _ORDER_BYTES = [8, 4, 8, 16, 16, 4, 16, 0]
+
     _SIZE_EXCEPT_BODY = 72
     _SIZE_EXCEPT_HEAD_BODY = 64
     _ORDER_COUNTS = 8
@@ -142,10 +144,11 @@ class CNetMsg(object):
 
     def __init__(self, is_postmsg=True):
         #super(self.__class__, self).__init__()
+        self._ORDER_BYTES = [8, 4, 8, 16, 16, 4, 16, 0]
         self._is_postmsg = is_postmsg
-        self._need_head = False
+        self._need_head = True
         self._data = {}
-        self._readindex = 0
+        self._read_order = 0
         self._writeindex = 0
         self._msg_finish = False
         self._context = None
@@ -189,24 +192,6 @@ class CNetMsg(object):
         """
         return self._ORDER_COUNTS
 
-    def _get_msg_order_ind(self, index):
-        ind = index
-        if self._need_head is not True:
-            i = 1
-        else:
-            i = 0
-        log.debug('msg index:{0}'.format(index))
-        # log.debug('msg index type:{0}'.format(
-        #     self._ORDER[index])
-        # )
-        while ind >= 0:
-            ind -= self._ORDER_BYTES[i]
-            if ind > 0:
-                i += 1
-                continue
-            else:
-                return (i, ind + self._ORDER_BYTES[i])
-
     @classmethod
     def _asign_uint2byte_bybits(cls, num, bits):
         asign_len = bits / 8
@@ -242,6 +227,9 @@ class CNetMsg(object):
         push data into the msg. Return pushed length.
 
         Return -1 if we should shutdown the socket channel.
+
+        :raise exception:
+            may raise IndexError when coming msg has problems.
         """
         if self._msg_finish:
             log.warn('The CNetMsg has already been pushed enough data')
@@ -254,18 +242,17 @@ class CNetMsg(object):
         sign = True
         data_ind = 0
         data_max = len(data)
-        order, offsite = self._get_msg_order_ind(self._readindex)
-        log.debug('msg data index:{0}, offsite: {1}'.format(order, offsite))
-        data_key = self._ORDER[order]
+        # log.info('msg data read-order:{0}, context:{1}'.format(self._read_order,
+        #     self.get_msg_context().get_context_info()))
+        data_key = self._ORDER[self._read_order]
         while sign:
-            msg_data_loop_end = False
             # One loop handle one data_key until there all the data is handled.
             try:
                 self._data[data_key]
             except KeyError:
                 self._data[data_key] = ''
             loop_data_max = (
-                self._ORDER_BYTES[order] - len(self._data[data_key])
+                self._ORDER_BYTES[self._read_order] - len(self._data[data_key])
             )
             if (data_max - data_ind) >= loop_data_max:
                 # can fill up the msg
@@ -273,43 +260,49 @@ class CNetMsg(object):
                     data[data_ind: loop_data_max + data_ind]
                 )
                 data_ind += loop_data_max
-                msg_data_loop_end = True
-                self._readindex += loop_data_max
-                if data_key != 'body':
+                self._read_order += 1
+                data_key_info = ''
+                if data_key == 'head':
+                    data_key_info = self._data[data_key]
+                    if self._data[data_key] != self.MSG_SIGN:
+                        return -1
+                elif data_key == 'flag':
+                    data_key_info = self.get_flag()
+                elif data_key == 'len':
+                    total_len = self.get_msg_len()
+                    if self._need_head:
+                        self._ORDER_BYTES[7] = total_len - self._SIZE_EXCEPT_BODY
+                    else:
+                        self._ORDER_BYTES[7] = (
+                            total_len - self._SIZE_EXCEPT_HEAD_BODY
+                        )
+                    data_key_info = self.get_msg_len()
+                elif data_key == 'from':
+                    data_key_info = self.get_from_addr()
+                elif data_key == 'uniq_id':
+                    data_key_info = self.get_uniq_id()
+                elif data_key == 'type':
+                    data_key_info = self.get_msg_type()
+                elif data_key == 'body':
+                    data_key_info = len(self._data['body'])
+                if self._read_order >= self._ORDER_COUNTS:
+                    self._msg_finish = True
+                    sign = False
                     log.debug(
-                        'data_key {0} full filled'.format(data_key)
+                        'congratulations. '
+                        'This msg({0} {1}) has been filled'.format(
+                            self.get_uniq_id(),
+                            self.get_msg_context().get_context_info())
                     )
-                    if data_key == 'head':
-                        if self._data[data_key] != self.MSG_SIGN:
-                            return -1
-                else:
-                    pass
+                    break
+                data_key = self._ORDER[self._read_order]
             else:
                 # cannot fill up the msg in this round
                 sign = False
                 push_bytes = data_max - data_ind
-                self._data[data_key] += data[data_ind: data_max]
-                self._readindex += push_bytes
+                # self._data[data_key] += data[data_ind: data_max]
+                self._data[data_key] += data[data_ind:]
                 data_ind += push_bytes
-
-            if (data_key == 'len') and (msg_data_loop_end):
-                # set up the length of the body
-                total_len = self._convert_bytes2uint(self._data['len'])
-                if self._need_head:
-                    self._ORDER_BYTES[7] = total_len - self._SIZE_EXCEPT_BODY
-                else:
-                    self._ORDER_BYTES[7] = (
-                        total_len - self._SIZE_EXCEPT_HEAD_BODY
-                    )
-                log.debug('total len %d' % total_len)
-            if msg_data_loop_end and (order == self._ORDER_COUNTS - 1):
-                self._msg_finish = True
-                sign = False
-                log.debug('congratulations. This msg has been fullfilled')
-            elif msg_data_loop_end and order < self._ORDER_COUNTS:
-                order += 1
-                data_key = self._ORDER[order]
-                log.debug('This round has finished')
         return data_ind
 
     def _addr2pack(self, ip_port, stub_future):
@@ -352,9 +345,12 @@ class CNetMsg(object):
             it's the first msg that posted/received.
         """
         self._need_head = b_need
+        if b_need:
+            self._read_order = 0
+        else:
+            self._read_order = 1
         if self._is_postmsg and self._need_head:
             self._data['head'] = self.MSG_SIGN
-        log.debug('to set msg need head:%s' % str(self._need_head))
 
     @classmethod
     def _check_addr(cls, ip_port, stub_future):
@@ -370,7 +366,6 @@ class CNetMsg(object):
         body_len = len(self._data['body'])
         self._ORDER_BYTES[7] = body_len
         self._msglen = body_len + size_except_body
-        log.debug('msglen is {0}'.format(self._msglen))
         self._data['len'] = self._asign_uint2byte_bybits(
             self._msglen, 64
         )
@@ -412,7 +407,6 @@ class CNetMsg(object):
         set msg unique id
         """
         # misc.check_type(uniq_id, int)
-        log.debug('uniq_id: {0}'.format(uniq_id))
         self._data['uniq_id'] = self._asign_uint2byte_bybits(uniq_id, 128)
         self._uniqid = uniq_id
 
@@ -522,7 +516,11 @@ class CNetMsg(object):
         """
         is msg sent complete
         """
-        if (self._bodylen + self._SIZE_EXCEPT_BODY) == self._msglen:
+        if self._need_head:
+            size_except_body = self._SIZE_EXCEPT_BODY
+        else:
+            size_except_body = self._SIZE_EXCEPT_HEAD_BODY
+        if (self._bodylen + size_except_body) == self._msglen:
             return True
         else:
             return False
@@ -533,20 +531,21 @@ class CNetMsg(object):
         """
         if length <= 0:
             return
-        log.debug('to get {0} write bytes from msg, '
-            '_writeindex:{1}, msg total_len: {2}'.format(
-            length, self._writeindex, len(self._dumpdata)
-            )
-        )
+        # log.debug(
+        #     'to get {0} write bytes from msg, '
+        #     '_writeindex:{1}, msg total_len: {2}'.format(
+        #         length, self._writeindex, len(self._dumpdata)
+        #     )
+        # )
         return self._dumpdata[self._writeindex: self._writeindex + length]
 
     def seek_write(self, length_ahead):
         """
         seek foreward by length
         """
-        log.debug('to seek msg length {0}, now index {1}'.format(
-            length_ahead, self._writeindex)
-        )
+        # log.debug(
+        #     'to seek msg length {0}, now index {1}'.format(
+        #         length_ahead, self._writeindex))
         self._writeindex += length_ahead
         if self._writeindex > self.get_msg_len():
             raise cup.err.AsyncMsgError(
@@ -569,6 +568,7 @@ class CNetMsg(object):
         set writeindex
         """
         self._writeindex = 0
+        self._msg_finish = False
 
     def set_errmsg(self, errmsg):
         """set errmsg when we encounter errors sending it out"""
@@ -638,6 +638,24 @@ class CNetMsg(object):
         """get retry times"""
         return self._resend_times
 
+    def set_msg_context(self, context):
+        """
+        set up context for this netmsg
+        """
+        self._context = context
+
+    def get_msg_context(self):
+        """
+        get msg context
+        """
+        return self._context
+
+    def is_valid4send(self, netmsg):
+        """
+        for future use
+        """
+        return (True, None)
+
 
 # pylint: disable=R0904
 class CNeedAckMsg(CNetMsg):
@@ -657,7 +675,6 @@ class CNeedAckMsg(CNetMsg):
         self._last_retry_time = None
         self._callback_func = function
         self._resend_flag = MSG_RESENDING_FLAG
-
 
 
 # pylint: disable=R0904

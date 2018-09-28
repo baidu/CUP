@@ -3,7 +3,7 @@
 # Copyright: [CUP] - See LICENSE for details.
 # Authors: Guannan Ma
 """
-:description:
+:descrition:
     connection related module
 
     1. There's only 1 thread reading/receiving data from the interface.
@@ -15,7 +15,7 @@
     encounter TCP/IP stack full of data in the SEND buffer-queue of
     the network interface
 """
-
+import os
 import copy
 import socket
 import select
@@ -35,11 +35,11 @@ from cup.util import misc
 from cup.util import threadpool
 from cup.services import executor
 from cup.net.async import msg as async_msg
+from cup.net.async import context as sockcontext
 
 
 __all__ = [
-    'CConnContext',
-    'CConnectionManager',
+    'CConnectionManager'
 ]
 
 
@@ -52,298 +52,6 @@ def _try_get_peer_info(sock):
         peer = ('_try_get_peer_info error happend', str(error))
 
     return peer
-
-
-class CConnContext(object):  # pylint: disable=R0902
-    """
-    Connection上下文处理类
-    """
-    CONTEXT_QUEUE_SIZE = 200
-    def __init__(self):
-        self._destroying = False
-        self._sock = None
-        self._peerinfo = None
-
-        self._sending_msg = None
-        self._send_queue = queue.PriorityQueue(self.CONTEXT_QUEUE_SIZE)
-        self._recving_msg = None
-        self._recv_queue = queue.PriorityQueue(self.CONTEXT_QUEUE_SIZE)
-        self._msgind_in_sendque = 0
-        self._is_reading = None
-        self._is_1st_recv_msg = True
-        self._is_1st_send_msg = True
-        self._conn = None
-        self._lock = threading.Lock()
-        self._readlock = threading.Lock()
-        self._writelock = threading.Lock()
-
-        self._retry_interval = None
-        self._total_timeout = None
-        self._last_retry_time = None
-        self._function = None
-        self._resend_flag = None
-
-    def to_destroy(self):
-        """
-        destroy context
-        """
-        self._lock.acquire()
-        self._destroying = True
-        if self._sock is None:
-            msg = 'context is with no sock'
-        else:
-            msg = 'context with socket: %s' % str(self._sock)
-        log.debug('to destroy context, ' + msg)
-        self._lock.release()
-
-    def is_detroying(self):
-        """
-        is context being destroyed
-        """
-        self._lock.acquire()
-        is_destryoing = self._destroying
-        self._lock.release()
-        return is_destryoing
-
-    def set_destoryed(self):
-        """set context to destroyed status"""
-        self._lock.acquire()
-        self._destroying = False
-        self._lock.release()
-
-    def set_conn_man(self, conn):
-        """
-        set conn for context
-        """
-        self._conn = conn
-
-    def set_sock(self, sock):
-        """
-        associate socket
-        """
-        self._lock.acquire()
-        self._sock = copy.copy(sock)
-        self._lock.release()
-
-    def get_sock(self):
-        """
-        return associated socket
-        """
-        misc.check_not_none(self._sock)
-        sock = self._sock
-        return sock
-
-    def do_recv_data(self, data, data_len):
-        """
-        push data into the recving_msg queue
-        network read should be in 1 thread only.
-        """
-        if self._recving_msg is None:
-            raise cup.err.NotInitialized('self._recving_msg')
-        ret = self._recving_msg.push_data(data)
-        #  log.debug('pushed data length: %d' % ret)
-        if ret < 0:
-            log.warn(
-                'receive an wrong socket msg, to close the peer:{0}'.format(
-                    self.get_peerinfo()
-                )
-            )
-            self.to_destroy()
-            return
-        if data_len >= ret:
-            if self._recving_msg.is_recvmsg_complete():
-                # log.debug(
-                #     'get a msg: msg_type:%d, msg_len:%d, msg_flag:%d,'
-                #     'msg_src:%s, msg_dest:%s, uniqid:%d' %
-                #     (
-                #         self._recving_msg.get_msg_type(),
-                #         self._recving_msg.get_msg_len(),
-                #         self._recving_msg.get_flag(),
-                #         str(self._recving_msg.get_from_addr()),
-                #         str(self._recving_msg.get_to_addr()),
-                #         self._recving_msg.get_uniq_id()
-                #     )
-                # )
-                self._conn.get_recv_queue().put(
-                    (self._recving_msg.get_flag(), self._recving_msg)
-                )
-                if self._conn.get_recv_queue().qsize() >= 500:
-                    time.sleep(0.1)
-                self._recving_msg = self.get_recving_msg()
-            #  the pushed data should span on two msg datas
-            if data_len > ret:
-                return self.do_recv_data(data[ret:], (data_len - ret))
-        else:
-            log.error(
-                'Socket error. We cannot get more than pushed data length'
-            )
-            assert False
-        return
-
-    def get_recving_msg(self):
-        """
-        get the net msg being received
-        """
-        #  if no recving msg pending there, create one.
-        if self._recving_msg is None:
-            self._recving_msg = async_msg.CNetMsg(is_postmsg=False)
-
-        if self._recving_msg.is_recvmsg_complete():
-            self._recving_msg = async_msg.CNetMsg(is_postmsg=False)
-
-        if self._is_1st_recv_msg:
-            self._recving_msg.set_need_head(True)
-            self._is_1st_recv_msg = False
-        else:
-            self._recving_msg.set_need_head(False)
-
-        msg = self._recving_msg
-        return msg
-
-    def try_move2next_sending_msg(self):
-        """
-        move to next msg that will be sent
-        """
-        if self._sending_msg is None or \
-                self._sending_msg.is_msg_already_sent():
-            try:
-                item = self._send_queue.get_nowait()
-                msg = item[2]
-            except queue.Empty:
-                log.debug('The send queue is empty')
-                msg = None
-            except Exception as error:
-                errmsg = (
-                    'Catch a error that I cannot handle, err_msg:%s' %
-                    str(error)
-                )
-                log.error(errmsg)
-                raise CConnectionManager.QueueError(errmsg)
-            self._sending_msg = msg
-        else:
-            log.debug(
-                'No need to move to next msg since the current one'
-                'is not sent out yet'
-            )
-        temp = self._sending_msg
-        return temp
-
-    def put_msg(self, flag, msg):
-        """
-        Put msg into the sending queue.
-
-        :param flag:
-            flag determines the priority of the msg.
-
-            Msg with higher priority will have bigger chance to be
-
-            sent out soon.
-
-        :param return:
-            return 0 on success
-            return 1 on TRY_AGAIN ---- queue is full. network is too busy.
-
-        :TODO:
-            If the msg queue is too big, consider close the network link
-        """
-        succ = None
-        self._lock.acquire()
-        if self._is_1st_send_msg:
-            msg.set_need_head(True)
-            # pylint: disable=W0212
-            msg._set_msg_len()
-            self._is_1st_send_msg = False
-        else:
-            msg.set_need_head(False)
-            msg._set_msg_len()
-        urgency = 1
-        is_urgent = flag & async_msg.MSG_FLAG2NUM['FLAG_URGENT']
-        if is_urgent == async_msg.MSG_FLAG2NUM['FLAG_URGENT']:
-            urgency = 0
-        try:
-            self._send_queue.put_nowait((urgency, self._msgind_in_sendque, msg))
-            self._msgind_in_sendque += 1
-            succ = 0
-        except queue.Full:
-            log.debug(
-                'network is busy. send_msg_queue is full, peerinfo:{0}'.format(
-                    msg.get_to_addr()[0]
-                )
-            )
-            succ = 1
-        self._lock.release()
-        return succ
-
-    def get_context_info(self):
-        """
-        get context info
-        """
-        peerinfo = self.get_peerinfo()
-        msg = 'Peer socket(%s:%s).' % (peerinfo[0], peerinfo[1])
-        return msg
-
-    def set_reading(self, is_reading):
-        """
-        set reading status
-        """
-        self._lock.acquire()
-        self._is_reading = is_reading
-        self._lock.release()
-
-    def is_reading(self):
-        """
-        get if it is reading
-        """
-        self._lock.acquire()
-        is_reading = self._is_reading
-        self._lock.release()
-        return is_reading
-
-    def try_readlock(self):
-        """
-        try to acquire readlock
-
-        :return:
-            True if succeed. False, otherwise
-        """
-        return self._readlock.acquire(False)
-
-    def release_readlock(self):
-        """
-        release the readlock
-        """
-        self._readlock.release()
-
-    def try_writelock(self):
-        """
-        :return:
-            True if succeed. False, otherwise
-        """
-        return self._writelock.acquire(False)
-
-    def release_writelock(self):
-        """
-        release the writelock
-        """
-        self._writelock.release()
-
-    def set_peerinfo(self, peer):
-        """
-        set peerinfo
-        """
-        if type(peer) != tuple:
-            raise ValueError('peer is not a tuple')
-        self._peerinfo = peer
-
-    def get_peerinfo(self):
-        """
-        get peerinfo
-        """
-        return self._peerinfo
-
-    def get_sending_queue(self):
-        """return sending queue"""
-        return self._send_queue
 
 
 # pylint: disable=R0902
@@ -457,9 +165,11 @@ class CConnectionManager(object):
             log.warn('put a None into msg send queue. return')
             ret = -1
             return ret
+        valid, errmsg = msg.is_valid4send(msg)
+        if not valid:
+            log.error('failed to send msg as msg is not valid to send')
+            return -1
         flag = msg.get_flag()
-        #  log.debug('to put flag and msg into the queue. flag:%d' % flag)
-        #  self._send_queue.put( (flag, msg) )
         peer = msg.get_to_addr()[0]
         new_created = False
         context = None
@@ -474,7 +184,8 @@ class CConnectionManager(object):
                     msg.get_uniq_id()
                 )
             )
-            msg.set_need_head(b_need=False)
+            # no need head by default
+            # msg.set_need_head(b_need=False)
             if msg.get_last_retry_time() is None:
                 msg.set_last_retry_time(time.time())
             # if not in the self._needack_context_dict
@@ -490,7 +201,7 @@ class CConnectionManager(object):
             if peer not in self._peer2context:
                 sock = self.connect(peer)
                 if sock is not None:
-                    context = CConnContext()
+                    context = sockcontext.CConnContext()
                     context.set_conn_man(self)
                     context.set_sock(sock)
                     context.set_peerinfo(peer)
@@ -573,7 +284,7 @@ class CConnectionManager(object):
         self._mlock.acquire()
         self._set_sock_params(newsock)
         self._set_sock_nonblocking(newsock)
-        context = CConnContext()
+        context = sockcontext.CConnContext()
         context.set_sock(newsock)
         context.set_conn_man(self)
         context.set_peerinfo(peer)
@@ -586,7 +297,8 @@ class CConnectionManager(object):
         log.info('a new connection: %s:%s' % (peer[0], peer[1]))
         self._mlock.release()
 
-    def _handle_error_del_context(self, context):
+    def cleanup_error_context(self, context):
+        """clean up error context"""
         def _cleanup_context(send_queue, peerinfo):
             """cleanup context"""
             log.debug('to cleanup socket, peer:{0}'.format(peerinfo))
@@ -640,6 +352,29 @@ class CConnectionManager(object):
         # pylint: disable=W0212
         self._thdpool.add_1job(_cleanup_context, context._send_queue, peerinfo)
 
+    def close_socket(self, msg, recv_socket):
+        """
+        close socket by msg
+        """
+        peer = None
+        try:
+            if not recv_socket:
+                peer = msg.get_to_addr()[0]
+            else:
+                peer = msg.get_from_addr()[0]
+            context = self._peer2context.get(peer)
+            if context is not None:
+                self.cleanup_error_context(context)
+            else:
+                log.warn('conn manager close socket failed:{0}'.format(
+                    peer)
+                )
+        except Exception as err:
+            log.warn('failed to close socket:{1}, recv_socket:{0}'.format(
+                recv_socket, err)
+            )
+        return
+
     def poll(self):
         """
         start to poll
@@ -684,7 +419,7 @@ class CConnectionManager(object):
                     else:
                         log.info('--EPOLLERR--')
                     try:
-                        self._handle_error_del_context(
+                        self.cleanup_error_context(
                             self._fileno2context[fileno]
                         )
                     except KeyError:
@@ -766,7 +501,7 @@ class CConnectionManager(object):
             # destroy the context and socket
             context.release_readlock()
             try:
-                self._handle_error_del_context(context)
+                self.cleanup_error_context(context)
             except KeyError:
                 pass
         else:
@@ -789,16 +524,18 @@ class CConnectionManager(object):
             self._do_read(context)
             self._finish_read_callback(True, context)
         except Exception as error:
+            context.to_destroy()
             log.info('read error occur, error type:{0}, content:{1}'.format(
                 type(error), error)
             )
-            log.info(traceback.format_exc())
+            self.cleanup_error_context(context)
+            log.warn(traceback.format_exc())
             self._finish_read_callback(False, context)
 
     def _do_read(self, context):
         sock = context.get_sock()
         data = None
-        context.get_recving_msg()
+        context.move2recving_msg()
         while self._stopsign is not True:
             try:
                 data = sock.recv(self.NET_RW_SIZE)
@@ -852,7 +589,7 @@ class CConnectionManager(object):
             # destroy the context and socket
             context.release_writelock()
             try:
-                self._handle_error_del_context(context)
+                self.cleanup_error_context(context)
             # pylint: disable=W0703
             except Exception as error:
                 log.warn('context destroying encounters error,'
@@ -887,8 +624,8 @@ class CConnectionManager(object):
             data = msg.get_write_bytes(self.NET_RW_SIZE)
             log.debug('msg get_write_bytes_len to be sent: %d' % len(data))
             try:
+
                 succ_len = sock.send(data)
-                log.debug('succeed to send length:%d' % succ_len)
                 msg.seek_write(succ_len)
             except cuperr.AsyncMsgError as error:
                 log.debug('has seek out of msg len, continue')
@@ -924,7 +661,7 @@ class CConnectionManager(object):
             finally:
                 del data
             if msg.is_msg_already_sent():
-                log.info('sent out a msg uniqid:{0}'.format(msg.get_uniq_id()))
+                log.info('sent out a msg uniqid:{0}'.format(util.netmsg_tostring(msg)))
                 # if we have successfully send out a msg. Then move to next one
                 msg = context.try_move2next_sending_msg()
                 if msg is None:
