@@ -15,7 +15,7 @@ from datetime import datetime as datetime_in
 
 import cup
 
-__all__ = ['Singleton', 'needlinux', 'TraceUsedTime', 'needlinux', 'needposix']
+__all__ = ['Singleton', 'TraceUsedTime', 'needlinux', 'needposix']
 
 
 class Singleton(object):  # pylint: disable=R0903
@@ -23,6 +23,7 @@ class Singleton(object):  # pylint: disable=R0903
     Make your class singeton
 
     example::
+
         from cup import decorators
 
         @decorators.Singleton
@@ -140,6 +141,7 @@ class TraceUsedTime(object):
     Will print to LOGFILE if you initialized logging with cup.log.init_comlog.
 
     example::
+
         import time
 
         from cup import decorators

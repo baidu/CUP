@@ -15,6 +15,7 @@ __all__ = ['get_str_now']
 def get_str_now(fmt='%Y-%m-%d-%H-%M-%S'):
     """
     return string of 'now'
+
     :param fmt:
         print-format, '%Y-%m-%d-%H-%M-%S' by default
     """
