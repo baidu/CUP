@@ -23,6 +23,7 @@ import collections
 import cup
 from cup import err
 from cup.shell import expect
+from cup.shell import oper
 
 from cup.shell.oper import md5file
 from cup.shell.oper import kill9_byname
@@ -45,6 +46,12 @@ _DEPRECATED_MSG = '''Plz use class cup.shell.ShellExec instead. Function %s
 
 def _test():
     pass
+
+
+__all__ = [
+    'oper',
+    'expect'
+]
 
 
 if __name__ == '__main__':
