@@ -20,7 +20,7 @@ __all__ = ['Singleton', 'needlinux', 'TraceUsedTime', 'needlinux', 'needposix']
 
 class Singleton(object):  # pylint: disable=R0903
     """
-    Make your class singetonself.
+    Make your class singeton
 
     example::
         from cup import decorators
@@ -108,6 +108,29 @@ def needposix(function):
             'The system is not posix-based'
         )
     return function
+
+
+def needmac(function):
+    """
+    only support macOS
+
+    :platform:
+        macOS
+
+    example
+    ::
+        from cup import decorators
+        @decorators.needmac
+        def your_func():
+            pass
+    """
+    if platform.system() != 'Darwin':
+        raise cup.err.DecoratorException(
+            'The system is not macOS.'
+            'This functionality only supported in macOS'
+        )
+    return function
+
 
 # pylint:disable=R0903
 class TraceUsedTime(object):
