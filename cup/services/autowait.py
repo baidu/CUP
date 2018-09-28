@@ -19,7 +19,7 @@ import re
 import time
 
 import cup
-from cup import oper
+from cup.shell import oper
 
 
 def wait_until_file_exist(

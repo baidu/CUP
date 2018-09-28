@@ -27,13 +27,24 @@ def async_raise(tid, exctype):
 
 class CupThread(threading.Thread):
     """
-    CupThread继承threading.Thread, 支持threading.Thread所有功能和特性,
-    CupThread扩展了三个功能,raise_exc给线程发送raise信号,get_my_tid返回线程id，
-    terminate同步中止线程
+    CupThread is a sub-class inherited from threading.Thread;
+
+    CupThread has 3 more features:
+
+    1. raise_exc, to send a raise-exception signal to the thread,
+        TRY to let the thread raise an exception.
+
+    2.  get_my_tid, get thread id
+
+    3. terminate, to stop the thread
+
+    Notice if a thread in busy running under kernel-sysmode, it may not
+        response to the signals! Thus, it may not raise any exception/terminate
+        even though cup has send a CupThread signal!
     """
     def get_my_tid(self):
         """
-        返回线程id
+        return thread id
         """
         if not self.isAlive():
             cup.log.warn('the thread is not active')
@@ -52,20 +63,23 @@ class CupThread(threading.Thread):
 
     def raise_exc(self, exctype):
         """
-        异步给线程发送raise，发送成功返回1，线程已经停止返回0，其他错误返回!=1
+        asynchrously send 'raise exception' signal to the thread.
         :param exctype:
             raise Exception, exctype type is class
+        :return:
+            return 1 on success. 0 otherwise.
         """
         return async_raise(self.get_my_tid(), exctype)
 
     def terminate(self, times=15):
         """
-        异步raise线程，尝试中止线程
-        中止成功返回True，
-        线程已经停止返回True，
-        停止失败返回False。
-        (在返回True的时候，表示线程已经被中止,
-        在中止失败的过程中，会重试times次)
+        asynchrously terminate the thread.
+
+        Return True if the termination is successful or the thread is already
+        stopped. Return False, otherwise.
+
+        :times:
+            retry times until call for failure.
         """
         cnt = 0
         while self.isAlive():
@@ -79,7 +93,7 @@ class CupThread(threading.Thread):
 
 class RWLock(object):
     """
-    读写锁类
+    read/write lock
     """
     def __init__(self):
         self._lock = threading.Lock()
@@ -89,8 +103,9 @@ class RWLock(object):
 
     def acquire_writelock(self, wait_time=None):
         """
-        获取写锁， 如果wait_time赋值且!=None的数，会等待wait_time.
-        如果之后还没拿到锁， 将raise RuntimeError
+        Acquire write lock. If wait_time is not None and wait_time >=0,
+        cup will wait until wait_time passes. If the call timeouts and
+        cannot get the lock, will raise RuntimeError
         """
         self._cond.acquire()
         if self._wt_num > 0 or self._rd_num > 0:
@@ -103,7 +118,7 @@ class RWLock(object):
 
     def release_writelock(self):
         """
-        释放写锁
+        release write lock
         """
         self._cond.acquire()
         self._wt_num -= 1
@@ -113,8 +128,7 @@ class RWLock(object):
 
     def acquire_readlock(self, wait_time=None):
         """
-        获取读锁， 如果wait_time赋值且!=None的数，会等待wait_time.
-        如果之后还没拿到锁， 将raise RuntimeError
+        Acquire readlock. Wait_time same to wait_time for acquire_writelock
         """
         self._cond.acquire()
         if self._wt_num > 0:
@@ -127,7 +141,7 @@ class RWLock(object):
 
     def release_readlock(self):
         """
-        释放读锁
+        release read lock
         """
         self._cond.acquire()
         self._rd_num -= 1

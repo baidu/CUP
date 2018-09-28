@@ -4,7 +4,6 @@
 # Authors: Guannan Ma (@mythmgn),
 """
     thirdp is short for thirdparty.
-    thridp package是来自第三方的python库集合。 比如pexpect. mysql
 """
 import os
 import sys

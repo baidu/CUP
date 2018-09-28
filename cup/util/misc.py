@@ -11,27 +11,30 @@ import sys
 
 class CAck(object):
     """
-    Ack, 可设置bool值并获取
+    ack class
     """
     def __init__(self, binit=False):
         self._rev = binit
 
     def getack_infobool(self):
         """
-        取得ack的bool返回值
+        get bool info
         """
         return self._rev
 
     def setack_infobool(self, binit=False):
         """
-        设置ack的bool值
+        set bool info
         """
         self._rev = binit
 
 
 def check_type(param, expect):
     """
-    检查param是否和expect一样的类型。如果不一样raise TypeError
+    check type of the param is as the same as expect's
+
+    :raise:
+        raise TypeError if it's not the same
     """
     if type(param) != expect:
         raise TypeError('TypeError. Expect:%s, got %s' % (expect, type(param)))
@@ -39,7 +42,10 @@ def check_type(param, expect):
 
 def check_not_none(param):
     """
-    检查param不是None, 如果是None, raise NameError
+    check param is not None
+
+    :raise:
+        NameError if param is None
     """
     if param is None:
         raise NameError('The param has not been set before access')
@@ -47,8 +53,10 @@ def check_not_none(param):
 
 def get_funcname(backstep=0):
     """
-    获得调用该函数的代码行所在的函数名。 backstep代表是否将调用栈增/减.
-    backstep默认0
+    get funcname of the current code line
+
+    :param backstep:
+        will go backward (one layer) from the current function call stack
     """
     # pylint: disable=W0212
     return sys._getframe(
@@ -57,7 +65,10 @@ def get_funcname(backstep=0):
 
 def get_filename(backstep=0):
     """
-    获得调用该函数的代码行所在的文件名。 backstep代表是否将调用栈增/减.
+    Get the file name of the current code line.
+
+    :param backstep:
+        will go backward (one layer) from the current function call stack
     """
     return os.path.basename(
         sys._getframe(backstep + 1).f_code.co_filename)  # pylint:disable=W0212
@@ -65,7 +76,11 @@ def get_filename(backstep=0):
 
 def get_lineno(backstep=0):
     """
-    获得调用该函数的代码行.
+    Get the line number of the current code line
+
+    :param backstep:
+        will go backward (one layer) from the current function call stack
+
     """
     return sys._getframe(backstep + 1).f_lineno  # pylint:disable=W0212
 

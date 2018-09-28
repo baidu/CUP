@@ -1,12 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*
-# Authors: Guannan Ma (@mythmgn)
-# copyright:
-#    Copyright [CUP] - See LICENSE for details.
 """
+:author:
+    Guannan Ma
+
 :description:
     cache related module
+
+:copyright:
+    Copyright [CUP] - See LICENSE for details.
 """
+
 import time
 import collections
 import contextlib
@@ -30,7 +34,6 @@ class KvCache(object):
 
     @contextlib.contextmanager
     def _lock_release(self, b_rw_lock):
-        """lock release"""
         if b_rw_lock is True:
             self._lock.acquire_writelock()
         else:
@@ -80,7 +83,6 @@ class KvCache(object):
         return None
 
     def _get_expired_keys(self):
-        """get expired keys"""
         expired_keys = []
         keys = self._kv_data.keys()
         for key in keys:

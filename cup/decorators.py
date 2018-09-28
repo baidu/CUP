@@ -109,29 +109,6 @@ def needposix(function):
         )
     return function
 
-
-def needmac(function):
-    """
-    only support macOS
-
-    :platform:
-        macOS
-
-    example
-    ::
-        from cup import decorators
-        @decorators.needmac
-        def your_func():
-            pass
-    """
-    if platform.system() != 'Darwin':
-        raise cup.err.DecoratorException(
-            'The system is not macOS.'
-            'This functionality only supported in macOS'
-        )
-    return function
-
-
 # pylint:disable=R0903
 class TraceUsedTime(object):
     """

@@ -22,6 +22,7 @@ Singleton类。初始化需要传入一个用来生成字符集的string.
 
 """
 import os
+import time
 import random
 import string
 import socket
@@ -113,7 +114,7 @@ class CycleIDGenerator(object):
         tmp = struct.unpack("!L", packed)[0] << 96
         self._pre_num = tmp | (int(self._port) << 64)
         self._max_id = 0X1 << 63
-        self._next_id = 0
+        self._next_id = int(time.time())
 
     def reset_nextid(self, nextid):
         """reset nextid that will return to you"""

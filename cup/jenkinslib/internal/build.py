@@ -1,21 +1,15 @@
-# -*- coding: utf-8 -*-
-################################################################################
-#
-# Copyright (c) 2015 Baidu.com, Inc. All Rights Reserved
-#
-################################################################################
+#!/usr/bin/env python
+# -*- coding: utf-8 -*
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: liushuxian(liushuxian)
 """
 This module provides Build object.
-
-Authors: liushuxian(liushuxian)
-Date:    2015/01/21
 """
 
 import contextlib
 import logging
 import time
 
-import cup
 from cup.jenkinslib.internal import base
 from cup.jenkinslib.internal import exception
 from cup.jenkinslib.internal import utils

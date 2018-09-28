@@ -67,7 +67,7 @@ def get_disk_usage_all(raw=False):
 def get_disk_info():
     """
     :return:
-        拿到macOS系统的所有磁盘信息
+        disk info of the mac os
     """
     info = os.popen("df -lh")
     all_diskinfo = []

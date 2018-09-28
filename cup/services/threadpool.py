@@ -42,7 +42,7 @@ import threading
 
 from cup import log
 from cup.util import context
-from cup.util import thread
+from cup import thread
 
 _CONTEXT_TRACKER = context.ContextTracker4Thread()
 
@@ -52,26 +52,27 @@ class ThreadPool(object):
     """
     Threadpool class
     """
-
-    # _THREAD_FACTORY = threading.Thread
     _THREAD_FACTORY = thread.CupThread
     _CURRENT_THREAD = staticmethod(threading.current_thread)
     _WORKER_STOP_SIGN = object()
 
     def __init__(
-        self, minthreads=5, maxthreads=20, name=None,
-        daemon_threads=False
-    ):
+        self, minthreads=5, maxthreads=20, name=None, daemon_threads=False):
         """
-        创建一个线程池。
+        create a threadpool
+
         :param minthreads:
-            最少多少个线程在工作。
+            minimum threads num
+
         :param maxthreads:
-            最多多少个线程在工作
+            maximum threads num
+
         :param daemon_threads:
-            线程池内的线程是否是daemon threads, 默认是False.
-            如果设置为True, 线程池里面的线程会随着主线程退出而退出，
-            请无比了解清楚什么是daemon_threads在开启使用.
+            daemon threads or not.
+
+            Notice if daemon_threads is True, threadpool will exit as soon
+            as the main thread exits. Otherwise, all worker threads will exit
+            after you explicitly call the class method (or try_stop)
         """
         assert minthreads > 0, 'minimum must be >= 0 '
         assert minthreads <= maxthreads, 'minimum is greater than maximum'
@@ -94,7 +95,7 @@ class ThreadPool(object):
 
     def start(self):
         """
-        启动线程池
+        call start before you use the threadpool
         """
         self._joined = False
         self._started = True
@@ -103,7 +104,7 @@ class ThreadPool(object):
 
     def start1worker(self):
         """
-        为线程池增加一个线程。
+        add a thread for worker threads in the pool
         """
         self._workers += 1
         name = "PoolThread-%s-%s" % (self._name or id(self), self._workers)
@@ -115,7 +116,7 @@ class ThreadPool(object):
 
     def stop1worker(self):
         """
-        为线程池减少一个线程。
+        decrease one thread for the worker threads
         """
         self._jobqueue.put(self._WORKER_STOP_SIGN)
         self._workers -= 1
@@ -144,38 +145,42 @@ class ThreadPool(object):
 
     def add_1job(self, func, *args, **kwargs):
         """
+        Add one job that you want the pool to schedule.
+        Notice if you need to handle data after finishing [func], plz use
+        [add_1job_with_callback] which supports a [callback] option.
+
         :param func:
-            会被线程池调度的函数
+            function that will be scheduled by the thread pool
 
         :param *args:
-            func函数需要的参数
+            args that the [func] needs
 
         :param **kw:
-            func函数需要的kwargs参数
+            kwargs that [func] needs
         """
-        # log.info('add 1job[{0}]'.format(func))
         self.add_1job_with_callback(None, func, *args, **kwargs)
 
     def add_1job_with_callback(self, result_callback, func, *args, **kwargs):
         """
         :param result_callback:
-            func作业处理函数被线程池调用后，无论成功与否都会
-            执行result_callback.
+            plz notice whether succeed or fail, the result_callback function
+            will be called after [func] is called.
 
-            result_callback函数需要有两个参数
-            (ret_in_bool, result), 成功的话为(True, result), 失败的话
-            为(False, result)
+            function result_callback needs to accept two parameters:
+            (ret_in_bool, result). (True, result) will be passed to the [func]
+            on success. (False, result) will be passed otherwise.
 
-            如果func raise exception, result_callback会收到(False, failure)
+            if [func] raise any Exception, result_callback will get (False,
+                failure_info) as well.
 
         :param func:
-            同add_1job, 被调度的作业函数
+            same to func for add_1job
 
         :param *args:
-            同add_1job, func的参数
+            args for [func]
 
         :param **kwargs:
-            同add_1job, func的kwargs参数
+            kwargs for [func]
         """
         if self._joined:
             return
@@ -188,6 +193,9 @@ class ThreadPool(object):
 
     @contextlib.contextmanager
     def _worker_state(self, state_list, worker_thread):
+        """
+        worker state
+        """
         state_list.append(worker_thread)
         try:
             yield
@@ -195,6 +203,9 @@ class ThreadPool(object):
             state_list.remove(worker_thread)
 
     def _log_err_context(self, context):
+        """
+        context error, log warning msg
+        """
         log.warn(
             'Seems a call with context failed. See the context info'
         )
@@ -213,7 +224,6 @@ class ThreadPool(object):
                 # pylint: disable=W0621
                 context, function, args, kwargs, result_callback = job
                 del job
-
                 try:
                     # pylint: disable=W0142
                     result = _CONTEXT_TRACKER.call_with_context(
@@ -239,14 +249,12 @@ class ThreadPool(object):
             # when out of  "with scope",
             # the self._working will remove the thread from
             # its self._working list
-
             if result_callback is not None:
                 try:
                     _CONTEXT_TRACKER.call_with_context(
                         context, result_callback, success, result
                     )
                 except Exception as e:
-                    # traceback.print_exc(file=sys.stderr)
                     log.warn(
                         'result_callback func failed, callback func:%s,'
                         'err_msg:%s' % (str(result_callback), str(e))
@@ -254,7 +262,6 @@ class ThreadPool(object):
                     _CONTEXT_TRACKER.call_with_context(
                         context, self._log_err_context, context
                     )
-
             del context, result_callback, result
 
             with self._worker_state(self._waiters, current_thd):
@@ -266,11 +273,12 @@ class ThreadPool(object):
 
     def stop(self, force_stop=False):
         """
-        停止线程池， 该操作是同步操作， 会夯住一直等到线程池所有线程退出。
+        stop the thread pool. Notice calling this method will wait there util
+        all worker threads exit.
 
         :force_stop:
             if force_stop is True, try to stop the threads in the pool
-            immediately (and this may do damage to the logic)
+            immediately (and this may do DAMAGE to your code logic)
         """
         if not force_stop:
             self._joined = True
@@ -278,17 +286,14 @@ class ThreadPool(object):
             while self._workers:
                 self._jobqueue.put(self._WORKER_STOP_SIGN)
                 self._workers -= 1
-
-            # and let's just make sure
-            # FIXME: threads that have died before calling stop() are not joined.
-            for thread in threads:
-                thread.join()
+            for thd in threads:
+                thd.join()
         else:
             for thd in self._threads:
                 thd.terminate()
             retry = False
             times = 0
-            while (not retry and (times <= 100)):
+            while not retry and (times <= 100):
                 for thd in self._threads:
                     if thd.isAlive():
                         thd.terminate()
@@ -298,9 +303,9 @@ class ThreadPool(object):
 
     def try_stop(self, check_interval=0.1):
         """
-        发送停止线程池命令， 并尝试查看是否stop了。 如果没停止，返回False
+        try to stop the threadpool.
 
-        try_stop不会夯住， 会回返。 属于nonblocking模式下
+        If it cannot stop the pool RIGHT NOW, will NOT block.
         """
         self._joined = True
         threads = copy.copy(self._threads)
@@ -308,18 +313,18 @@ class ThreadPool(object):
             self._jobqueue.put(self._WORKER_STOP_SIGN)
             self._workers -= 1
 
-        for thread in threads:
-            thread.join(check_interval)
+        for thd in threads:
+            thd.join(check_interval)
 
-        for thread in threads:
-            if thread.isAlive():
+        for thd in threads:
+            if thd.isAlive():
                 return False
 
         return True
 
     def adjust_poolsize(self, minthreads=None, maxthreads=None):
         """
-        调整线程池的线程最少和最多运行线程个数
+        adjust pool size
         """
         if minthreads is None:
             minthreads = self._min
@@ -345,11 +350,12 @@ class ThreadPool(object):
 
     def get_stats(self):
         """
-        回返当前threadpool的状态信息.
-        其中queue_len为当前threadpool排队的作业长度
-        waiters_num为当前空闲的thread num
-        working_num为当前正在工作的thread num
-        thread_num为当前一共可以使用的thread num::
+        get threadpool running stats
+        waiters_num is pending thread num
+        working_num is working thread num
+        thread_num is the total size of threads
+
+        ::
             stat = {}
             stat['queue_len'] = self._jobqueue.qsize()
             stat['waiters_num'] = len(self._waiters)
@@ -365,8 +371,8 @@ class ThreadPool(object):
 
     def dump_stats(self, print_stdout=False):
         """
-        打印当前threadpool的状态信息到log 和stdout
-        其中状态信息来自于get_stats函数
+        Dump the threadpool stat to log or stdout. Info is from class method
+        [get_stats]
         """
         stat = self.get_stats()
         if print_stdout:

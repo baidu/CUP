@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*
 # Copyright: [CUP] - See LICENSE for details.
-# Authors: Guannan Ma (@mythmgn),
+# Authors: Guannan Ma (@mythmgn), Minghao Zhao, Liu Xuan
 """
 :desc:
     unittest module
@@ -34,8 +34,8 @@ __all__ = [
 
 def _assert_bool(val, exp, errmsg=''):
     """assert bool, val should be exp (either True or False)"""
-    if (val is not exp):
-        msg = 'got %s, expect %s\nUser ErrMsg: %s' % (val, exp, errmsg)
+    if val is not exp:
+        msg = 'got {0}, expect {1}\nUser ErrMsg: {2}'.format(val, exp, errmsg)
         try:
             log.backtrace_critical(msg, 2)
         # pylint: disable=W0703
@@ -46,23 +46,22 @@ def _assert_bool(val, exp, errmsg=''):
 
 def assert_true(val, errmsg=''):
     """
-    如果val is not True， assert并打印到stdout.
-    errmsg参数为assert后提示到stderr的调用者错误信息
-    如果开启过cup.log.init_comlog的log， 同时打印critical log到log文件
+    If val is not True, assert False and print to stdout.
+
+    Plz notice, log.critical(errmsg) will be invoked if logging system has
+    been initialized with cup.log.init_comlog.
     """
     if type(val) != bool:
-        raise ValueError('The type of val is not bool')
+        raise TypeError('The type of val is not bool')
     _assert_bool(val, True, errmsg)
 
 
 def assert_false(val, errmsg=''):
     """
-    如果val is not False， assert并打印到stdout.
-    errmsg参数为assert后提示到stderr的调用者错误信息
-    如果开启过cup.log.init_comlog的log， 同时打印critical log到log文件
+    val should be False. Assert False otherwise.
     """
     if type(val) != bool:
-        raise ValueError('The type of val is not bool')
+        raise TypeError('The type of val is not bool')
     _assert_bool(val, False, errmsg)
 
 
@@ -72,8 +71,8 @@ def assert_eq(val, exp, errmsg=''):
     errmsg参数为assert后提示到stderr的调用者错误信息
     如果开启过cup.log.init_comlog的log， 同时打印critical log到log文件
     """
-    if (val != exp):
-        msg = 'got %s, expect %s\nUser ErrMsg: %s' % (val, exp, errmsg)
+    if val != exp:
+        msg = 'got {0}, expect {1}\nUser ErrMsg: {2}'.format(val, exp, errmsg)
         try:
             log.backtrace_critical(msg, 1)
         # pylint: disable=W0703
@@ -84,12 +83,11 @@ def assert_eq(val, exp, errmsg=''):
 
 def assert_not_eq(val, exp, errmsg=''):
     """
-    assert_not_eq. val不能等于exp, 如果等于则assert
+    assert not equal to
     """
-    if (val == exp):
-        msg = 'got %s which is equal, expect not equal \nUser ErrMsg: %s' % (
-            val, errmsg
-        )
+    if val == exp:
+        msg = 'got {0} which is equal, expect not equal \n'\
+            'User ErrMsg: {1}'.format(val, errmsg)
         try:
             log.backtrace_critical(msg, 1)
         # pylint: disable=W0703
@@ -100,7 +98,7 @@ def assert_not_eq(val, exp, errmsg=''):
 
 def assert_eq_one(val, array, errmsg=''):
     """
-    assert_eq_one, 如果val!=array(可遍历类型)里面的任何item, assert
+    assert val equals one of the items in the [array]
     """
     equal = False
     str_arr = ''
@@ -110,7 +108,7 @@ def assert_eq_one(val, array, errmsg=''):
             equal = True
             break
     if not equal:
-        msg = 'got %s, expect one in the array: %s\nUser ErrMsg: %s' % (
+        msg = 'got {0}, expect one in the array: {1}\nUser ErrMsg: {2}'.format(
             val, str_arr, errmsg
         )
         try:
@@ -123,14 +121,14 @@ def assert_eq_one(val, array, errmsg=''):
 
 def assert_in(val, array, errmsg=''):
     """
-    同assert_eq_one, 如果val不在可遍历array里面， assert
+    same to assert_eq_one, for backward compatibility
     """
     assert_eq_one(val, array, errmsg)
 
 
 def assert_not_in(val, iteratables, errmsg=''):
     """
-    如果val不存在于iteratables中，则assert
+    assert val not equal any item in [iteratables (e.g. a list)]
     """
     if val in iteratables:
         assert False, 'val :%s in iteratables. ErrMsg:%s' % (val, errmsg)
@@ -141,7 +139,7 @@ def assert_lt(val, exp, errmsg=''):
     assert_lt, expect val < exp
     """
     if val >= exp:
-        msg = 'got %s, expect less than %s\nUser ErrMsg: %s' % (
+        msg = 'got {0}, expect less than {1}\nUser ErrMsg:{2}'.format(
             val, exp, errmsg
         )
         try:
@@ -156,13 +154,13 @@ def assert_gt(val, exp, errmsg=''):
     """
     assert_gt, expect val > exp
     """
-
     if val <= exp:
-        msg = 'got %s, expect greater than %s\nUser ErrMsg: %s' % (
+        msg = 'got {0}, expect greater than {1}\nUser ErrMsg: {2}'.format(
             val, exp, errmsg
         )
         try:
             log.backtrace_critical(msg, 1)
+        # pylint: disable=W0703
         except Exception:
             pass
         assert False, msg
@@ -173,8 +171,8 @@ def assert_ge(val, exp, errmsg=''):
     expect val >= exp
     """
     if val < exp:
-        msg = 'got %s, expect greater than (or equal to) %s\n User ErrMsg:%s'\
-            % (val, exp, errmsg)
+        msg = ('got {0}, expect greater than (or equal to) {1}\n'\
+            'User ErrMsg:{2}'.format(val, exp, errmsg))
         try:
             log.backtrace_critical(msg, 1)
         # pylint: disable=W0703
@@ -188,9 +186,8 @@ def assert_le(val, exp, errmsg=''):
     expect val <= exp
     """
     if val > exp:
-        msg = 'got %s, expect less than (or equal to) %s\nUser ErrMsg: %s' % (
-            val, exp, errmsg
-        )
+        msg = 'got {0}, expect less than (or equal to) {1}\n'\
+            'User ErrMsg:{2}'.format(val, exp, errmsg)
         try:
             log.backtrace_critical(msg, 1)
         # pylint: disable=W0703
@@ -204,8 +201,8 @@ def assert_ne(val, exp, errmsg=''):
     expect val != exp
     """
     if val == exp:
-        msg = 'Expect non-equal, got two equal values %s:%s\nUser Errmsg: %s' \
-            % (val, exp, errmsg)
+        msg = 'Expect non-equal, got two equal values'\
+            '{0}:{1}\nUser Errmsg:{2}'.format(val, exp, errmsg)
         try:
             log.backtrace_critical(msg, 1)
         # pylint: disable=W0703
@@ -219,9 +216,8 @@ def assert_boundary(val, low, high, errmsg=None):
     expect low <= val <= high
     """
     if val < low:
-        msg = 'Expect low <= val <= high, but val:%s < low:%s, msg:%s' % (
-            val, low, errmsg
-        )
+        msg = 'Expect low <= val <= high, '\
+            'but val:{0} < low:{1}, msg:{2}'.format(val, low, errmsg)
         assert False, msg
     if val > high:
         msg = 'Expect low <= val <= high, but val:%s > high:%s, msg:%s' % (
@@ -231,10 +227,11 @@ def assert_boundary(val, low, high, errmsg=None):
 
 
 def _get_md5_hex(src_file):
+    """get md5 hext string of a file"""
     with open(src_file, 'rb') as fhandle:
         md5obj = hashlib.md5()
         while True:
-            strtmp = fhandle.read(131072)  # read 128k one time
+            strtmp = fhandle.read(131072)  # read 128k
             if len(strtmp) <= 0:
                 break
             md5obj.update(strtmp)
@@ -276,20 +273,24 @@ def assert_none(source):
 
 class CUTCase(object):
     """
-    cup库拥有的测试class. 支持nosetests. 可派生此类来实现测试class.
-    其中set_result函数会在nosetests执行case后设置，case成功则设置True,
-    case fail设置False. 在teardown阶段可调用get_result函数
-    来获得case是否执行成功。
+    CUTCase is compatible with nosetests. You can inherit this class
+    and implement your own TestClass.
+
+    Notice class method [set_result] will set case status to True/False after
+    executing the case. Then you can get case status in teardown through
+    calling class method [get_result]
     """
     def __init__(self, logfile='./test.log', b_logstd=False, b_debug=False):
         """
         :param logfile:
-            调用cup.log.init_comlog来进行log文件的初始化，case可直接调用
-            cup.log.[info|debug|critical|warn]来打印日志。
+            will invoke log.init_comlog to intialize logging in order to
+            support invoking logging functions log.info/debug/warn
         :param b_logstd:
-            是否打印日志到logfile的同时还打印stdout, 默认不打印
+            print to stdout or not
         :param b_debug:
-            是否开启DEBUG Level的日志打印， 默认是INFO Level
+            enable debug mode or not.
+            If enabled, log level will be set to log.DEBUG.
+            log.INFO (log level) will be set by default.
         """
         self._result = False
         if b_debug:
@@ -304,46 +305,40 @@ class CUTCase(object):
 
     def setup(self):
         """
-        Case的setup虚函数, 实际case需事先该函数
+        set up
         """
         pass
 
     def test_run(self):
         """
-        Case的setup虚函数, 实际case需事先该函数
+        test_run function
         """
         pass
 
     def set_result(self, b_result):
         """
-        cup ut 类用来设置case是否失败的函数。 一般不需要显示调用，
-        内部自动处理。
+        set case running status
         """
         self._result = b_result
 
     def get_result(self):
         """
-        在teardown或者fail_teardown阶段获得是否case执行成功
+        get case status during case teardown
         """
         return self._result
 
     def teardown(self):
         """
-        Case的setup虚函数, 实际case需实现该函数
+        teardown
         """
         pass
-    # def fail_teardown(self):
-    #     """
-    #     Case的setup虚函数, 实际case需实现该函数
-    #     """
-    #     pass
 
 
 # pylint: disable=R0903
 class CCaseExecutor(object):
     """
-    可调用CCaseExecutor类来执行cup.unittest.CUTCase的派生类case.
-    代码示例, 可nosetests执行， 也可python test_xxx.py执行的例子
+    Executor class for executing CUTCase test cases. See the example below
+
     ::
 
         #!/usr/bin/env python

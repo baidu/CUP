@@ -36,7 +36,8 @@ try:
 except ImportError:
     pass
 from cup import res
-from cup import oper
+from cup.shell import oper
+# from cup import oper
 from cup import thirdp
 from cup import platforms
 

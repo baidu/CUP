@@ -82,10 +82,14 @@ class LockFile(object):
         """
         lock the file
 
+        :param blocking:
+            If blocking is True, will block there until cup gets the lock.
+            True by default.
+
         :return:
             return False if locking fails
 
-        :raise:
+        :raise Exception:
             raise cup.err.LockFileError if blocking is False and
             the lock action failed
         """

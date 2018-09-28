@@ -466,5 +466,4 @@ class S3ObjectSystem(ObjectInterface):
             ret['msg'] = str(error)
         return ret
 
-
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

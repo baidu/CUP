@@ -13,7 +13,7 @@ import threading
 
 class ContextManager(object):
     """
-    函数调用上下文相关类。
+    context for function call stack
     """
     def __init__(self):
         self.contexts = [{}]
@@ -40,7 +40,7 @@ class ContextManager(object):
 
 class ContextTracker4Thread(object):
     """
-    进行线程的上下文切换相关class.
+    thread switch tracker
     """
     def __init__(self):
         self.local_res = threading.local()
@@ -57,7 +57,7 @@ class ContextTracker4Thread(object):
 
     def call_with_context(self, context, func, *args, **kwargs):
         """
-        调用函数func, 并使用当前context
+        call [func] and set up a context with it
         """
         return self.current_context().call_with_context(
             context, func, *args, **kwargs
@@ -65,7 +65,7 @@ class ContextTracker4Thread(object):
 
     def get_context(self, key):
         """
-        获得某个key的对应的context
+        get the context by key
         """
         return self.current_context().get_context(key)
 
