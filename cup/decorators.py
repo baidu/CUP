@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*
 # Copyright: [CUP] - See LICENSE for details.
 # Authors: Guannan Ma (@mythmgn),
@@ -6,6 +6,7 @@
 :description:
     decorators related module
 """
+
 import os
 import time
 import platform

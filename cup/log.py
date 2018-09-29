@@ -425,6 +425,7 @@ def parse(logline):
            'srcline': 'util.py:33',
            'msg': 'this is the log content'
         }
+
     """
     try:
         content = logline[logline.find(']'):]

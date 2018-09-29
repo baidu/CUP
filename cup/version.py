@@ -4,10 +4,16 @@
 # Authors: Guannan Ma (@mythmgn),
 """
 :desc:
-    CUP version for Programming Usage.
+    CUP version for Programming Use Only.
 """
 
+
+__all__ = [
+    'VERSION', 'AUTHOR'
+]
+
+
 VERSION = '1.7.0'
-AUTHOR = 'cup-dev'
+AUTHOR = 'CUP-DEV Team'
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

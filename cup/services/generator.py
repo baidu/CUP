@@ -5,20 +5,26 @@
 """
 class CGeneratorMan(object)
 ===========================
-用来生成各类唯一数，字符集，线程安全的自增uint的类。
-目前生成函数较少， 欢迎大家贡献ci.
-Singleton类。初始化需要传入一个用来生成字符集的string.
+Generate unique integers, strings and auto incremental uint.
+Notice CGeneratorMan is a singleton class, which means cup will keep
+only 1 instance per process.
 
-:初始化函数:
+:init:
     __init__(self, str_prefix=get_local_hostname())
-        默认传入当前自己的hostname
+        local hostname will be used by default.
 
-:成员函数:
+:methods:
     **get_uniqname()**
-        获得一个以传入的初始化string为base, 加上pid, threadid等组合的host级别的
-        unique string.
+        get unique name.
+        Host-Level unique name (build upon str_prefix, pid, threadid)
     **get_next_uniq_num()**
-        获得当前进程唯一的自增非负整数。线程安全.
+        Process-level auto incremental uint. Thread-safe
+    **reset_uniqid_start(num=0)**
+        Reset next uniqid to which genman starts from
+    **get_random_str()**
+        Get random string by length
+    **get_uuid()**
+        Get uuid
 
 """
 import os
@@ -33,17 +39,22 @@ import cup
 from cup import decorators
 
 
+__all__ = [
+    'CGeneratorMan',
+    'CycleIDGenerator'
+]
+
+
 @decorators.Singleton
 class CGeneratorMan(object):
     """
-    数据生成类，具体功能见函数说明
+    refer to the docstring
 
     """
     def __init__(self, str_prefix='localhost'):
 
         """
-        CGeneratorMan是一个Singleton模式的类.
-        这样能保证同一个进程中的数字、字符串等生成函数是一致的。
+        Generate unique integers, strings and auto incremental uint.
         """
         if str_prefix == 'localhost':
             prefix = cup.net.get_local_hostname()
@@ -65,7 +76,7 @@ class CGeneratorMan(object):
 
     def get_uniqname(self):
         """
-        获得一个线程安全的unique字符串
+        get a unique name
         """
         self._lock.acquire()
         strrev = self._prefix + str(self._ind) + '_thd_' + \
@@ -76,8 +87,7 @@ class CGeneratorMan(object):
 
     def get_next_uniq_num(self):
         """
-        获得线程安全的下一个unique id.
-        该id每获得一次增加1.
+        get next uniq num. Thread-safe
         """
         self._nlock.acquire()
         temp = self._nind

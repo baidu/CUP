@@ -1,16 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
 """
-:author:
-    Guannan Ma
-
 :description:
-    cache related module
-
-:copyright:
-    Copyright [CUP] - See LICENSE for details.
+    decorators related module
 """
-
 import time
 import collections
 import contextlib
@@ -51,6 +46,8 @@ class KvCache(object):
 
     def set(self, kvlist, expire_sec=None):
         """
+        set cache with kvlist
+
         :param kvlist:
             kvlist is a dict that contains your cache.
         :param expire_sec:
@@ -105,12 +102,13 @@ class KvCache(object):
 
     def get_expired(self):
         """
-        return expired items. Return type is a dict (
-            {
-                'key' : (value, expire_time)
-            }
-        :rtype:
-            dict
+        :return:
+            A dict.
+            Return expired items. Return type is a dict (
+                {
+                    'key' : (value, expire_time)
+                }
+            )
         """
         kvlist = {}
         with self._lock_release(b_rw_lock=False):

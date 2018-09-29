@@ -26,20 +26,20 @@ def wait_until_file_exist(
     dst_path, file_name, max_wait_sec=10, interval_sec=2, recursive=False
 ):
     """
-    等待文件存在直到超时
+    wait util the file exists or the function timeout
 
     :param dst_path:
-        查找的目标路径
+        searching path
     :param file_name:
-        查找的文件名，支持扩展符号*
+        filename, support *
     :param max_wait_sec:
-        最长等待时间，如果超过此时间，直接返回False,默认10s
+        max wating time until timeout
     :param interval_sec:
-        重试的间隔时间，默认2
+        check interval
     :param recursive:
-        是否这次递归查找，默认False
+        recursively search or not
     :return:
-        查找成功返回True, 否则返回False
+        True if found.
     """
     curr_wait_sec = 0
 
@@ -55,22 +55,22 @@ def wait_until_reg_str_exist(
     dst_file_path, reg_str, max_wait_sec=10, interval_sec=0.5
 ):
     """
-    等待正则字符串在文件存在直到超时,如果读取失败，raise IOError
+    wait until any line in the file matches the \
+    reg_str(regular expression string)
 
     :param dst_file_path:
-        查找的目标文件
+        searching path
     :param reg_str:
-        正则字符串
+        regular expression string
     :param max_wait_sec:
-        最长等待时间，如果超过此时间，直接返回False,默认10s
+        maximum waiting time until timeout
     :param interval_sec:
-        重试的间隔时间，默认0.5s
+        state check interval
     :return:
-        查找成功返回True, 否则返回False
+        True if found
     """
     curr_wait_sec = 0
     file_reader = FileReader(dst_file_path)
-
     while curr_wait_sec < max_wait_sec:
         if __check_reg_str_contain(file_reader, reg_str):
             return True
@@ -83,24 +83,23 @@ def wait_until_process_not_exist(
     process_path, max_wait_sec=10, interval_sec=0.5
 ):
     """
-    等待特定路径的进程不存在直到超时
+    wait until the process does not exist anymore or the function timeouts
 
     :param process_path:
-        进程的路径
+        process cwd
     :param max_wait_sec:
-        最长等待时间，如果超过此时间，直接返回False,默认10s
+        maximum waiting time until timeout. 10 seconds by default
     :param interval_sec:
-        重试的间隔时间，默认0.5s
+        state check interval, 0.5 second by default
     :return:
-        查找成功返回True, 否则返回False
+        return True if the process disapper before timeout
     """
     process_path = os.path.abspath(process_path)
     pro_path = os.path.dirname(process_path)
     pro_name = os.path.basename(process_path)
     curr_wait_sec = 0
-
     while curr_wait_sec < max_wait_sec:
-        if not cup.oper.is_proc_exist(pro_path, pro_name):
+        if not oper.is_proc_exist(pro_path, pro_name):
             return True
         curr_wait_sec += interval_sec
         time.sleep(interval_sec)
@@ -111,24 +110,23 @@ def wait_until_process_exist(
     process_path, max_wait_sec=10, interval_sec=0.5
 ):
     """
-    等待特定路径的进程存在直到超时
+    wait until the process exists
 
     :param process_path:
-        进程的路径
+        the specific process working path
     :param max_wait_sec:
-        最长等待时间，如果超过此时间，直接返回False,默认10s
+        maximum waiting time until timeout
     :param interval_sec:
-        重试的间隔时间，默认0.5s
+        state check interval
     :return:
-        查找成功返回True, 否则返回False
+        return True if the process is found before timeout
     """
     process_path = os.path.abspath(process_path)
     pro_path = os.path.dirname(process_path)
     pro_name = os.path.basename(process_path)
     curr_wait_sec = 0
-
     while curr_wait_sec < max_wait_sec:
-        if cup.oper.is_proc_exist(pro_path, pro_name):
+        if oper.is_proc_exist(pro_path, pro_name):
             return True
         curr_wait_sec += interval_sec
         time.sleep(interval_sec)
@@ -139,23 +137,16 @@ def wait_until_port_used(
     port, max_wait_sec=10, interval_sec=0.5
 ):
     """
-    等待特定的端口被使用直到超时
-    建议root账号执行，非root账号可能会因为权限问题导致获取不到端口
-    此功能依赖于netstat
+    wait until the port is used.  *Notice this function will invoke\
+    a bash shell to execute command [netstat]!*
 
-    :param port:
-        端口号
-    :param max_wait_sec:
-        最长等待时间，如果超过此时间，直接返回False,默认10s
-    :param interval_sec:
-        重试的间隔时间，默认0.5s
     :return:
-        查找成功返回True, 否则返回False
+        return True if the port is used
     """
     curr_wait_sec = 0
 
     while curr_wait_sec < max_wait_sec:
-        if cup.oper.is_port_used(port):
+        if oper.is_port_used(port):
             return True
         curr_wait_sec += interval_sec
         time.sleep(interval_sec)
@@ -166,23 +157,15 @@ def wait_until_port_not_used(
     port, max_wait_sec=10, interval_sec=0.5
 ):
     """
-    等待特定的端口未被使用直到超时
-    建议root账号执行，非root账号可能会因为权限问题导致获取不到端口
-    此功能依赖于netstat
+    wait until the port is free
 
-    :param port:
-        端口号
-    :param max_wait_sec:
-        最长等待时间，如果超过此时间，直接返回False,默认10s
-    :param interval_sec:
-        重试的间隔时间，默认0.5s
     :return:
-        查找成功返回True, 否则返回False
+        return True if the port is free before timeout
     """
     curr_wait_sec = 0
 
     while curr_wait_sec < max_wait_sec:
-        if not cup.oper.is_port_used(port):
+        if not oper.is_port_used(port):
             return True
         curr_wait_sec += interval_sec
         time.sleep(interval_sec)
@@ -193,27 +176,18 @@ def wait_until_process_used_ports(
     process_path, ports, max_wait_sec=10, interval_sec=0.5
 ):
     """
-    等待进程占用端口直到超时
-    建议root账号执行，非root账号可能会因为权限问题导致获取不到端口暂用
-    此功能依赖于netstat
+    wait until the process has taken the ports before timeouts
 
-    :param process_path:
-        源程序运行启动的路径
-    :param ports:
-        端口号列表
-    :param max_wait_sec:
-        最长等待时间，如果超过此时间，直接返回False,默认10s
-    :param interval_sec:
-        重试的间隔时间，默认0.5s
     :return:
-        查找成功返回True, 否则返回False
+        True if all ports are used by the specific process.
+        False, otherwise
     """
     curr_wait_sec = 0
 
     while curr_wait_sec < max_wait_sec:
         used_port_num = 0
         for curr_port in ports:
-            if cup.oper.is_process_used_port(process_path, curr_port):
+            if oper.is_process_used_port(process_path, curr_port):
                 used_port_num += 1
             else:
                 break
@@ -229,23 +203,18 @@ def wait_until_process_killed(
     process_path, ports, max_wait_sec=10, interval_sec=0.5
 ):
     """
-    等待进程被kill, 端口未被占用
-    建议root账号执行，非root账号可能会因为权限问题导致获取不到端口
-    此功能依赖于netstat
+    wait until the [process] does not exists and all [ports] are free
 
     :param process_path:
-        源程序运行启动的路径
+        process cwd
     :param ports:
-        端口号列表，源程序使用的端口号(此处不判断该端口被其他程序占用的情况)
-    :param max_wait_sec:
-        最长等待时间，如果超过此时间，直接返回False,默认10s
+        port list
     :param interval_sec:
-        重试的间隔时间，默认0.5s
+        state check interval
     :return:
-        查找成功返回True, 否则返回False
+        True if all conditions meet.
     """
     curr_wait_sec = 0
-
     while curr_wait_sec < max_wait_sec:
         # check process
         if False == wait_until_process_not_exist(
@@ -257,7 +226,7 @@ def wait_until_process_killed(
         # check ports
         not_used_port_num = 0
         for curr_port in ports:
-            if not cup.oper.is_process_used_port(process_path, curr_port):
+            if not oper.is_process_used_port(process_path, curr_port):
                 not_used_port_num += 1
             else:
                 break
@@ -273,7 +242,7 @@ def _wait_until_return(func,
         boolean, max_wait_sec, interval_sec=0.5, *args, **kwargs
     ):
     """
-    wait until function return true
+    wait until function return [boolean]
     """
     curr_wait_sec = 0
 
@@ -306,14 +275,12 @@ def wait_return_false(func, max_wait_sec, interval_sec=0.5, *args, **kwargs):
 
 def __check_reg_str_contain(file_reader, reg_str):
     """
-    检查文件中是否存在特定正则字符串(按行匹配)
+    check if any line matches the reg_str
 
-    :param dst_file_path:
-        FileReader实例
-    :param reg_str:
-        正则字符串
+    :param file_reader:
+        FileReade Object
     :return:
-        查找成功返回True, 否则返回False
+        return True if found
     """
     file_content = file_reader.read()
     lines = file_content.splitlines()
@@ -333,12 +300,12 @@ class FileReader(object):
 
     def read(self, max_read_size=None):
         """
-        从上一次读取的位置继续读取
+        read from last position
 
         :param max_read_size:
-            一次读取的最大长度
+            maximum reading length
         :return:
-            读取的文件内容
+            content read
         """
         # whether the file exist
         if not os.path.isfile(self.file_path):

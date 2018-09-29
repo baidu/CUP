@@ -43,9 +43,11 @@ if platforms.is_linux():
 
 def getip_byinterface(iface='eth0'):
     """
-    @platform:
+    get ipaddr of a network adapter
+
+    :platform:
         Linux/Unix
-    获得某个网卡的ip地址
+
     E.g.
     ::
         import cup
@@ -67,17 +69,17 @@ def getip_byinterface(iface='eth0'):
 
 def get_local_hostname():
     """
-    获得当前机器的hostname
+    get hostname of this machine
     """
     return str(socket.gethostname())
 
 
 def get_hostip(hostname=None):
     """
-    拿到某hostname的ip地址.
+    get ipaddr of a host
 
     :param hostname:
-        机器的hostname, 默认为None代表不传值， 函数将自动获取当前机器的ip
+        None, by default, will get localhost ipaddr
     """
     times = 0
     ipaddr = None
@@ -135,7 +137,7 @@ def set_keepalive_osx(sock, after_idle_sec=1, interval_sec=3, max_fails=5):
 
 def set_sock_reusable(sock, resuable=True):
     """
-    设置socket的端口是否可被重复使用， 默认resuable==True
+    set socket reusable
     """
     value = 0
     if resuable:
@@ -145,8 +147,7 @@ def set_sock_reusable(sock, resuable=True):
 
 def set_sock_linger(sock, l_onoff=1, l_linger=0):
     """
-    关闭socket的linger参数。
-    实际产生的效果如下:
+    set socket linger param (socket.SO_LINGER)
 
     I.g.
     ::
@@ -166,7 +167,7 @@ def set_sock_linger(sock, l_onoff=1, l_linger=0):
 
 def set_sock_quickack(sock):
     """
-    打开socket的quickack功能:
+    open quickack for the socket
 
     I.g.
     ::

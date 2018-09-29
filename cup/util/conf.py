@@ -20,6 +20,13 @@ import cup
 # G_TOOL_PATH = None
 
 
+__all__ = [
+    'Configure2Dict', 'Dict2Configure',
+    'HdfsXmlConf'
+]
+
+
+
 class CConf(object):
     """
     Depreciated class. Please do not use it. Use python configparser instead.
@@ -388,6 +395,7 @@ class Configure2Dict(object):  # pylint: disable=R0903
     Configure2Dict support conf features below:
 
     1. comments
+
         As we support access/modify comments in a conf file, you should obey
         rules below:
 
@@ -621,8 +629,10 @@ class Configure2Dict(object):  # pylint: disable=R0903
     # pylint: disable=R0912, R0915
     def get_dict(self, ignore_error=False):
         """
-        get conf_dict which you can use to access conf info. If ignore_error
-         == True, CUP will parse the conf file without catching exceptions
+        get conf_dict which you can use to access conf info.
+
+        :param ignore_error:
+            True, CUP will parse the conf file without catching exceptions
         """
         comments = []
         self._get_input_lines(ignore_error)
