@@ -1,4 +1,18 @@
-# matach all python pyc files
+# folders
+cup/bidu
+build/*
+dist/
+docs/_build/
+cup.egg-info/
+
+# cup files
+cup/net/async/msgcenter_dict.py
+cup.tar
+cup.zip
+cup.tar.gz
+cup/ChangeLog.bak
+
+# other files begin {
 *.pyc
 .svn
 build.sh
@@ -7,12 +21,34 @@ build.sh
 *.*~
 *.log
 tmp
+MANIFEST
 
-cup/bidu
-cup/net/async/msgcenter_dict.py
-cup.tar
-cup.zip
-cup.tar.gz
-cup/ChangeLog.bak
+### macOS template                                                                                     
+## General                                                                                              
+.DS_Store                                                                                              
+.AppleDouble                                                                                           
+.LSOverride 
 
-build/*
+# Files that might appear in the root of a volume                                                   
+.DocumentRevisions-V100                                                                             
+.fseventsd                                                                                          
+.Spotlight-V100                                                                                     
+.TemporaryItems                                                                                     
+.Trashes                                                                                            
+.VolumeIcon.icns                                                                                    
+.com.apple.timemachine.donotpresent                                                                 
+
+# Directories potentially created on remote AFP share                                               
+.AppleDB                                                                                            
+.AppleDesktop                                                                                       
+Network Trash Folder                                                                                
+Temporary Items                                                                                     
+.apdisk                                                                                             
+
+# IntelliJ project files                                                                            
+.idea                                                                                               
+*.iml                                                                                               
+out                                                                                                 
+gen   
+
+# } files end
