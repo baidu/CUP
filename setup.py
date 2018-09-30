@@ -10,6 +10,7 @@ import re
 import sys
 import textwrap
 import traceback
+import setuptools
 from distutils.core import setup
 
 try:
@@ -21,6 +22,9 @@ try:
 except Exception:
     print traceback.print_exc()
     exit(-1)
+
+with open('README.md', 'r') as fh:
+    LONG_DESCRIPTION = fh.read()
 
 # Guannan add windows platform support on 2014/11/4 20:04
 def _find_packages(prefix=''):
@@ -51,10 +55,12 @@ setup(
     name=__name__,
     version=__version__,
     description='A common useful python library',
-    long_description=(
-        'Wish CUP to be a popular common useful python-lib in the world! '
-        '(Currently, Most popular python lib in baidu)'
-    ),
+    # long_description=(
+    #     'Wish CUP to be a popular common useful python-lib in the world! '
+    #     '(Currently, Most popular python lib in baidu)'
+    # ),
+    long_description=LONG_DESCRIPTION,
+    long_description_content_type="text/markdown",
     url='https://github.com/baidu/CUP/',
     author=__author__,
     maintainer='Guannan Ma mythmgn@gmail.com @mythmgn',
@@ -70,7 +76,7 @@ setup(
         Topic :: Utilities
         """).strip().splitlines(),
     license='Apache 2',
-    keywords='library common',
+    keywords='library common network threadpool baselib',
     packages=_find_packages(__name__),
     package_data={
         '': [

@@ -9,6 +9,9 @@
 #     Copyright (c) 2009, Giampaolo Rodola'. All rights reserved.
 #     Use of this source code is governed by a BSD-style license
 #     that can be found in the LICENSE file.
+"""
+Provie Linux Resource/State Info Query
+"""
 import os
 import re
 import sys
@@ -20,8 +23,24 @@ import struct
 import threading
 import warnings
 import collections
+from functools import wraps
 
 import cup
+from cup import decorators
+
+
+__all__ = [
+    'boot_time', 'get_boottime_since_epoch',
+    # disk info
+    'get_disk_usage_all', 'get_disk_info',
+    # cpu info
+    'CPUInfo', 'get_cpu_usage', 'get_cpu_nums',
+    'MemInfo', 'get_meminfo',
+    'SWAPINFO', 'get_swapinfo',
+    'net_io_counters', 'get_net_through', 'get_net_transmit_speed',
+    'pids', 'process_iter', 'Process',
+    'get_kernel_version',
+]
 
 _CLOCK_TICKS = os.sysconf("SC_CLK_TCK")
 _PAGESIZE = os.sysconf("SC_PAGE_SIZE")
@@ -54,12 +73,12 @@ _TCP_STATUSES = {
 
 
 # # # # begin system infos # # # #
-@cup.decorators.needlinux
 def get_boottime_since_epoch():
     """
     :return:
         return boot time (seconds) since epoch
     """
+    decorators.needlinux(True)
     fp = open('/proc/stat', 'r')
     try:
         for line in fp:
@@ -70,22 +89,21 @@ def get_boottime_since_epoch():
         fp.close()
 
 
-@cup.decorators.needlinux
 def get_kernel_version():
     """
     get linux kernel verions, e.g.('2', '6', '32'):
-
     """
+    decorators.needlinux(True)
     versions = os.uname()[2]
     # version = versions[0: versions.find('_')]
     return tuple([info for info in versions.split('.')])
 
 
-@cup.decorators.needlinux
 def get_cpu_nums():
     """
     get cpu nums
     """
+    decorators.needlinux(True)
     try:
         return os.sysconf("SC_NPROCESSORS_ONLN")
     except ValueError:
@@ -120,7 +138,6 @@ def get_cpu_nums():
     return num
 
 
-@cup.decorators.needlinux
 def get_disk_usage_all(raw=False):
     """
     :param raw:
@@ -130,6 +147,7 @@ def get_disk_usage_all(raw=False):
     :return:
         return a dict of disk usage
     """
+    decorators.needlinux(True)
     byte2gb = 1024 * 1024 * 1024
     byte2mb = 1024 * 1024
     st = os.statvfs("/")
@@ -153,12 +171,12 @@ def get_disk_usage_all(raw=False):
     }
 
 
-@cup.decorators.needlinux
 def get_disk_info():
     """
     :return:
         get disk info of the system
     """
+    decorators.needlinux(True)
     info = os.popen("df -lh")
     allDiskInfo = []
     for line in enumerate(info.readlines()):
@@ -250,9 +268,10 @@ _CPU_COLUMNS = [
 _COLUMN_LOCK = threading.Lock()
 
 _COLUMN_LOCK.acquire()
-if get_kernel_version() >= ('2', '6', '33') and \
-        _CPU_COLUMNS.count('guest_nice') <= 0:
-    _CPU_COLUMNS.append('guest_nice')
+if sys.platform.startswith('linux'):
+    if get_kernel_version() >= ('2', '6', '33') and \
+            _CPU_COLUMNS.count('guest_nice') <= 0:
+        _CPU_COLUMNS.append('guest_nice')
 _COLUMN_LOCK.release()
 
 
@@ -312,12 +331,12 @@ def _get_cput_by_stat():
         )
 
 
-@cup.decorators.needlinux
 def get_cpu_usage(intvl_in_sec=1):
     """
     get cpu usage statistics during a time period (intvl_in_sec), return a
     namedtuple CPUInfo
     """
+    decorators.needlinux(True)
     cup.unittest.assert_ge(intvl_in_sec, 1)
     ret = []
     for i in xrange(0, len(_CPU_COLUMNS)):
@@ -338,11 +357,12 @@ def get_cpu_usage(intvl_in_sec=1):
     return CPUInfo(*ret)
 
 
-@cup.decorators.needlinux
+
 def get_meminfo():
     """
     get system memory info
     """
+    decorators.needlinux(True)
     total = free = buffers = cached = active = inactive = None
     fp = open('/proc/meminfo', 'r')
     try:
@@ -405,11 +425,11 @@ class SWAPINFO(
     """
 
 
-@cup.decorators.needlinux
 def get_swapinfo():
     """
     get swamp info of the system
     """
+    decorators.needlinux(True)
     fp = open('/proc/swaps', 'r')
     reg = '([\\/A-Za-z0-9]+)[\\s]+([a-z]+)[\\s]+([0-9]+)'\
         '[\\s]+([0-9]+)[\\s]+([\\-0-9]+).*'
@@ -456,7 +476,6 @@ def get_swapinfo():
     return SWAPINFO(total, free, used, sin, sout)
 
 
-@cup.decorators.needlinux
 def net_io_counters():
     """
     get network statistics with a list of namedtuple
@@ -480,12 +499,12 @@ def net_io_counters():
             )
         }
     """
+    decorators.needlinux(True)
     fhandle = open("/proc/net/dev", "r")
     try:
         lines = fhandle.readlines()
     finally:
         fhandle.close()
-
     retdict = {}
     for line in lines[2:]:
         colon = line.rfind(':')
@@ -505,11 +524,11 @@ def net_io_counters():
     return retdict
 
 
-@cup.decorators.needlinux
 def get_net_through(str_interface):
     """
     get network interface statistics by a interface (eth0, e,g,)
     """
+    decorators.needlinux(True)
     rx_bytes = tx_bytes = -1
     fp = open('/proc/net/dev', 'r')
     try:
@@ -527,7 +546,6 @@ def get_net_through(str_interface):
     return (int(rx_bytes), int(tx_bytes))
 
 
-@cup.decorators.needlinux
 def get_net_transmit_speed(str_interface, intvl_in_sec=1):
     """
     get network interface write/read speed
@@ -538,6 +556,7 @@ def get_net_transmit_speed(str_interface, intvl_in_sec=1):
         print cup.res.linux.get_net_transmit_speed('eth1', 5)
 
     """
+    decorators.needlinux(True)
     cup.unittest.assert_gt(intvl_in_sec, 0)
     rx_bytes0 = get_net_through(str_interface)[0]
     time.sleep(intvl_in_sec)
@@ -545,11 +564,12 @@ def get_net_transmit_speed(str_interface, intvl_in_sec=1):
     return (rx_bytes1 - rx_bytes0) / intvl_in_sec
 
 
-@cup.decorators.needlinux
+
 def get_net_recv_speed(str_interface, intvl_in_sec):
     """
-    获得某个网卡在intvl_in_sec时间内的收包速度
+    get average network recv-speed during a time period (intvl_in_sec)
     """
+    decorators.needlinux(True)
     cup.unittest.assert_gt(intvl_in_sec, 0)
     tx_bytes0 = get_net_through(str_interface)[1]
     time.sleep(intvl_in_sec)
@@ -562,6 +582,7 @@ def wrap_exceptions(fun):
     Decorator which translates bare OSError and IOError exceptions
     into cup.err.NoSuchProcess and cup.err.AccessDenied.
     """
+    @wraps(fun)
     def wrapper(self, *args, **kwargs):
         """
         internal wrapper for wrap_exceptions
@@ -581,10 +602,12 @@ def wrap_exceptions(fun):
             raise error
     return wrapper
 
+
 CLOCK_TICKS = os.sysconf("SC_CLK_TCK")
 def boot_time():
     """Return the system boot time expressed in seconds since the epoch.
     """
+    decorators.needlinux(True)
     with open('/proc/stat', 'rb') as f:
         for line in f:
             if line.startswith(b'btime'):
@@ -595,6 +618,7 @@ def boot_time():
 
 def pids():
     """Returns a list of PIDs currently running on the system."""
+    decorators.needlinux(True)
     return [int(x) for x in os.listdir(b'/proc') if x.isdigit()]
 
 _pmap = {}
@@ -612,20 +636,20 @@ def process_iter():
     case the cached instance is updated.
 
     yuetian:
-    1.the origion use a check_running function to check weather
+    1. the origion use a check_running function to check whether
     PID has been reused by another process in which case yield a new
     Process instance
     hint:i did not use check_running function because the container of
     pid is set
 
-    2.the origion use a sorted list(_pmap.items()) +
+    2. the origion use a sorted list(_pmap.items()) +
         list(dict.fromkeys(new_pids).items()
     to get pid and proc to make res.proc is only a instance of a pid Process
     hint(bugs):i did not use fromkeys(new_pids) because i did not get the meanning
     of using proc
     """
+    decorators.needlinux(True)
     pid_set = set(pids())
-
     for pid in pid_set:
         try:
             check_process = Process(pid)
@@ -645,6 +669,7 @@ class Process(object):
     __slots__ = ["_pid", "_process_name", "_create_time"]
 
     def __init__(self, pid):
+        decorators.needlinux(True)
         self._pid = pid
         self._process_name = None
         self._create_time = None
@@ -906,17 +931,31 @@ class Process(object):
     @wrap_exceptions
     def get_ext_memory_info(self):
         """
-        #  ============================================================
-        # | FIELD  | DESCRIPTION                         | AKA  | TOP  |
-        #  ============================================================
-        # | rss    | resident set size                   |      | RES  |
-        # | vms    | total program size                  | size | VIRT |
-        # | shared | shared pages (from shared mappings) |      | SHR  |
-        # | text   | text ('code')                       | trs  | CODE |
-        # | lib    | library (unused in Linux 2.6)       | lrs  |      |
-        # | data   | data + stack                        | drs  | DATA |
-        # | dirty  | dirty pages (unused in Linux 2.6)   | dt   |      |
-        #  ============================================================
+        return namedtuple with FIELDs below:
+
+        Example: ::
+
+            from cup.res import linux
+            process = linux.Process(pid)
+            print process.rss, process.dirty
+
+        +--------+-------------------------------------+------+------+
+        | FIELD  | DESCRIPTION                         | AKA  | TOP  |
+        +========+=====================================+======+======+
+        | rss    | resident set size                   |  /   | RES  |
+        +--------+-------------------------------------+------+------+
+        | vms    | total program size                  | size | VIRT |
+        +--------+-------------------------------------+------+------+
+        | shared | shared pages (from shared mappings) |  /   | SHR  |
+        +--------+-------------------------------------+------+------+
+        | text   | text ('code')                       | trs  | CODE |
+        +--------+-------------------------------------+------+------+
+        | lib    | library (unused in Linux 2.6)       | lrs  |   /  |
+        +--------+-------------------------------------+------+------+
+        | data   | data + stack                        | drs  | DATA |
+        +--------+-------------------------------------+------+------+
+        | dirty  | dirty pages (unused in Linux 2.6)   | dt   |   /  |
+        +--------+-------------------------------------+------+------+
         """
         f = open("/proc/%s/statm" % self._pid)
         try:

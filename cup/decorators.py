@@ -11,12 +11,16 @@ import os
 import time
 import platform
 import threading
+import functools
 from functools import wraps
 from datetime import datetime as datetime_in
 
 import cup
 
-__all__ = ['Singleton', 'TraceUsedTime', 'needlinux', 'needposix']
+__all__ = [
+    'Singleton', 'TraceUsedTime', 'needlinux', 'needposix', 'needmac',
+    'py_versioncheck'
+]
 
 
 class Singleton(object):  # pylint: disable=R0903
@@ -49,10 +53,11 @@ def py_versioncheck(function, version):
     """
     :platform:
         any platform + any functions in python
+
     :param version:
-        Version of python which should be <= version of the OS.
+        The python on the OS should be >= param version.
         *E.g. version=('2', '7', '0')*
-        Python version should >= version.
+        OS python version should >= 2.7.0
     """
     ind = 0
     py_version = platform.python_version_tuple()
@@ -83,12 +88,16 @@ def needlinux(function):
         def your_func():
             pass
     """
-    if platform.system() != 'Linux':
-        raise cup.err.DecoratorException(
-            'The system is not linux.'
-            'This functionality only supported in linux'
-        )
-    return function
+    @functools.wraps(function)
+    def wrapper(*args, **kwargs):
+        """wrapper"""
+        if platform.system() != 'Linux':
+            raise cup.err.DecoratorException(
+                'The system is not linux.'
+                'This functionality only supported in linux'
+            )
+        return function(*args, **kwargs)
+    return wrapper
 
 
 def needposix(function):

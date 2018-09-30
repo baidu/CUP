@@ -49,7 +49,6 @@ __all__ = [
 class CGeneratorMan(object):
     """
     refer to the docstring
-
     """
     def __init__(self, str_prefix='localhost'):
 

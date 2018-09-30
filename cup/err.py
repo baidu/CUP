@@ -11,13 +11,13 @@ __all__ = [
     'BaseCupException', 'DecoratorException', 'LoggerException',
     'ResException', 'NoSuchProcess', 'AccessDenied', 'NetException',
     'AsyncMsgError', 'ThreadTermException', 'LockFileError',
-    'NotImplementedYet'
+    'NotImplementedYet', 'ConfigError'
 ]
 
 
 class BaseCupException(Exception):
     """
-    所有cup库Exception的基类.
+    base cup Exception. All other cup Exceptions will inherit this.
     """
     def __init__(self, msg):
         self._msg = 'Cup module Exception:' + str(msg)
@@ -29,7 +29,7 @@ class BaseCupException(Exception):
 # ## Decorator Exceptions ####
 class DecoratorException(BaseCupException):
     """
-    Cup Decorator修饰符相关的异常Exception
+    DecoratorException
     """
     def __init__(self, msg):
         super(self.__class__, self).__init__(msg)

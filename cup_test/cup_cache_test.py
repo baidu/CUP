@@ -1,14 +1,8 @@
-#!/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*
-"""
-
-    @FileName: cup_cache_test.py
-    @Author: (Guannan Ma)
-    @CreatTime: 2014-08-31 19:14:17
-    @LastModif: 2014-09-02 13:19:58
-    @Note:
-"""
-import time
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
+"""test for cup cache"""
 
 import os
 import sys
@@ -17,7 +11,6 @@ import time
 _NOW_PATH = os.path.dirname(os.path.abspath(__file__)) + '/'
 sys.path.insert(0, _NOW_PATH + '../')
 
-import cup
 from cup import cache
 from cup import unittest
 
