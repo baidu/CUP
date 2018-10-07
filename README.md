@@ -13,7 +13,7 @@
 
 Visit Wiki to see more details: https://github.com/Baidu/CUP/wiki
 
-Vist Doc site to see py-docs: http://docs.iobusy.com/docs/cup/
+Visit Doc site to see py-docs: http://docs.iobusy.com/docs/cup/
 
 ```python
 # Examples:
@@ -65,7 +65,7 @@ cup
     |-- net                     package             Network operations, such as net handler parameter tuning
     |-- oper.py                 module              Mixin operations
     |-- platforms.py            module              Cross-platform operations
-    |-- res                     package             Resource usage queries (in /proc)、Prcoess query、etc
+    |-- res                     package             Resource usage queries (in /proc)、Process query、etc
     |-- shell                   package             Shell Operations、cross-hosts execution
     |-- services                package             Heartbeat、Threadpool based executors、file service、etc
     |-- thirdp                  package             Third-party modules： pexpect、httplib2
@@ -86,7 +86,7 @@ cup
 
 ### 3. 使用说明
 - Visit Wiki to see more details: https://github.com/Baidu/CUP/wiki
-- Vist Doc site to see py-docs: http://docs.iobusy.com/docs/cup/
+- Visit Doc site to see py-docs: http://docs.iobusy.com/docs/cup/
 
 举例说明：
 
@@ -138,7 +138,7 @@ cup
     |-- net                     package             网络相关操作（Network operations, such as net handler parameter tuning）
     |-- oper.py                 module              一些混杂操作(Mixin operations)
     |-- platforms.py            module              跨平台、平台相关操作函数(Cross-platform operations)
-    |-- res                     package             资源获取、实时用量统计等，所有在/prco可获得的系统资源、进程、设备等信息 （Resource usage queries (in /proc)、Prcoess query、etc）
+    |-- res                     package             资源获取、实时用量统计等，所有在/proc可获得的系统资源、进程、设备等信息 （Resource usage queries (in /proc)、Process query、etc）
     |-- shell                   package             命令Shell操作pakcage（Shell Operations、cross-hosts execution）
     |-- services                package             构建服务支持的类（比如心跳、线程池based执行器等等）Heartbeat、Threadpool based executors、file service、etc
     |-- thirdp                  package             第三方依赖纯Py模块（Third-party modules： pexpect、httplib2）
