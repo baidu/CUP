@@ -68,8 +68,8 @@ setup(
     classifiers=textwrap.dedent("""
         Development Status :: 5 - Production/Stable
         Intended Audience :: Developers
-        License :: OSI Approved ::  Apache License Version 2
-        Operating System :: Linux Macos Unix
+        Operating System :: MacOS
+        Operating System :: POSIX :: Linux
         Programming Language :: Python :: 2.6
         Programming Language :: Python :: 2.7
         Topic :: Software Development :: Libraries :: Python Modules

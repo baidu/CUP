@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*
 # Copyright: [CUP] - See LICENSE for details.
-# Authors: Guannan Ma (@mythmgn), Minghao Zhao, Liu Xuan
+# Authors: Minghao Zhao, Liu Xuan, Guannan Ma
 """
 :desc:
     unittest module
@@ -51,7 +51,7 @@ def assert_true(val, errmsg=''):
     Plz notice, log.critical(errmsg) will be invoked if logging system has
     been initialized with cup.log.init_comlog.
     """
-    if type(val) != bool:
+    if not isinstance(val, bool):
         raise TypeError('The type of val is not bool')
     _assert_bool(val, True, errmsg)
 
@@ -60,16 +60,14 @@ def assert_false(val, errmsg=''):
     """
     val should be False. Assert False otherwise.
     """
-    if type(val) != bool:
+    if not isinstance(val, bool):
         raise TypeError('The type of val is not bool')
     _assert_bool(val, False, errmsg)
 
 
 def assert_eq(val, exp, errmsg=''):
     """
-    assert_eq， 如果val!=exp， assert并打印到stdout.
-    errmsg参数为assert后提示到stderr的调用者错误信息
-    如果开启过cup.log.init_comlog的log， 同时打印critical log到log文件
+    if val != exp, aseert False and print errmsg
     """
     if val != exp:
         msg = 'got {0}, expect {1}\nUser ErrMsg: {2}'.format(val, exp, errmsg)
@@ -463,6 +461,5 @@ def expect_raise(function, exception, *argc, **kwargs):
         pass
     else:
         raise err.ExpectFailure(exception, None)
-
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent
