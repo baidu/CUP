@@ -110,14 +110,17 @@ def set_sock_keepalive_linux(
     :param sock:
         socket
     :param after_idle_sec:
-        for TCP_KEEPIDLE
+        for TCP_KEEPIDLE. May not work, depends on ur system
     :param interval_sec:
         for TCP_KEEPINTVL
     :param max_fails:
         for TCP_KEEPCNT
     """
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
-    sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPIDLE, after_idle_sec)
+    try:
+        sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPIDLE, after_idle_sec)
+    except AttributeError:
+        pass
     sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPINTVL, interval_sec)
     sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPCNT, max_fails)
 
@@ -175,7 +178,10 @@ def set_sock_quickack(sock):
         sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_QUICKACK, 1)
     """
     sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-    sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_QUICKACK, 1)
+    try:
+        sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_QUICKACK, 1)
+    except AttributeError:
+        pass
 
 
 def localport_free(port, is_ipv6=False):
@@ -189,6 +195,7 @@ def port_listened(host, port, is_ipv6=False):
         raise NotImplementedError('ipv6 not supported yet')
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(1)
+    set_sock_reusable(sock)
     free = False
     try:
         result = sock.connect_ex((host, port))
