@@ -13,7 +13,7 @@ from cup import decorators
 
 
 __all__ = [
-    'get_kernel_version',  'get_cpu_nums',
+    'get_kernel_version', 'get_cpu_nums',
     'get_disk_usage_all', 'get_disk_info'
 ]
 

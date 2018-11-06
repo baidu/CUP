@@ -20,7 +20,26 @@ build.sh
 .DS_Store
 *.*~
 *.log
+*.log.wf
+doc.*
+doc
+github_doc
+output
+release
+cscope.files
+cscope.in.out
+cscope.out
+cscope.po.out
+issue.info
+tags
+*.un~
+*.tar
+*/*.tar.gz
+
+### folders ###
+build
 tmp
+cup.bak
 MANIFEST
 
 ### macOS template                                                                                     
@@ -51,4 +70,24 @@ Temporary Items
 out                                                                                                 
 gen   
 
-# } files end
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen

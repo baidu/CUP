@@ -352,10 +352,7 @@ def get_cpu_usage(intvl_in_sec=1):
 
     for i in xrange(0, len(ret)):
         ret[i] = ret[i] * 100 / total
-
-    # pylint: disable=W0142
     return CPUInfo(*ret)
-
 
 
 def get_meminfo():
