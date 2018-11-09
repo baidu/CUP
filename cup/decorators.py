@@ -11,7 +11,6 @@ import os
 import time
 import platform
 import threading
-import functools
 from functools import wraps
 from datetime import datetime as datetime_in
 
@@ -88,16 +87,12 @@ def needlinux(function):
         def your_func():
             pass
     """
-    @functools.wraps(function)
-    def wrapper(*args, **kwargs):
-        """wrapper"""
-        if platform.system() != 'Linux':
-            raise cup.err.DecoratorException(
-                'The system is not linux.'
-                'This functionality only supported in linux'
-            )
-        return function(*args, **kwargs)
-    return wrapper
+    if platform.system() != 'Linux':
+        raise cup.err.DecoratorException(
+            'The system is not linux.'
+            'This functionality only supported in linux'
+        )
+    return function
 
 
 def needposix(function):
