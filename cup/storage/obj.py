@@ -7,14 +7,18 @@
     Object related storage
 """
 
+import os
+import sys
 import abc
+import shutil
+import ftplib
 import logging
 
 from cup import log
 from cup import err
 
 
-__all__ = ['AFSObjectSystem', 'S3ObjectSystem']
+__all__ = ['AFSObjectSystem', 'S3ObjectSystem', 'FTPObjectSystem']
 
 
 class ObjectInterface(object):
@@ -51,7 +55,6 @@ class ObjectInterface(object):
             {
                 'returncode': 0 for success, others for failure,
                 'msg': 'if any'
-
             }
         """
 
@@ -67,10 +70,8 @@ class ObjectInterface(object):
             {
                 'returncode': 0 for success, others for failure,
                 'msg': 'if any'
-
             }
         """
-
 
     @abc.abstractmethod
     def get(self, path, localpath):
@@ -80,9 +81,7 @@ class ObjectInterface(object):
             {
                 'returncode': 0 for success, others for failure,
                 'msg': 'if any'
-
             }
-
         """
 
     @abc.abstractmethod
@@ -94,32 +93,36 @@ class ObjectInterface(object):
                'returncode': 0 for success, others for failure,
                'msg': 'if any'
                'objectinfo': {
-                   size: 1024,
+                   'size': 1024, # at least have this one
+                   'atime': 'xxxx.xx.xx', # optional
+                   'mtime': 'xxxx.xx.xx', # optional
+                   'ctime': 'xxxx.xx.xx', # optional
                    .......
                }
-
            }
         """
 
     @abc.abstractmethod
-    def mkdir(self, path):
+    def mkdir(self, path, recursive=True):
         """
         mkdir dir of a path
         :return:
-           {
-               'returncode': 0 for success, others for failure,
-               'msg': 'if any'
-               'objectinfo': {
-                   size: 1024,
-                   .......
-               }
-
-           }
+            {
+                'returncode': 0 for success, others for failure,
+                'msg': 'if any'
+            }
         """
 
     @abc.abstractmethod
-    def rmdir(self, path):
-        """rmdir of a path"""
+    def rmdir(self, path, recursive=True):
+        """rmdir of a path
+
+        :return:
+            {
+                'returncode': 0 for success, others for failure,
+                'msg': 'if any'
+            }
+        """
 
 
 class AFSObjectSystem(ObjectInterface):
@@ -163,7 +166,6 @@ class AFSObjectSystem(ObjectInterface):
 
             }
         """
-
 
     def get(self, path, localpath):
         """
@@ -228,9 +230,8 @@ class S3ObjectSystem(ObjectInterface):
         """
         ObjectInterface.__init__(self, config)
         required_keys = ['ak', 'sk', 'endpoint', 'bucket']
-        if not self._validate_config(config, required_keys):
+        if not self._validate_config(self._config, required_keys):
             raise err.ConfigError(str(required_keys))
-        self._config = config
         self._ak = self._config['ak']
         self._sk = self._config['sk']
         self._endpoint = self._config['endpoint']
@@ -303,8 +304,8 @@ class S3ObjectSystem(ObjectInterface):
             }
         """
         ret = {
-            'returncode': -1,
-            'msg': 'failed to put object'
+            'returncode': 0,
+            'msg': 'success'
         }
         try:
             self.__s3conn.delete_object(
@@ -328,8 +329,8 @@ class S3ObjectSystem(ObjectInterface):
 
         """
         ret = {
-            'returncode': -1,
-            'msg': 'failed to put object'
+            'returncode': 0,
+            'msg': 'success'
         }
         try:
             with open(localpath, 'w+') as fhandle:
@@ -359,7 +360,7 @@ class S3ObjectSystem(ObjectInterface):
         """
         ret = {
             'returncode': -1,
-            'msg': 'failed to put object'
+            'msg': 'failed to get objectinfo'
         }
         try:
             resp = self.__s3conn.head_object(
@@ -464,6 +465,324 @@ class S3ObjectSystem(ObjectInterface):
         except self._exception as error:
             ret['returncode'] = -1
             ret['msg'] = str(error)
+        return ret
+
+
+class FTPObjectSystem(ObjectInterface):
+    """
+    ftp object system
+    """
+    def __init__(self, config):
+        """
+        :param config:
+            {
+                "uri":"ftp://host:port",
+                "user":"username",
+                "password":"password",
+                "extra":None   //timeout:30s
+            }
+
+        :raise:
+            cup.err.ConfigError if there's any config item missing
+        """
+        ObjectInterface.__init__(self, config)
+        required_keys = ['uri', 'user', 'password']
+        if not self._validate_config(self._config, required_keys):
+            raise err.ConfigError(str(required_keys))
+        self._uri = self._config['uri']
+        self._user = self._config['user']
+        self._passwd = self._config['password']
+        self._extra = self._config['extra']
+        self._dufault_timeout = 30
+        if self._extra is not None and isinstance(self._config['extra'], int):
+            self._dufault_timeout = self._extra
+        log.info('to connect to ftp server')
+        self._ftp_con = ftplib.FTP()
+        self._host = self._uri.split(':')[1][2:]
+        self._port = ftplib.FTP_PORT
+        if len(self._uri.split(':')[2]) > 0:
+            self.port = int(self._uri.split(':')[2])
+        self._ftp_con.connect(self._host, self._port, self._dufault_timeout)
+        self._ftp_con.login(self._user, self._passwd)
+
+    def __del__(self):
+        """release connect"""
+        self._ftp_con.quit()
+
+    def put(self, dest, localfile):
+        """
+        :param dest:
+            ftp path
+        :param localfile:
+            localfile
+        """
+        ret = {
+            'returncode': 0,
+            'msg': 'success'
+        }
+        src_path = self._ftp_con.pwd()
+        file_name = localfile
+        if "/" in localfile:
+            file_name = localfile.split('/')[-1]
+        with open(localfile, 'rb') as fhandle:
+            try:
+                self._ftp_con.cwd(dest)
+                ftp_cmd = 'STOR ' + file_name
+                self._ftp_con.storbinary(ftp_cmd, fhandle)
+            except Exception as error:
+                ret['returncode'] = -1
+                ret['msg'] = 'failed to put:{}'.format(error)
+        self._ftp_con.cwd(src_path)
+        return ret
+
+    def delete(self, path):
+        """delete file"""
+        ret = {
+            'returncode': 0,
+            'msg': 'success'
+        }
+        try:
+            self._ftp_con.delete(path)
+        except Exception as error:
+            ret['returncode'] = -1
+            ret['msg'] = str(error)
+        return ret
+
+    def get(self, path, localpath):
+        """
+        get a file into localpath
+        """
+        ret = {
+            'returncode': 0,
+            'msg': 'success'
+        }
+        if localpath.endswith('/'):
+            localpath += path.split('/')[-1]
+        try:
+            with open(localpath, 'w+') as fhandle:
+                ftp_cmd = 'RETR {0}'.format(path)
+                resp = self._ftp_con.retrbinary(ftp_cmd, fhandle.write)
+        except Exception as error:
+            ret['returncode'] = -1
+            ret['msg'] = str(error)
+
+        return ret
+
+    def head(self, path):
+        """
+        get the file info
+        :return:
+           {
+               'returncode': 0 for success, others for failure,
+               'msg': 'if any'
+               'fileinfo': [
+                   "-rw-rw-r-- 1 work work   201 Nov  9 17:03 __init__.py"
+               [
+           }
+
+        """
+        ret = {
+            'returncode': -1,
+            'msg': 'failed to get objectinfo'
+        }
+        res_info = []
+        f_flag = False
+        if self.is_file(path):
+            file_name = path[path.rfind('/') + 1:]
+            f_flag = True
+        def _call_back(arg):
+            if f_flag and arg.split()[-1].strip() == file_name:
+                return res_info.append(arg)
+            if not f_flag:
+                res_info.append(arg)
+        try:
+            self._ftp_con.retrlines('LIST', _call_back)
+            ret['fileinfo'] = res_info
+            ret['returncode'] = 0
+            ret['msg'] = 'success'
+        except Exception as error:
+            ret['returncode'] = -1
+            ret['msg'] = str(error)
+        return ret
+
+    def mkdir(self, path, recursive=True):
+        """
+        mkdir
+        """
+        ret = {
+            'returncode': 0,
+            'msg': 'success'
+        }
+        src_path = self._ftp_con.pwd()
+        try:
+            if not recursive:
+                self._ftp_con.mkd(path)
+            else:
+                subdirs = path.split('/')
+                for subdir in subdirs:
+                    try:
+                        self._ftp_con.cwd(subdir)
+                    except Exception as e:
+                        self._ftp_con.mkd(subdir)
+                        self._ftp_con.cwd(subdir)
+        except Exception as error:
+            ret['returncode'] = -1
+            ret['msg'] = 'failed to mkdir, err:{}'.format(error)
+        self._ftp_con.cwd(src_path)
+        return ret
+
+    def rmdir(self, path, recursive=True):
+        """
+        rmdir
+        """
+        ret = {
+            'returncode': 0,
+            'msg': 'success'
+        }
+        src_path = self._ftp_con.pwd()
+        try:
+            if not recursive:
+                self._ftp_con.rmd(path)
+            else:
+                src_path =  self._ftp_con.pwd()
+                self._ftp_con.cwd(path)
+                allItems = self._ftp_con.nlst()
+                for item in allItems:
+                    if self.is_file(item):
+                        self._ftp_con.delete(item)
+                    else:
+                        self.rmdir(item)
+                self._ftp_con.cwd(src_path)
+                self._ftp_con.rmd(path)
+        except Exception as error:
+            ret['returncode'] = -1
+            ret['msg'] = 'failed to rmdir, err:{}'.format(error)
+        self._ftp_con.cwd(src_path)
+        return ret
+
+    def is_file(self, path):
+        """path is file or not"""
+        res = False
+        src_path = self._ftp_con.pwd()
+        path = path.rstrip('/')
+        res_info = []
+        def _call_back(arg):
+            res_info.append(arg)
+        try:
+            self._ftp_con.cwd(path)
+            self._ftp_con.cwd(src_path)
+            return res
+        except Exception as e:
+            pass
+        pos = path.rfind('/')
+        p_path = path[0: pos]
+        file_name = path[pos + 1:]
+        self._ftp_con.cwd(p_path)
+        self._ftp_con.retrlines('MLSD', _call_back)
+        for item in res_info:
+            if item.split(';')[-1].strip() == file_name and 'type=file' in item:
+                self._ftp_con.cwd(src_path)
+                return True
+        self._ftp_con.cwd(src_path)
+        return False
+
+
+class LocalObjectSystem(ObjectInterface):
+    """local object system"""
+
+    def put(self, dest, localfile):
+        """
+        local object put == copy
+        """
+        ret = {
+            'returncode': 0,
+            'msg': 'success'
+        }
+        try:
+            shutil.copy2(dest, localfile)
+        # pylint: disable=W0703
+        except Exception as error:
+            ret['returncode'] = -1
+            ret['msg'] = 'failed to put:{}'.format(error)
+        return ret
+
+    def delete(self, path):
+        """delete a file in local"""
+        ret = {
+            'returncode': 0,
+            'msg': 'success'
+        }
+        try:
+            os.unlink(path)
+        # pylint: disable=W0703
+        except Exception as error:
+            ret['returncode'] = -1
+            ret['msg'] = 'failed to unlink file:{}, err:{}'.format(path, error)
+        return ret
+
+    def get(self, path, localpath):
+        """
+        get a file into localpath
+        """
+        return self.put(path, localpath)
+
+    def head(self, path):
+        """get the object info"""
+        retcode = 0
+        msg = 'ok'
+        objectinfo = None
+        if not os.path.exists(path):
+            retcode = 255
+            msg = 'file/dir not found'
+        else:
+            statinfo = os.stat(path)
+            objectinfo =  {
+                'size': statinfo.st_size,
+                'atime': statinfo.st_atime,
+                'mtime': statinfo.st_mtime,
+                'ctime': statinfo.st_ctime
+            }
+        info_dict = {
+            'returncode': retcode,
+            'msg': msg,
+            'objectinfo': objectinfo
+        }
+        return info_dict
+
+    def mkdir(self, path, recursive=True):
+        """
+        mkdir
+        """
+        ret = {
+            'returncode': 0,
+            'msg': 'success'
+        }
+        func = os.makedirs
+        if not recursive:
+            func = os.mkdir
+        try:
+            func(path)
+        except IOError as error:
+            ret['returncode'] = -1
+            ret['msg'] = 'failed to mkdir, err:{}'.format(error)
+        return ret
+
+    def rmdir(self, path, recursive=True):
+        """
+        rmdir
+        """
+        ret = {
+            'returncode': 0,
+            'msg': 'success'
+        }
+        func = os.rmdir
+        if recursive:
+            func = shutil.rmtree
+        try:
+            func(path)
+        except IOError as error:
+            ret['returncode'] = -1
+            ret['msg'] = 'failed to rmdir, err:{}'.format(error)
         return ret
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent
