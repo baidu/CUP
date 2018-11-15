@@ -1,16 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*
-# #############################################################
-#
-#  Copyright (c) 2014 Baidu.com, Inc. All Rights Reserved
-#
-# #############################################################
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
 """
-:authors:
-    Guannan Ma maguannan @mythmgn
-:create_date:
-    2015/03/12
+:description:
+    unittest for cup.services.heartbeat
 """
+
 import os
 import sys
 import time

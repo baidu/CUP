@@ -199,7 +199,8 @@ def port_listened(host, port, is_ipv6=False):
     listened = False
     try:
         result = sock.connect_ex((host, port))
-        if result == 0:
+        # 35 means eagain
+        if result == 0 or result == 35:
             listened = True
     # pylint: disable=W0703
     except Exception as err:

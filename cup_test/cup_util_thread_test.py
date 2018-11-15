@@ -1,14 +1,12 @@
-#!/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*
+# Copyright: [CUP] - See LICENSE for details.
+# Authors: Guannan Ma (@mythmgn),
+"""
+:description:
+    unittest for cup.util.thread
 """
 
-    @FileName: test_thread.py
-    @Author: (Guannan Ma)
-    @CreatTime: 2014-08-31 17:25:09
-    @LastModif: 2014-08-31 18:52:36
-    @Note:
-"""
-import cup
 from cup.util import thread
 
 

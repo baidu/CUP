@@ -1,5 +1,6 @@
 # folders
 cup.baidurepo
+*.bak
 cup/bidu
 build/*
 dist/
@@ -92,3 +93,7 @@ Temporary Items
 *.iml
 out
 gen
+cup_test/cup_send_msg_test.py
+cup_test/cup_send_msg_test.py
+cup_test/cup_send_msg_test.py
+cup_test/cup_send_msg_test.py

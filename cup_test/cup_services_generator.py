@@ -4,7 +4,7 @@
 # Authors: Guannan Ma (@mythmgn),
 """
 :description:
-
+    ut for cup.services.generator
 """
 
 import os

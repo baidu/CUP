@@ -1,0 +1,18 @@
+$include "./conf/test.included.conf"
+
+global-key:global_value
+@global:1
+@global:2
+
+[layer1]
+    layer1-option00:layer1-option00
+    
+    layer1-option01:layer1-option01
+    
+    [.layer1_1]
+        @disk:/home/disk1
+        @disk:/home/disk2
+        @disk:/home/disk3  /home/disk4
+    [.@layer1_2]
+        @disk:abc
+        @disk:def

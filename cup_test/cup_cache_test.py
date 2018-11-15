@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*
 # Copyright: [CUP] - See LICENSE for details.
 # Authors: Guannan Ma (@mythmgn),
-"""test for cup cache"""
+"""
+:description:
+    unittest for cup.cache
+"""
 
 import os
 import sys
@@ -11,6 +14,7 @@ import time
 _NOW_PATH = os.path.dirname(os.path.abspath(__file__)) + '/'
 sys.path.insert(0, _NOW_PATH + '../')
 
+import cup
 from cup import cache
 from cup import unittest
 
