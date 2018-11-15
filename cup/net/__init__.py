@@ -53,7 +53,7 @@ def getip_byinterface(iface='eth0'):
         import cup
         print cup.net.getip_byinterface('eth0')
         print cup.net.getip_byinterface('eth1')
-        print cup.net.getip_byinterface('xgbe0')   # 万兆网卡
+        print cup.net.getip_byinterface('xgbe0')
     """
     if platforms.is_linux():
         ifreq = struct.pack('16sH14s', iface, socket.AF_INET, '\x00' * 14)
@@ -196,17 +196,17 @@ def port_listened(host, port, is_ipv6=False):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(1)
     set_sock_reusable(sock)
-    free = False
+    listened = False
     try:
         result = sock.connect_ex((host, port))
         if result == 0:
-            free = True
+            listened = True
     # pylint: disable=W0703
     except Exception as err:
         sys.stderr.write(err)
         sys.stderr.flush()
     finally:
         sock.close()
-    return free
+    return listened
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent
