@@ -22,7 +22,7 @@ __all__ = ['IMessageCenter']
 # CHECK_OFF=0
 # CHECK_ON=1
 
-# pylint: disable=R0921
+
 class IMessageCenter(object):
     """
     Message center class
@@ -30,13 +30,11 @@ class IMessageCenter(object):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, ip, port, thdpool_param=None, stat_intvl=20):
-        # super(self.__class__, self).__init__()
         if thdpool_param is None:
             thdpool_param = (3, 5)
         self._conn_mgr = conn.CConnectionManager(
             ip, port, thdpool_param
         )
-        # self._check_flag = check_flag
         self._stop = False
         self._stat_intvl = stat_intvl
         self._stat_cond = threading.Condition()

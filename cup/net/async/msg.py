@@ -21,7 +21,7 @@ MSG_TIMEOUT_TO_DELETE = 2
 MSG_DELETE_FLAG = 3
 
 
-__all__ = ['CMsgType', 'CMsgFlag', 'CNetMsg', 'CAckMsg']
+__all__ = ['CMsgType', 'CMsgFlag', 'CNetMsg', 'CAckMsg', 'netmsg_tostring']
 
 
 MSG_TYPE2NUM = {
@@ -685,6 +685,21 @@ class CAckMsg(CNetMsg):
     def __init__(self, is_postmsg=True):
         CNetMsg.__init__(self, is_postmsg)
         self.add_flag(MSG_FLAG2NUM['FLAG_ACK'])
+
+
+def netmsg_tostring(netmsg):
+    """
+    get printable netmsg
+    """
+    msg = (
+        'netmsg, from {0} to {1}, uniqid {2}, msg_type {3}, flag {4}, '
+        'body_len {5}'.format(
+            str(netmsg.get_from_addr()), str(netmsg.get_to_addr()),
+            netmsg.get_uniq_id(), netmsg.get_msg_type(),
+            netmsg.get_flag(), netmsg.get_bodylen()
+        )
+    )
+    return msg
 
 
 if __name__ == '__main__':

@@ -186,7 +186,7 @@ def set_sock_quickack(sock):
 
 def localport_free(port, is_ipv6=False):
     """judge if a port is used. IPV4, by default"""
-    return port_listened(get_local_hostname(), port, is_ipv6)
+    return not port_listened(get_local_hostname(), port, is_ipv6)
 
 
 def port_listened(host, port, is_ipv6=False):

@@ -18,7 +18,10 @@ from cup import log
 from cup import err
 
 
-__all__ = ['AFSObjectSystem', 'S3ObjectSystem', 'FTPObjectSystem']
+__all__ = [
+    'AFSObjectSystem', 'S3ObjectSystem', 'FTPObjectSystem',
+    'LocalObjectSystem'
+]
 
 
 class ObjectInterface(object):
@@ -29,8 +32,13 @@ class ObjectInterface(object):
     def __init__(self, config):
         """
         :param config:
-            be complied with cup.util.conf.Configure2Dict().get_dict().
-            Shoule be dict like object
+            dict like config, should contains at leat
+            {
+                'uri': 'xxxx',
+                'user': 'xxxx',   # or stands for accesskey
+                'passwords': 'xxxx', # or stands for secretkey
+                'extra': some_object
+            }
         """
         self._config = config
 
@@ -689,6 +697,18 @@ class FTPObjectSystem(ObjectInterface):
 
 class LocalObjectSystem(ObjectInterface):
     """local object system"""
+
+    def __init__(self, kvconfig=None):
+        """
+        initialize
+        """
+        config = {
+            'uri': None,
+            'user': None,   # or stands for accesskey
+            'passwords': None, # or stands for secretkey
+            'extra': None
+        }
+        ObjectInterface.__init__(self, config)
 
     def put(self, dest, localfile):
         """

@@ -15,8 +15,6 @@
     encounter TCP/IP stack full of data in the SEND buffer-queue of
     the network interface
 """
-import os
-import copy
 import socket
 import select
 import errno
@@ -44,13 +42,15 @@ __all__ = [
 
 
 def _try_get_peer_info(sock):
+    """
+    get peer info
+    """
     try:
         peer = sock.getpeername()
     except socket.error as error:
         peer = ('Error happened', str(error))
     except Exception as error:
         peer = ('_try_get_peer_info error happend', str(error))
-
     return peer
 
 
@@ -661,7 +661,10 @@ class CConnectionManager(object):
             finally:
                 del data
             if msg.is_msg_already_sent():
-                log.info('sent out a msg uniqid:{0}'.format(util.netmsg_tostring(msg)))
+                log.info(
+                    'sent out a msg uniqid:{0}'.format(
+                        async_msg.netmsg_tostring(msg))
+                )
                 # if we have successfully send out a msg. Then move to next one
                 msg = context.try_move2next_sending_msg()
                 if msg is None:
