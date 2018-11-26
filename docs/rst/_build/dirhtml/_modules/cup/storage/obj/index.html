@@ -1,0 +1,676 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cup.storage.obj &mdash; cup 1.7.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex/" />
+    <link rel="search" title="Search" href="../../../../search/" /> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../" class="icon icon-home"> cup
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.7
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cup/">cup package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../">cup</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../">Module code</a> &raquo;</li>
+        
+      <li>cup.storage.obj</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cup.storage.obj</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*</span>
+<span class="c1"># Copyright: [CUP] - See LICENSE for details.</span>
+<span class="c1"># Authors: Guannan Ma (@mythmgn),</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:description:</span>
+<span class="sd">    Object related storage</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">cup</span> <span class="k">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cup</span> <span class="k">import</span> <span class="n">err</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;AFSObjectSystem&#39;</span><span class="p">,</span> <span class="s1">&#39;S3ObjectSystem&#39;</span><span class="p">]</span>
+
+
+<span class="k">class</span> <span class="nc">ObjectInterface</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    object interface, abstract class. Should not be used directly</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param config:</span>
+<span class="sd">            be complied with cup.util.conf.Configure2Dict().get_dict().</span>
+<span class="sd">            Shoule be dict like object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">config</span>
+
+    <span class="k">def</span> <span class="nf">_validate_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;validate config if there&#39;s any missing items&quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">,</span> <span class="n">localfile</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param dest:</span>
+<span class="sd">            system path</span>
+<span class="sd">        :param localfile:</span>
+<span class="sd">            localfile</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            {</span>
+<span class="sd">                &#39;returncode&#39;: 0 for success, others for failure,</span>
+<span class="sd">                &#39;msg&#39;: &#39;if any&#39;</span>
+
+<span class="sd">            }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        delete a file</span>
+
+<span class="sd">        :param path:</span>
+<span class="sd">            object path</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            {</span>
+<span class="sd">                &#39;returncode&#39;: 0 for success, others for failure,</span>
+<span class="sd">                &#39;msg&#39;: &#39;if any&#39;</span>
+
+<span class="sd">            }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">localpath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get the object into localpath</span>
+<span class="sd">        :return:</span>
+<span class="sd">            {</span>
+<span class="sd">                &#39;returncode&#39;: 0 for success, others for failure,</span>
+<span class="sd">                &#39;msg&#39;: &#39;if any&#39;</span>
+
+<span class="sd">            }</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get the object info</span>
+<span class="sd">        :return:</span>
+<span class="sd">           {</span>
+<span class="sd">               &#39;returncode&#39;: 0 for success, others for failure,</span>
+<span class="sd">               &#39;msg&#39;: &#39;if any&#39;</span>
+<span class="sd">               &#39;objectinfo&#39;: {</span>
+<span class="sd">                   size: 1024,</span>
+<span class="sd">                   .......</span>
+<span class="sd">               }</span>
+
+<span class="sd">           }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">mkdir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        mkdir dir of a path</span>
+<span class="sd">        :return:</span>
+<span class="sd">           {</span>
+<span class="sd">               &#39;returncode&#39;: 0 for success, others for failure,</span>
+<span class="sd">               &#39;msg&#39;: &#39;if any&#39;</span>
+<span class="sd">               &#39;objectinfo&#39;: {</span>
+<span class="sd">                   size: 1024,</span>
+<span class="sd">                   .......</span>
+<span class="sd">               }</span>
+
+<span class="sd">           }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">rmdir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;rmdir of a path&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="AFSObjectSystem"><a class="viewcode-back" href="../../../../cup.storage/#cup.storage.obj.AFSObjectSystem">[docs]</a><span class="k">class</span> <span class="nc">AFSObjectSystem</span><span class="p">(</span><span class="n">ObjectInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    afs object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param config:</span>
+<span class="sd">            be complied with cup.util.conf.Configure2Dict().get_dict().</span>
+<span class="sd">            Shoule be dict like object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ObjectInterface</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AFSObjectSystem.put"><a class="viewcode-back" href="../../../../cup.storage/#cup.storage.obj.AFSObjectSystem.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">,</span> <span class="n">localfile</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param dest:</span>
+<span class="sd">            system path</span>
+<span class="sd">        :param localfile:</span>
+<span class="sd">            localfile</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            {</span>
+<span class="sd">                &#39;returncode&#39;: 0 for success, others for failure,</span>
+<span class="sd">                &#39;msg&#39;: &#39;if any&#39;</span>
+
+<span class="sd">            }</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="AFSObjectSystem.delete"><a class="viewcode-back" href="../../../../cup.storage/#cup.storage.obj.AFSObjectSystem.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        delete a file</span>
+
+<span class="sd">        :param path:</span>
+<span class="sd">            object path</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            {</span>
+<span class="sd">                &#39;returncode&#39;: 0 for success, others for failure,</span>
+<span class="sd">                &#39;msg&#39;: &#39;if any&#39;</span>
+
+<span class="sd">            }</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="AFSObjectSystem.get"><a class="viewcode-back" href="../../../../cup.storage/#cup.storage.obj.AFSObjectSystem.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">localpath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get the object into localpath</span>
+<span class="sd">        :return:</span>
+<span class="sd">            {</span>
+<span class="sd">                &#39;returncode&#39;: 0 for success, others for failure,</span>
+<span class="sd">                &#39;msg&#39;: &#39;if any&#39;</span>
+
+<span class="sd">            }</span>
+
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="AFSObjectSystem.head"><a class="viewcode-back" href="../../../../cup.storage/#cup.storage.obj.AFSObjectSystem.head">[docs]</a>    <span class="k">def</span> <span class="nf">head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get the object info</span>
+<span class="sd">        :return:</span>
+<span class="sd">           {</span>
+<span class="sd">               &#39;returncode&#39;: 0 for success, others for failure,</span>
+<span class="sd">               &#39;msg&#39;: &#39;if any&#39;</span>
+<span class="sd">               &#39;objectinfo&#39;: {</span>
+<span class="sd">                   size: 1024,</span>
+<span class="sd">                   .......</span>
+<span class="sd">               }</span>
+
+<span class="sd">           }</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="AFSObjectSystem.mkdir"><a class="viewcode-back" href="../../../../cup.storage/#cup.storage.obj.AFSObjectSystem.mkdir">[docs]</a>    <span class="k">def</span> <span class="nf">mkdir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        mkdir dir of a path</span>
+<span class="sd">        :return:</span>
+<span class="sd">           {</span>
+<span class="sd">               &#39;returncode&#39;: 0 for success, others for failure,</span>
+<span class="sd">               &#39;msg&#39;: &#39;if any&#39;</span>
+<span class="sd">               &#39;objectinfo&#39;: {</span>
+<span class="sd">                   size: 1024,</span>
+<span class="sd">                   .......</span>
+<span class="sd">               }</span>
+
+<span class="sd">           }</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="AFSObjectSystem.rmdir"><a class="viewcode-back" href="../../../../cup.storage/#cup.storage.obj.AFSObjectSystem.rmdir">[docs]</a>    <span class="k">def</span> <span class="nf">rmdir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;rmdir of a path&quot;&quot;&quot;</span></div></div>
+
+
+<span class="c1"># pylint: disable=R0902</span>
+<span class="c1"># need to have so many</span>
+<div class="viewcode-block" id="S3ObjectSystem"><a class="viewcode-back" href="../../../../cup.storage/#cup.storage.obj.S3ObjectSystem">[docs]</a><span class="k">class</span> <span class="nc">S3ObjectSystem</span><span class="p">(</span><span class="n">ObjectInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    s3 object system</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param config:</span>
+<span class="sd">            be complied with cup.util.conf.Configure2Dict().get_dict().</span>
+<span class="sd">            Shoule be dict like object</span>
+
+<span class="sd">        :raise:</span>
+<span class="sd">            cup.err.ConfigError if there&#39;s any config item missing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ObjectInterface</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+        <span class="n">required_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ak&#39;</span><span class="p">,</span> <span class="s1">&#39;sk&#39;</span><span class="p">,</span> <span class="s1">&#39;endpoint&#39;</span><span class="p">,</span> <span class="s1">&#39;bucket&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_config</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">required_keys</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">ConfigError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">required_keys</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ak</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">[</span><span class="s1">&#39;ak&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">[</span><span class="s1">&#39;sk&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">[</span><span class="s1">&#39;endpoint&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bucket</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">[</span><span class="s1">&#39;bucket&#39;</span><span class="p">]</span>
+        <span class="kn">import</span> <span class="nn">boto3</span>
+        <span class="kn">from</span> <span class="nn">botocore</span> <span class="k">import</span> <span class="n">exceptions</span>
+        <span class="kn">from</span> <span class="nn">botocore</span> <span class="k">import</span> <span class="n">client</span> <span class="k">as</span> <span class="n">coreclient</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_s3_config</span> <span class="o">=</span> <span class="n">coreclient</span><span class="o">.</span><span class="n">Config</span><span class="p">(</span>
+            <span class="n">signature_version</span><span class="o">=</span><span class="s1">&#39;s3v4&#39;</span><span class="p">,</span>
+            <span class="n">s3</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;addressing_style&#39;</span><span class="p">:</span> <span class="s1">&#39;path&#39;</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;boto3&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;botocore&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;s3transfer&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;to connect to boto3&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__s3conn</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span>
+            <span class="s1">&#39;s3&#39;</span><span class="p">,</span>
+            <span class="n">aws_access_key_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ak</span><span class="p">,</span>
+            <span class="n">aws_secret_access_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sk</span><span class="p">,</span>
+            <span class="n">endpoint_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span><span class="p">,</span>
+            <span class="c1"># region_name=conf_dict[&#39;region_name&#39;],</span>
+            <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_s3_config</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span> <span class="o">=</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">ClientError</span>
+
+<div class="viewcode-block" id="S3ObjectSystem.put"><a class="viewcode-back" href="../../../../cup.storage/#cup.storage.obj.S3ObjectSystem.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">,</span> <span class="n">localfile</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param dest:</span>
+<span class="sd">            system path</span>
+<span class="sd">        :param localfile:</span>
+<span class="sd">            localfile</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            {</span>
+<span class="sd">                &#39;returncode&#39;: 0 for success, others for failure,</span>
+<span class="sd">                &#39;msg&#39;: &#39;if any&#39;</span>
+
+<span class="sd">            }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;failed to put object&#39;</span>
+        <span class="p">}</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">localfile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fhandle</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__s3conn</span><span class="o">.</span><span class="n">put_object</span><span class="p">(</span>
+                    <span class="n">Key</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dest</span><span class="p">),</span>
+                    <span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_bucket</span><span class="p">,</span>
+                    <span class="n">Body</span><span class="o">=</span><span class="n">fhandle</span>
+                <span class="p">)</span>
+                <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;returncode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;success&#39;</span>
+            <span class="k">except</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;returncode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="S3ObjectSystem.delete"><a class="viewcode-back" href="../../../../cup.storage/#cup.storage.obj.S3ObjectSystem.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        delete a file</span>
+
+<span class="sd">        :param path:</span>
+<span class="sd">            object path</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            {</span>
+<span class="sd">                &#39;returncode&#39;: 0 for success, others for failure,</span>
+<span class="sd">                &#39;msg&#39;: &#39;if any&#39;</span>
+
+<span class="sd">            }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;failed to put object&#39;</span>
+        <span class="p">}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__s3conn</span><span class="o">.</span><span class="n">delete_object</span><span class="p">(</span>
+                <span class="n">Key</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
+                <span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_bucket</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;returncode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="S3ObjectSystem.get"><a class="viewcode-back" href="../../../../cup.storage/#cup.storage.obj.S3ObjectSystem.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">localpath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get the object into localpath</span>
+<span class="sd">        :return:</span>
+<span class="sd">            {</span>
+<span class="sd">                &#39;returncode&#39;: 0 for success, others for failure,</span>
+<span class="sd">                &#39;msg&#39;: &#39;if any&#39;</span>
+
+<span class="sd">            }</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;failed to put object&#39;</span>
+        <span class="p">}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">localpath</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fhandle</span><span class="p">:</span>
+                <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s3conn</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span>
+                    <span class="n">Key</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
+                    <span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_bucket</span>
+                <span class="p">)</span>
+                <span class="n">fhandle</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="s1">&#39;Body&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;returncode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="S3ObjectSystem.head"><a class="viewcode-back" href="../../../../cup.storage/#cup.storage.obj.S3ObjectSystem.head">[docs]</a>    <span class="k">def</span> <span class="nf">head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get the object info</span>
+<span class="sd">        :return:</span>
+<span class="sd">           {</span>
+<span class="sd">               &#39;returncode&#39;: 0 for success, others for failure,</span>
+<span class="sd">               &#39;msg&#39;: &#39;if any&#39;</span>
+<span class="sd">               &#39;objectinfo&#39;: {</span>
+<span class="sd">                   size: 1024,</span>
+<span class="sd">                   .......</span>
+<span class="sd">               }</span>
+
+<span class="sd">           }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;failed to put object&#39;</span>
+        <span class="p">}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s3conn</span><span class="o">.</span><span class="n">head_object</span><span class="p">(</span>
+                <span class="n">Key</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
+                <span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_bucket</span>
+            <span class="p">)</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;objectinfo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resp</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;returncode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;success&#39;</span>
+        <span class="k">except</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;returncode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="S3ObjectSystem.mkdir"><a class="viewcode-back" href="../../../../cup.storage/#cup.storage.obj.S3ObjectSystem.mkdir">[docs]</a>    <span class="k">def</span> <span class="nf">mkdir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        mkdir dir of a path</span>
+<span class="sd">        :return:</span>
+<span class="sd">           {</span>
+<span class="sd">               &#39;returncode&#39;: 0 for success, others for failure,</span>
+<span class="sd">               &#39;msg&#39;: &#39;if any&#39;</span>
+<span class="sd">               &#39;objectinfo&#39;: {</span>
+<span class="sd">                   size: 1024,</span>
+<span class="sd">                   .......</span>
+<span class="sd">               }</span>
+<span class="sd">           }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">NotImplementedYet</span><span class="p">(</span><span class="s1">&#39;mkdir not supported for S3ObjectSystem&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="S3ObjectSystem.rmdir"><a class="viewcode-back" href="../../../../cup.storage/#cup.storage.obj.S3ObjectSystem.rmdir">[docs]</a>    <span class="k">def</span> <span class="nf">rmdir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;rmdir of a path&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">NotImplementedYet</span><span class="p">(</span><span class="s1">&#39;rmdir not supported for S3ObjectSystem&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="S3ObjectSystem.create_bucket"><a class="viewcode-back" href="../../../../cup.storage/#cup.storage.obj.S3ObjectSystem.create_bucket">[docs]</a>    <span class="k">def</span> <span class="nf">create_bucket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bucket_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;create bucket&quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;failed to create bucket&#39;</span>
+        <span class="p">}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s3conn</span><span class="o">.</span><span class="n">create_bucket</span><span class="p">(</span>
+                <span class="n">Bucket</span><span class="o">=</span><span class="n">bucket_name</span>
+            <span class="p">)</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;returncode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;success&#39;</span>
+        <span class="k">except</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;returncode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="S3ObjectSystem.head_bucket"><a class="viewcode-back" href="../../../../cup.storage/#cup.storage.obj.S3ObjectSystem.head_bucket">[docs]</a>    <span class="k">def</span> <span class="nf">head_bucket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bucket_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;create bucket&quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;failed to create bucket&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;bucket_info&#39;</span><span class="p">:</span> <span class="kc">None</span>
+        <span class="p">}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s3conn</span><span class="o">.</span><span class="n">head_bucket</span><span class="p">(</span>
+                <span class="n">Bucket</span><span class="o">=</span><span class="n">bucket_name</span>
+            <span class="p">)</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;returncode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;success&#39;</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;bucket_info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resp</span>
+        <span class="k">except</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;returncode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="S3ObjectSystem.delete_bucket"><a class="viewcode-back" href="../../../../cup.storage/#cup.storage.obj.S3ObjectSystem.delete_bucket">[docs]</a>    <span class="k">def</span> <span class="nf">delete_bucket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bucket_name</span><span class="p">,</span> <span class="n">forcely</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;delete bucket</span>
+
+<span class="sd">        :param forcely:</span>
+<span class="sd">            if forcely is True, the bucket will be delete no matter it has</span>
+<span class="sd">                objects inside. Otherwise, you have to delete items inside,</span>
+<span class="sd">                then delete the bucket</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;failed to create bucket&#39;</span>
+        <span class="p">}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">forcely</span><span class="p">:</span>
+                <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_bucket</span><span class="p">(</span><span class="n">bucket_name</span><span class="p">)</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s3conn</span><span class="o">.</span><span class="n">list_objects</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="n">bucket_name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s1">&#39;Contents&#39;</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;Contents&#39;</span><span class="p">]:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">__s3conn</span><span class="o">.</span><span class="n">delete_object</span><span class="p">(</span>
+                                <span class="n">Bucket</span><span class="o">=</span><span class="n">bucket_name</span><span class="p">,</span>
+                                <span class="n">Key</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;Key&#39;</span><span class="p">]</span>
+                            <span class="p">)</span>
+                        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;faield to delete obj in bucket&#39;</span>
+                            <span class="k">return</span> <span class="n">ret</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__s3conn</span><span class="o">.</span><span class="n">delete_bucket</span><span class="p">(</span>
+                <span class="n">Bucket</span><span class="o">=</span><span class="n">bucket_name</span>
+            <span class="p">)</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;returncode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;success&#39;</span>
+        <span class="k">except</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;returncode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div></div>
+
+<span class="c1"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, CUP-DEV.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'1.7.0',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

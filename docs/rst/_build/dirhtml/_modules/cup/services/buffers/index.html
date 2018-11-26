@@ -1,0 +1,365 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cup.services.buffers &mdash; cup 1.7.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex/" />
+    <link rel="search" title="Search" href="../../../../search/" /> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../" class="icon icon-home"> cup
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.7
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cup/">cup package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../">cup</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../">Module code</a> &raquo;</li>
+        
+      <li>cup.services.buffers</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cup.services.buffers</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*</span>
+<span class="c1"># Copyright: [CUP] - See LICENSE for details.</span>
+<span class="c1"># Authors: Guannan Ma (@mythmgn),</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:description:</span>
+<span class="sd">    buffer pool</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+
+<span class="n">SMALL_BLOCK_SIZE</span> <span class="o">=</span>  <span class="mi">4096</span> <span class="c1"># kb</span>
+<span class="n">MEDIUM_BLOCK_SIZE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">128</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1024</span>   <span class="c1"># 8K</span>
+<span class="n">LARGE_BLOCK_SIZE</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">+</span> <span class="n">SMALL_BLOCK_SIZE</span>  <span class="c1"># 1M</span>
+
+<span class="n">SMALL_BLOCK</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">MEDIUM_BLOCK</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">LARGE_BLOCK</span> <span class="o">=</span> <span class="mi">2</span>
+
+
+<div class="viewcode-block" id="Buffer"><a class="viewcode-back" href="../../../../cup.services/#cup.services.buffers.Buffer">[docs]</a><span class="k">class</span> <span class="nc">Buffer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Buffer object which you get from BufferPool.allocate(num)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">block_size</span><span class="p">,</span> <span class="n">uniqid</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_items</span> <span class="o">=</span> <span class="n">items</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_block_size</span> <span class="o">=</span> <span class="n">block_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_length</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_uniqid</span> <span class="o">=</span> <span class="n">uniqid</span>
+
+<div class="viewcode-block" id="Buffer.set"><a class="viewcode-back" href="../../../../cup.services/#cup.services.buffers.Buffer.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return (True, None) if succeed.</span>
+
+<span class="sd">        return (False, error_msg) otherwise</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">item_ind</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">length</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_size</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;content size &gt; Buffer size&#39;</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">ind</span> <span class="o">&lt;</span> <span class="n">length</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ind</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_size</span> <span class="o">&lt;=</span> <span class="n">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">loop_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_size</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">loop_size</span> <span class="o">=</span> <span class="n">length</span> <span class="o">-</span> <span class="n">ind</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">item_ind</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">content</span><span class="p">[</span><span class="n">ind</span><span class="p">:</span> <span class="n">loop_size</span><span class="p">])</span>
+            <span class="n">item_ind</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">ind</span> <span class="o">+=</span> <span class="n">loop_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_length</span> <span class="o">=</span> <span class="n">length</span>
+        <span class="k">return</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Buffer.get"><a class="viewcode-back" href="../../../../cup.services/#cup.services.buffers.Buffer.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return (True, (content, block_size, total_length)) if succeed</span>
+
+<span class="sd">        Otherwise, return (False, err_msg, None)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rev</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_length</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">rev</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_length</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rev</span> <span class="o">=</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;not initialized yet&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_size</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">rev</span></div>
+
+<div class="viewcode-block" id="Buffer.get_uniq_id"><a class="viewcode-back" href="../../../../cup.services/#cup.services.buffers.Buffer.get_uniq_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_uniq_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return the uniqid for this object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uniqid</span></div>
+
+<div class="viewcode-block" id="Buffer.get_byte_arrays"><a class="viewcode-back" href="../../../../cup.services/#cup.services.buffers.Buffer.get_byte_arrays">[docs]</a>    <span class="k">def</span> <span class="nf">get_byte_arrays</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get byte arrays in the buffer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span></div></div>
+
+
+<span class="c1"># pylint: disable=R0902</span>
+<div class="viewcode-block" id="BufferPool"><a class="viewcode-back" href="../../../../cup.services/#cup.services.buffers.BufferPool">[docs]</a><span class="k">class</span> <span class="nc">BufferPool</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    buffer pool class which will ease memory fragment</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">pool_size</span><span class="p">,</span> <span class="n">block_size</span><span class="o">=</span><span class="n">MEDIUM_BLOCK_SIZE</span><span class="p">,</span> <span class="n">extendable</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">block_size</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="n">SMALL_BLOCK_SIZE</span><span class="p">,</span> <span class="n">MEDIUM_BLOCK_SIZE</span><span class="p">,</span> <span class="n">LARGE_BLOCK_SIZE</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;block_size should be buffers.SMALL_BLOCK_SIZE&#39;</span>
+                <span class="s1">&#39; or buffers.MEDIUM_BLOCK_SIZE or buffers.LARGE_BLOCK_SIZE&#39;</span>
+            <span class="p">)</span>
+        <span class="c1"># TODO If extendable, we should expand the pool</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extendable</span> <span class="o">=</span> <span class="n">extendable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_free_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_used_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pool_size</span> <span class="o">=</span> <span class="n">pool_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_used_num</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_free_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pool_size</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_used_num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_block_size</span> <span class="o">=</span> <span class="n">block_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_uniqid</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_block_size</span> <span class="o">=</span> <span class="n">block_size</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pool_size</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_free_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_block_size</span><span class="p">))</span>
+
+<div class="viewcode-block" id="BufferPool.allocate"><a class="viewcode-back" href="../../../../cup.services/#cup.services.buffers.BufferPool.allocate">[docs]</a>    <span class="k">def</span> <span class="nf">allocate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        acclocate buff with num * block_size</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            (True, Buffer object)</span>
+
+<span class="sd">            (False, str_error_msg)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">num</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_free_num</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;not enough free buffer available&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">uniqid</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span><span class="o">.</span><span class="n">ident</span>
+            <span class="n">ind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_free_num</span> <span class="o">-</span> <span class="n">num</span>
+            <span class="n">buff</span> <span class="o">=</span> <span class="n">Buffer</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_free_list</span><span class="p">[</span><span class="n">ind</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_free_num</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_block_size</span><span class="p">,</span>
+                <span class="n">uniqid</span>
+            <span class="p">)</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">buff</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_used_dict</span><span class="p">[</span><span class="n">uniqid</span><span class="p">]</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_free_list</span><span class="p">[</span><span class="n">ind</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_free_num</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_free_num</span> <span class="o">-=</span> <span class="n">num</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_used_num</span> <span class="o">+=</span> <span class="n">num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="BufferPool.deallocate"><a class="viewcode-back" href="../../../../cup.services/#cup.services.buffers.BufferPool.deallocate">[docs]</a>    <span class="k">def</span> <span class="nf">deallocate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buff</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return the acclocated buff back to the pool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">buff</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="n">uniqid</span> <span class="o">=</span> <span class="n">buff</span><span class="o">.</span><span class="n">get_uniq_id</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">uniqid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_used_dict</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;this buff is not in the pool!!!&#39;</span><span class="p">)</span>
+        <span class="n">byte_arrays</span> <span class="o">=</span> <span class="n">buff</span><span class="o">.</span><span class="n">get_byte_arrays</span><span class="p">()</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">byte_arrays</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_free_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">byte_arrays</span><span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_used_dict</span><span class="p">[</span><span class="n">uniqid</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">buff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_used_num</span> <span class="o">-=</span> <span class="n">length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_free_num</span> <span class="o">+=</span> <span class="n">length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">True</span></div></div>
+
+<span class="c1"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, CUP-DEV.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'1.7.0',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

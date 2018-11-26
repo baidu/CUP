@@ -1,0 +1,354 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cup.services.executor &mdash; cup 1.7.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex/" />
+    <link rel="search" title="Search" href="../../../../search/" /> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../" class="icon icon-home"> cup
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.7
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cup/">cup package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../">cup</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../">Module code</a> &raquo;</li>
+        
+      <li>cup.services.executor</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cup.services.executor</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*</span>
+<span class="c1"># Copyright: [CUP] - See LICENSE for details.</span>
+<span class="c1"># Authors: Guannan Ma (@mythmgn),</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:description:</span>
+<span class="sd">    1. Delay-execute sth after several seconds</span>
+
+<span class="sd">    2. Schedule some tasks in a queue.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># pylint:disable=F0401</span>
+    <span class="kn">import</span> <span class="nn">queue</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">Queue</span> <span class="k">as</span> <span class="nn">queue</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+
+<span class="kn">from</span> <span class="nn">cup.util</span> <span class="k">import</span> <span class="n">threadpool</span>
+<span class="kn">from</span> <span class="nn">cup</span> <span class="k">import</span> <span class="n">log</span>
+
+<span class="n">URGENCY_HIGH</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">URGENCY_NORMAL</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">URGENCY_LOW</span> <span class="o">=</span> <span class="mi">2</span>
+
+<div class="viewcode-block" id="ExecutionService"><a class="viewcode-back" href="../../../../cup.services/#cup.services.executor.ExecutionService">[docs]</a><span class="k">class</span> <span class="nc">ExecutionService</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    execution service</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">delay_exe_thdnum</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">queue_exec_thdnum</span><span class="o">=</span><span class="mi">4</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__toal_thdnum</span> <span class="o">=</span> <span class="n">delay_exe_thdnum</span> <span class="o">+</span> <span class="n">queue_exec_thdnum</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__delay_exe_thdnum</span> <span class="o">=</span> <span class="n">delay_exe_thdnum</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__queue_exe_thdnum</span> <span class="o">=</span> <span class="n">queue_exec_thdnum</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__delay_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">PriorityQueue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__exec_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">PriorityQueue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__thdpool</span> <span class="o">=</span> <span class="n">threadpool</span><span class="o">.</span><span class="n">ThreadPool</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__toal_thdnum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__toal_thdnum</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;executor_pool&#39;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__status</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 0 inited, 1 running 2 stopping</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;Executor service inited, delay_exec thread num:</span><span class="si">%d</span><span class="s1">,&#39;</span>
+            <span class="s1">&#39; exec thread num:</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">delay_exe_thdnum</span><span class="p">,</span> <span class="n">queue_exec_thdnum</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_delay_exe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__delay_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">task_data</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ExecutionService.delay_exec"><a class="viewcode-back" href="../../../../cup.services/#cup.services.executor.ExecutionService.delay_exec">[docs]</a>    <span class="k">def</span> <span class="nf">delay_exec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+        <span class="n">delay_time_insec</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">urgency</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        delay_execute function after delay_time seconds</span>
+
+<span class="sd">        You can use urgency := executor.URGENCY_NORMAL, by default</span>
+
+<span class="sd">        :TODO:</span>
+<span class="sd">            consider about stopping timers when invoking stop function</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;got delay exec, func:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">function</span><span class="p">))</span>
+        <span class="n">task_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">urgency</span><span class="p">,</span> <span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">))</span>
+        <span class="n">timer</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span>
+            <span class="n">delay_time_insec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_delay_exe</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">task_data</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">timer</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ExecutionService.queue_exec"><a class="viewcode-back" href="../../../../cup.services/#cup.services.executor.ExecutionService.queue_exec">[docs]</a>    <span class="k">def</span> <span class="nf">queue_exec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">urgency</span><span class="p">,</span> <span class="o">*</span><span class="n">argvs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        execute function in a queue. Functions will be queued in line to</span>
+<span class="sd">        be scheduled.</span>
+
+<span class="sd">        You can use urgency := executor.URGENCY_NORMAL, by default.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">task_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">urgency</span><span class="p">,</span> <span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">argvs</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__exec_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">task_data</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__exec_worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_interval</span><span class="p">,</span> <span class="n">func_queue</span><span class="p">,</span> <span class="n">worker_name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__status</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="n">func_queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">check_interval</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">queue</span><span class="o">.</span><span class="n">Empty</span><span class="p">:</span>
+                <span class="c1"># log.debug(&#39;no item found in exec queue&#39;)</span>
+                <span class="k">continue</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_</span><span class="p">,</span> <span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">argvs</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span> <span class="o">=</span> <span class="n">item</span>
+                <span class="c1"># pylint: disable=W0142</span>
+                <span class="k">if</span> <span class="n">func_queue</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">__delay_queue</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;to delay exec func:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">function</span><span class="p">))</span>
+                <span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">argvs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="c1"># pylint: disable=W0703</span>
+            <span class="c1"># we can NOT predict the exception type</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> worker encountered exception:</span><span class="si">%s</span><span class="s1">, func:</span><span class="si">%s</span><span class="s1">, args:</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                    <span class="p">(</span><span class="n">worker_name</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;error type:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">error</span><span class="p">)))</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> worker thread exited as the service is stopping&#39;</span> <span class="o">%</span> <span class="n">worker_name</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="ExecutionService.run"><a class="viewcode-back" href="../../../../cup.services/#cup.services.executor.ExecutionService.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delayexec worker checks task every 20ms</span>
+<span class="sd">        QueueExec worker checks task every 100ms</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__thdpool</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__status</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__delay_exe_thdnum</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__thdpool</span><span class="o">.</span><span class="n">add_1job</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__exec_worker</span><span class="p">,</span>
+                <span class="mf">0.1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__delay_queue</span><span class="p">,</span>
+                <span class="s1">&#39;Delayexec&#39;</span>
+            <span class="p">)</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__queue_exe_thdnum</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__thdpool</span><span class="o">.</span><span class="n">add_1job</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__exec_worker</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__exec_queue</span><span class="p">,</span>
+                <span class="s1">&#39;Exec&#39;</span>
+            <span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Executor service started&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ExecutionService.stop"><a class="viewcode-back" href="../../../../cup.services/#cup.services.executor.ExecutionService.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait_workerstop</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        stop the executor service.</span>
+
+<span class="sd">        :wait_workerstop:</span>
+<span class="sd">            If wait_workerstop is True, the function will hang util all workers</span>
+<span class="sd">            finish thier tasks.</span>
+
+<span class="sd">            Otherwise, the function will not hang, but tell you whether it&#39;s</span>
+<span class="sd">            succeeded stopped. (True for stoped, False for not stopped yet)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;to stop executor&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__status</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="n">wait_workerstop</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__thdpool</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__thdpool</span><span class="o">.</span><span class="n">try_stop</span><span class="p">()</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;end stopping executor&#39;</span><span class="p">)</span></div></div>
+
+<span class="c1"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, CUP-DEV.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'1.7.0',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

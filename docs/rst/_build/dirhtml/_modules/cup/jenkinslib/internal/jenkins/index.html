@@ -1,0 +1,392 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cup.jenkinslib.internal.jenkins &mdash; cup 1.7.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../genindex/" />
+    <link rel="search" title="Search" href="../../../../../search/" /> 
+
+  
+  <script src="../../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../../" class="icon icon-home"> cup
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.7
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../cup/">cup package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../">cup</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../">Module code</a> &raquo;</li>
+        
+      <li>cup.jenkinslib.internal.jenkins</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cup.jenkinslib.internal.jenkins</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*</span>
+<span class="c1"># Copyright: [CUP] - See LICENSE for details.</span>
+<span class="c1"># Authors: liushuxian(liushuxian)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module provides Jenkins object.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">cup</span>
+<span class="kn">import</span> <span class="nn">cup.jenkinslib.internal</span>
+<span class="kn">from</span> <span class="nn">cup.jenkinslib.internal</span> <span class="k">import</span> <span class="n">artifacts</span>
+<span class="kn">from</span> <span class="nn">cup.jenkinslib.internal</span> <span class="k">import</span> <span class="n">base</span>
+<span class="kn">from</span> <span class="nn">cup.jenkinslib.internal</span> <span class="k">import</span> <span class="n">build</span>
+<span class="kn">from</span> <span class="nn">cup.jenkinslib.internal</span> <span class="k">import</span> <span class="n">exception</span>
+<span class="kn">from</span> <span class="nn">cup.jenkinslib.internal</span> <span class="k">import</span> <span class="n">job</span>
+<span class="kn">from</span> <span class="nn">cup.jenkinslib.internal</span> <span class="k">import</span> <span class="n">jobs</span>
+<span class="kn">from</span> <span class="nn">cup.jenkinslib.internal</span> <span class="k">import</span> <span class="n">promotion</span>
+<span class="kn">from</span> <span class="nn">cup.jenkinslib.internal</span> <span class="k">import</span> <span class="n">promotion_build</span>
+<span class="kn">from</span> <span class="nn">cup.jenkinslib.internal</span> <span class="k">import</span> <span class="n">promotions</span>
+<span class="kn">from</span> <span class="nn">cup.jenkinslib.internal</span> <span class="k">import</span> <span class="n">node</span>
+<span class="kn">from</span> <span class="nn">cup.jenkinslib.internal</span> <span class="k">import</span> <span class="n">nodes</span>
+<span class="kn">from</span> <span class="nn">cup.jenkinslib.internal</span> <span class="k">import</span> <span class="n">label</span>
+<span class="kn">from</span> <span class="nn">cup.jenkinslib.internal</span> <span class="k">import</span> <span class="n">requester</span>
+
+
+<div class="viewcode-block" id="Jenkins"><a class="viewcode-back" href="../../../../../cup.jenkinslib/#cup.jenkinslib.Jenkins">[docs]</a><span class="k">class</span> <span class="nc">Jenkins</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">JenkinsBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Represents a jenkins server.&quot;&quot;&quot;</span>
+
+    <span class="n">Job</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">Job</span>
+    <span class="n">Jobs</span> <span class="o">=</span> <span class="n">jobs</span><span class="o">.</span><span class="n">Jobs</span>
+    <span class="n">Build</span> <span class="o">=</span> <span class="n">build</span><span class="o">.</span><span class="n">Build</span>
+
+    <span class="n">Promotion</span> <span class="o">=</span> <span class="n">promotion</span><span class="o">.</span><span class="n">Promotion</span>
+    <span class="n">Promotions</span> <span class="o">=</span> <span class="n">promotions</span><span class="o">.</span><span class="n">Promotions</span>
+    <span class="n">PromotionBuild</span> <span class="o">=</span> <span class="n">promotion_build</span><span class="o">.</span><span class="n">PromotionBuild</span>
+
+    <span class="n">Artifacts</span> <span class="o">=</span> <span class="n">artifacts</span><span class="o">.</span><span class="n">Artifacts</span>
+    <span class="n">FTPArtifacts</span> <span class="o">=</span> <span class="n">artifacts</span><span class="o">.</span><span class="n">FTPArtifacts</span>
+
+    <span class="n">Node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">Node</span>
+    <span class="n">Nodes</span> <span class="o">=</span> <span class="n">nodes</span><span class="o">.</span><span class="n">Nodes</span>
+    <span class="n">Label</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">Label</span>
+
+    <span class="n">Requester</span> <span class="o">=</span> <span class="n">requester</span><span class="o">.</span><span class="n">Requester</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;initialize Jenkins object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            url: url of jenkins server.</span>
+<span class="sd">            username: username to login jenkins.</span>
+<span class="sd">            password: password or API token of username.</span>
+<span class="sd">            static: never update info.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">requester</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Requester</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+        <span class="c1"># host address of ftp server.</span>
+        <span class="c1"># use self.enable_ftp() to set it before connecting to ftp server.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ftp_host</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Jenkins</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">poll</span><span class="o">=</span><span class="n">static</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="n">static</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;Jenkins server at </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span>
+
+<div class="viewcode-block" id="Jenkins.get_jenkins_obj"><a class="viewcode-back" href="../../../../../cup.jenkinslib/#cup.jenkinslib.Jenkins.get_jenkins_obj">[docs]</a>    <span class="k">def</span> <span class="nf">get_jenkins_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get object of current jenkins.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get container of all jobs.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Jenkins.get_job"><a class="viewcode-back" href="../../../../../cup.jenkinslib/#cup.jenkinslib.Jenkins.get_job">[docs]</a>    <span class="k">def</span> <span class="nf">get_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get job by name.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">jobs</span><span class="p">[</span><span class="n">job_name</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Jenkins.has_job"><a class="viewcode-back" href="../../../../../cup.jenkinslib/#cup.jenkinslib.Jenkins.has_job">[docs]</a>    <span class="k">def</span> <span class="nf">has_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;job exists or not.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">job_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">jobs</span></div>
+
+<div class="viewcode-block" id="Jenkins.create_job"><a class="viewcode-back" href="../../../../../cup.jenkinslib/#cup.jenkinslib.Jenkins.create_job">[docs]</a>    <span class="k">def</span> <span class="nf">create_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_name</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;create a new job.</span>
+
+<span class="sd">        create a new job named &#39;job_name&#39;.</span>
+<span class="sd">        same as self.jobs[&#39;job_name&#39;] = config.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            job_name: name of new job.</span>
+<span class="sd">            config: configure for new job, xml text.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            new job object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">job_name</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Jenkins.rename_job"><a class="viewcode-back" href="../../../../../cup.jenkinslib/#cup.jenkinslib.Jenkins.rename_job">[docs]</a>    <span class="k">def</span> <span class="nf">rename_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_name</span><span class="p">,</span> <span class="n">new_job_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;rename a job.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            job_name: name of a existing job.</span>
+<span class="sd">            new_job_name: new job name.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            new job object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">jobs</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">job_name</span><span class="p">,</span> <span class="n">new_job_name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Jenkins.delete_job"><a class="viewcode-back" href="../../../../../cup.jenkinslib/#cup.jenkinslib.Jenkins.delete_job">[docs]</a>    <span class="k">def</span> <span class="nf">delete_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;delete a job by name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            job_name: job name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">jobs</span><span class="p">[</span><span class="n">job_name</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get job by name.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_job</span><span class="p">(</span><span class="n">job_name</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get nodes.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Jenkins.get_node"><a class="viewcode-back" href="../../../../../cup.jenkinslib/#cup.jenkinslib.Jenkins.get_node">[docs]</a>    <span class="k">def</span> <span class="nf">get_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get node by name.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node_name</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Jenkins.get_label"><a class="viewcode-back" href="../../../../../cup.jenkinslib/#cup.jenkinslib.Jenkins.get_label">[docs]</a>    <span class="k">def</span> <span class="nf">get_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get label by name.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Jenkins.get_create_url"><a class="viewcode-back" href="../../../../../cup.jenkinslib/#cup.jenkinslib.Jenkins.get_create_url">[docs]</a>    <span class="k">def</span> <span class="nf">get_create_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;url for creating job.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/createItem&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span></div>
+
+<div class="viewcode-block" id="Jenkins.enable_ftp"><a class="viewcode-back" href="../../../../../cup.jenkinslib/#cup.jenkinslib.Jenkins.enable_ftp">[docs]</a>    <span class="k">def</span> <span class="nf">enable_ftp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;enable ftp server and set host, username, password, port.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ftp_host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ftp_username</span> <span class="o">=</span> <span class="n">username</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ftp_password</span> <span class="o">=</span> <span class="n">password</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ftp_port</span> <span class="o">=</span> <span class="n">port</span></div>
+
+<div class="viewcode-block" id="Jenkins.register_special_jenkins"><a class="viewcode-back" href="../../../../../cup.jenkinslib/#cup.jenkinslib.Jenkins.register_special_jenkins">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">register_special_jenkins</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;register special jenkins.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            url: url of jenkins server.</span>
+<span class="sd">            cls: special jenkins class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_url_to_jenkins</span><span class="p">[</span><span class="n">url</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">cls</span>
+        <span class="n">_name_to_jenkins</span><span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span></div>
+
+<div class="viewcode-block" id="Jenkins.get_jenkins_by_name"><a class="viewcode-back" href="../../../../../cup.jenkinslib/#cup.jenkinslib.Jenkins.get_jenkins_by_name">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_jenkins_by_name</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get special jenkins class by name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: name of jenkins server.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            special jenkins class or Jenkins.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_name_to_jenkins</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">Jenkins</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Jenkins.get_jenkins_by_url"><a class="viewcode-back" href="../../../../../cup.jenkinslib/#cup.jenkinslib.Jenkins.get_jenkins_by_url">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_jenkins_by_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get special jenkins class by url.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            url: url of jenkins server.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            special jenkins class or Jenkins.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_url_to_jenkins</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">),</span> <span class="n">Jenkins</span><span class="p">)</span></div></div>
+
+<span class="n">_url_to_jenkins</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">_name_to_jenkins</span> <span class="o">=</span> <span class="p">{}</span>
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, CUP-DEV.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../../',
+            VERSION:'1.7.0',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

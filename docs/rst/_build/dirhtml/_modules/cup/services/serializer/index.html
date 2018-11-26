@@ -1,0 +1,838 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cup.services.serializer &mdash; cup 1.7.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex/" />
+    <link rel="search" title="Search" href="../../../../search/" /> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../" class="icon icon-home"> cup
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.7
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cup/">cup package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../">cup</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../">Module code</a> &raquo;</li>
+        
+      <li>cup.services.serializer</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cup.services.serializer</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*</span>
+<span class="c1"># Copyright: [CUP] - See LICENSE for details.</span>
+<span class="c1"># Authors: Guannan Ma (@mythmgn),</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:description:</span>
+<span class="sd">    serilizers including local file serilizer</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="kn">from</span> <span class="nn">cup</span> <span class="k">import</span> <span class="n">log</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;LOGFILE_GOOD&#39;</span><span class="p">,</span> <span class="s1">&#39;LOGFILE_EOF&#39;</span><span class="p">,</span> <span class="s1">&#39;LOGFILE_BAD_RECORD&#39;</span><span class="p">,</span> <span class="s1">&#39;LOG_MOD_ADD&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;LOG_MOD_SET&#39;</span><span class="p">,</span> <span class="s1">&#39;LOG_MOD_DEL&#39;</span><span class="p">,</span> <span class="s1">&#39;LogRecord&#39;</span><span class="p">,</span> <span class="s1">&#39;LocalFileSerilizer&#39;</span>
+<span class="p">]</span>
+
+<span class="n">LOGFILE_GOOD</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">LOGFILE_EOF</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">LOGFILE_BAD_RECORD</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="n">LOG_MOD_ADD</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">LOG_MOD_SET</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">LOG_MOD_DEL</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="n">LogRecord</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+    <span class="s1">&#39;LogRecord&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">,</span> <span class="s1">&#39;log_id&#39;</span><span class="p">,</span> <span class="s1">&#39;log_type&#39;</span><span class="p">,</span> <span class="s1">&#39;log_mode&#39;</span><span class="p">,</span> <span class="s1">&#39;log_binary&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">BaseSerilizer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;base serilizer for agent&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;pass&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">add_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_type</span><span class="p">,</span> <span class="n">log_mode</span><span class="p">,</span> <span class="n">log_binary</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;add one log&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">load_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record_num</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;pass&quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">asign_uint2byte_bybits</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">bits</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;uint to byte&quot;&quot;&quot;</span>
+        <span class="n">asign_len</span> <span class="o">=</span> <span class="n">bits</span> <span class="o">/</span> <span class="mi">8</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">quotient</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num</span> <span class="o">/</span> <span class="mi">256</span><span class="p">)</span>
+            <span class="n">remainder</span> <span class="o">=</span> <span class="n">num</span> <span class="o">%</span> <span class="mi">256</span>
+            <span class="n">tmp</span> <span class="o">+=</span> <span class="nb">chr</span><span class="p">(</span><span class="n">remainder</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">quotient</span> <span class="o">&lt;</span> <span class="mi">256</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">+=</span> <span class="nb">chr</span><span class="p">(</span><span class="n">quotient</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">num</span> <span class="o">=</span> <span class="n">quotient</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">length</span> <span class="o">&lt;</span> <span class="n">asign_len</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">asign_len</span> <span class="o">-</span> <span class="n">length</span><span class="p">):</span>
+                <span class="n">tmp</span> <span class="o">+=</span> <span class="nb">chr</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tmp</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">convert_bytes2uint</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">str_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;convert bytes into uint&quot;&quot;&quot;</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="mi">0</span><span class="n">L</span>
+        <span class="n">b_ind</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">str_data</span><span class="p">:</span>
+            <span class="n">num</span> <span class="o">+=</span> <span class="nb">pow</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="n">b_ind</span><span class="p">)</span> <span class="o">*</span> <span class="nb">ord</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">b_ind</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">num</span>
+
+
+
+<span class="n">MsgPostRevision</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+    <span class="s1">&#39;MsgPostRevision&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;hostkey&#39;</span><span class="p">,</span> <span class="s1">&#39;revision_id&#39;</span><span class="p">,</span> <span class="s1">&#39;is_post&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="LocalFileSerilizer"><a class="viewcode-back" href="../../../../cup.services/#cup.services.serializer.LocalFileSerilizer">[docs]</a><span class="k">class</span> <span class="nc">LocalFileSerilizer</span><span class="p">(</span><span class="n">BaseSerilizer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; local file serilizer&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">storage_dir</span><span class="p">,</span> <span class="n">skip_badlog</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">max_logfile_size</span><span class="o">=</span><span class="mi">65536</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param skip_badlog:</span>
+<span class="sd">            Attention. Plz use this parameter very carefully.</span>
+<span class="sd">            It will skip bad records which means you have high chance</span>
+<span class="sd">            losing data!!!</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">BaseSerilizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_skip_badlog</span> <span class="o">=</span> <span class="n">skip_badlog</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_storage</span> <span class="o">=</span> <span class="n">storage_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logid</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_log_file_size</span> <span class="o">=</span> <span class="n">max_logfile_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_filesize</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writestream</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_stream</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_loadfile</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buffer_files</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loglist_stream</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logfile_switching</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logfile_list</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/logfile.list&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">storage_dir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logfile_listnew</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.new&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logfile_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loglist_switch</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.switch&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logfile_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loglist_switched</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.switched&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logfile_list</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">__cmp_logfile_id</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;compare first and second&quot;&quot;&quot;</span>
+        <span class="n">key_first</span><span class="p">,</span> <span class="n">value_first</span> <span class="o">=</span> <span class="n">first</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="n">key_second</span><span class="p">,</span> <span class="n">value_second</span> <span class="o">=</span> <span class="n">second</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key_first</span> <span class="o">&lt;</span> <span class="n">key_second</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">key_first</span> <span class="o">&gt;</span> <span class="n">key_second</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">key_first</span> <span class="o">==</span> <span class="n">key_second</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">value_first</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value_second</span><span class="p">):</span>
+                <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">_get_storage_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logid</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">logtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">logmode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get storage dir&quot;&quot;&quot;</span>
+        <span class="n">folder</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_storage</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_subdir</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">folder</span>
+
+    <span class="k">def</span> <span class="nf">_recover_from_lastwriting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">truncate_last_failure</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        recovery from last log writing</span>
+
+<span class="sd">        :raise Exception:</span>
+<span class="sd">            IOError, if any error happened</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">folder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_storage_dir</span><span class="p">()</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_ordered_logfiles</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+        <span class="n">need_finish_file</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;no need recovery. Does not contain any files&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">file_start_logid</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">seek_file</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">files</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;writing&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># does not need recovery</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;does not have unfinished logfile, return&#39;</span><span class="p">)</span>
+            <span class="n">file_start_logid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">seek_file</span> <span class="o">=</span> <span class="n">files</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;next logid will be </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logid</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># need recovery, checkup, must &lt;= 0 writing log file</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">fname</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;writing&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="s1">&#39;has more than 1 writing log files, count:</span><span class="si">{0}</span><span class="s1">&#39;</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;has not finished log file, recovery start&#39;</span><span class="p">)</span>
+
+            <span class="n">seek_file</span> <span class="o">=</span> <span class="n">files</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">file_start_logid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">seek_file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">fullname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">seek_file</span><span class="p">))</span>
+        <span class="n">done_id</span> <span class="o">=</span> <span class="n">file_start_logid</span>
+        <span class="n">read_length</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">reader</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fullname</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">ret</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_try_read_one_log</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ret</span> <span class="o">==</span> <span class="n">LOGFILE_BAD_RECORD</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">truncate_last_failure</span><span class="p">:</span>
+                        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                            <span class="s1">&#39;to truncate last writing file:</span><span class="si">{0}</span><span class="s1">&#39;</span>
+                            <span class="s1">&#39;, size:</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">files</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">read_length</span><span class="p">)</span>
+                        <span class="p">)</span>
+                        <span class="n">reader</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="n">read_length</span><span class="p">)</span>
+                        <span class="k">break</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
+                            <span class="s1">&#39;truncate_last_failure is not enabled &amp;&amp;&#39;</span>
+                            <span class="s1">&#39; Bad record found&#39;</span>
+                        <span class="p">)</span>
+                <span class="k">elif</span> <span class="n">ret</span> <span class="o">==</span> <span class="n">LOGFILE_EOF</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;log file is intact, no need truncating&#39;</span><span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="k">elif</span> <span class="n">ret</span> <span class="o">==</span> <span class="n">LOGFILE_GOOD</span><span class="p">:</span>
+                    <span class="n">done_id</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">read_length</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+                <span class="n">newname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">folder</span><span class="p">,</span> <span class="s1">&#39;done.</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_start_logid</span><span class="p">))</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">fullname</span> <span class="o">!=</span> <span class="n">newname</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;move last writing file </span><span class="si">{0}</span><span class="s1"> to </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">fullname</span><span class="p">,</span> <span class="n">newname</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">fullname</span><span class="p">,</span> <span class="n">newname</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_loglist_stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">newname</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_loglist_stream</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">fsync</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loglist_stream</span><span class="o">.</span><span class="n">fileno</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logid</span> <span class="o">=</span> <span class="n">done_id</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;next logid will be </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logid</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;failed to recover from last log:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writestream</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_writestream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_stream</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_load_stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="c1"># pylint:disable=W0703</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_stream_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;close the current stream&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writestream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_stream_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;open new stream&quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">parent</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_writestream</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w+b&#39;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;open new stream succeed&#39;</span><span class="p">)</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s1">&#39;IOError, failed to open stream, err:</span><span class="si">{0}</span><span class="s1">, file:</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">err</span><span class="p">,</span> <span class="n">fname</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s1">&#39;OSError, failed to open stream, err:</span><span class="si">{0}</span><span class="s1">, file:</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">err</span><span class="p">,</span> <span class="n">fname</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span>
+
+<div class="viewcode-block" id="LocalFileSerilizer.is_stream_open"><a class="viewcode-back" href="../../../../cup.services/#cup.services.serializer.LocalFileSerilizer.is_stream_open">[docs]</a>    <span class="k">def</span> <span class="nf">is_stream_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;is stream open&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writestream</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="LocalFileSerilizer.get_next_logfile"><a class="viewcode-back" href="../../../../cup.services/#cup.services.serializer.LocalFileSerilizer.get_next_logfile">[docs]</a>    <span class="k">def</span> <span class="nf">get_next_logfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get current logfile&quot;&quot;&quot;</span>
+        <span class="n">folder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_storage_dir</span><span class="p">(</span><span class="n">logid</span><span class="o">=</span><span class="n">logid</span><span class="p">)</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/writing.</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">logid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fname</span></div>
+
+<div class="viewcode-block" id="LocalFileSerilizer.get_subdir"><a class="viewcode-back" href="../../../../cup.services/#cup.services.serializer.LocalFileSerilizer.get_subdir">[docs]</a>    <span class="k">def</span> <span class="nf">get_subdir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_id</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get log dir&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;0&quot;</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_ordered_logfiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get log files in order&quot;&quot;&quot;</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">folder</span><span class="p">),</span> <span class="nb">cmp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__cmp_logfile_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">files</span>
+
+<div class="viewcode-block" id="LocalFileSerilizer.set_current_logid"><a class="viewcode-back" href="../../../../cup.services/#cup.services.serializer.LocalFileSerilizer.set_current_logid">[docs]</a>    <span class="k">def</span> <span class="nf">set_current_logid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;reset current log id&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">logid</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;cannot setup logid less than 0&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logid</span> <span class="o">=</span> <span class="n">logid</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_next_logfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stream_open</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;failed to open stream, return False&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;reset current log id to </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">logid</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+    <span class="k">def</span> <span class="nf">_write_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">binary</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; write data into the local file&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_writestream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_writestream</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">fsync</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_writestream</span><span class="o">.</span><span class="n">fileno</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logid</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c1"># pylint: disable=W0703</span>
+        <span class="c1"># need to catch such general exeception</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s1">&#39;failed to write data into LocalFileSerilizer, err:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">error</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_check_need_new_logfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;if need new log file&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loglist_switched</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logfile_switching</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logfile_listnew</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logfile_list</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loglist_switch</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loglist_switched</span><span class="p">)</span>
+            <span class="c1"># pylint: disable=W0703</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;failed to rename loglist, old:</span><span class="si">{0}</span><span class="s1"> new:</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_loglist_switched</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loglist_switch</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loglist_switch</span><span class="p">)</span> <span class="ow">and</span> \
+                <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logfile_switching</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_loglist_stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;NEED_SWITCH_LOCALFILE</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_loglist_stream</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">fsync</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loglist_stream</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_loglist_stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logfile_switching</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logfile_listnew</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">mknod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logfile_listnew</span><span class="p">)</span>
+                <span class="c1"># pylint: disable=W0703</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;switch loglist file failed:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_loglist_stream</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logfile_listnew</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_filesize</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_log_file_size</span><span class="p">:</span>
+            <span class="c1"># log.info(&#39;serilizer file needs moving to a new one&#39;)</span>
+            <span class="n">last_logid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writestream</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">newname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/done.</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_writestream</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="n">last_logid</span>
+            <span class="p">))</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s1">&#39;finish one log file, logid, range:</span><span class="si">{0}</span><span class="s1">-</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">last_logid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logid</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_writestream</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">newname</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stream_close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_loglist_stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">newname</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_loglist_stream</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">fsync</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loglist_stream</span><span class="o">.</span><span class="n">fileno</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_filesize</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># log.info(&#39;next logid:{0}&#39;.format(self._logid))</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_next_logfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logid</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stream_open</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="LocalFileSerilizer.add_log"><a class="viewcode-back" href="../../../../cup.services/#cup.services.serializer.LocalFileSerilizer.add_log">[docs]</a>    <span class="k">def</span> <span class="nf">add_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_type</span><span class="p">,</span> <span class="n">log_mode</span><span class="p">,</span> <span class="n">log_binary</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; add log into the local file&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_stream_open</span><span class="p">():</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_next_logfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logid</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stream_open</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="c1"># binary :=</span>
+        <span class="c1"># 32bit len | 128bit logid | log_type 16bit | log_mode 16bit| binary</span>
+        <span class="n">bin_logid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asign_uint2byte_bybits</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logid</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
+        <span class="n">bin_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asign_uint2byte_bybits</span><span class="p">(</span><span class="n">log_type</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+        <span class="n">bin_mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asign_uint2byte_bybits</span><span class="p">(</span><span class="n">log_mode</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}{1}{2}{3}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bin_logid</span><span class="p">,</span> <span class="n">bin_type</span><span class="p">,</span> <span class="n">bin_mode</span><span class="p">,</span> <span class="n">log_binary</span><span class="p">)</span>
+        <span class="n">data_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">str_data_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asign_uint2byte_bybits</span><span class="p">(</span><span class="n">data_len</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> add_log, log_type </span><span class="si">{1}</span><span class="s1"> log_mode </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">log_type</span><span class="p">,</span> <span class="n">log_mode</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">write_data</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">str_data_len</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;to add data, logid:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logid</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_data</span><span class="p">(</span><span class="n">write_data</span><span class="p">):</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;add_log, write success&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_filesize</span> <span class="o">+=</span> <span class="p">(</span><span class="n">data_len</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_need_new_logfile</span><span class="p">():</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> failed to add_log, log_type </span><span class="si">{1}</span><span class="s1"> log_mode </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">log_type</span><span class="p">,</span> <span class="n">log_mode</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="LocalFileSerilizer.purge_data"><a class="viewcode-back" href="../../../../cup.services/#cup.services.serializer.LocalFileSerilizer.purge_data">[docs]</a>    <span class="k">def</span> <span class="nf">purge_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">before_logid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        log files which contains log (less than before_logid) will be purged.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">folder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_storage_dir</span><span class="p">()</span>
+        <span class="n">logfiles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_ordered_logfiles</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+        <span class="n">last_logid</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">last_fname</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">purge_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">logfiles</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">fname</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;writing&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">last_logid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">current</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">before_logid</span><span class="p">:</span>
+                <span class="n">purge_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">last_fname</span><span class="p">)</span>
+            <span class="n">last_fname</span> <span class="o">=</span> <span class="n">fname</span>
+            <span class="n">last_logid</span> <span class="o">=</span> <span class="n">current</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;log id &lt; before_logid will be purged:purged:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">purge_list</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">purge_list</span><span class="p">:</span>
+            <span class="n">full</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;to purge log file:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">full</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">full</span><span class="p">)</span>
+                <span class="n">ind</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="n">StandardError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="s1">&#39;failed to purge log file:</span><span class="si">{0}</span><span class="s1">, </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">full</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">ind</span> <span class="o">%</span> <span class="mi">1000</span><span class="p">:</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_do_open4read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_logid</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get open load stream</span>
+
+<span class="sd">        :TODO:</span>
+<span class="sd">            read starting from logid</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">load_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_storage_dir</span><span class="p">(</span><span class="n">logid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_logid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buffer_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_ordered_logfiles</span><span class="p">(</span><span class="n">load_dir</span><span class="p">)</span>
+        <span class="n">to_open</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buffer_files</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;does not have any log record yet&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="o">-</span><span class="mi">1</span> <span class="o">==</span> <span class="n">start_logid</span><span class="p">:</span>
+                <span class="n">to_open</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffer_files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">pass</span>
+                <span class="c1"># if self._load_stream is None:</span>
+                <span class="c1">#     log.error(&#39;load stream should not be None&#39;)</span>
+                <span class="c1">#     return False</span>
+                <span class="c1"># name = os.path.basename(self._load_stream.name)</span>
+                <span class="c1"># ind = -1</span>
+                <span class="c1"># try:</span>
+                <span class="c1">#     ind = self._buffer_files.index(name)</span>
+                <span class="c1"># except ValueError:</span>
+                <span class="c1">#     log.error(&#39;does not find the log: {0}&#39;.format(name))</span>
+                <span class="c1">#     return False</span>
+                <span class="c1"># to_open = self._buffer_files[ind]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">load_dir</span><span class="p">,</span> <span class="n">to_open</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_load_stream</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="c1"># pylint:disable=W0703</span>
+            <span class="c1"># need such an exception</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;failed to open log stream :</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="LocalFileSerilizer.close_read"><a class="viewcode-back" href="../../../../cup.services/#cup.services.serializer.LocalFileSerilizer.close_read">[docs]</a>    <span class="k">def</span> <span class="nf">close_read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;close open4read&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_stream</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_load_stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="LocalFileSerilizer.open4read"><a class="viewcode-back" href="../../../../cup.services/#cup.services.serializer.LocalFileSerilizer.open4read">[docs]</a>    <span class="k">def</span> <span class="nf">open4read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;open logs for read&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_stream</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_open4read</span><span class="p">():</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;failed to open4read, return&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="LocalFileSerilizer.open4write"><a class="viewcode-back" href="../../../../cup.services/#cup.services.serializer.LocalFileSerilizer.open4write">[docs]</a>    <span class="k">def</span> <span class="nf">open4write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">truncate_last_failure</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        open4write</span>
+
+<span class="sd">        :raise Exception:</span>
+<span class="sd">            if encounter any IOError, will raise IOError(errmsg)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logfile_list</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">mknod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logfile_list</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_loglist_stream</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logfile_list</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;cannot create loglist, raise IOError&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;cannot create loglist, </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;try to recover from last &#39;</span>
+            <span class="s1">&#39;write if there is any need, truncate_last_failure:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">truncate_last_failure</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recover_from_lastwriting</span><span class="p">(</span><span class="n">truncate_last_failure</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LocalFileSerilizer.close_write"><a class="viewcode-back" href="../../../../cup.services/#cup.services.serializer.LocalFileSerilizer.close_write">[docs]</a>    <span class="k">def</span> <span class="nf">close_write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;close the writer&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writestream</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_writestream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_try_read_one_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        read one log record from the stream_close.</span>
+
+<span class="sd">        :return:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">stream</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">LOGFILE_EOF</span>
+        <span class="n">str_datalen</span> <span class="o">=</span> <span class="n">datalen</span> <span class="o">=</span> <span class="n">str_data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">str_datalen</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">str_datalen</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">LOGFILE_EOF</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">str_datalen</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;got a bad log from stream:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">LOGFILE_BAD_RECORD</span>
+            <span class="n">datalen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_bytes2uint</span><span class="p">(</span><span class="n">str_datalen</span><span class="p">)</span>
+            <span class="n">str_data</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">datalen</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">str_data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">datalen</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s1">&#39;got less than data len from stream:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">stream</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">LOGFILE_BAD_RECORD</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">log_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_bytes2uint</span><span class="p">(</span><span class="n">str_data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">16</span><span class="p">])</span>
+            <span class="n">log_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_bytes2uint</span><span class="p">(</span><span class="n">str_data</span><span class="p">[</span><span class="mi">16</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">log_mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_bytes2uint</span><span class="p">(</span><span class="n">str_data</span><span class="p">[</span><span class="mi">18</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">log_binary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_bytes2uint</span><span class="p">(</span><span class="n">str_data</span><span class="p">[</span><span class="mi">20</span><span class="p">:])</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="n">LOGFILE_GOOD</span><span class="p">,</span> <span class="n">LogRecord</span><span class="p">(</span>
+                    <span class="n">datalen</span><span class="p">,</span> <span class="n">log_id</span><span class="p">,</span> <span class="n">log_type</span><span class="p">,</span> <span class="n">log_mode</span><span class="p">,</span> <span class="n">log_binary</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;failed to parse log record:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">LOGFILE_BAD_RECORD</span>
+
+    <span class="k">def</span> <span class="nf">_move2next_load_fname</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; get next load fname&quot;&quot;&quot;</span>
+        <span class="n">folder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_storage_dir</span><span class="p">()</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_load_stream</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_ordered_logfiles</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ind</span> <span class="o">=</span> <span class="n">files</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;cannot find current log stream:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">LOGFILE_BAD_RECORD</span>
+        <span class="n">newfile</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">ind</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">length</span> <span class="o">-</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">newfile</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">files</span><span class="p">[</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">ind</span> <span class="o">==</span> <span class="p">(</span><span class="n">length</span> <span class="o">-</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">files</span><span class="p">[</span><span class="n">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;writing&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">newfile</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">files</span><span class="p">[</span><span class="n">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;does not have more finished log edits to read&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">LOGFILE_EOF</span>
+        <span class="k">elif</span> <span class="n">ind</span> <span class="o">==</span> <span class="p">(</span><span class="n">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;does not have more log edits to read, return&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">LOGFILE_EOF</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_load_stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_load_stream</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">newfile</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">LOGFILE_GOOD</span>
+        <span class="k">except</span> <span class="n">StandardError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;failed to move to next load stream:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">newfile</span><span class="p">))</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;err:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">LOGFILE_BAD_RECORD</span>
+
+<div class="viewcode-block" id="LocalFileSerilizer.read"><a class="viewcode-back" href="../../../../cup.services/#cup.services.serializer.LocalFileSerilizer.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record_num</span><span class="o">=</span><span class="mi">128</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        load log into memory</span>
+
+<span class="sd">        :notice:</span>
+<span class="sd">            If skip_badlog is not True, will raise IOError if the stream</span>
+<span class="sd">            encounters any error.</span>
+
+<span class="sd">            Otherwise, the stream will skip the bad log file, move to next one</span>
+<span class="sd">            and continue reading</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            a. return a list of &quot;record_num&quot; of LogRecords.</span>
+
+<span class="sd">            b. If the count number of list is less than record_num,</span>
+<span class="sd">            it means the stream encounter EOF, plz read again afterwards.</span>
+
+<span class="sd">            c. If the returned is None, it means the stream got nothing, plz</span>
+<span class="sd">                try again.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">recordlist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">move2nextstream</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">while</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="n">record_num</span><span class="p">:</span>
+            <span class="n">ret</span><span class="p">,</span> <span class="n">retval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_try_read_one_log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_load_stream</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ret</span> <span class="o">==</span> <span class="n">LOGFILE_EOF</span><span class="p">:</span>
+                <span class="c1"># need read next log file</span>
+                <span class="n">move2nextstream</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">elif</span> <span class="n">ret</span> <span class="o">==</span> <span class="n">LOGFILE_GOOD</span><span class="p">:</span>
+                <span class="n">recordlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">retval</span><span class="p">)</span>
+                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="n">ret</span> <span class="o">==</span> <span class="n">LOGFILE_BAD_RECORD</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skip_badlog</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;find bad records in </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_load_stream</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="s1">&#39;Bad record! &#39;</span>
+                        <span class="s1">&#39;But skip_badlog is on, will skip the file:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_load_stream</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">move2nextstream</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">move2nextstream</span><span class="p">:</span>
+                <span class="n">move2nextstream</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_move2next_load_fname</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">LOGFILE_EOF</span> <span class="o">==</span> <span class="n">ret</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;does not have more log edits to read, plz retry&#39;</span><span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="k">elif</span> <span class="n">LOGFILE_GOOD</span> <span class="o">==</span> <span class="n">ret</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;moved to next log edit file, to read new log&#39;</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="k">elif</span> <span class="n">LOGFILE_BAD_RECORD</span> <span class="o">==</span> <span class="n">ret</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;IOError happended, read_logs failed&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skip_badlog</span><span class="p">:</span>
+                        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;skip bad log is on, try moving to next one&#39;</span><span class="p">)</span>
+                        <span class="n">move2nextstream</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">continue</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;encounter bad records, raise exception&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">recordlist</span></div></div>
+
+<span class="c1"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, CUP-DEV.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'1.7.0',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

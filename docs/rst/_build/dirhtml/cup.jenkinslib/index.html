@@ -1,0 +1,1546 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cup.jenkinslib package &mdash; cup 1.7.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex/" />
+    <link rel="search" title="Search" href="../search/" />
+    <link rel="next" title="cup.net package" href="../cup.net/" />
+    <link rel="prev" title="cup package" href="../cup/" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../" class="icon icon-home"> cup
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.7
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../cup/">cup package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../cup/#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">cup.jenkinslib package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.jenkinslib">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cup.net/">cup.net package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cup.res/">cup.res package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cup.services/">cup.services package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cup.shell/">cup.shell package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cup.storage/">cup.storage package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cup.util/">cup.util package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cup.web/">cup.web package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.cache">cup.cache module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.const">cup.const module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.decorators">cup.decorators module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.err">cup.err module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.exfile">cup.exfile module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.flag">cup.flag module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.log">cup.log module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.mail">cup.mail module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.platforms">cup.platforms module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.thread">cup.thread module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.timeplus">cup.timeplus module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.unittest">cup.unittest module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.version">cup.version module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../">cup</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../">Docs</a> &raquo;</li>
+        
+          <li><a href="../cup/">cup package</a> &raquo;</li>
+        
+      <li>cup.jenkinslib package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/cup.jenkinslib.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="cup-jenkinslib-package">
+<h1>cup.jenkinslib package<a class="headerlink" href="#cup-jenkinslib-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="module-cup.jenkinslib">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cup.jenkinslib" title="Permalink to this headline">¶</a></h2>
+<p>Library for jenkins.</p>
+<p>You can use Jenkins to access your jenkins server easily.</p>
+<p>This library uses defensive programming with EAFP principle.
+Kinds of exceptions based on jenkins.Error may be raise.
+You should use this library with try … except.</p>
+<p>Authors: liushuxian(liushuxian)
+Date:    2015/01/21</p>
+<p>usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cup</span>
+<span class="kn">import</span> <span class="nn">cup.jenkinslib</span>
+
+<span class="c1">############### quick start ###############</span>
+<span class="n">jenkins</span> <span class="o">=</span> <span class="n">cup</span><span class="o">.</span><span class="n">jenkinslib</span><span class="o">.</span><span class="n">Jenkins</span><span class="p">(</span><span class="s1">&#39;cup.jenkins.baidu.com&#39;</span><span class="p">)</span>
+
+<span class="n">job</span> <span class="o">=</span> <span class="n">jenkins</span><span class="p">[</span><span class="s1">&#39;cup_quick&#39;</span><span class="p">]</span>
+<span class="nb">print</span> <span class="n">job</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">job</span><span class="o">.</span><span class="n">last_stable_build_number</span><span class="p">,</span> <span class="n">job</span><span class="o">.</span><span class="n">description</span>
+<span class="nb">print</span> <span class="n">job</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">job</span><span class="p">[</span><span class="s2">&quot;lastSuccessBuild&quot;</span><span class="p">],</span> <span class="n">job</span><span class="o">.</span><span class="n">last_stable_build</span>
+
+<span class="n">qi</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">invoke</span><span class="p">()</span>
+<span class="n">build</span> <span class="o">=</span> <span class="n">qi</span><span class="o">.</span><span class="n">block_until_building</span><span class="p">()</span>
+<span class="nb">print</span> <span class="n">build</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">build</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">build</span><span class="o">.</span><span class="n">timestamp</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">build</span><span class="o">.</span><span class="n">block_until_complete</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">cup</span><span class="o">.</span><span class="n">jenkinslib</span><span class="o">.</span><span class="n">RunTimeout</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+    <span class="nb">print</span> <span class="s2">&quot;timeout:&quot;</span><span class="p">,</span> <span class="n">err</span>
+    <span class="n">build</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+<span class="nb">print</span> <span class="n">build</span><span class="o">.</span><span class="n">duration</span><span class="p">,</span> <span class="n">build</span><span class="o">.</span><span class="n">result</span><span class="p">,</span> <span class="n">build</span><span class="o">.</span><span class="n">description</span>
+
+<span class="n">build</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;new description&quot;</span>
+
+<span class="n">jenkins</span><span class="o">.</span><span class="n">enable_ftp</span><span class="p">(</span><span class="s1">&#39;ftp.baidu.com&#39;</span><span class="p">,</span> <span class="s1">&#39;cup&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">build</span><span class="o">.</span><span class="n">ftp_artifacts</span> <span class="k">as</span> <span class="n">af</span><span class="p">:</span>
+    <span class="n">af</span><span class="p">[</span><span class="s1">&#39;artifacts_path&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;./local_path&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="cup.jenkinslib.Jenkins">
+<em class="property">class </em><code class="descclassname">cup.jenkinslib.</code><code class="descname">Jenkins</code><span class="sig-paren">(</span><em>url</em>, <em>username=None</em>, <em>password=None</em>, <em>static=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/jenkinslib/internal/jenkins/#Jenkins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.jenkinslib.Jenkins" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cup.jenkinslib.internal.base.JenkinsBase</span></code></p>
+<p>Represents a jenkins server.</p>
+<dl class="class">
+<dt id="cup.jenkinslib.Jenkins.Artifacts">
+<em class="property">class </em><code class="descname">Artifacts</code><span class="sig-paren">(</span><em>build</em>, <em>name=''</em>, <em>path=''</em>, <em>is_dir=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Artifacts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cup.jenkinslib.internal.artifacts.ArtifactsBase</span></code></p>
+<p>Represents artifacts, file or directory.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.jenkinslib.Jenkins.Build">
+<em class="property">class </em><code class="descname">Build</code><span class="sig-paren">(</span><em>url</em>, <em>build_number</em>, <em>job</em>, <em>depth=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cup.jenkinslib.internal.base.JenkinsBase</span></code></p>
+<p>Represents a build.</p>
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.actions">
+<code class="descname">actions</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.actions" title="Permalink to this definition">¶</a></dt>
+<dd><p>get actions of build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.artifacts">
+<code class="descname">artifacts</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.artifacts" title="Permalink to this definition">¶</a></dt>
+<dd><p>get artifacts object of build.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Build.block">
+<code class="descname">block</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.block" title="Permalink to this definition">¶</a></dt>
+<dd><p>block until this build stop running.</p>
+<p>Do not use this method too often,
+because it will request jenkins server every second.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Build.block_until_complete">
+<code class="descname">block_until_complete</code><span class="sig-paren">(</span><em>delay=15</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.block_until_complete" title="Permalink to this definition">¶</a></dt>
+<dd><p>block until this build stop running.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>delay: check status every <cite>delay</cite> seconds, default is 15s.
+timeout: wait <cite>timeout</cite> seconds at most, default is forever.</dd>
+<dt>Returns:</dt>
+<dd>True if stopped, False if still running.</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.cause_description">
+<code class="descname">cause_description</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.cause_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>get short description of causes.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.causes">
+<code class="descname">causes</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.causes" title="Permalink to this definition">¶</a></dt>
+<dd><p>get causes of build, empty causes will be ignored.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.changeset">
+<code class="descname">changeset</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.changeset" title="Permalink to this definition">¶</a></dt>
+<dd><p>get changeset info, only support svn.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.console">
+<code class="descname">console</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.console" title="Permalink to this definition">¶</a></dt>
+<dd><p>get text console of build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.description">
+<code class="descname">description</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>get description of build if exists, otherwise None.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>description info of this build, encoding in utf-8.
+return None if not exists.</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.duration">
+<code class="descname">duration</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>get build duration(s).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.duration_ms">
+<code class="descname">duration_ms</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.duration_ms" title="Permalink to this definition">¶</a></dt>
+<dd><p>get build duration(ms).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.ftp_artifacts">
+<code class="descname">ftp_artifacts</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.ftp_artifacts" title="Permalink to this definition">¶</a></dt>
+<dd><p>get ftp artifacts object of build.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Build.get_jenkins_obj">
+<code class="descname">get_jenkins_obj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.get_jenkins_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>get object of current jenkins.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.is_running">
+<code class="descname">is_running</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.is_running" title="Permalink to this definition">¶</a></dt>
+<dd><p>check build is running or not.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.is_started_by_scm_change">
+<code class="descname">is_started_by_scm_change</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.is_started_by_scm_change" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if is started by an SCM change.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.is_started_by_timer">
+<code class="descname">is_started_by_timer</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.is_started_by_timer" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if is started by timer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.is_started_by_upstream_project">
+<code class="descname">is_started_by_upstream_project</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.is_started_by_upstream_project" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if is started by upstream project.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.is_started_by_user">
+<code class="descname">is_started_by_user</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.is_started_by_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if is started by user.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.is_success">
+<code class="descname">is_success</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.is_success" title="Permalink to this definition">¶</a></dt>
+<dd><p>check build is success or not, return False if is running.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.name">
+<code class="descname">name</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>get build name.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.number">
+<code class="descname">number</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.number" title="Permalink to this definition">¶</a></dt>
+<dd><p>get build number.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Build.promote">
+<code class="descname">promote</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.promote" title="Permalink to this definition">¶</a></dt>
+<dd><p>force promotion by name.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.result">
+<code class="descname">result</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.result" title="Permalink to this definition">¶</a></dt>
+<dd><p>get build result.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.revision">
+<code class="descname">revision</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.revision" title="Permalink to this definition">¶</a></dt>
+<dd><p>get latest revision, only support svn.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.revisions">
+<code class="descname">revisions</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.revisions" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all revisions info, only support svn.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Build.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the build execution if it’s running.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.timestamp">
+<code class="descname">timestamp</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>get build timestamp.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.upstream_build">
+<code class="descname">upstream_build</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.upstream_build" title="Permalink to this definition">¶</a></dt>
+<dd><p>get upstream build object if exists, otherwise None.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.upstream_build_number">
+<code class="descname">upstream_build_number</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.upstream_build_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>get upstream build number if exists, otherwise None.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.upstream_job">
+<code class="descname">upstream_job</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.upstream_job" title="Permalink to this definition">¶</a></dt>
+<dd><p>get upstream job object if exists, otherwise None.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.upstream_job_name">
+<code class="descname">upstream_job_name</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.upstream_job_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>get upstream job name if exists, otherwise None.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.user_id">
+<code class="descname">user_id</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.user_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>get id of user who invoke this build if exists, otherwise None.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Build.user_name">
+<code class="descname">user_name</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Build.user_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>get name of user who invoke this build if exists, otherwise None.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.jenkinslib.Jenkins.FTPArtifacts">
+<em class="property">class </em><code class="descname">FTPArtifacts</code><span class="sig-paren">(</span><em>build</em>, <em>name=''</em>, <em>path=''</em>, <em>is_dir=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.FTPArtifacts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cup.jenkinslib.internal.artifacts.ArtifactsBase</span></code></p>
+<p>Represents artifacts on FTP.</p>
+<p>Because ftp connection is used, close should be called if connected.
+It is recommended to use with as like:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>with FTPArtifacts(build) as af:</dt>
+<dd>bin_af = af[“bin”]
+bin_af.download(“./output”)</dd>
+</dl>
+</div></blockquote>
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.FTPArtifacts.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.FTPArtifacts.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>close ftp connection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.FTPArtifacts.connect">
+<code class="descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.FTPArtifacts.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>connect to ftp, return ftp connection.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.FTPArtifacts.url">
+<code class="descname">url</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.FTPArtifacts.url" title="Permalink to this definition">¶</a></dt>
+<dd><p>get ftp artifact url.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.jenkinslib.Jenkins.Job">
+<em class="property">class </em><code class="descname">Job</code><span class="sig-paren">(</span><em>url</em>, <em>name</em>, <em>jenkins</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cup.jenkinslib.internal.base.JenkinsBase</span></code></p>
+<p>Represents a job.</p>
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Job.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>block=False</em>, <em>build_params=None</em>, <em>cause=None</em>, <em>files=None</em>, <em>delay=15</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>trigger a new build.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>block: block until the new build stopped.
+build_params: trigger new build with params.
+cause: set cause info.
+files: send build params in files.
+delay: if <cite>block</cite> is True, check status every <cite>delay</cite> seconds.</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.builds">
+<code class="descname">builds</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.builds" title="Permalink to this definition">¶</a></dt>
+<dd><p>get container of all builds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.config">
+<code class="descname">config</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.config" title="Permalink to this definition">¶</a></dt>
+<dd><p>get config element tree object of job.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.config_text">
+<code class="descname">config_text</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.config_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>get config.xml text of job.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>config.xml text in Unicode type.
+You can encode it in ‘utf-8’ or ‘gb18030’.</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.description">
+<code class="descname">description</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>get description of job.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Job.disable">
+<code class="descname">disable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.disable" title="Permalink to this definition">¶</a></dt>
+<dd><p>disable job.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.downstream_job_names">
+<code class="descname">downstream_job_names</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.downstream_job_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>get list of downstream job names.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.downstream_jobs">
+<code class="descname">downstream_jobs</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.downstream_jobs" title="Permalink to this definition">¶</a></dt>
+<dd><p>get list of downstream job objects.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Job.enable">
+<code class="descname">enable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.enable" title="Permalink to this definition">¶</a></dt>
+<dd><p>enable job.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.first_build">
+<code class="descname">first_build</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.first_build" title="Permalink to this definition">¶</a></dt>
+<dd><p>get first build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.first_build_number">
+<code class="descname">first_build_number</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.first_build_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>get number of first build.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Job.get_build">
+<code class="descname">get_build</code><span class="sig-paren">(</span><em>build_number</em>, <em>depth=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.get_build" title="Permalink to this definition">¶</a></dt>
+<dd><p>get build by number.</p>
+<dl class="docutils">
+<dt>Also support special build:</dt>
+<dd>firstBuild
+lastBuild
+lastStableBuild
+lastSuccessfulBuild
+lastCompletedBuild
+lastFailedBuild</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Job.get_build_trigger_url">
+<code class="descname">get_build_trigger_url</code><span class="sig-paren">(</span><em>files</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.get_build_trigger_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>get trigger url of job.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Job.get_delete_url">
+<code class="descname">get_delete_url</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.get_delete_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>get delete url of job.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Job.get_jenkins_obj">
+<code class="descname">get_jenkins_obj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.get_jenkins_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>get object of current jenkins.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Job.get_rename_url">
+<code class="descname">get_rename_url</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.get_rename_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>get rename url of job.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.has_params">
+<code class="descname">has_params</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.has_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>check build has params or not.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Job.invoke">
+<code class="descname">invoke</code><span class="sig-paren">(</span><em>block=False</em>, <em>build_params=None</em>, <em>cause=None</em>, <em>files=None</em>, <em>delay=15</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.invoke" title="Permalink to this definition">¶</a></dt>
+<dd><p>trigger a new build.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>block: block until the new build stopped.
+build_params: trigger new build with params.
+cause: set cause info.
+files: send build params in files.
+delay: if <cite>block</cite> is True, check status every <cite>delay</cite> seconds.</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.is_enabled">
+<code class="descname">is_enabled</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.is_enabled" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if job is enabled.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.is_queued">
+<code class="descname">is_queued</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.is_queued" title="Permalink to this definition">¶</a></dt>
+<dd><p>check job is queued or not.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.is_queued_or_running">
+<code class="descname">is_queued_or_running</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.is_queued_or_running" title="Permalink to this definition">¶</a></dt>
+<dd><p>check job is queued/running or not.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.is_running">
+<code class="descname">is_running</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.is_running" title="Permalink to this definition">¶</a></dt>
+<dd><p>check job is running or not.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.last_build">
+<code class="descname">last_build</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.last_build" title="Permalink to this definition">¶</a></dt>
+<dd><p>get last build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.last_build_number">
+<code class="descname">last_build_number</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.last_build_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>get number of last build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.last_completed_build">
+<code class="descname">last_completed_build</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.last_completed_build" title="Permalink to this definition">¶</a></dt>
+<dd><p>get last completed build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.last_completed_build_number">
+<code class="descname">last_completed_build_number</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.last_completed_build_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>get number of last completed build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.last_failed_build">
+<code class="descname">last_failed_build</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.last_failed_build" title="Permalink to this definition">¶</a></dt>
+<dd><p>get last failed build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.last_failed_build_number">
+<code class="descname">last_failed_build_number</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.last_failed_build_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>get number of last failed build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.last_stable_build">
+<code class="descname">last_stable_build</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.last_stable_build" title="Permalink to this definition">¶</a></dt>
+<dd><p>get last stable build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.last_stable_build_number">
+<code class="descname">last_stable_build_number</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.last_stable_build_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>get number of last stable build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.last_successful_build">
+<code class="descname">last_successful_build</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.last_successful_build" title="Permalink to this definition">¶</a></dt>
+<dd><p>get last successful build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.last_successful_build_number">
+<code class="descname">last_successful_build_number</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.last_successful_build_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>get number of last successful build.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="cup.jenkinslib.Jenkins.Job.mk_json_from_build_parameters">
+<em class="property">static </em><code class="descname">mk_json_from_build_parameters</code><span class="sig-paren">(</span><em>build_params</em>, <em>file_params=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.mk_json_from_build_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>make build parameters to json format.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.next_build_number">
+<code class="descname">next_build_number</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.next_build_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>get number of next build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.promotions">
+<code class="descname">promotions</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.promotions" title="Permalink to this definition">¶</a></dt>
+<dd><p>get promotions of job.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.upstream_job_names">
+<code class="descname">upstream_job_names</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.upstream_job_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>get list of upstream job names.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Job.upstream_jobs">
+<code class="descname">upstream_jobs</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Job.upstream_jobs" title="Permalink to this definition">¶</a></dt>
+<dd><p>get list of upstream job objects.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.jenkinslib.Jenkins.Jobs">
+<em class="property">class </em><code class="descname">Jobs</code><span class="sig-paren">(</span><em>jenkins</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Jobs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A container of Job objects.</p>
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Jobs.create">
+<code class="descname">create</code><span class="sig-paren">(</span><em>job_name</em>, <em>config</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Jobs.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>create new job.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>job_name: name of new job.
+config: configure for new job, xml text.</dd>
+<dt>Returns:</dt>
+<dd>new job object.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Jobs.iterkeys">
+<code class="descname">iterkeys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Jobs.iterkeys" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all job name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Jobs.keys">
+<code class="descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Jobs.keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all job name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Jobs.rename">
+<code class="descname">rename</code><span class="sig-paren">(</span><em>job_name</em>, <em>new_job_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Jobs.rename" title="Permalink to this definition">¶</a></dt>
+<dd><p>rename a job.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>job_name: name of a existing job.
+new_job_name: new job name.</dd>
+<dt>Returns:</dt>
+<dd>new job object.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.jenkinslib.Jenkins.Label">
+<em class="property">class </em><code class="descname">Label</code><span class="sig-paren">(</span><em>label</em>, <em>jenkins</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cup.jenkinslib.internal.base.JenkinsBase</span></code></p>
+<p>A container of Node objects.</p>
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Label.busy_node_num">
+<code class="descname">busy_node_num</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Label.busy_node_num" title="Permalink to this definition">¶</a></dt>
+<dd><p>busy node num.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Label.get_jenkins_obj">
+<code class="descname">get_jenkins_obj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Label.get_jenkins_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>get object of current jenkins.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Label.get_node_url">
+<code class="descname">get_node_url</code><span class="sig-paren">(</span><em>node_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Label.get_node_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>get url of node.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>node_name: node name.</dd>
+<dt>Returns:</dt>
+<dd>node url.</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Label.is_online">
+<code class="descname">is_online</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Label.is_online" title="Permalink to this definition">¶</a></dt>
+<dd><p>label is online or not.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Label.iteritems">
+<code class="descname">iteritems</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Label.iteritems" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all nodes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Label.iterkeys">
+<code class="descname">iterkeys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Label.iterkeys" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all node name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Label.keys">
+<code class="descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Label.keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all node name.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Label.node_num">
+<code class="descname">node_num</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Label.node_num" title="Permalink to this definition">¶</a></dt>
+<dd><p>get node num.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Label.tied_job_num">
+<code class="descname">tied_job_num</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Label.tied_job_num" title="Permalink to this definition">¶</a></dt>
+<dd><p>get tied job num.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Label.tied_jobs">
+<code class="descname">tied_jobs</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Label.tied_jobs" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all tied job name on this label.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Label.tied_jobs_iterator">
+<code class="descname">tied_jobs_iterator</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Label.tied_jobs_iterator" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all tied job name on this label.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.jenkinslib.Jenkins.Node">
+<em class="property">class </em><code class="descname">Node</code><span class="sig-paren">(</span><em>url</em>, <em>name</em>, <em>jenkins</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cup.jenkinslib.internal.base.JenkinsBase</span></code></p>
+<p>Represents a node.</p>
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Node.get_jenkins_obj">
+<code class="descname">get_jenkins_obj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Node.get_jenkins_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>get object of current jenkins.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Node.is_idle">
+<code class="descname">is_idle</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Node.is_idle" title="Permalink to this definition">¶</a></dt>
+<dd><p>node is idle or not.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Node.is_online">
+<code class="descname">is_online</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Node.is_online" title="Permalink to this definition">¶</a></dt>
+<dd><p>node is online or not.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Node.is_temporarily_offline">
+<code class="descname">is_temporarily_offline</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Node.is_temporarily_offline" title="Permalink to this definition">¶</a></dt>
+<dd><p>node is temporarily offline or not.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.jenkinslib.Jenkins.Nodes">
+<em class="property">class </em><code class="descname">Nodes</code><span class="sig-paren">(</span><em>jenkins</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cup.jenkinslib.internal.base.JenkinsBase</span></code></p>
+<p>A container of Node objects.</p>
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Nodes.get_jenkins_obj">
+<code class="descname">get_jenkins_obj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Nodes.get_jenkins_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>get object of current jenkins.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Nodes.get_node_url">
+<code class="descname">get_node_url</code><span class="sig-paren">(</span><em>node_name</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Nodes.get_node_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>get url of node.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>node_name: node name.</dd>
+<dt>Returns:</dt>
+<dd>node url.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Nodes.iteritems">
+<code class="descname">iteritems</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Nodes.iteritems" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all nodes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Nodes.iterkeys">
+<code class="descname">iterkeys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Nodes.iterkeys" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all node name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Nodes.keys">
+<code class="descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Nodes.keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all node name.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.jenkinslib.Jenkins.Promotion">
+<em class="property">class </em><code class="descname">Promotion</code><span class="sig-paren">(</span><em>url</em>, <em>name</em>, <em>job</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cup.jenkinslib.internal.base.JenkinsBase</span></code></p>
+<p>Represents a promotion.</p>
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Promotion.builds">
+<code class="descname">builds</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion.builds" title="Permalink to this definition">¶</a></dt>
+<dd><p>get container of all builds.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Promotion.description">
+<code class="descname">description</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>get description of promotion.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Promotion.first_build">
+<code class="descname">first_build</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion.first_build" title="Permalink to this definition">¶</a></dt>
+<dd><p>get first build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Promotion.first_build_number">
+<code class="descname">first_build_number</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion.first_build_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>get number of first build.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Promotion.get_build">
+<code class="descname">get_build</code><span class="sig-paren">(</span><em>build_number</em>, <em>depth=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion.get_build" title="Permalink to this definition">¶</a></dt>
+<dd><p>get build by number.</p>
+<dl class="docutils">
+<dt>Also support special build:</dt>
+<dd>firstBuild
+lastBuild
+lastStableBuild
+lastSuccessfulBuild
+lastCompletedBuild
+lastFailedBuild</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Promotion.get_jenkins_obj">
+<code class="descname">get_jenkins_obj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion.get_jenkins_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>get object of current jenkins.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Promotion.is_queued">
+<code class="descname">is_queued</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion.is_queued" title="Permalink to this definition">¶</a></dt>
+<dd><p>check promotion is queued or not.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Promotion.is_queued_or_running">
+<code class="descname">is_queued_or_running</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion.is_queued_or_running" title="Permalink to this definition">¶</a></dt>
+<dd><p>check promotion is queued/running or not.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Promotion.is_running">
+<code class="descname">is_running</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion.is_running" title="Permalink to this definition">¶</a></dt>
+<dd><p>check promotion is running or not.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Promotion.last_build">
+<code class="descname">last_build</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion.last_build" title="Permalink to this definition">¶</a></dt>
+<dd><p>get last build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Promotion.last_build_number">
+<code class="descname">last_build_number</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion.last_build_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>get number of last build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Promotion.last_completed_build">
+<code class="descname">last_completed_build</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion.last_completed_build" title="Permalink to this definition">¶</a></dt>
+<dd><p>get last completed build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Promotion.last_completed_build_number">
+<code class="descname">last_completed_build_number</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion.last_completed_build_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>get number of last completed build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Promotion.last_failed_build">
+<code class="descname">last_failed_build</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion.last_failed_build" title="Permalink to this definition">¶</a></dt>
+<dd><p>get last failed build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Promotion.last_failed_build_number">
+<code class="descname">last_failed_build_number</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion.last_failed_build_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>get number of last failed build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Promotion.last_stable_build">
+<code class="descname">last_stable_build</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion.last_stable_build" title="Permalink to this definition">¶</a></dt>
+<dd><p>get last stable build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Promotion.last_stable_build_number">
+<code class="descname">last_stable_build_number</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion.last_stable_build_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>get number of last stable build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Promotion.last_successful_build">
+<code class="descname">last_successful_build</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion.last_successful_build" title="Permalink to this definition">¶</a></dt>
+<dd><p>get last successful build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Promotion.last_successful_build_number">
+<code class="descname">last_successful_build_number</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion.last_successful_build_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>get number of last successful build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Promotion.next_build_number">
+<code class="descname">next_build_number</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotion.next_build_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>get number of next build.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild">
+<em class="property">class </em><code class="descname">PromotionBuild</code><span class="sig-paren">(</span><em>url</em>, <em>build_number</em>, <em>promotion</em>, <em>depth=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cup.jenkinslib.internal.base.JenkinsBase</span></code></p>
+<p>Represents a promotion build.</p>
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.actions">
+<code class="descname">actions</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.actions" title="Permalink to this definition">¶</a></dt>
+<dd><p>get actions of build.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.block">
+<code class="descname">block</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.block" title="Permalink to this definition">¶</a></dt>
+<dd><p>block until this build stop running.</p>
+<p>Do not use this method too often,
+because it will request jenkins server every second.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.block_until_complete">
+<code class="descname">block_until_complete</code><span class="sig-paren">(</span><em>delay=15</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.block_until_complete" title="Permalink to this definition">¶</a></dt>
+<dd><p>block until this build stop running.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>delay: check status every <cite>delay</cite> seconds, default is 15s.
+timeout: wait <cite>timeout</cite> seconds at most, default is forever.</dd>
+<dt>Returns:</dt>
+<dd>True if stopped, False if still running.</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.cause_description">
+<code class="descname">cause_description</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.cause_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>get short description of causes.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.causes">
+<code class="descname">causes</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.causes" title="Permalink to this definition">¶</a></dt>
+<dd><p>get causes of build, empty causes will be ignored.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.console">
+<code class="descname">console</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.console" title="Permalink to this definition">¶</a></dt>
+<dd><p>get text console of build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.description">
+<code class="descname">description</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>get description of build if exists, otherwise None.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>description info of this build, encoding in utf-8.
+return None if not exists.</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.duration">
+<code class="descname">duration</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>get build duration(s).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.duration_ms">
+<code class="descname">duration_ms</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.duration_ms" title="Permalink to this definition">¶</a></dt>
+<dd><p>get build duration(ms).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.get_jenkins_obj">
+<code class="descname">get_jenkins_obj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.get_jenkins_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>get object of current jenkins.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.is_running">
+<code class="descname">is_running</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.is_running" title="Permalink to this definition">¶</a></dt>
+<dd><p>check build is running or not.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.is_started_by_scm_change">
+<code class="descname">is_started_by_scm_change</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.is_started_by_scm_change" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if is started by an SCM change.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.is_started_by_timer">
+<code class="descname">is_started_by_timer</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.is_started_by_timer" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if is started by timer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.is_started_by_upstream_project">
+<code class="descname">is_started_by_upstream_project</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.is_started_by_upstream_project" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if is started by upstream project.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.is_started_by_user">
+<code class="descname">is_started_by_user</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.is_started_by_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if is started by user.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.is_success">
+<code class="descname">is_success</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.is_success" title="Permalink to this definition">¶</a></dt>
+<dd><p>check build is success or not, return False if is running.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.job_build">
+<code class="descname">job_build</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.job_build" title="Permalink to this definition">¶</a></dt>
+<dd><p>get Build object of target job build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.job_build_number">
+<code class="descname">job_build_number</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.job_build_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>get build number of target job build.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.name">
+<code class="descname">name</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>get build name.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.number">
+<code class="descname">number</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.number" title="Permalink to this definition">¶</a></dt>
+<dd><p>get build number.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.result">
+<code class="descname">result</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.result" title="Permalink to this definition">¶</a></dt>
+<dd><p>get build result.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.revision">
+<code class="descname">revision</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.revision" title="Permalink to this definition">¶</a></dt>
+<dd><p>get latest revision, only support svn.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the build execution if it’s running.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.timestamp">
+<code class="descname">timestamp</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>get build timestamp.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.PromotionBuild.user_name">
+<code class="descname">user_name</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.PromotionBuild.user_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>get name of user who invoke this build if exists, otherwise None.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.jenkinslib.Jenkins.Promotions">
+<em class="property">class </em><code class="descname">Promotions</code><span class="sig-paren">(</span><em>job</em>, <em>depth=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cup.jenkinslib.internal.base.JenkinsBase</span></code></p>
+<p>A container of Promotions objects.</p>
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Promotions.get_jenkins_obj">
+<code class="descname">get_jenkins_obj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotions.get_jenkins_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>get object of current jenkins.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Promotions.iterkeys">
+<code class="descname">iterkeys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotions.iterkeys" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all promotion name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Promotions.keys">
+<code class="descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Promotions.keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all promotion name.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.jenkinslib.Jenkins.Requester">
+<em class="property">class </em><code class="descname">Requester</code><span class="sig-paren">(</span><em>username=None</em>, <em>password=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Requester" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class which help you access jenkins.</p>
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.Requester.VALID_STATUS_CODES">
+<code class="descname">VALID_STATUS_CODES</code><em class="property"> = [200]</em><a class="headerlink" href="#cup.jenkinslib.Jenkins.Requester.VALID_STATUS_CODES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Requester.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>url</em>, <em>params=None</em>, <em>headers=None</em>, <em>allow_redirects=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Requester.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>request url in GET method.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>Response object.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Requester.get_and_confirm_status">
+<code class="descname">get_and_confirm_status</code><span class="sig-paren">(</span><em>url</em>, <em>params=None</em>, <em>headers=None</em>, <em>valid=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Requester.get_and_confirm_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>request url in GET method, and check status code.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>Response object.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Requester.post">
+<code class="descname">post</code><span class="sig-paren">(</span><em>url</em>, <em>params=None</em>, <em>data=None</em>, <em>files=None</em>, <em>headers=None</em>, <em>allow_redirects=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Requester.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>request url in POST method.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>Response object.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Requester.post_and_confirm_status">
+<code class="descname">post_and_confirm_status</code><span class="sig-paren">(</span><em>url</em>, <em>params=None</em>, <em>data=None</em>, <em>files=None</em>, <em>headers=None</em>, <em>valid=None</em>, <em>allow_redirects=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Requester.post_and_confirm_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>request url in POST method, and check status code.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>Response object.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.Requester.post_xml_and_confirm_status">
+<code class="descname">post_xml_and_confirm_status</code><span class="sig-paren">(</span><em>url</em>, <em>params=None</em>, <em>data=None</em>, <em>valid=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.jenkinslib.Jenkins.Requester.post_xml_and_confirm_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>request url in POST method with text/xml context, and check status code.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>Response object.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.create_job">
+<code class="descname">create_job</code><span class="sig-paren">(</span><em>job_name</em>, <em>config</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/jenkinslib/internal/jenkins/#Jenkins.create_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.jenkinslib.Jenkins.create_job" title="Permalink to this definition">¶</a></dt>
+<dd><p>create a new job.</p>
+<p>create a new job named ‘job_name’.
+same as self.jobs[‘job_name’] = config.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>job_name: name of new job.
+config: configure for new job, xml text.</dd>
+<dt>Returns:</dt>
+<dd>new job object.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.delete_job">
+<code class="descname">delete_job</code><span class="sig-paren">(</span><em>job_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/jenkinslib/internal/jenkins/#Jenkins.delete_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.jenkinslib.Jenkins.delete_job" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete a job by name.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>job_name: job name.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.enable_ftp">
+<code class="descname">enable_ftp</code><span class="sig-paren">(</span><em>host</em>, <em>username=''</em>, <em>password=''</em>, <em>port=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/jenkinslib/internal/jenkins/#Jenkins.enable_ftp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.jenkinslib.Jenkins.enable_ftp" title="Permalink to this definition">¶</a></dt>
+<dd><p>enable ftp server and set host, username, password, port.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.get_create_url">
+<code class="descname">get_create_url</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/jenkinslib/internal/jenkins/#Jenkins.get_create_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.jenkinslib.Jenkins.get_create_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>url for creating job.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="cup.jenkinslib.Jenkins.get_jenkins_by_name">
+<em class="property">static </em><code class="descname">get_jenkins_by_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/jenkinslib/internal/jenkins/#Jenkins.get_jenkins_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.jenkinslib.Jenkins.get_jenkins_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>get special jenkins class by name.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>name: name of jenkins server.</dd>
+<dt>Returns:</dt>
+<dd>special jenkins class or Jenkins.</dd>
+</dl>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="cup.jenkinslib.Jenkins.get_jenkins_by_url">
+<em class="property">static </em><code class="descname">get_jenkins_by_url</code><span class="sig-paren">(</span><em>url</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/jenkinslib/internal/jenkins/#Jenkins.get_jenkins_by_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.jenkinslib.Jenkins.get_jenkins_by_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>get special jenkins class by url.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>url: url of jenkins server.</dd>
+<dt>Returns:</dt>
+<dd>special jenkins class or Jenkins.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.get_jenkins_obj">
+<code class="descname">get_jenkins_obj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/jenkinslib/internal/jenkins/#Jenkins.get_jenkins_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.jenkinslib.Jenkins.get_jenkins_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>get object of current jenkins.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.get_job">
+<code class="descname">get_job</code><span class="sig-paren">(</span><em>job_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/jenkinslib/internal/jenkins/#Jenkins.get_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.jenkinslib.Jenkins.get_job" title="Permalink to this definition">¶</a></dt>
+<dd><p>get job by name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.get_label">
+<code class="descname">get_label</code><span class="sig-paren">(</span><em>label</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/jenkinslib/internal/jenkins/#Jenkins.get_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.jenkinslib.Jenkins.get_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>get label by name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.get_node">
+<code class="descname">get_node</code><span class="sig-paren">(</span><em>node_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/jenkinslib/internal/jenkins/#Jenkins.get_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.jenkinslib.Jenkins.get_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>get node by name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.has_job">
+<code class="descname">has_job</code><span class="sig-paren">(</span><em>job_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/jenkinslib/internal/jenkins/#Jenkins.has_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.jenkinslib.Jenkins.has_job" title="Permalink to this definition">¶</a></dt>
+<dd><p>job exists or not.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.jobs">
+<code class="descname">jobs</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.jobs" title="Permalink to this definition">¶</a></dt>
+<dd><p>get container of all jobs.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.jenkinslib.Jenkins.nodes">
+<code class="descname">nodes</code><a class="headerlink" href="#cup.jenkinslib.Jenkins.nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>get nodes.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="cup.jenkinslib.Jenkins.register_special_jenkins">
+<em class="property">static </em><code class="descname">register_special_jenkins</code><span class="sig-paren">(</span><em>url</em>, <em>cls</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/jenkinslib/internal/jenkins/#Jenkins.register_special_jenkins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.jenkinslib.Jenkins.register_special_jenkins" title="Permalink to this definition">¶</a></dt>
+<dd><p>register special jenkins.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>url: url of jenkins server.
+cls: special jenkins class.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.jenkinslib.Jenkins.rename_job">
+<code class="descname">rename_job</code><span class="sig-paren">(</span><em>job_name</em>, <em>new_job_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/jenkinslib/internal/jenkins/#Jenkins.rename_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.jenkinslib.Jenkins.rename_job" title="Permalink to this definition">¶</a></dt>
+<dd><p>rename a job.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>job_name: name of a existing job.
+new_job_name: new job name.</dd>
+<dt>Returns:</dt>
+<dd>new job object.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../cup.net/" class="btn btn-neutral float-right" title="cup.net package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../cup/" class="btn btn-neutral" title="cup package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, CUP-DEV.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.7.0',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

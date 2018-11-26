@@ -1,0 +1,17 @@
+cup.jenkinslib package
+======================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    cup.jenkinslib.internal
+
+Module contents
+---------------
+
+.. automodule:: cup.jenkinslib
+    :members:
+    :undoc-members:
+    :show-inheritance:

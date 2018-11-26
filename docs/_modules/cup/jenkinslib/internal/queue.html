@@ -1,0 +1,289 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>cup.jenkinslib.internal.queue &#8212; cup 1.6.1 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for cup.jenkinslib.internal.queue</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*</span>
+<span class="c1"># Copyright: [CUP] - See LICENSE for details.</span>
+<span class="c1"># Authors: liushuxian,</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module provides Queue object.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">cup.jenkinslib.internal</span> <span class="k">import</span> <span class="n">base</span>
+<span class="kn">from</span> <span class="nn">cup.jenkinslib.internal</span> <span class="k">import</span> <span class="n">exception</span>
+
+
+<div class="viewcode-block" id="Queue"><a class="viewcode-back" href="../../../../cup.jenkinslib.internal.html#cup.jenkinslib.internal.queue.Queue">[docs]</a><span class="k">class</span> <span class="nc">Queue</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">JenkinsBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Represents a jenkins queue.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">jenkins</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;initialize Queue object.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jenkins</span> <span class="o">=</span> <span class="n">jenkins</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Queue</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="n">jenkins</span><span class="o">.</span><span class="n">is_static</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span>
+
+<div class="viewcode-block" id="Queue.get_jenkins_obj"><a class="viewcode-back" href="../../../../cup.jenkinslib.internal.html#cup.jenkinslib.internal.queue.Queue.get_jenkins_obj">[docs]</a>    <span class="k">def</span> <span class="nf">get_jenkins_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get object of current jenkins.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">jenkins</span></div>
+
+<div class="viewcode-block" id="Queue.iteritems"><a class="viewcode-back" href="../../../../cup.jenkinslib.internal.html#cup.jenkinslib.internal.queue.Queue.iteritems">[docs]</a>    <span class="k">def</span> <span class="nf">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;iterator of items.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;items&#39;</span><span class="p">]:</span>
+            <span class="n">queue_id</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+            <span class="n">item_url</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/item/</span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">queue_id</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span> <span class="n">QueueItem</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">item_url</span><span class="p">,</span> <span class="n">jenkins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">jenkins</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Queue.iterkeys"><a class="viewcode-back" href="../../../../cup.jenkinslib.internal.html#cup.jenkinslib.internal.queue.Queue.iterkeys">[docs]</a>    <span class="k">def</span> <span class="nf">iterkeys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;iterator of keys.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;items&#39;</span><span class="p">]:</span>
+            <span class="k">yield</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Queue.itervalues"><a class="viewcode-back" href="../../../../cup.jenkinslib.internal.html#cup.jenkinslib.internal.queue.Queue.itervalues">[docs]</a>    <span class="k">def</span> <span class="nf">itervalues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;iterator of values.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;items&#39;</span><span class="p">]:</span>
+            <span class="k">yield</span> <span class="n">QueueItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jenkins</span><span class="p">,</span> <span class="o">**</span><span class="n">item</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Queue.keys"><a class="viewcode-back" href="../../../../cup.jenkinslib.internal.html#cup.jenkinslib.internal.queue.Queue.keys">[docs]</a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;keys of items in queue.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iterkeys</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Queue.values"><a class="viewcode-back" href="../../../../cup.jenkinslib.internal.html#cup.jenkinslib.internal.queue.Queue.values">[docs]</a>    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;values of items in queue.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">itervalues</span><span class="p">())</span></div>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;items&#39;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_id</span><span class="p">):</span>
+        <span class="n">self_as_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iteritems</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">item_id</span> <span class="ow">in</span> <span class="n">self_as_dict</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">self_as_dict</span><span class="p">[</span><span class="n">item_id</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exception</span><span class="o">.</span><span class="n">UnknownQueueItem</span><span class="p">(</span><span class="n">item_id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_queue_items_for_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_name</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;items&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;task&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">job_name</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">QueueItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_queue_item_url</span><span class="p">(</span><span class="n">item</span><span class="p">),</span> <span class="n">jenkins_obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">jenkins</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Queue.get_queue_items_for_job"><a class="viewcode-back" href="../../../../cup.jenkinslib.internal.html#cup.jenkinslib.internal.queue.Queue.get_queue_items_for_job">[docs]</a>    <span class="k">def</span> <span class="nf">get_queue_items_for_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get queue items by job name.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_queue_items_for_job</span><span class="p">(</span><span class="n">job_name</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Queue.get_queue_item_url"><a class="viewcode-back" href="../../../../cup.jenkinslib.internal.html#cup.jenkinslib.internal.queue.Queue.get_queue_item_url">[docs]</a>    <span class="k">def</span> <span class="nf">get_queue_item_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get url of queue item.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/item/</span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Queue.delete_item"><a class="viewcode-back" href="../../../../cup.jenkinslib.internal.html#cup.jenkinslib.internal.queue.Queue.delete_item">[docs]</a>    <span class="k">def</span> <span class="nf">delete_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queue_item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;delete item in queue.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete_item_by_id</span><span class="p">(</span><span class="n">queue_item</span><span class="o">.</span><span class="n">queue_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Queue.delete_item_by_id"><a class="viewcode-back" href="../../../../cup.jenkinslib.internal.html#cup.jenkinslib.internal.queue.Queue.delete_item_by_id">[docs]</a>    <span class="k">def</span> <span class="nf">delete_item_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;delete item by id.&quot;&quot;&quot;</span>
+        <span class="n">deleteurl</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/cancelItem?id=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">item_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_jenkins_obj</span><span class="p">()</span><span class="o">.</span><span class="n">requester</span><span class="o">.</span><span class="n">post_url</span><span class="p">(</span><span class="n">deleteurl</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="QueueItem"><a class="viewcode-back" href="../../../../cup.jenkinslib.internal.html#cup.jenkinslib.internal.queue.QueueItem">[docs]</a><span class="k">class</span> <span class="nc">QueueItem</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">JenkinsBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Represents an item in jenkins queue.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">jenkins</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;initialize QueueItem object.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jenkins</span> <span class="o">=</span> <span class="n">jenkins</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">QueueItem</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="n">jenkins</span><span class="o">.</span><span class="n">is_static</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">queue_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get id of queue item.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get task name of queue item.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;task&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="QueueItem.get_jenkins_obj"><a class="viewcode-back" href="../../../../cup.jenkinslib.internal.html#cup.jenkinslib.internal.queue.QueueItem.get_jenkins_obj">[docs]</a>    <span class="k">def</span> <span class="nf">get_jenkins_obj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get object of current jenkins.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">jenkins</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">job</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get Job object associated with queue item.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">jenkins</span><span class="o">.</span><span class="n">get_job</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get parameters of queue item.&quot;&quot;&quot;</span>
+        <span class="n">actions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;actions&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">action</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span> <span class="ow">and</span> <span class="s1">&#39;parameters&#39;</span> <span class="ow">in</span> <span class="n">action</span><span class="p">:</span>
+                <span class="n">parameters</span> <span class="o">=</span> <span class="n">action</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">]</span>
+                <span class="k">return</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">x</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+                             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> Queue #</span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue_id</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get build object of this queue item.&quot;&quot;&quot;</span>
+        <span class="n">job_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_name</span>
+        <span class="n">build_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_number</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">jenkins</span><span class="p">[</span><span class="n">job_name</span><span class="p">][</span><span class="n">build_number</span><span class="p">]</span>
+
+<div class="viewcode-block" id="QueueItem.block_until_complete"><a class="viewcode-back" href="../../../../cup.jenkinslib.internal.html#cup.jenkinslib.internal.queue.QueueItem.block_until_complete">[docs]</a>    <span class="k">def</span> <span class="nf">block_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;block until task of this queue item build and complete.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_static</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exception</span><span class="o">.</span><span class="n">ImappropriateMethodInStaticMode</span><span class="p">(</span><span class="s2">&quot;block_until_complete&quot;</span><span class="p">)</span>
+
+        <span class="n">stime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">build</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_until_building</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">waited</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">stime</span>
+            <span class="k">if</span> <span class="n">timeout</span> <span class="o">&lt;</span> <span class="n">waited</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">exception</span><span class="o">.</span><span class="n">RunTimeout</span><span class="p">(</span><span class="s2">&quot;wait </span><span class="si">%i</span><span class="s2">s &gt; </span><span class="si">%i</span><span class="s2">s, timeout!&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">waited</span><span class="p">,</span> <span class="n">timeout</span><span class="p">))</span>
+
+            <span class="n">timeout</span> <span class="o">-=</span> <span class="n">waited</span>
+        <span class="k">return</span> <span class="n">build</span><span class="o">.</span><span class="n">block_until_complete</span><span class="p">(</span><span class="n">delay</span><span class="o">=</span><span class="n">delay</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QueueItem.block_until_building"><a class="viewcode-back" href="../../../../cup.jenkinslib.internal.html#cup.jenkinslib.internal.queue.QueueItem.block_until_building">[docs]</a>    <span class="k">def</span> <span class="nf">block_until_building</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;block until task of this queue item build.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_static</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exception</span><span class="o">.</span><span class="n">ImappropriateMethodInStaticMode</span><span class="p">(</span><span class="s2">&quot;block_until_building&quot;</span><span class="p">)</span>
+
+        <span class="n">stime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">build</span>
+            <span class="k">except</span> <span class="n">exception</span><span class="o">.</span><span class="n">NotBuiltYet</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="n">waited</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">stime</span>
+            <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">timeout</span> <span class="o">&lt;</span> <span class="n">waited</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">exception</span><span class="o">.</span><span class="n">RunTimeout</span><span class="p">(</span><span class="s2">&quot;wait </span><span class="si">%i</span><span class="s2">s &gt; </span><span class="si">%i</span><span class="s2">s, timeout!&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">waited</span><span class="p">,</span> <span class="n">timeout</span><span class="p">))</span>
+
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;check queue item is running or not.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">build</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build</span>
+            <span class="k">if</span> <span class="n">build</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">build</span><span class="o">.</span><span class="n">is_running</span>
+        <span class="k">except</span> <span class="n">exception</span><span class="o">.</span><span class="n">NotBuiltYet</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">build_number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get build number if exists.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;executable&#39;</span><span class="p">][</span><span class="s1">&#39;number&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exception</span><span class="o">.</span><span class="n">NotBuiltYet</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">job_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get job name if exists.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;task&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exception</span><span class="o">.</span><span class="n">NotBuiltYet</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../index.html">cup</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cup.html">cup package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Author.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
