@@ -6,7 +6,6 @@ Subpackages
 
 .. toctree::
 
-    cup.jenkinslib.internal
 
 Module contents
 ---------------

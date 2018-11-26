@@ -1,0 +1,556 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cup.net package &mdash; cup 1.7.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex/" />
+    <link rel="search" title="Search" href="../search/" />
+    <link rel="next" title="cup.net.async package" href="../cup.net.async/" />
+    <link rel="prev" title="cup package" href="../cup/" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../" class="icon icon-home"> cup
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.7
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../cup/">cup package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../cup/#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">cup.net package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.net.route">cup.net.route module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.net">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cup.res/">cup.res package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cup.util/">cup.util package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cup.services/">cup.services package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cup.shell/">cup.shell package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cup.storage/">cup.storage package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cup.jenkinslib/">cup.jenkinslib package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cup.web/">cup.web package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.cache">cup.cache module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.const">cup.const module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.decorators">cup.decorators module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.err">cup.err module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.exfile">cup.exfile module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.flag">cup.flag module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.log">cup.log module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.mail">cup.mail module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.platforms">cup.platforms module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.thread">cup.thread module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.timeplus">cup.timeplus module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.unittest">cup.unittest module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.version">cup.version module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../">cup</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../">Docs</a> &raquo;</li>
+        
+          <li><a href="../cup/">cup package</a> &raquo;</li>
+        
+      <li>cup.net package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/cup.net.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="cup-net-package">
+<h1>cup.net package<a class="headerlink" href="#cup-net-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cup.net.async/">cup.net.async package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cup.net.async/#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup.net.async/#module-cup.net.async.common">cup.net.async.common module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup.net.async/#module-cup.net.async.conn">cup.net.async.conn module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup.net.async/#module-cup.net.async.context">cup.net.async.context module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup.net.async/#module-cup.net.async.msg">cup.net.async.msg module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup.net.async/#module-cup.net.async.msgcenter">cup.net.async.msgcenter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup.net.async/#module-cup.net.async">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cup.net.route">
+<span id="cup-net-route-module"></span><h2>cup.net.route module<a class="headerlink" href="#module-cup.net.route" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">description:</th><td class="field-body">host route info related module</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="cup.net.route.RouteInfo">
+<em class="property">class </em><code class="descclassname">cup.net.route.</code><code class="descname">RouteInfo</code><a class="reference internal" href="../_modules/cup/net/route/#RouteInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.route.RouteInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Handler of Route Info for Linux system, for ipv4 only.</p>
+<p><em>E.g.</em></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cup.net</span> <span class="k">import</span> <span class="n">route</span>
+<span class="n">ri</span> <span class="o">=</span> <span class="n">route</span><span class="o">.</span><span class="n">RouteInfo</span><span class="p">()</span>
+<span class="nb">print</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">ri</span><span class="o">.</span><span class="n">get_route_by_ip</span><span class="p">(</span><span class="s1">&#39;10.32.19.92&#39;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">ri</span><span class="o">.</span><span class="n">get_routes</span><span class="p">(),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><em>Return</em></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+ <span class="s2">&quot;Use&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+ <span class="s2">&quot;Iface&quot;</span><span class="p">:</span> <span class="s2">&quot;eth1&quot;</span><span class="p">,</span>
+ <span class="s2">&quot;Metric&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+ <span class="s2">&quot;Destination&quot;</span><span class="p">:</span> <span class="s2">&quot;10.0.0.0&quot;</span><span class="p">,</span>
+ <span class="s2">&quot;Mask&quot;</span><span class="p">:</span> <span class="s2">&quot;255.0.0.0&quot;</span><span class="p">,</span>
+ <span class="s2">&quot;RefCnt&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+ <span class="s2">&quot;MTU&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+ <span class="s2">&quot;Window&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+ <span class="s2">&quot;Gateway&quot;</span><span class="p">:</span> <span class="s2">&quot;10.226.71.1&quot;</span><span class="p">,</span>
+ <span class="s2">&quot;Flags&quot;</span><span class="p">:</span> <span class="s2">&quot;0003&quot;</span><span class="p">,</span>
+ <span class="s2">&quot;IRTT&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span>
+<span class="p">}</span>
+<span class="p">[</span>
+ <span class="p">{</span>
+  <span class="s2">&quot;Use&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Iface&quot;</span><span class="p">:</span> <span class="s2">&quot;eth1&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Metric&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Destination&quot;</span><span class="p">:</span> <span class="s2">&quot;10.226.71.0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Mask&quot;</span><span class="p">:</span> <span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;RefCnt&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;MTU&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Window&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Gateway&quot;</span><span class="p">:</span> <span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Flags&quot;</span><span class="p">:</span> <span class="s2">&quot;0001&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;IRTT&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span>
+ <span class="p">},</span>
+ <span class="p">{</span>
+  <span class="s2">&quot;Use&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Iface&quot;</span><span class="p">:</span> <span class="s2">&quot;eth1&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Metric&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Destination&quot;</span><span class="p">:</span> <span class="s2">&quot;169.254.0.0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Mask&quot;</span><span class="p">:</span> <span class="s2">&quot;255.255.0.0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;RefCnt&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;MTU&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Window&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Gateway&quot;</span><span class="p">:</span> <span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Flags&quot;</span><span class="p">:</span> <span class="s2">&quot;0001&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;IRTT&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span>
+ <span class="p">},</span>
+ <span class="p">{</span>
+  <span class="s2">&quot;Use&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Iface&quot;</span><span class="p">:</span> <span class="s2">&quot;eth1&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Metric&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Destination&quot;</span><span class="p">:</span> <span class="s2">&quot;192.168.0.0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Mask&quot;</span><span class="p">:</span> <span class="s2">&quot;255.255.0.0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;RefCnt&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;MTU&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Window&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Gateway&quot;</span><span class="p">:</span> <span class="s2">&quot;10.226.71.1&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Flags&quot;</span><span class="p">:</span> <span class="s2">&quot;0003&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;IRTT&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span>
+ <span class="p">},</span>
+ <span class="p">{</span>
+  <span class="s2">&quot;Use&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Iface&quot;</span><span class="p">:</span> <span class="s2">&quot;eth1&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Metric&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Destination&quot;</span><span class="p">:</span> <span class="s2">&quot;172.16.0.0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Mask&quot;</span><span class="p">:</span> <span class="s2">&quot;255.240.0.0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;RefCnt&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;MTU&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Window&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Gateway&quot;</span><span class="p">:</span> <span class="s2">&quot;10.226.71.1&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Flags&quot;</span><span class="p">:</span> <span class="s2">&quot;0003&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;IRTT&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span>
+ <span class="p">},</span>
+ <span class="p">{</span>
+  <span class="s2">&quot;Use&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Iface&quot;</span><span class="p">:</span> <span class="s2">&quot;eth1&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Metric&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Destination&quot;</span><span class="p">:</span> <span class="s2">&quot;10.0.0.0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Mask&quot;</span><span class="p">:</span> <span class="s2">&quot;255.0.0.0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;RefCnt&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;MTU&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Window&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Gateway&quot;</span><span class="p">:</span> <span class="s2">&quot;10.226.71.1&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Flags&quot;</span><span class="p">:</span> <span class="s2">&quot;0003&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;IRTT&quot;</span><span class="p">:</span> <span class="s2">&quot;0&quot;</span>
+ <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="cup.net.route.RouteInfo.ROUTE_FILE">
+<code class="descname">ROUTE_FILE</code><em class="property"> = '/proc/net/route'</em><a class="headerlink" href="#cup.net.route.RouteInfo.ROUTE_FILE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cup.net.route.RouteInfo.get_interface_by_ip">
+<code class="descname">get_interface_by_ip</code><span class="sig-paren">(</span><em>ip</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/net/route/#RouteInfo.get_interface_by_ip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.route.RouteInfo.get_interface_by_ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the interface which can reach to the ip
+:param ip:</p>
+<blockquote>
+<div>destination ip</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">interface name which can reach to the ip.
+None if failed.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.route.RouteInfo.get_interfaces">
+<code class="descname">get_interfaces</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/net/route/#RouteInfo.get_interfaces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.route.RouteInfo.get_interfaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all the interface of this host</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.route.RouteInfo.get_route_by_ip">
+<code class="descname">get_route_by_ip</code><span class="sig-paren">(</span><em>ip</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/net/route/#RouteInfo.get_route_by_ip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.route.RouteInfo.get_route_by_ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the route_info which can reach to the ip address
+:param ip:</p>
+<blockquote>
+<div>destination ip address</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">route_info in type of dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.net.route.RouteInfo.get_routes">
+<code class="descname">get_routes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/net/route/#RouteInfo.get_routes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.route.RouteInfo.get_routes" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all the route_info of this host
+:return: all the readable route_info of this host</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.net">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cup.net" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">description:</th><td class="field-body">network related module</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="cup.net.get_local_hostname">
+<code class="descclassname">cup.net.</code><code class="descname">get_local_hostname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/net/#get_local_hostname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.get_local_hostname" title="Permalink to this definition">¶</a></dt>
+<dd><p>get hostname of this machine</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.net.get_hostip">
+<code class="descclassname">cup.net.</code><code class="descname">get_hostip</code><span class="sig-paren">(</span><em>hostname=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/net/#get_hostip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.get_hostip" title="Permalink to this definition">¶</a></dt>
+<dd><p>get ipaddr of a host</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hostname</strong> – None, by default, will get localhost ipaddr</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.net.getip_byinterface">
+<code class="descclassname">cup.net.</code><code class="descname">getip_byinterface</code><span class="sig-paren">(</span><em>iface='eth0'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/net/#getip_byinterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.getip_byinterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>get ipaddr of a network adapter</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Platform:</th><td class="field-body">Linux/Unix</td>
+</tr>
+</tbody>
+</table>
+<p>E.g.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cup</span>
+<span class="nb">print</span> <span class="n">cup</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">getip_byinterface</span><span class="p">(</span><span class="s1">&#39;eth0&#39;</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">cup</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">getip_byinterface</span><span class="p">(</span><span class="s1">&#39;eth1&#39;</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">cup</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">getip_byinterface</span><span class="p">(</span><span class="s1">&#39;xgbe0&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.net.set_sock_keepalive_linux">
+<code class="descclassname">cup.net.</code><code class="descname">set_sock_keepalive_linux</code><span class="sig-paren">(</span><em>sock</em>, <em>after_idle_sec=1</em>, <em>interval_sec=3</em>, <em>max_fails=5</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/net/#set_sock_keepalive_linux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.set_sock_keepalive_linux" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set TCP keepalive on an open socket.
+It activates after 1 second (after_idle_sec) of idleness,
+then sends a keepalive ping once every 3 seconds (interval_sec),
+and closes the connection after 5 failed ping (max_fails), or 15 seconds</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sock</strong> – socket</li>
+<li><strong>after_idle_sec</strong> – for TCP_KEEPIDLE. May not work, depends on ur system</li>
+<li><strong>interval_sec</strong> – for TCP_KEEPINTVL</li>
+<li><strong>max_fails</strong> – for TCP_KEEPCNT</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.net.set_sock_reusable">
+<code class="descclassname">cup.net.</code><code class="descname">set_sock_reusable</code><span class="sig-paren">(</span><em>sock</em>, <em>resuable=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/net/#set_sock_reusable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.set_sock_reusable" title="Permalink to this definition">¶</a></dt>
+<dd><p>set socket reusable</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.net.set_sock_linger">
+<code class="descclassname">cup.net.</code><code class="descname">set_sock_linger</code><span class="sig-paren">(</span><em>sock</em>, <em>l_onoff=1</em>, <em>l_linger=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/net/#set_sock_linger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.set_sock_linger" title="Permalink to this definition">¶</a></dt>
+<dd><p>set socket linger param (socket.SO_LINGER)</p>
+<p>I.g.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span>
+    <span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_LINGER</span><span class="p">,</span>
+    <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;ii&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.net.set_sock_quickack">
+<code class="descclassname">cup.net.</code><code class="descname">set_sock_quickack</code><span class="sig-paren">(</span><em>sock</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/net/#set_sock_quickack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.set_sock_quickack" title="Permalink to this definition">¶</a></dt>
+<dd><p>open quickack for the socket</p>
+<p>I.g.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">TCP_NODELAY</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">TCP_QUICKACK</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.net.localport_free">
+<code class="descclassname">cup.net.</code><code class="descname">localport_free</code><span class="sig-paren">(</span><em>port</em>, <em>is_ipv6=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/net/#localport_free"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.localport_free" title="Permalink to this definition">¶</a></dt>
+<dd><p>judge if a port is used. IPV4, by default</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.net.port_listened">
+<code class="descclassname">cup.net.</code><code class="descname">port_listened</code><span class="sig-paren">(</span><em>host</em>, <em>port</em>, <em>is_ipv6=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/net/#port_listened"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.port_listened" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if the port is being listened on the host</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../cup.net.async/" class="btn btn-neutral float-right" title="cup.net.async package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../cup/" class="btn btn-neutral" title="cup package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, CUP-DEV.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.7.0',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

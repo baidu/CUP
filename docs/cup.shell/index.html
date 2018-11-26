@@ -1,0 +1,414 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cup.shell package &mdash; cup 1.7.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex/" />
+    <link rel="search" title="Search" href="../search/" />
+    <link rel="next" title="cup.storage package" href="../cup.storage/" />
+    <link rel="prev" title="cup.services package" href="../cup.services/" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../" class="icon icon-home"> cup
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.7
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../cup/">cup package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../cup/#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../cup.net/">cup.net package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cup.res/">cup.res package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cup.util/">cup.util package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cup.services/">cup.services package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">cup.shell package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.shell.expect">cup.shell.expect module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.shell.oper">cup.shell.oper module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.shell">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cup.storage/">cup.storage package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cup.jenkinslib/">cup.jenkinslib package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cup.web/">cup.web package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.cache">cup.cache module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.const">cup.const module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.decorators">cup.decorators module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.err">cup.err module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.exfile">cup.exfile module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.flag">cup.flag module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.log">cup.log module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.mail">cup.mail module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.platforms">cup.platforms module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.thread">cup.thread module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.timeplus">cup.timeplus module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.unittest">cup.unittest module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup.version">cup.version module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cup/#module-cup">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../">cup</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../">Docs</a> &raquo;</li>
+        
+          <li><a href="../cup/">cup package</a> &raquo;</li>
+        
+      <li>cup.shell package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/cup.shell.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="cup-shell-package">
+<h1>cup.shell package<a class="headerlink" href="#cup-shell-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cup.shell.expect">
+<span id="cup-shell-expect-module"></span><h2>cup.shell.expect module<a class="headerlink" href="#module-cup.shell.expect" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">description:</th><td class="field-body"><strong>Guannan just made a wraper out of pexpect.</strong>
+The original copyright belongs to the author of pexpect module.
+See it at <a class="reference external" href="http://pexpect.sourceforge.net/pexpect.html">http://pexpect.sourceforge.net/pexpect.html</a></td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="cup.shell.expect.go">
+<code class="descclassname">cup.shell.expect.</code><code class="descname">go</code><span class="sig-paren">(</span><em>hostname</em>, <em>username</em>, <em>passwd</em>, <em>command=''</em>, <em>timeout=800</em>, <em>b_print_stdout=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/shell/expect/#go"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.shell.expect.go" title="Permalink to this definition">¶</a></dt>
+<dd><p>deprecated, recommand using go_ex or go_with_scp</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.shell.expect.go_ex">
+<code class="descclassname">cup.shell.expect.</code><code class="descname">go_ex</code><span class="sig-paren">(</span><em>hostname</em>, <em>username</em>, <em>passwd</em>, <em>command=''</em>, <em>timeout=800</em>, <em>b_print_stdout=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/shell/expect/#go_ex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.shell.expect.go_ex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run [command] on remote [hostname] and return result. If you have a lot
+of escape sign in the command, recommand using go_with_scp</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout</strong> – execution timeout, by default 800 seconds</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">return a dict with keys (‘exitstatus’ ‘remote_exitstatus’ ‘result’)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.shell.expect.checkssh">
+<code class="descclassname">cup.shell.expect.</code><code class="descname">checkssh</code><span class="sig-paren">(</span><em>hostname</em>, <em>username</em>, <em>passwd</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/shell/expect/#checkssh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.shell.expect.checkssh" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if we can ssh to hostname. Return True if succeed, False otherwise.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.shell.expect.go_with_scp">
+<code class="descclassname">cup.shell.expect.</code><code class="descname">go_with_scp</code><span class="sig-paren">(</span><em>hostname</em>, <em>username</em>, <em>passwd</em>, <em>command=''</em>, <em>host_tmp='/tmp/'</em>, <em>remote_tmp='/tmp/'</em>, <em>timeout=800</em>, <em>b_print_stdout=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/shell/expect/#go_with_scp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.shell.expect.go_with_scp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recommand using this function to remotely execute cmds.</p>
+<p>go_witch_scp will write a temp script file and scp to hostname:[host_tmp].
+Then execute it and get the result back.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>host_tmp</strong> – temp folder for keeping the temporary script file (contains the cmd)</li>
+<li><strong>remote_tmp</strong> – remote temp folder for keeping the temporary script file</li>
+<li><strong>timeout</strong> – timeout</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a dict with keys (‘exitstatus’ ‘remote_exitstatus’ ‘result’)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.shell.expect.lscp">
+<code class="descclassname">cup.shell.expect.</code><code class="descname">lscp</code><span class="sig-paren">(</span><em>src</em>, <em>hostname</em>, <em>username</em>, <em>passwd</em>, <em>dst</em>, <em>timeout=800</em>, <em>b_print_stdout=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/shell/expect/#lscp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.shell.expect.lscp" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy [localhost]:src to [hostname]:[dst]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">return a dict with keys (‘exitstatus’ ‘remote_exitstatus’ ‘result’)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.shell.expect.dscp">
+<code class="descclassname">cup.shell.expect.</code><code class="descname">dscp</code><span class="sig-paren">(</span><em>hostname</em>, <em>username</em>, <em>passwd</em>, <em>src</em>, <em>dst</em>, <em>timeout=9000</em>, <em>b_print_stdout=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/shell/expect/#dscp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.shell.expect.dscp" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy [hostname]:[src] to [localhost]:[dst].</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">return a dict with keys (‘exitstatus’ ‘remote_exitstatus’ ‘result’)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.shell.oper">
+<span id="cup-shell-oper-module"></span><h2>cup.shell.oper module<a class="headerlink" href="#module-cup.shell.oper" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">description:</th><td class="field-body">shell operations related module</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="cup.shell.oper.contains_file">
+<code class="descclassname">cup.shell.oper.</code><code class="descname">contains_file</code><span class="sig-paren">(</span><em>dstpath</em>, <em>expected_name</em>, <em>recursive=False</em>, <em>follow_link=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/shell/oper/#contains_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.shell.oper.contains_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>judge if the dstfile is in dstpath</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dstpath</strong> – search path</li>
+<li><strong>dstfile</strong> – file</li>
+<li><strong>recursive</strong> – search recursively or not. False by default.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">return True on success, False otherwise</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.shell.oper.backup_file">
+<code class="descclassname">cup.shell.oper.</code><code class="descname">backup_file</code><span class="sig-paren">(</span><em>srcpath</em>, <em>filename</em>, <em>dstpath</em>, <em>label=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cup/shell/oper/#backup_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.shell.oper.backup_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Backup srcpath/filename to dstpath/filenamne.label.
+If label is None, cup will use time.strftime(‘%H:%M:S’)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Dstpath:</th><td class="field-body">will create the folder if no existence</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.shell">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cup.shell" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">description:</th><td class="field-body">shell related module</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../cup.storage/" class="btn btn-neutral float-right" title="cup.storage package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../cup.services/" class="btn btn-neutral" title="cup.services package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, CUP-DEV.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.7.0',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

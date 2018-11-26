@@ -6,13 +6,13 @@ Subpackages
 
 .. toctree::
 
-    cup.jenkinslib
     cup.net
     cup.res
+    cup.util
     cup.services
     cup.shell
     cup.storage
-    cup.util
+    cup.jenkinslib
     cup.web
 
 Submodules
