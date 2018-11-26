@@ -13,7 +13,7 @@
 
 Visit Wiki to see more details: https://github.com/Baidu/CUP/wiki
 
-Visit Doc site to see py-docs: http://docs.iobusy.com/docs/cup/
+Visit Doc site to see py-docs: http://cupdoc.iobusy.com/
 
 ```python
 # Examples:
@@ -86,7 +86,7 @@ cup
 
 ### 3. 使用说明
 - Visit Wiki to see more details: https://github.com/Baidu/CUP/wiki
-- Visit Doc site to see py-docs: http://docs.iobusy.com/docs/cup/
+- Visit Doc site to see py-docs: http://cupdoc.iobusy.com/
 
 举例说明：
 
