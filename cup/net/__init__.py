@@ -199,7 +199,7 @@ def port_listened(host, port, is_ipv6=False):
     listened = False
     try:
         result = sock.connect_ex((host, port))
-        # 35 means eagain
+        # 35 means EAGIN
         if result == 0 or result == 35:
             listened = True
     # pylint: disable=W0703

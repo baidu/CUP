@@ -8,9 +8,6 @@
     Connection Context for each socket
 """
 import copy
-# import socket
-# import select
-# import errno
 import time
 import threading
 import traceback
@@ -21,10 +18,7 @@ except ImportError:
 
 import cup
 from cup import log
-# from cup import err as cuperr
 from cup.util import misc
-# from cup.util import threadpool
-# from cup.services import executor
 from cup.net.async import msg as async_msg
 
 
@@ -74,8 +68,7 @@ class CConnContext(object):  # pylint: disable=R0902
         else:
             msg = 'context with socket: {0}, peer:{1}'.format(
                     self._sock, self.get_peerinfo())
-        log.info('({0}) is to be destroyed'.format(msg))
-        # self._conn.cleanup_error_context(self)
+        log.debug('({0}) is to be destroyed'.format(msg))
         self._lock.release()
 
     def is_detroying(self):

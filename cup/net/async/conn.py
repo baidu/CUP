@@ -209,7 +209,6 @@ class CConnectionManager(object):
                     self._peer2context[peer] = context
                     self._fileno2context[fileno] = context
                     self._context2fileno_peer[context] = (fileno, peer)
-                    log.info('created context for the new sock')
                     ret = 0
                     try:
                         self._epoll.register(
@@ -267,7 +266,6 @@ class CConnectionManager(object):
                 sock.close()
                 return None
             self._set_sock_nonblocking(sock)
-            log.info('connect peer success')
             return sock
         except socket.error as error:
             log.warn(
@@ -344,7 +342,7 @@ class CConnectionManager(object):
             del self._fileno2context[fileno_peer[0]]
             del self._peer2context[fileno_peer[1]]
             del self._context2fileno_peer[context]
-            log.info('socket closed')
+            log.info('socket {0} closed successfully'.format(peerinfo))
         except Exception as error:
             pass
         finally:
@@ -750,7 +748,7 @@ class CConnectionManager(object):
                     del self._needack_context_dict[msg_key]
                     self._executor.queue_exec(
                         last_msg.get_callback_function(),
-                        executor.URGENCY_NORMAL,
+                        executor.URGENCY_HIGH,
                         last_msg, True
                     )
                 else:
@@ -759,8 +757,9 @@ class CConnectionManager(object):
                     )
                 continue
             # not ack_success + not in  context_dict
-            if msg_key not in self._needack_context_dict:
-                self._needack_context_dict[msg_key] = msg_item
+            else:
+                if msg_key not in self._needack_context_dict:
+                    self._needack_context_dict[msg_key] = msg_item
         time_out_list = []
         for key in self._needack_context_dict.keys():
             msg_item = self._needack_context_dict[key]

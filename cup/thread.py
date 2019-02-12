@@ -29,7 +29,7 @@ class CupThread(threading.Thread):
     """
     CupThread is a sub-class inherited from threading.Thread;
 
-    CupThread has 3 more features:
+    CupThread has 3 more methods:
 
     1. raise_exc, to send a raise-exception signal to the thread,
         TRY to let the thread raise an exception.

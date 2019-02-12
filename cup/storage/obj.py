@@ -8,10 +8,11 @@
 """
 
 import os
-import sys
 import abc
+import time
 import shutil
 import ftplib
+import traceback
 import logging
 
 from cup import log
@@ -478,7 +479,8 @@ class S3ObjectSystem(ObjectInterface):
 
 class FTPObjectSystem(ObjectInterface):
     """
-    ftp object system
+    ftp object system, Plz notice all methods of FTPObjectSystem is NOT
+    thread-safe! Be careful when you use it in a service of concurrency.
     """
     def __init__(self, config):
         """
@@ -494,12 +496,12 @@ class FTPObjectSystem(ObjectInterface):
             cup.err.ConfigError if there's any config item missing
         """
         ObjectInterface.__init__(self, config)
-        required_keys = ['uri', 'user', 'password']
+        required_keys = ['uri', 'user', 'passwords']
         if not self._validate_config(self._config, required_keys):
             raise err.ConfigError(str(required_keys))
         self._uri = self._config['uri']
         self._user = self._config['user']
-        self._passwd = self._config['password']
+        self._passwd = self._config['passwords']
         self._extra = self._config['extra']
         self._dufault_timeout = 30
         if self._extra is not None and isinstance(self._config['extra'], int):
@@ -512,15 +514,42 @@ class FTPObjectSystem(ObjectInterface):
             self.port = int(self._uri.split(':')[2])
         self._ftp_con.connect(self._host, self._port, self._dufault_timeout)
         self._ftp_con.login(self._user, self._passwd)
+        self._last_optime = time.time()
+        self._timeout = 15  # idle time for ftp
 
     def __del__(self):
         """release connect"""
-        self._ftp_con.quit()
+        try:
+            self._ftp_con.quit()
+        except:
+            pass
 
-    def put(self, dest, localfile):
+    def _check_timeout(self):
+        """check if we need to reconnect"""
+        if time.time() - self._last_optime > self._timeout:
+            try:
+                self._ftp_con.quit()
+            except:
+                pass
+            self._ftp_con.connect(
+                self._host, self._port, self._dufault_timeout
+            )
+            self._ftp_con.login(self._user, self._passwd)
+        self._last_optime = time.time()
+
+    def _get_relative_path(self, path, cwd):
+        """get relative path for real actions"""
+        cwd = os.path.normpath(cwd)
+        path = os.path.normpath(path)
+        if path.find(cwd) >= 0 and path.startswith('/'):
+            path = path[len(cwd):]
+        path = path.lstrip('/')
+        return path
+
+    def put(self, destfile, localfile):
         """
-        :param dest:
-            ftp path
+        :param destfile:
+            ftp path for the localfile
         :param localfile:
             localfile
         """
@@ -528,19 +557,32 @@ class FTPObjectSystem(ObjectInterface):
             'returncode': 0,
             'msg': 'success'
         }
-        src_path = self._ftp_con.pwd()
-        file_name = localfile
-        if "/" in localfile:
-            file_name = localfile.split('/')[-1]
+        log.info('to put localfile {0} to ftp {1}'.format(localfile, destfile))
+        self._check_timeout()
+        cwd = self._ftp_con.pwd()
+        destdir = None
+        destfile = os.path.normpath(destfile)
+        destfile = self._get_relative_path(destfile, cwd)
+        rindex = destfile.rfind('/')
+        if rindex < 0:
+            destdir = cwd
+            file_name = destfile
+        elif rindex >= (len(destfile) - 1):
+            raise ValueError('value error, destfile {0}'.format(
+                destfile))
+        else:
+            destdir = destfile[:rindex]
+            file_name = destfile.split('/')[-1]
+        log.info('put localfile {0} into ftp {1}'.format(localfile, destfile))
         with open(localfile, 'rb') as fhandle:
             try:
-                self._ftp_con.cwd(dest)
-                ftp_cmd = 'STOR ' + file_name
+                self._ftp_con.cwd(destdir)
+                ftp_cmd = 'STOR {0}'.format(file_name)
                 self._ftp_con.storbinary(ftp_cmd, fhandle)
             except Exception as error:
                 ret['returncode'] = -1
-                ret['msg'] = 'failed to put:{}'.format(error)
-        self._ftp_con.cwd(src_path)
+                ret['msg'] = 'failed to put, err:{0}'.format(error)
+        self._ftp_con.cwd(cwd)
         return ret
 
     def delete(self, path):
@@ -549,6 +591,10 @@ class FTPObjectSystem(ObjectInterface):
             'returncode': 0,
             'msg': 'success'
         }
+        log.info('to delete ftp file: {0}'.format(path))
+        self._check_timeout()
+        cwd = os.path.normpath(self._ftp_con.pwd())
+        path = self._get_relative_path(path, cwd)
         try:
             self._ftp_con.delete(path)
         except Exception as error:
@@ -564,16 +610,21 @@ class FTPObjectSystem(ObjectInterface):
             'returncode': 0,
             'msg': 'success'
         }
+        log.info('to get ftp file {0} to  {1}'.format(path, localpath))
+        self._check_timeout()
+        cwd = self._ftp_con.pwd()
+        path = self._get_relative_path(path, cwd)
         if localpath.endswith('/'):
             localpath += path.split('/')[-1]
+        log.info('to get ftp {0} to local {1}'.format(path, localpath))
         try:
             with open(localpath, 'w+') as fhandle:
                 ftp_cmd = 'RETR {0}'.format(path)
                 resp = self._ftp_con.retrbinary(ftp_cmd, fhandle.write)
         except Exception as error:
+            log.error(traceback.format_exc())
             ret['returncode'] = -1
             ret['msg'] = str(error)
-
         return ret
 
     def head(self, path):
@@ -593,6 +644,9 @@ class FTPObjectSystem(ObjectInterface):
             'returncode': -1,
             'msg': 'failed to get objectinfo'
         }
+        self._check_timeout()
+        cwd = self._ftp_con.pwd()
+        path = self._get_relative_path(path, cwd)
         res_info = []
         f_flag = False
         if self.is_file(path):
@@ -621,7 +675,9 @@ class FTPObjectSystem(ObjectInterface):
             'returncode': 0,
             'msg': 'success'
         }
-        src_path = self._ftp_con.pwd()
+        self._check_timeout()
+        cwd = self._ftp_con.pwd()
+        path = self._get_relative_path(path, cwd)
         try:
             if not recursive:
                 self._ftp_con.mkd(path)
@@ -635,8 +691,8 @@ class FTPObjectSystem(ObjectInterface):
                         self._ftp_con.cwd(subdir)
         except Exception as error:
             ret['returncode'] = -1
-            ret['msg'] = 'failed to mkdir, err:{}'.format(error)
-        self._ftp_con.cwd(src_path)
+            ret['msg'] = 'failed to mkdir, err:{0}'.format(error)
+        self._ftp_con.cwd(cwd)
         return ret
 
     def rmdir(self, path, recursive=True):
@@ -647,12 +703,14 @@ class FTPObjectSystem(ObjectInterface):
             'returncode': 0,
             'msg': 'success'
         }
-        src_path = self._ftp_con.pwd()
+        self._check_timeout()
+        cwd = self._ftp_con.pwd()
+        path = self._get_relative_path(path, cwd)
         try:
             if not recursive:
                 self._ftp_con.rmd(path)
             else:
-                src_path =  self._ftp_con.pwd()
+                cwd =  self._ftp_con.pwd()
                 self._ftp_con.cwd(path)
                 allItems = self._ftp_con.nlst()
                 for item in allItems:
@@ -660,25 +718,26 @@ class FTPObjectSystem(ObjectInterface):
                         self._ftp_con.delete(item)
                     else:
                         self.rmdir(item)
-                self._ftp_con.cwd(src_path)
+                self._ftp_con.cwd(cwd)
                 self._ftp_con.rmd(path)
         except Exception as error:
             ret['returncode'] = -1
-            ret['msg'] = 'failed to rmdir, err:{}'.format(error)
-        self._ftp_con.cwd(src_path)
+            ret['msg'] = 'failed to rmdir, err:{0}'.format(error)
+        self._ftp_con.cwd(cwd)
         return ret
 
     def is_file(self, path):
         """path is file or not"""
         res = False
-        src_path = self._ftp_con.pwd()
-        path = path.rstrip('/')
+        self._check_timeout()
+        cwd = self._ftp_con.pwd()
+        path = self._get_relative_path(path, cwd)
         res_info = []
         def _call_back(arg):
             res_info.append(arg)
         try:
             self._ftp_con.cwd(path)
-            self._ftp_con.cwd(src_path)
+            self._ftp_con.cwd(cwd)
             return res
         except Exception as e:
             pass
@@ -689,9 +748,9 @@ class FTPObjectSystem(ObjectInterface):
         self._ftp_con.retrlines('MLSD', _call_back)
         for item in res_info:
             if item.split(';')[-1].strip() == file_name and 'type=file' in item:
-                self._ftp_con.cwd(src_path)
+                self._ftp_con.cwd(cwd)
                 return True
-        self._ftp_con.cwd(src_path)
+        self._ftp_con.cwd(cwd)
         return False
 
 
@@ -723,7 +782,7 @@ class LocalObjectSystem(ObjectInterface):
         # pylint: disable=W0703
         except Exception as error:
             ret['returncode'] = -1
-            ret['msg'] = 'failed to put:{}'.format(error)
+            ret['msg'] = 'failed to put:{0}'.format(error)
         return ret
 
     def delete(self, path):
@@ -737,7 +796,9 @@ class LocalObjectSystem(ObjectInterface):
         # pylint: disable=W0703
         except Exception as error:
             ret['returncode'] = -1
-            ret['msg'] = 'failed to unlink file:{}, err:{}'.format(path, error)
+            ret['msg'] = 'failed to unlink file:{0}, err:{1}'.format(
+                path, error
+            )
         return ret
 
     def get(self, path, localpath):
@@ -784,7 +845,7 @@ class LocalObjectSystem(ObjectInterface):
             func(path)
         except IOError as error:
             ret['returncode'] = -1
-            ret['msg'] = 'failed to mkdir, err:{}'.format(error)
+            ret['msg'] = 'failed to mkdir, err:{0}'.format(error)
         return ret
 
     def rmdir(self, path, recursive=True):
@@ -802,7 +863,7 @@ class LocalObjectSystem(ObjectInterface):
             func(path)
         except IOError as error:
             ret['returncode'] = -1
-            ret['msg'] = 'failed to rmdir, err:{}'.format(error)
+            ret['msg'] = 'failed to rmdir, err:{0}'.format(error)
         return ret
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

@@ -8,6 +8,8 @@
 """
 import os
 import time
+import traceback
+import threading
 import collections
 
 from cup import log
@@ -74,7 +76,6 @@ class BaseSerilizer(object):
         return num
 
 
-
 MsgPostRevision = collections.namedtuple(
     'MsgPostRevision', ['hostkey', 'revision_id', 'is_post']
 )
@@ -83,7 +84,8 @@ MsgPostRevision = collections.namedtuple(
 class LocalFileSerilizer(BaseSerilizer):
     """ local file serilizer"""
     def __init__(
-        self, storage_dir, skip_badlog=False, max_logfile_size=65536
+        self, storage_dir, skip_badlog=False, max_logfile_size=512 * 1024,
+        persist_after_sec=10 * 60
     ):
         """
 
@@ -91,6 +93,8 @@ class LocalFileSerilizer(BaseSerilizer):
             Attention. Plz use this parameter very carefully.
             It will skip bad records which means you have high chance
             losing data!!!
+        :param persist_after_sec:
+
         """
         BaseSerilizer.__init__(self)
         self._skip_badlog = skip_badlog
@@ -102,6 +106,8 @@ class LocalFileSerilizer(BaseSerilizer):
         self._load_stream = None
         self._current_loadfile = None
         self._buffer_files = None
+        self._persist_sec = persist_after_sec
+        self._record_lenbytes = 4
 
         self._loglist_stream = None
         self._logfile_switching = False
@@ -109,6 +115,12 @@ class LocalFileSerilizer(BaseSerilizer):
         self._logfile_listnew = '{0}.new'.format(self._logfile_list)
         self._loglist_switch = '{0}.switch'.format(self._logfile_list)
         self._loglist_switched = '{0}.switched'.format(self._logfile_list)
+        self._mlock = threading.Lock()
+        self._name = self.__class__
+
+    def set_name(self, name):
+        """set a name of str for the serializer"""
+        self._name = name
 
     @classmethod
     def __cmp_logfile_id(cls, first, second):
@@ -224,7 +236,7 @@ class LocalFileSerilizer(BaseSerilizer):
         """close the current stream"""
         self._writestream.close()
 
-    def _stream_open(self, fname):
+    def _stream_wbopen(self, fname):
         """open new stream"""
         ret = False
         try:
@@ -248,14 +260,14 @@ class LocalFileSerilizer(BaseSerilizer):
             )
         return ret
 
-    def is_stream_open(self):
+    def is_stream_wbopen(self):
         """is stream open"""
         if self._writestream is None:
             return False
         else:
             return True
 
-    def get_next_logfile(self, logid):
+    def _get_next_logfile(self, logid):
         """get current logfile"""
         folder = self._get_storage_dir(logid=logid)
         fname = '{0}/writing.{1}'.format(folder, logid)
@@ -268,15 +280,24 @@ class LocalFileSerilizer(BaseSerilizer):
     def _get_ordered_logfiles(self, folder):
         """get log files in order"""
         files = sorted(os.listdir(folder), cmp=self.__cmp_logfile_id)
-        return files
+        retfiles = []
+        for item in files:
+            if any([
+                len(item.split('.')) != 2,
+                item.find('done.') < 0 and item.find('writing.') < 0
+            ]):
+                log.info('file name {0} invalid, will skip'.format(item))
+                continue
+            retfiles.append(item)
+        return retfiles
 
     def set_current_logid(self, logid):
         """reset current log id"""
         if logid < 0:
             raise ValueError('cannot setup logid less than 0')
         self._logid = logid
-        fname = self.get_next_logfile(self._logid)
-        if not self._stream_open(fname):
+        fname = self._get_next_logfile(self._logid)
+        if not self._stream_wbopen(fname):
             log.error('failed to open stream, return False')
             return False
         log.info('reset current log id to {0}'.format(logid))
@@ -344,42 +365,62 @@ class LocalFileSerilizer(BaseSerilizer):
             self._loglist_stream.flush()
             os.fsync(self._loglist_stream.fileno())
             self._current_filesize = 0
-            # log.info('next logid:{0}'.format(self._logid))
-            fname = self.get_next_logfile(self._logid)
-            if not self._stream_open(fname):
+            fname = self._get_next_logfile(self._logid)
+            if not self._stream_wbopen(fname):
                 return False
         return True
 
-    def add_log(self, log_type, log_mode, log_binary):
-        """ add log into the local file"""
-        if not self.is_stream_open():
-            fname = self.get_next_logfile(self._logid)
-            if not self._stream_open(fname):
-                return False
-        # binary :=
-        # 32bit len | 128bit logid | log_type 16bit | log_mode 16bit| binary
-        bin_logid = self.asign_uint2byte_bybits(self._logid, 128)
-        bin_type = self.asign_uint2byte_bybits(log_type, 16)
-        bin_mode = self.asign_uint2byte_bybits(log_mode, 16)
-        data = '{0}{1}{2}{3}'.format(bin_logid, bin_type, bin_mode, log_binary)
-        data_len = len(data)
-        str_data_len = self.asign_uint2byte_bybits(data_len, 32)
-        log.debug('{0} add_log, log_type {1} log_mode {2}'.format(
-            self.__class__, log_type, log_mode)
-        )
-        write_data = '{0}{1}'.format(str_data_len, data)
-        log.info('to add data, logid:{0}'.format(self._logid))
-        if self._write_data(write_data):
-            log.debug('add_log, write success')
-            self._current_filesize += (data_len + 4)
-            if not self._check_need_new_logfile():
-                return False
+    def is_empty(self):
+        """return if there is no log"""
+        folder = self._get_storage_dir()
+        files = self._get_ordered_logfiles(folder)
+        if len(files) < 1:
             return True
         else:
-            log.warn('{0} failed to add_log, log_type {1} log_mode {2}'.format(
-                self.__class__, log_type, log_mode)
-            )
             return False
+
+    def add_log(self, log_type, log_mode, log_binary):
+        """add log into the local file
+
+        :return:
+            a tuple (result_True_or_False, logid_or_None)
+        """
+        self._mlock.acquire()
+        ret = (True, None)
+        if not self.is_stream_wbopen():
+            fname = self._get_next_logfile(self._logid)
+            if not self._stream_wbopen(fname):
+                ret = (False, None)
+        if ret[0]:
+            # binary :=
+            # 32bit len | 128bit logid | log_type 16bit | log_mode 16bit| bin
+            bin_logid = self.asign_uint2byte_bybits(self._logid, 128)
+            bin_type = self.asign_uint2byte_bybits(log_type, 16)
+            bin_mode = self.asign_uint2byte_bybits(log_mode, 16)
+            data = '{0}{1}{2}{3}'.format(
+                bin_logid, bin_type, bin_mode, log_binary
+            )
+            data_len = len(data)
+            str_data_len = self.asign_uint2byte_bybits(
+                data_len, self._record_lenbytes * 8)
+            write_data = '{0}{1}'.format(str_data_len, data)
+            log.info('{0} add_log, type {1} mode {2}, logid {3}, '
+                'datelen:{4}'.format(
+                self._name, log_type, log_mode, self._logid, data_len)
+            )
+            if self._write_data(write_data):
+                self._current_filesize += (data_len + len(str_data_len))
+                if not self._check_need_new_logfile():
+                    ret = (False, None)
+                else:
+                    ret = (True, self._logid)
+            else:
+                log.error('failed to add_log(type:{} mode {}'.format(
+                    log_type, log_mode)
+                )
+                ret = (False, None)
+        self._mlock.release()
+        return ret
 
     def purge_data(self, before_logid):
         """
@@ -482,9 +523,9 @@ class LocalFileSerilizer(BaseSerilizer):
             log.error('cannot create loglist, raise IOError')
             raise IOError('cannot create loglist, {0}'.format(err))
         log.info(
-            'try to recover from last '
-            'write if there is any need, truncate_last_failure:{0}'.format(
-                truncate_last_failure)
+            '{0} try to recover from last '
+            'write if there is any need, truncate_last_failure:{1}'.format(
+                self._name, truncate_last_failure)
         )
         self._recover_from_lastwriting(truncate_last_failure)
 
@@ -501,15 +542,15 @@ class LocalFileSerilizer(BaseSerilizer):
 
         """
         if stream is None:
-            return LOGFILE_EOF
+            return (LOGFILE_EOF, None)
         str_datalen = datalen = str_data = None
         try:
-            str_datalen = stream.read(4)
+            str_datalen = stream.read(self._record_lenbytes)
             if len(str_datalen) == 0:
                 return (LOGFILE_EOF, None)
-            if len(str_datalen) < 4:
+            if len(str_datalen) < self._record_lenbytes:
                 log.warn('got a bad log from stream:{0}'.format(stream.name))
-                return LOGFILE_BAD_RECORD
+                return (LOGFILE_BAD_RECORD, None)
             datalen = self.convert_bytes2uint(str_datalen)
             str_data = stream.read(datalen)
             if len(str_data) < datalen:
@@ -518,10 +559,10 @@ class LocalFileSerilizer(BaseSerilizer):
                         stream.name)
                 )
                 return (LOGFILE_BAD_RECORD, None)
-            log_id = self.convert_bytes2uint(str_data[0:16])
-            log_type = self.convert_bytes2uint(str_data[16:2])
-            log_mode = self.convert_bytes2uint(str_data[18:2])
-            log_binary = self.convert_bytes2uint(str_data[20:])
+            log_id = self.convert_bytes2uint(str_data[0: 16])
+            log_type = self.convert_bytes2uint(str_data[16: 16 + 2])
+            log_mode = self.convert_bytes2uint(str_data[18: 18 + 2])
+            log_binary = str_data[20:]
             return (
                 LOGFILE_GOOD, LogRecord(
                     datalen, log_id, log_type, log_mode, log_binary
@@ -529,6 +570,7 @@ class LocalFileSerilizer(BaseSerilizer):
             )
         except Exception as err:
             log.error('failed to parse log record:{0}'.format(err))
+            log.error(traceback.format_exc())
             return LOGFILE_BAD_RECORD
 
     def _move2next_load_fname(self):
@@ -576,7 +618,7 @@ class LocalFileSerilizer(BaseSerilizer):
             and continue reading
 
         :return:
-            a. return a list of "record_num" of LogRecords.
+            a. return a list of "record_num" of LogRecord.
 
             b. If the count number of list is less than record_num,
             it means the stream encounter EOF, plz read again afterwards.
@@ -613,7 +655,7 @@ class LocalFileSerilizer(BaseSerilizer):
                 move2nextstream = False
                 ret = self._move2next_load_fname()
                 if LOGFILE_EOF == ret:
-                    log.debug('does not have more log edits to read, plz retry')
+                    log.debug('no more log edits to read, plz retry')
                     break
                 elif LOGFILE_GOOD == ret:
                     log.debug('moved to next log edit file, to read new log')
