@@ -1,0 +1,420 @@
+
+<!DOCTYPE HTML>
+<html lang="en" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Release Note · Cup Documentation</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="author" content="Guannan Ma">
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-splitter/splitter.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-insert-logo/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    
+
+    
+        <link rel="shortcut icon" href='images/cup.logo.jpg' type="image/x-icon">
+    
+    
+        <link rel="bookmark" href='images/cup.logo.jpg' type="image/x-icon">
+    
+    
+        <link rel="apple-touch-icon" href='images/cup.logo.jpg'>
+    
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+    
+        
+        <li>
+            <a href="https://github.com/baidu/CUP" target="_blank" class="custom-link">Github Website</a>
+        </li>
+    
+    
+
+    
+    <li class="divider"></li>
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    MainPage 
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" >
+            
+                <span>
+            
+                    
+                    RoadMap
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter active" data-level="1.2.1" data-path="ChangeLog.html">
+            
+                <a href="ChangeLog.html">
+            
+                    
+                    Release Note
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" >
+            
+                <a target="_blank" href="http://cupdoc.iobusy.com">
+            
+                    
+                    Documentation
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="." >Release Note</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="1-versions-released"><a name="1-versions-released" class="plugin-anchor" href="#1-versions-released"><i class="fa fa-link" aria-hidden="true"></i></a>1. Versions Released</h1>
+<h2 id="version-200---201862--20181231"><a name="version-200---201862--20181231" class="plugin-anchor" href="#version-200---201862--20181231"><i class="fa fa-link" aria-hidden="true"></i></a>Version 2.0.0 - 2018.6.2 ~ 2018.12.31</h2>
+<pre><code>* [New] pip support
+* [New] cup.storage.obj - Add ftp/s3/local storage support (with universal apis)
+* [Bug] cup.net.localport_free - Reversely result returned
+* [Bug] cup.net.async - Msg class class variable 
+* [Bug] cup.net.async - logging typo
+* [Bug] cup.net.async - Msg disorder bug (an import bug fix!)
+* [New] cup.net.async - Add get_context related class method
+* [Bug] cup.decorators - fix wrap exception
+* [Bug] cup.unittest - Fix bug for assert_lt
+* [Bug] cup.res.linux - Add support for customized linux kernel
+* [Enahcnement] cup.net.set_sock_keepalive_linux - add exception catch code lines
+* [Enhancement] Use rtd (read_the_doc theme) to reconsutrct cup api-doc
+</code></pre><h2 id="version-161---starting-from-201825--201861"><a name="version-161---starting-from-201825--201861" class="plugin-anchor" href="#version-161---starting-from-201825--201861"><i class="fa fa-link" aria-hidden="true"></i></a>Version 1.6.1 - starting from 2018.2.5 ~ 2018.6.1</h2>
+<pre><code>* [New] cup.shell.is_proc_alive - Add optional to abandon vim|less|vi|tail|cat|more or custom filter    
+* [Bug] cup.shell.get_pid - Fix grep to surely abandon vim|less|vi|tail|cat|more 
+* [New] cup.log - Add support for stack manipulation, which can pop out function calls.
+* [New] cup.err - Add UnImplemented exception class.
+* [New] cup.exfile - Support temp files which will be removed immediately after the variable life ends.
+* [Enhancement] cup.util.conf - support $ in a conf key
+* [Doc] cup.shell - Fix doc bug. 
+* [New] cup.shell - Add grep support string with space
+* [New] cup.storage.obj - Support common object storage apis including ftp, s3
+* [Bug] cup.res.linux - Getting cpuinfo has bugs (new kernel 3.10)
+* [Enhancement] - cup.util.threadpool, add daemon_threads as the parameter
+    that you can use to let the threadpool threads behave like daemon-thread
+    (when the main thread exits, it exits as well)
+* [Enhancement] - conf.util.conf - support conf line &quot;[.test] # comments&quot; 
+</code></pre><h2 id="version-160---starting-from-201796--20171229"><a name="version-160---starting-from-201796--20171229" class="plugin-anchor" href="#version-160---starting-from-201796--20171229"><i class="fa fa-link" aria-hidden="true"></i></a>Version 1.6.0 - starting from 2017.9.6 ~ 2017.12.29</h2>
+<pre><code>* [New] cup.bidu.icafe - interact with baidu icafe.
+* [New] MsgBroker - Add a broker for handling system failures
+* [New] cup.
+* [Bug] Linux Resource Query Bug - related to data columuns
+* [Bug] cup.net.async - socket cannot be got.
+* [Enhancement] cup.net.async - CUP utilization enhancement
+</code></pre><h2 id="version-156---starting-from--201731--201795"><a name="version-156---starting-from--201731--201795" class="plugin-anchor" href="#version-156---starting-from--201731--201795"><i class="fa fa-link" aria-hidden="true"></i></a>Version 1.5.6 - starting from  2017.3.1 ~ 2017.9.5</h2>
+<pre><code>* [Enhancement] async enhancement for stability
+* [New] CycleIDGenerator for generating universally unique_id (ip, port
+    encoded as part of the id)
+* [Enhancement] cup.net.async exits more quickly than before
+* [Bug] cup.net.async - Fix CPU-utilization too high bug
+* [Bug] cup.net.async - Fix getting-peerinfo bug
+* [Bug] cup.res.linux - Kernel version was returned with a tuple
+    (&apos;2&apos;, &apos;6&apos;, &apos;32&apos;) which should be (2, 6, 32)
+</code></pre><h2 id="version-155---staring-from-1118--201731"><a name="version-155---staring-from-1118--201731" class="plugin-anchor" href="#version-155---staring-from-1118--201731"><i class="fa fa-link" aria-hidden="true"></i></a>Version: 1.5.5 - staring from 11.18 ~ 2017.3.1</h2>
+<pre><code>* [Enhancement] debug method for executor
+* [async] CNeedAckMsg &amp; retry mechnism added. CAckMsg added
+</code></pre><h2 id="version-154---starting-from-20169--20161111"><a name="version-154---starting-from-20169--20161111" class="plugin-anchor" href="#version-154---starting-from-20169--20161111"><i class="fa fa-link" aria-hidden="true"></i></a>Version: 1.5.4 - Starting from 2016.9 ~ 2016.11.11</h2>
+<pre><code>* [Enhancement] generator supports staring point
+* [Enhancement] catch exception socket.gaierror when it encounters network
+    instability
+* [Bug] Set up splitter other thant colon in a Configure2Dict with blanks and comments 
+* [Async] Support automatic msg retry
+* [Async] Support ack msg
+</code></pre><h2 id="version-153---starting-from-20166-to-20168"><a name="version-153---starting-from-20166-to-20168" class="plugin-anchor" href="#version-153---starting-from-20166-to-20168"><i class="fa fa-link" aria-hidden="true"></i></a>Version: 1.5.3 - Starting from 2016.6 to 2016.8</h2>
+<pre><code>* [New] cup.util.conf - support $include &quot;conf_file&quot; syntax [write/read]
+* [New] port free check. Listened port probe.
+* [Enhancement] cup.net.async - enhance network write/read speed. 
+    Example provided
+* [Improvement] - Improve cup.log performance
+* [Enhancement] cup.util.threadpool, callback function will receive
+    Exception object (param result) if it encounters error.
+</code></pre><h2 id="version-151--152"><a name="version-151--152" class="plugin-anchor" href="#version-151--152"><i class="fa fa-link" aria-hidden="true"></i></a>Version: 1.5.1 &amp;&amp; 1.5.2</h2>
+<pre><code>* [New] cup.log - add xxx_if 
+* [New] cup.thirdp - replace MySQLdb with pymysql. 
+    * from cup.thirdp import pymysql
+    * import MySQLdb
+* [New] cup.util.generator - get_random_str
+* [Bug] cup.util.conf - bug fix
+</code></pre><h2 id="version-150"><a name="version-150" class="plugin-anchor" href="#version-150"><i class="fa fa-link" aria-hidden="true"></i></a>Version: 1.5.0</h2>
+<pre><code>* [New] cup.jenkinslib - add jenkins lib with which you can operate on jenkins jobs
+* [New] cup.log.parse - parse string line logged by cup.log.XXX
+* [New] cup.unittest.assert_startswith
+* [New] cup.oper - add contains_file which searchs a file and return its existence
+* [Bug] cup.util.conf - fix &quot;key comparation order&quot; bug for Configure2Dict
+* [Bug] cup.util.conf - fix HdfsXmlConf &quot;eletemnt without value. e.g. &lt;value/&gt;
+</code></pre><h2 id="version-142"><a name="version-142" class="plugin-anchor" href="#version-142"><i class="fa fa-link" aria-hidden="true"></i></a>Version: 1.4.2</h2>
+<pre><code>* [Bug] oper.is_proc_exist. fix a bug while check proc exist
+* [New] Add cup.services.executor. Exec and delay_exec service
+* [New] Add cup.services.buffers. Buffer releated feature. For easing
+        memory fragment.    
+* [Enahcnement] remove traceback in cup.util.threadpool
+* [Enhancement] cup.log.reinit_comlog, if loggername has inited, raise
+ValueError
+* [New]  cup.log.get_inited_loggername, get has inited loggername
+* [New]  cup.shell.rmtree - add safemode support for shutil.rmtree
+* [New]  cup.const - add const value support inside cup
+* [New]  cup.conf - add HdfsConf support
+* [New]  cup.shell.get_pid - get process id by process_path and grep_string
+</code></pre><h2 id="version-141"><a name="version-141" class="plugin-anchor" href="#version-141"><i class="fa fa-link" aria-hidden="true"></i></a>Version: 1.4.1</h2>
+<pre><code>* [New] assert_boundary, assert_local_file_eq 2015/4/19
+* [New] Log level [warnning error fatal] splitted into file.log.wf
+* [New] Hdfs
+* [New] Smtp mail supports [cc/bcc]
+* [Enhancement] Sms add return values
+* [Bug] cup.util.conf - A sort method bug
+* [Bug] sms cannot handle \n as line separator
+</code></pre><h2 id="version-120"><a name="version-120" class="plugin-anchor" href="#version-120"><i class="fa fa-link" aria-hidden="true"></i></a>Version: 1.2.0</h2>
+<ul>
+<li>unittest  <ul>
+<li>[New] Add assert_not_eq</li>
+</ul>
+</li>
+<li><p>decorators Add </p>
+<ul>
+<li>[New] Add TraceUsedTime. For tracing used time in a function</li>
+<li>[Bug] Bug decorators.Singleton (May cause a thread hang)</li>
+</ul>
+</li>
+<li><p>cup.bidu</p>
+<ul>
+<li>fix a bug which will block cup usage on windows</li>
+<li>add jenkins support</li>
+</ul>
+</li>
+</ul>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Release Note","level":"1.2.1","depth":2,"next":{"title":"Documentation","level":"1.3","depth":1,"url":"http://cupdoc.iobusy.com","ref":"http://cupdoc.iobusy.com","articles":[]},"previous":{"title":"RoadMap","level":"1.2","depth":1,"ref":"","articles":[{"title":"Release Note","level":"1.2.1","depth":2,"path":"ChangeLog.md","ref":"ChangeLog.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["-sharing","splitter","anchors","sharing-plus","favicon","insert-logo","chinese-video"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"splitter":{},"search":{},"sharing-plus":{"qq":false,"all":["facebook","google","twitter","instapaper","linkedin","pocket","stumbleupon"],"douban":false,"facebook":true,"weibo":false,"instapaper":false,"whatsapp":false,"hatenaBookmark":false,"twitter":true,"messenger":false,"line":false,"vk":false,"pocket":true,"google":false,"viber":false,"stumbleupon":false,"qzone":false,"linkedin":false},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"anchor-navigation-ex":{"showLevel":false,"mode":"float","pageTop":{"showLevelIcon":true,"level1Icon":"fa fa-hand-o-right","level2Icon":"fa fa-hand-o-right","level3Icon":"fa fa-hand-o-right"}},"favicon":{"shortcut":"./images/cup.logo.jpg","bookmark":"./images/cup.logo.jpg","appleTouch":"./images/cup.logo.jpg"},"chinese-video":{},"sharing":{"qq":false,"all":["google","facebook","weibo","twitter","qq","qzone","linkedin","pocket"],"douban":false,"facebook":false,"weibo":false,"instapaper":false,"whatsapp":false,"hatenaBookmark":false,"twitter":false,"messenger":false,"line":false,"vk":false,"pocket":false,"google":false,"viber":false,"stumbleupon":false,"qzone":false,"linkedin":false},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{},"insert-logo":{"style":"background: none;","url":"http://cup.iobusy.com/cup.logo.png"}},"theme":"default","author":"Guannan Ma","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Cup Documentation","language":"en","links":{"sidebar":{"Github Website":"https://github.com/baidu/CUP"}},"gitbook":"*","description":"Cup Documentation which you may refer to"},"file":{"path":"ChangeLog.md","mtime":"2019-01-22T08:06:35.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-02-26T08:31:22.250Z"},"basePath":".","book":{"language":"en"}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-splitter/splitter.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing-plus/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-insert-logo/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

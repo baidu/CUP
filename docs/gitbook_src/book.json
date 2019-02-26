@@ -1,0 +1,66 @@
+{
+    "title": "Cup Documentation",
+    "author": "Guannan Ma",
+    "description": "Cup Documentation which you may refer to",
+    "language": "zh-hans",
+    "structure": {
+        "readme": "README.md"
+    },
+    "links": {
+        "sidebar": {
+            "Github Website": "https://github.com/baidu/CUP"
+        }
+    },
+    "plugins": [
+        "-sharing",
+        "splitter",
+        "anchors",
+        "sharing-plus",
+        "favicon",
+        "insert-logo",
+        "chinese-video"
+    ],
+    "pluginsConfig": {
+        "sharing": {
+            "douban": false,
+            "facebook": false,
+            "google": false,
+            "hatenaBookmark": false,
+            "instapaper": false,
+            "line": false,
+            "linkedin": false,
+            "messenger": false,
+            "pocket": false,
+            "qq": false,
+            "qzone": false,
+            "stumbleupon": false,
+            "twitter": false,
+            "viber": false,
+            "vk": false,
+            "weibo": false,
+            "whatsapp": false,
+            "all": [
+                "google", "facebook", "weibo", "twitter",
+                "qq", "qzone", "linkedin", "pocket"
+            ]
+        },
+        "anchor-navigation-ex": {
+            "showLevel": false,
+            "mode": "float",
+            "pageTop": {
+                "showLevelIcon": true,
+                "level1Icon": "fa fa-hand-o-right",
+                "level2Icon": "fa fa-hand-o-right",
+                "level3Icon": "fa fa-hand-o-right"
+            }
+        },
+        "favicon":{
+            "shortcut": "./images/cup.logo.jpg",
+            "bookmark": "./images/cup.logo.jpg",
+            "appleTouch": "./images/cup.logo.jpg"
+        },
+        "insert-logo":{
+            "url": "http://cup.iobusy.com/cup.logo.png"
+        }
+    }
+}

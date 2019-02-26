@@ -1,0 +1,7 @@
+# 1. folders
+node_modules
+_book
+
+# 2. files
+_book.zip
+.*
