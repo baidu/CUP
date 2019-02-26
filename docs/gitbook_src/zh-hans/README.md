@@ -13,7 +13,7 @@
 <!-- /MDTOC -->
 
 **1分钟了解Python-Cup基础库**
-<iframe src="//player.bilibili.com/player.html?aid=41856081&cid=73491550&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+<iframe src="//player.bilibili.com/player.html?aid=41856081" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" width="900px" height="900px"> </iframe>
 
 ----------
 
