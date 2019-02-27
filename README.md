@@ -1,5 +1,8 @@
 **Plz visit http://cup.iobusy.com for details!**
 
+**请大家访问官网 http://cup.iobusy.com 获取更多信息**
+
+
 ## Quick Start
 ### 1. Download
     - git clone CUP or download the released tar balls
