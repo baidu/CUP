@@ -4,9 +4,11 @@
 # Authors: Guannan Ma (@mythmgn),
 """
 :description:
+    TypeMan and FlagMan is for someone who looks up value by key and
+    the reverse (key by value)
 
 """
-__all__ = ['TypeMan']
+__all__ = ['BaseMan', 'TypeMan', 'FlagMan']
 
 
 class BaseMan(object):
@@ -44,13 +46,14 @@ class BaseMan(object):
 
 class TypeMan(BaseMan):
     """
-    msg flag class
+    msg flag class inherited from cup.flag.BaseMan
     """
 
 
 class FlagMan(BaseMan):
     """
-    msg flag class
+    msg flag class inherited from cup.flag.BaseMan inherited from
+    cup.flag.BaseMan
     """
 
 

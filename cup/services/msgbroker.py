@@ -4,7 +4,10 @@
 # Authors: Guannan Ma (@mythmgn),
 """
 :description:
-    Msg Broker Service. Every component of a process can produce_msg
+    Msg Broker Service. Every component of a process can produce_msg.
+
+    This msg broker feature is still exprimental. Do not use it in production
+    until this comment is deleted.
 """
 
 

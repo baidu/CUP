@@ -1,6 +1,6 @@
 # folders
 cup.baidurepo
-*.bak
+*.bak*
 cup/bidu
 build/*
 dist/

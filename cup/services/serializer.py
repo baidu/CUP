@@ -94,7 +94,8 @@ class LocalFileSerilizer(BaseSerilizer):
             It will skip bad records which means you have high chance
             losing data!!!
         :param persist_after_sec:
-
+            TODO: If the writer has not been writing for [persist_after_sec],
+            forcelly flush or close the writer (not implemented yet)
         """
         BaseSerilizer.__init__(self)
         self._skip_badlog = skip_badlog

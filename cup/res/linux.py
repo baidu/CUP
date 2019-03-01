@@ -1,10 +1,12 @@
 #!/bin/env python  pylint: disable=C0302
 # -*- coding: utf-8 -*
-# Authors: Giampaolo Rodola of psutil
+# Authors: Giampaolo Rodola [psutil]
 #     The class [Process] is back ported from python open-source project
-#     psutil. Guanna Ma back ported it to py-cup.
+#     psutil. Guanna back ported it to py-cup.
 #     If any concern, plz contact mythmgn@gmail.com
+
 #     Here is the original license applied.
+
 # :Copyright - (Psutil)
 #     Copyright (c) 2009, Giampaolo Rodola'. All rights reserved.
 #     Use of this source code is governed by a BSD-style license

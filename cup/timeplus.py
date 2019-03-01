@@ -4,7 +4,7 @@
 # Authors: Guannan Ma (@mythmgn),
 """
 :desc:
-    time related module. looking forward to accepting new patches
+    Time related module. Looking forward to accepting new patches
 """
 
 import time

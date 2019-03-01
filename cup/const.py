@@ -4,9 +4,11 @@
 # Authors: Guannan Ma (@mythmgn),
 """
 :desc:
-    const variable for internal use
+    Const variable for internal use. Use it when you know
+    what this _const really means
 """
 import cup
+from cup import version
 
 # pylint:disable = R0903
 class _const(object):
@@ -36,7 +38,7 @@ import sys
 # pylint: disable=C0103
 # pylint: disable=C0103,W0201
 _const_obj = _const()
-_const_obj.VERSION = '1.4.2'
+_const_obj.VERSION = version.VERSION
 _const_obj.AUTHOR = 'mythmgn@gmail.com'
 sys.modules[__name__] = _const_obj
 

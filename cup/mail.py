@@ -6,7 +6,7 @@
 :description:
     mail related modules.
 
-    **Recommand using SmtpMailer**
+    **Recommand using SmtpMailer. mutt_sendmail is depreciated.**
 """
 
 __all__ = ['mutt_sendmail', 'SmtpMailer']
@@ -22,7 +22,7 @@ from email.mime import base
 from email.mime import image
 from email.mime import text
 
-import cup
+# import cup
 from cup import log
 from cup import shell
 from cup import decorators
@@ -32,6 +32,9 @@ def mutt_sendmail(  # pylint: disable=R0913,W0613
     tostr, subject, body, attach, content_is_html=False
 ):
     """
+    mutt_sendmail is not thread-safe which means you have to use locks or
+    other means to handle resource condition during multi-thread circumstances.
+
     Plz notice this function is not recommanded to use. Use SmtpMailer instead.
 
     :param  exec_cwd:
@@ -50,7 +53,7 @@ def mutt_sendmail(  # pylint: disable=R0913,W0613
         return True on success, False otherwise
     """
     decorators.needlinux(mutt_sendmail)
-    shell = shell.ShellExec()
+    shellobj = shell.ShellExec()
     temp_cwd = os.getcwd()
 
     str_att = ''
@@ -78,7 +81,7 @@ def mutt_sendmail(  # pylint: disable=R0913,W0613
             cmdstr = 'echo %s|/usr/bin/mutt -s "%s" %s %s' % (
                 body, subject, str_att, tostr
             )
-    ret_dic = shell.run(cmdstr, 60)
+    ret_dic = shellobj.run(cmdstr, 60)
     os.chdir(temp_cwd)
     if ret_dic['returncode'] == 0:
         return True

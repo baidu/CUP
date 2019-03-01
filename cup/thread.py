@@ -128,7 +128,13 @@ class RWLock(object):
 
     def acquire_readlock(self, wait_time=None):
         """
-        Acquire readlock. Wait_time same to wait_time for acquire_writelock
+        Acquire readlock.
+
+        :param wait_time:
+            same to wait_time for acquire_writelock
+
+        :raise:
+            RuntimeError if after wait_time, cup still can NOT getthe lock
         """
         self._cond.acquire()
         if self._wt_num > 0:

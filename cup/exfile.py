@@ -121,13 +121,13 @@ class LockFile(object):
 
 class TempFile(object):
     """
-    tempfile, the temp file will be deleted immediately after the lifetime.
+    The temp file will be deleted immediately after the lifetime of it ends.
 
-    You can use TempFile like the original Python File Object.
+    You can use cup TempFile like the original Python File Object.
 
     ::
 
-        tmp = TempFile('./')
+        tmp = TempFile('./', prefix='xxxx', suffix='.tmp')
         tmp.write / read /seek / etc
         tmp.close()
     """
