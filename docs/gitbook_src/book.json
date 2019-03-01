@@ -18,7 +18,8 @@
         "sharing-plus",
         "favicon",
         "insert-logo",
-        "chinese-video"
+        "chinese-video",
+        "github-buttons"
     ],
     "pluginsConfig": {
         "sharing": {
@@ -61,6 +62,15 @@
         },
         "insert-logo":{
             "url": "http://cup.iobusy.com/cup.logo.png"
+        },
+        "github-buttons": {
+            "repo": "baidu/CUP",
+            "types": [
+                "star",
+                "watch",
+                "fork"
+            ],
+            "size": "large"
         }
     }
 }

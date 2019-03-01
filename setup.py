@@ -34,20 +34,15 @@ def _find_packages(prefix=''):
     prefix = prefix
     for root, _, files in os.walk(path):
         if '__init__.py' in files:
+            item = None
             if sys.platform.startswith('linux'):
-                packages.append(
-                    re.sub('^[^A-z0-9_]', '', root.replace('/', '.'))
-                )
+                item = re.sub('^[^A-z0-9_]', '', root.replace('/', '.'))
             elif sys.platform.startswith('win'):
-                packages.append(
-                    re.sub('^[^A-z0-9_]', '', root.replace('\\', '.'))
-                )
+                item = re.sub('^[^A-z0-9_]', '', root.replace('\\', '.'))
             else:
-                packages.append(
-                    re.sub('^[^A-z0-9_]', '', root.replace('/', '.'))
-                )
-
-    print packages
+                item = re.sub('^[^A-z0-9_]', '', root.replace('/', '.'))
+            if item is not None:
+                packages.append(item.lstrip('.'))
     return packages
 
 
@@ -61,7 +56,7 @@ setup(
     # ),
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
-    url='https://github.com/baidu/CUP/',
+    url='https://cup.iobusy.com',
     author=__author__,
     maintainer='Guannan Ma mythmgn@gmail.com @mythmgn',
     author_email='mythmgn@gmail.com',
@@ -76,7 +71,7 @@ setup(
         Topic :: Utilities
         """).strip().splitlines(),
     license='Apache 2',
-    keywords='library common network threadpool baselib',
+    keywords='library common network threadpool baselib framework',
     packages=_find_packages(__name__),
     package_data={
         '': [

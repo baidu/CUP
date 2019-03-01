@@ -1,3 +1,11 @@
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+<div>
+<a class="github-button" href="https://github.com/baidu/CUP" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star baidu/CUP on GitHub">Star</a>
+<a class="github-button" href="https://github.com/baidu/CUP/subscription" data-size="large" data-show-count="true" aria-label="Watch baidu/CUP on GitHub">Watch</a>
+<a class="github-button" href="https://github.com/baidu/CUP/issues" data-size="large" data-show-count="true" aria-label="Issue baidu/CUP on GitHub">Issue</a>
+</div>
+
 # CUP介绍
 <!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
 
@@ -33,7 +41,7 @@
 python setup.py install
 ```
 - pip 安装
-    - pip安装依赖pypi社区批准cup替换原有的cup lib. 
+    - pip安装依赖pypi社区批准cup替换原有的cup lib.
     - 当前功能已 ready, 还在等待pypi社区审批
 
 ## 3. 问题反馈

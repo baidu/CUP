@@ -8,7 +8,14 @@
     - git clone CUP or download the released tar balls
 
 ### 2. Installation
-    - run
+
+Install from pip:
+
+```bash
+pip install cup
+```
+
+Install from source code:
 
 ```bash
     python setup.py install

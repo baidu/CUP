@@ -1,18 +1,18 @@
 <!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
 
-- [1. 常用操作](#1-常用操作)   
-   - [1.1 cup.mail 发送邮件类](#11-cupmail-发送邮件类)   
-   - [1.2 cup.log 简单好用的cup log函数](#12-cuplog-简单好用的cup-log函数)   
-   - [1.3 cup.res 获取linux机器资源类相关信息](#13-cupres-获取linux机器资源类相关信息)   
-   - [1.4 cup.shell 操作shell命令相关的package.](#14-cupshell-操作shell命令相关的package)   
-   - [1.5 cup.util util类package - Rich Configuration/Context](#15-cuputil-util类package-Rich-ConfigurationContext)   
-   - [1.6 cup.net 网络操作相关的package.](#16-cupnet-网络操作相关的package)   
-      - [1.6.1 网卡信息获取、路由信息获取、socket设置](#161-网卡信息获取路由信息获取socket设置)   
-      - [1.6.2 异步网络消息通信库](#162-异步网络消息通信库)   
-   - [1.7 cup.decorators 进行函数、类修饰的module](#17-cupdecorators-进行函数类修饰的module)   
-   - [1.8 cup.jenkinslib 与持续集成平台进行API操作](#18-cupjenkinslib-与持续集成平台进行API操作)   
-   - [1.9 cup.exfile](#19-cupexfile)   
-   - [1.10 cup.thirdp 第三方的库依赖支持](#110-cupthirdp-第三方的库依赖支持)   
+- [1. 常用操作](#1-常用操作)
+   - [1.1 cup.mail 发送邮件类](#11-cupmail-发送邮件类)
+   - [1.2 cup.log 简单好用的cup log函数](#12-cuplog-简单好用的cup-log函数)
+   - [1.3 cup.res 获取linux机器资源类相关信息](#13-cupres-获取linux机器资源类相关信息)
+   - [1.4 cup.shell 操作shell命令相关的package.](#14-cupshell-操作shell命令相关的package)
+   - [1.5 cup.util util类package - Rich Configuration/Context](#15-cuputil-util类package-Rich-ConfigurationContext)
+   - [1.6 cup.net 网络操作相关的package.](#16-cupnet-网络操作相关的package)
+      - [1.6.1 网卡信息获取、路由信息获取、socket设置](#161-网卡信息获取路由信息获取socket设置)
+      - [1.6.2 异步网络消息通信库](#162-异步网络消息通信库)
+   - [1.7 cup.decorators 进行函数、类修饰的module](#17-cupdecorators-进行函数类修饰的module)
+   - [1.8 cup.jenkinslib 与持续集成平台进行API操作](#18-cupjenkinslib-与持续集成平台进行API操作)
+   - [1.9 cup.exfile](#19-cupexfile)
+   - [1.10 cup.thirdp 第三方的库依赖支持](#110-cupthirdp-第三方的库依赖支持)
 
 <!-- /MDTOC -->
 
@@ -346,8 +346,9 @@ print net.get_hostip('abc.test.com')
 
 > http://cupdoc.iobusy.com/cup.net.async/#module-cup.net.async.msgcenter
 
- 代码示例：
-> http://blog.iobusy.com/?p=188
+ 具体介绍：
+ - 请移步左侧关于网络通信协议介绍
+
 异步消息库属于专用且较为复杂的通信库，为高吞吐、高效网络通信场景使用，请注意你的使用场景是否匹配
 
 
