@@ -105,8 +105,10 @@ CUP初衷并不复杂， 就是朴素的目标： `降低人力`。
 ## 6. 用户案例 ##
 
 ### 6.1 典型用户案例
-- 快速使用cup开开发python程序，可查看两类文档
+- 快速使用cup开开发python程序，可查看三类文档
   - [常用lib库支持场景](./senarios/CommonUserSenario.md)
-  - [官方API文档](http://cup.iobusy.com/api)
+  - [常用lib库服务场景](./senarios/CommonService.md)
+  - [官方API文档](http://cupdoc.iobusy.com)
+
 - 使用CUP如何构建一个Service， 欢迎查看
   - [Cup Service篇](senarios/GeneralService.md).
