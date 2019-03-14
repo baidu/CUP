@@ -79,7 +79,7 @@ CUP初衷并不复杂， 就是朴素的目标： `降低人力`。
 
 - 标准化
     - 日志标准化打印 cup.log
-        - 参考文章[Optimal logging](http://blog.iobusy.com/%E7%9F%A5%E8%AF%86%E7%A7%AF%E7%B4%AF/optimal-logging/)
+        - 参考文章[Optimal logging / googleblog](https://testing.googleblog.com/2013/06/optimal-logging.html)
     - Shell 执行标准化 cup.shell
         - timeout 超时处理标准化
         - 回返信息处理标准化
