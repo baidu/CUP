@@ -193,10 +193,10 @@ class SmtpMailer(object):  # pylint: disable=R0903
                     # Encode the payload using Base64
                     encoders.encode_base64(msg)
                     # Set the filename parameter
-                    msg.add_header(
-                        'Content-Disposition', 'attachment',
-                        filename=os.path.basename(attached)
-                    )
+                msg.add_header(
+                    'Content-Disposition', 'attachment',
+                    filename=os.path.basename(attached)
+                )
                 outer.attach(msg)
             # pylint: disable=W0703
             except Exception as exception:
