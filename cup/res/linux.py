@@ -1,12 +1,10 @@
 #!/bin/env python  pylint: disable=C0302
 # -*- coding: utf-8 -*
-# Authors: Giampaolo Rodola [psutil]
+# Authors: Giampaolo Rodola of psutil
 #     The class [Process] is back ported from python open-source project
-#     psutil. Guanna back ported it to py-cup.
+#     psutil. Guanna Ma back ported it to py-cup.
 #     If any concern, plz contact mythmgn@gmail.com
-
 #     Here is the original license applied.
-
 # :Copyright - (Psutil)
 #     Copyright (c) 2009, Giampaolo Rodola'. All rights reserved.
 #     Use of this source code is governed by a BSD-style license
@@ -341,18 +339,18 @@ def get_cpu_usage(intvl_in_sec=1):
     decorators.needlinux(True)
     cup.unittest.assert_ge(intvl_in_sec, 1)
     ret = []
-    for i in xrange(0, len(_CPU_COLUMNS)):
+    for i in range(0, len(_CPU_COLUMNS)):
         ret.append(0)
     cpu_info0 = _get_cput_by_stat()
     time.sleep(intvl_in_sec)
     cpu_info1 = _get_cput_by_stat()
     total = float(0.0)
-    for i in xrange(0, len(cpu_info1)):
+    for i in range(0, len(cpu_info1)):
         minus = float(cpu_info1[i]) - float(cpu_info0[i])
         total = total + minus
         ret[i] = minus
 
-    for i in xrange(0, len(ret)):
+    for i in range(0, len(ret)):
         ret[i] = ret[i] * 100 / total
     return CPUInfo(*ret)
 
@@ -1474,7 +1472,7 @@ class Process(object):
             # old version - let's keep it, just in case...
             # ip = ip.decode('hex')
             # return socket.inet_ntop(socket.AF_INET6,
-            #          ''.join(ip[i:i+4][::-1] for i in xrange(0, 16, 4)))
+            #          ''.join(ip[i:i+4][::-1] for i in range(0, 16, 4)))
             ip = base64.b16decode(ip)
             # see: http://code.google.com/p/psutil/issues/detail?id=201
             if sys.byteorder == 'little':
@@ -1489,19 +1487,19 @@ class Process(object):
 
 if '__main__' == __name__:
     # system info
-    print get_boottime_since_epoch()
-    print get_cpu_nums()
-    print get_kernel_version()
-    print get_disk_usage_all()
-    print get_disk_info()
+    print(get_boottime_since_epoch())
+    print(get_cpu_nums())
+    print(get_kernel_version())
+    print(get_disk_usage_all())
+    print(get_disk_info())
 
     # resouce info
-    print get_cpu_usage(2)
-    print get_meminfo()
-    print get_swapinfo()
-    print get_net_through('xgbe0')
-    print get_net_transmit_speed('xgbe0', 5)
-    print get_net_recv_speed('xgbe0', 5)
-    print net_io_counters()
+    print(get_cpu_usage(2))
+    print(get_meminfo())
+    print(get_swapinfo())
+    print(get_net_through('xgbe0'))
+    print(get_net_transmit_speed('xgbe0', 5))
+    print(get_net_recv_speed('xgbe0', 5))
+    print(net_io_counters())
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

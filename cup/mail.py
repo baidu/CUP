@@ -6,7 +6,7 @@
 :description:
     mail related modules.
 
-    **Recommand using SmtpMailer. mutt_sendmail is depreciated.**
+    **Recommand using SmtpMailer**
 """
 
 __all__ = ['mutt_sendmail', 'SmtpMailer']
@@ -22,7 +22,7 @@ from email.mime import base
 from email.mime import image
 from email.mime import text
 
-# import cup
+import cup
 from cup import log
 from cup import shell
 from cup import decorators
@@ -32,9 +32,6 @@ def mutt_sendmail(  # pylint: disable=R0913,W0613
     tostr, subject, body, attach, content_is_html=False
 ):
     """
-    mutt_sendmail is not thread-safe which means you have to use locks or
-    other means to handle resource condition during multi-thread circumstances.
-
     Plz notice this function is not recommanded to use. Use SmtpMailer instead.
 
     :param  exec_cwd:
@@ -175,13 +172,17 @@ class SmtpMailer(object):  # pylint: disable=R0903
             maintype, subtype = ctype.split('/', 1)
             try:
                 if maintype == 'text':
-                    with open(attached) as fhandle:
+                    with open(attached, 'rb') as fhandle:
                         # Note: we should handle calculating the charset
-                        msg = text.MIMEText(fhandle.read(), _subtype=subtype)
+                        msg = text.MIMEText(
+                            fhandle.read(), _subtype=subtype
+                        )
                 elif maintype == 'image':
                     with open(attached, 'rb') as fhandle:
                         imgid = os.path.basename(attached)
-                        msg = image.MIMEImage(fhandle.read(), _subtype=subtype)
+                        msg = image.MIMEImage(
+                            fhandle.read(), _subtype=subtype
+                        )
                         msg.add_header('Content-ID', imgid)
                 elif maintype == 'audio':
                     with open(attached, 'rb') as fhandle:

@@ -5,6 +5,11 @@
 """
 
 import sys
+# { BENGIN: for python3 compatibility
+
+# END }
+
+
 
 # { Check Env
 if sys.version_info < (2, 6):

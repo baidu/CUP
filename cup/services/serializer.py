@@ -61,14 +61,14 @@ class BaseSerilizer(object):
             i += 1
         length = len(tmp)
         if length < asign_len:
-            for _ in xrange(0, asign_len - length):
+            for _ in range(0, asign_len - length):
                 tmp += chr(0)
         return tmp
 
     @classmethod
     def convert_bytes2uint(cls, str_data):
         """convert bytes into uint"""
-        num = 0L
+        num = 0
         b_ind = 0
         for i in str_data:
             num += pow(256, b_ind) * ord(i)
@@ -94,8 +94,7 @@ class LocalFileSerilizer(BaseSerilizer):
             It will skip bad records which means you have high chance
             losing data!!!
         :param persist_after_sec:
-            TODO: If the writer has not been writing for [persist_after_sec],
-            forcelly flush or close the writer (not implemented yet)
+
         """
         BaseSerilizer.__init__(self)
         self._skip_badlog = skip_badlog
@@ -182,7 +181,7 @@ class LocalFileSerilizer(BaseSerilizer):
         done_id = file_start_logid
         read_length = 0
         try:
-            reader = open(fullname, 'rb')
+            reader = open(fullname, 'r')
             while True:
                 ret, _ = self._try_read_one_log(reader)
                 if ret == LOGFILE_BAD_RECORD:
@@ -192,7 +191,11 @@ class LocalFileSerilizer(BaseSerilizer):
                             ', size:{1}'.format(
                                 files[-1], read_length)
                         )
+                        reader.close()
+                        reader = open(fullname, 'w')
                         reader.truncate(read_length)
+                        reader.close()
+                        reader = open(fullname, 'r')
                         break
                     else:
                         raise IOError(
@@ -280,7 +283,13 @@ class LocalFileSerilizer(BaseSerilizer):
 
     def _get_ordered_logfiles(self, folder):
         """get log files in order"""
-        files = sorted(os.listdir(folder), cmp=self.__cmp_logfile_id)
+        try:
+            files = sorted(os.listdir(folder), cmp=self.__cmp_logfile_id)
+        except TypeError:
+            import functools
+            files = sorted(os.listdir(folder), key=functools.cmp_to_key(
+                self.__cmp_logfile_id)
+            )
         retfiles = []
         for item in files:
             if any([
@@ -572,7 +581,7 @@ class LocalFileSerilizer(BaseSerilizer):
         except Exception as err:
             log.error('failed to parse log record:{0}'.format(err))
             log.error(traceback.format_exc())
-            return LOGFILE_BAD_RECORD
+            return (LOGFILE_BAD_RECORD, None)
 
     def _move2next_load_fname(self):
         """ get next load fname"""

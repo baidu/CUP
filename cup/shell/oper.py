@@ -6,6 +6,7 @@
 :description:
     shell operations related module
 """
+from __future__ import print_function
 
 import os
 import time
@@ -18,9 +19,7 @@ import platform
 import warnings
 import datetime
 import threading
-# import traceback
 import subprocess
-# import collections
 
 
 import cup
@@ -516,7 +515,7 @@ def _do_execshell(cmd, b_printcmd=True, timeout=None):
             'timeout should be None or >= 0'
         )
     if b_printcmd is True:
-        print 'To exec cmd:%s' % cmd
+        print('To exec cmd:{0}'.format(cmd))
     shellexec = ShellExec()
     return shellexec.run(cmd, timeout)
 
@@ -548,7 +547,7 @@ def execshell_withpipe_ex(cmd, b_printcmd=True):
     cmd = cmd + ' 1>' + strfile + ' 2>/dev/null'
     os.system(cmd)
     if True == b_printcmd:
-        print cmd
+        print(cmd)
     fphandle = open(strfile, 'r')
     lines = fphandle.readlines()
     fphandle.close()
@@ -574,7 +573,7 @@ def execshell_withpipe_exwitherr(cmd, b_printcmd=True):
     cmd = cmd + ' 2>&1'
     os.system(cmd)
     if b_printcmd:
-        print cmd
+        print(cmd)
     fhandle = open(strfile, 'r')
     lines = fhandle.readlines()
     fhandle.close()
@@ -642,7 +641,7 @@ def md5file(filename):
             strtmp = fhandle.read(131072)  # read 128k one time
             if len(strtmp) <= 0:
                 break
-            md5obj.update(strtmp)
+            md5obj.update(strtmp.encode('utf-8'))
     return md5obj.hexdigest()
 
 

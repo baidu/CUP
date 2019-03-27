@@ -6,13 +6,12 @@
 :description:
     Complex and constructive conf support
 """
-
+from __future__ import print_function
 import os
 import time
 import copy
 import shutil
 from xml.dom import minidom
-# import subprocess
 import json
 
 import cup
@@ -126,7 +125,7 @@ class CConfModer(object):
                 break
             else:
                 try_times += 1
-                print 'err:updatekv'
+                print('err:updatekv')
                 time.sleep(1)
 
     def updatekvlist(self, confpath, kvlist):
@@ -147,11 +146,11 @@ class CConfModer(object):
             ):
                 ret['stdout'] = ret['stdout'].decode('gbk')
                 ret['stdout'] = ret['stdout'].encode('utf-8')
-                print ret['stdout']
+                print(ret['stdout'])
                 break
             else:
                 try_times += 1
-                print 'err:updatekvlist'
+                print('err:updatekvlist')
                 time.sleep(1)
 
     def addkv(self, confpath, key, val):
@@ -171,15 +170,15 @@ class CConfModer(object):
             ):
                 ret['stdout'] = ret['stdout'].decode('gbk')
                 ret['stdout'] = ret['stdout'].encode('utf-8')
-                print ret['stdout']
+                print(ret['stdout'])
                 break
             else:
                 try_times += 1
-                print 'err:addkv'
+                print('err:addkv')
                 time.sleep(1)
 
             if(ret == 0 or try_times > 1):
-                print cmd
+                print(cmd)
                 break
             else:
                 time.sleep(1)
@@ -200,15 +199,15 @@ class CConfModer(object):
             ):
                 ret['stdout'] = ret['stdout'].decode('gbk')
                 ret['stdout'] = ret['stdout'].encode('utf-8')
-                print ret['stdout']
+                print(ret['stdout'])
                 break
             else:
                 try_times += 1
-                print 'err:delkv'
+                print('err:delkv')
                 time.sleep(1)
 
             if(ret == 0 or try_times > 1):
-                print cmd
+                print(cmd)
                 break
             else:
                 time.sleep(1)
@@ -408,23 +407,23 @@ class Configure2Dict(object):  # pylint: disable=R0903
 
         2.1 global section
 
-            - if key:value is not under any [section], it is under the global layer
-                by default
+            - if key:value is not under any [section],
+              it is under the global layerby default
             - global section is the 0th layer section
 
             e.g.
-            test.conf:
+
                 # test.conf
                 global-key: value
                 global-key1: value1
 
         2.2 child section
             - [section1] means a child section under Global. And it's the
-                1st layer section
+              1st layer section
             - [.section2] means a child section under the nearest section
-                above. It's the 2nd layer section.
+              above. It's the 2nd layer section.
             - [..section3] means a child section under the nearest section
-                above. And the prefix .. means it is the 3rd layer section
+              above. And the prefix .. means it is the 3rd layer section
 
             e.g.:
             test.conf:
@@ -443,12 +442,11 @@ class Configure2Dict(object):  # pylint: disable=R0903
 
         2.3 section access method
             get_dict method will convert conf into a ConfDict which is derived
-
             from python dict.
 
             - Access the section with confdict['section']['section-child'].
             - Access the section with confdict.get_ex('section') with (value,
-                comments)
+              comments)
 
 
     3. key:value and key:value array
@@ -505,16 +503,32 @@ class Configure2Dict(object):  # pylint: disable=R0903
                 # 3rd layer that belongs to [monitor] [timeout]
                 [..handler]
                     default: exit
+
+        # codes represent accessing conf and modifying conf
+        from __future__ import print_function
+        from cup.util import conf
+        # 1. read from test.conf
+        confdict = conf.Configure2Dict('test.conf', separator=':').get_dict()
+        print(confdict['host'])
+        print(confdict['port'])
+        print(confdict['section']['disk'])
+        print(confdict['monitor']['timeout']['handler'])
+        # 2. Change something and write back to test.conf
+        confdict['port'] = '10085'
+        confdict['monitor']['timeout']['handler']['default'] = 'stop'
+        confobj = conf.Dict2Configure(confdict, separator=':')
+        confobj.write_conf('./test.conf.new')
+
     """
 
     def __init__(self, configure_file, remove_comments=True, separator=':'):
         """
-        @param configure_file:
+        :param configure_file:
             configure file path
-        @param remove_comments:
+        :param remove_comments:
             if you comment after key:value # comment, whether we should
             remove it when you access the key
-        @raise:
+        :raise:
             IOError configure_file not found
             cup.util.conf.KeyFormatError Key format error
             cup.util.conf.ValueFormatError value value
@@ -534,6 +548,9 @@ class Configure2Dict(object):  # pylint: disable=R0903
         self._separator = separator
 
     def _strip_value(self, value):
+        """
+        strip the value
+        """
         if self._remove_comments:
             rev = value.split('#')[0].strip()
         else:
@@ -541,6 +558,9 @@ class Configure2Dict(object):  # pylint: disable=R0903
         return rev
 
     def _handle_key_value_tuple(self, linenum, conf_dict_now, comments):
+        """
+        handle (key, value) tuple
+        """
         num = linenum
         line = self._lines[num]
         key, value = line
@@ -580,6 +600,9 @@ class Configure2Dict(object):  # pylint: disable=R0903
 
     @classmethod
     def _handle_comments(cls, comments, line):
+        """
+        handle comments
+        """
         if line[0] == '__comments__':
             comments.append(line[1])
             return True
@@ -732,6 +755,9 @@ class Configure2Dict(object):  # pylint: disable=R0903
 
     # Check the key id format
     def _check_key_valid(self, key):  # pylint: disable=R0201
+        """
+        check if the key is valid
+        """
         if key == '' or key == '@':
             raise KeyFormatError(key)
 
@@ -744,6 +770,7 @@ class Configure2Dict(object):  # pylint: disable=R0903
 
     # Check the [GROUP] key format
     def _check_groupkey_valid(self, key):
+        """check if the group key is valid"""
         for groupkey in key.split('.'):
             self._check_key_valid(groupkey)
 
@@ -989,14 +1016,14 @@ class Dict2Configure(object):
                 self._str += self._get_indents() + comment
             if isinstance(value, tuple) or isinstance(value, list):
                 if isinstance(value, tuple):
-                    print 'its a tuple, key:%s, value:%s' % (key, value)
+                    print('its a tuple, key:{0}, value:{1}'.format(key, value))
                 if len(value) > 0 and isinstance(value[0], dict):
                     # items are all arrays
                     # [..@section]
                     #   abc:
                     # [..@section]
                     #   abc:
-                    for ind in xrange(0, len(value)):
+                    for ind in range(0, len(value)):
                         try:
                             item = value.get_ex(ind)
                         except AttributeError:
@@ -1010,7 +1037,7 @@ class Dict2Configure(object):
                     # a array list and array list has no sub-dict
                     # @item
                     # @item
-                    for ind in xrange(0, len(value)):
+                    for ind in range(0, len(value)):
                         try:
                             item = value.get_ex(ind)
                         except AttributeError:
@@ -1231,7 +1258,7 @@ class HdfsXmlConf(object):
 def _main_hanle():
     dict4afs = Configure2Dict('/tmp/metaserver.conf')
     dictafs = dict4afs.get_dict()
-    print json.dumps(dictafs, sort_keys=True, indent=4)
+    print(json.dumps(dictafs, sort_keys=True, indent=4))
 
 if __name__ == "__main__":
     pass

@@ -21,7 +21,7 @@ class _const(object):
         """
         def __init__(self, msg=''):
             msg = 'Cup const error: %s.' % msg
-            super(self.__class__, self).__init__(msg)
+            cup.err.BaseCupException.__init__(self, msg)
 
     def __setattr__(self, key, value):
         if not key.isupper():

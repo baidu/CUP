@@ -111,13 +111,13 @@ class ExecutionService(object):
         """
         self.__thdpool.start()
         self.__status = 1
-        for _ in xrange(0, self.__delay_exe_thdnum):
+        for _ in range(0, self.__delay_exe_thdnum):
             self.__thdpool.add_1job(
                 self.__exec_worker,
                 0.1, self.__delay_queue,
                 'Delayexec'
             )
-        for _ in xrange(0, self.__queue_exe_thdnum):
+        for _ in range(0, self.__queue_exe_thdnum):
             self.__thdpool.add_1job(
                 self.__exec_worker, 0.02,
                 self.__exec_queue,

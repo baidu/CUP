@@ -6,6 +6,7 @@
 :description:
     common log related module
 """
+from __future__ import print_function
 
 __all__ = [
     'debug', 'info', 'warn', 'critical',
@@ -22,7 +23,6 @@ import re
 import sys
 import logging
 import threading
-# import traceback
 from logging import handlers
 
 import cup
@@ -34,15 +34,11 @@ ROTATION = 0
 INFINITE = 1
 
 ROTATION_COUNTS = 30
-
 DEBUG = logging.DEBUG
-
 INFO = logging.INFO
-
+WARNING = logging.WARNING
 ERROR = logging.ERROR
-
 CRITICAL = logging.CRITICAL
-
 G_INITED_LOGGER = []
 
 
@@ -151,6 +147,7 @@ class _LoggerMan(object):
             '[%(process)d:%(thread)x] [%(filename)s:%(lineno)s] %(message)s'
         )
         if bprint_console:
+            info('bprint_console enabled, will print to stdout')
             streamhandler = logging.StreamHandler()
             streamhandler.setLevel(loglevel)
             streamhandler.setFormatter(formatter)
@@ -173,7 +170,6 @@ class _LoggerMan(object):
             warn_handler.setLevel(logging.WARNING)
             warn_handler.setFormatter(formatter)
             self._pylogger.addHandler(warn_handler)
-
             fdhandler.addFilter(_MsgFilter(logging.WARNING))
 
         self._pylogger.addHandler(fdhandler)
@@ -257,7 +253,7 @@ def init_comlog(
 
     """
     loggerman = _LoggerMan()
-    if loggerman.is_initalized() is False:
+    if not loggerman.is_initalized():
         # loggerman._setlogger(logging.getLogger(loggername))
         loggerman._setlogger(logging.getLogger())
         if os.path.exists(logfile) is False:
@@ -277,8 +273,9 @@ def init_comlog(
         global G_INITED_LOGGER
         G_INITED_LOGGER.append(loggername)
     else:
-        print '[%s:%s] init_comlog has been already initalized' % \
-            (_file(1), _line(1))
+        print('[{0}:{1}] init_comlog has been already initalized'.format(
+            _file(1), _line(1))
+        )
     return
 
 
@@ -326,10 +323,9 @@ def get_inited_loggername():
 
 
 def _fail_handle(msg, e):
-    # print 'cup.log.info print to file failed. %s' % str(e)
     if not isinstance(msg, unicode):
         msg = msg.decode('utf8')
-    print '%s\nerror:%s' % (msg, e)
+    print('{0}\nerror:{1}'.format(msg, e))
 
 
 def backtrace_info(msg, back_trace_len=0):

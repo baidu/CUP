@@ -4,9 +4,9 @@
 # Authors: Guannan Ma (@mythmgn),
 """
 :desc:
-    Time related module. Looking forward to accepting new patches
+    time related module. looking forward to accepting new patches
 """
-
+from __future__ import print_function
 import time
 
 __all__ = ['get_str_now']
@@ -23,4 +23,4 @@ def get_str_now(fmt='%Y-%m-%d-%H-%M-%S'):
 
 
 if __name__ == '__main__':
-    print get_str_now()
+    print(get_str_now())

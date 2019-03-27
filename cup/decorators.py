@@ -6,6 +6,7 @@
 :description:
     decorators related module
 """
+from __future__ import print_function
 
 import os
 import time
@@ -14,7 +15,9 @@ import threading
 from functools import wraps
 from datetime import datetime as datetime_in
 
+
 import cup
+from cup import log
 
 __all__ = [
     'Singleton', 'TraceUsedTime', 'needlinux', 'needposix', 'needmac',
@@ -194,9 +197,9 @@ class TraceUsedTime(object):
         def _wrapper_log(*args, **kwargs):
             now = time.time()
             if self._b_print_stdout:
-                print '**enter func:%s,time:%s, msg:%s' % (
+                print ('**enter func:{0},time:{1}, msg:{2}'.format(
                     function, datetime_in.now(), self._enter_msg
-                )
+                ))
             cup.log.info(
                 '**enter func:%s, msg:%s' % (function, self._enter_msg)
             )
@@ -209,8 +212,11 @@ class TraceUsedTime(object):
                 )
             )
             if self._b_print_stdout:
-                print '**leave func:%s, time:%s, used_time:%f, msg:%s' % (
-                    function, datetime_in.now(), used_time, self._leave_msg
+                print(
+                    '**leave func:{0}, time:{1}, used_time:{2}, '
+                    'msg:{3}'.format(
+                        function, datetime_in.now(),
+                        used_time, self._leave_msg)
                 )
         return _wrapper_log
 
@@ -219,20 +225,21 @@ class TraceUsedTime(object):
 @TraceUsedTime(False)
 def _test_trace_time():
     """test trace time"""
-    print 'now', time.time(), datetime_in.now()
+    print('now, {0}, {1}'.format(time.time(), datetime_in.now()))
     time.sleep(3)
-    print 'then', time.time(), datetime_in.now()
+    print('then, {0}, {1}'.format(time.time(), datetime_in.now()))
 
 
 @TraceUsedTime(True)
 def _test_trace_time_log():
-    print 'now', time.time(), datetime_in.now()
+    print('now, {0}, {1}'.format(time.time(), datetime_in.now()))
     time.sleep(3)
-    print 'then', time.time(), datetime_in.now()
+    print('then, {0}, {1}'.format(time.time(), datetime_in.now()))
+
 
 
 def _test_trace_time_map(sleep_time):
-    print "ready to work"
+    print('ready to work')
     time.sleep(sleep_time)
 
 

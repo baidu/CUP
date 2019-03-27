@@ -209,7 +209,7 @@ class CNetMsg(object):
             i += 1
         length = len(tmp)
         if length < asign_len:
-            for _ in xrange(0, asign_len - length):
+            for _ in range(0, asign_len - length):
                 tmp += chr(0)
         return tmp
 
@@ -370,7 +370,7 @@ class CNetMsg(object):
             self._msglen, 64
         )
         tempstr = ''
-        for i in xrange(0, self._ORDER_COUNTS - 1):
+        for i in range(0, self._ORDER_COUNTS - 1):
             if i == 0 and (not self._need_head):
                 continue
             tempstr += self._data[self._ORDER[i]]
@@ -706,8 +706,6 @@ if __name__ == '__main__':
     gen = generator.CycleIDGenerator('127.0.0.1', '5000')
     gen_id = gen.next_id()
     str_num =  CNetMsg._asign_uint2byte_bybits(gen_id, 128)
-    print gen_id
-    print len(str_num)
 
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

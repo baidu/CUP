@@ -103,7 +103,7 @@ class BufferPool(object):
         self._uniqid = 0
 
         self._block_size = block_size
-        for _ in xrange(0, self._pool_size):
+        for _ in range(0, self._pool_size):
             self._free_list.append(bytearray(self._block_size))
 
     def allocate(self, num):

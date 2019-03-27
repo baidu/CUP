@@ -6,6 +6,7 @@
 :desc:
     unittest module
 """
+from __future__ import print_function
 import os
 import sys
 import hashlib
@@ -176,7 +177,7 @@ def assert_ge(val, exp, errmsg=''):
         # pylint: disable=W0703
         except Exception:
             pass
-        assert False
+        assert False, msg
 
 
 def assert_le(val, exp, errmsg=''):
@@ -232,7 +233,7 @@ def _get_md5_hex(src_file):
             strtmp = fhandle.read(131072)  # read 128k
             if len(strtmp) <= 0:
                 break
-            md5obj.update(strtmp)
+            md5obj.update(strtmp.encode('utf-8'))
     return md5obj.hexdigest()
 
 
@@ -395,7 +396,7 @@ class CCaseExecutor(object):
                 baseOffsite = 1000
                 fp0 = open(bigfile, 'r+b')
                 fp1 = open(self.tmpfile, 'rb+')
-                for i in xrange( 0, times ):
+                for i in range( 0, times ):
                     fp0.seek(baseOffsite)
                     fp1.seek(baseOffsite)
                     fp0.write( 'a' * 100 )
@@ -432,7 +433,7 @@ class CCaseExecutor(object):
             case.set_result(True)
         # pylint: disable=W0703
         except Exception:
-            print traceback.format_exc()
+            print(traceback.format_exc())
             case.set_result(False)
             failed = True
         # case.teardown()
@@ -442,14 +443,14 @@ class CCaseExecutor(object):
             # pylint: disable=W0703
             except Exception:
                 pass
-            print '========================'
-            print '======== Failed ========'
-            print '========================'
+            print('========================')
+            print('======== Failed ========')
+            print('========================')
             sys.exit(-1)
         case.teardown()
-        print '========================'
-        print '======== Passed ========'
-        print '========================'
+        print('========================')
+        print('======== Passed ========')
+        print('========================')
 
 
 def expect_raise(function, exception, *argc, **kwargs):

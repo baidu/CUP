@@ -29,7 +29,7 @@
         TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
         WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
-
+from __future__ import print_function
 try:
     import Queue as queue
 except ImportError:
@@ -376,7 +376,7 @@ class ThreadPool(object):
         """
         stat = self.get_stats()
         if print_stdout:
-            print stat
+            print(stat)
         log.info('ThreadPool Stat %s: %s' % (self._name, stat))
         log.debug('queue: %s' % self._jobqueue.queue)
         log.debug('waiters: %s' % self._waiters)
