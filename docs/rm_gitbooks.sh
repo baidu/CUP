@@ -10,4 +10,4 @@
 #   succ: 0                                                                                            
 #   fail: not 0                                                                                        
 # ##########################################################################   
-rm -rf ./en/ ./gitbook/ ./images/ ./zh-hans/ ./cup.log.png ./search_index.json ./index.html
+rm -rf ./en/ ./gitbook/ ./images/ ./zh-hans/  ./search_index.json ./index.html
