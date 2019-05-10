@@ -1,4 +1,12 @@
 # 1. Versions Released
+## Version 2.1.0 - 2019.2.1 ~ 2019.5.10
+    * [New] cup.net.get_interfaces - Get interfaces of a linux host
+    * [New] cup.res.linux.get_cpu_core_usage - Get cpu core usage 
+    * [Enhancement] cup.shell.oper - Md5 hexdigest generation (py3 compatibility)
+    * [New] Py3 compatibility test and reconsutrction is undergoing
+    * [Enhancement] cup.shell.oper - Change subprocess.Pipe(shell=True by default to shell=False)
+    * [Bug] github socket closure (https://github.com/baidu/CUP/issues/32) 
+
 ## Version 2.0.0 - 2018.6.2 ~ 2018.12.31
 	* [New] pip support
 	* [New] cup.storage.obj - Add ftp/s3/local storage support (with universal apis)

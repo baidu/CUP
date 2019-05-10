@@ -34,7 +34,7 @@ __all__ = [
     # disk info
     'get_disk_usage_all', 'get_disk_info',
     # cpu info
-    'CPUInfo', 'get_cpu_usage', 'get_cpu_nums',
+    'CPUInfo', 'get_cpu_usage', 'get_cpu_nums', 'get_cpu_core_usage',
     'MemInfo', 'get_meminfo',
     'SWAPINFO', 'get_swapinfo',
     'net_io_counters', 'get_net_through', 'get_net_transmit_speed',
@@ -299,13 +299,22 @@ class CPUInfo(collections.namedtuple('CPUInfo', _CPU_COLUMNS)):
     """
 
 
-def _get_cput_by_stat():
+def _get_cput_by_stat(coreindex=None):
+    """
+
+    :param coreindex:
+        None for all cpu cores
+    """
     usr = nice = system = idle = iowait = irq = softirq = steal = \
         guest = guest_nice = float(0.0)
     fp = open('/proc/stat', 'r')
+    if coreindex is None:
+        match_str = 'cpu'
+    else:
+        match_str = 'cpu{0}'.format(coreindex)
     try:
         for line in fp:
-            if line.startswith('cpu'):
+            if line.startswith(match_str) and line.split()[0] == match_str:
                 if _CPU_COLUMNS.count('guest_nice') > 0:
                     (usr, nice, system, idle, iowait, irq,
                         softirq, steal, guest, guest_nice) = line.split()[1:]
@@ -321,8 +330,9 @@ def _get_cput_by_stat():
 
     if _CPU_COLUMNS.count('guest_nice') > 0:
         return CPUInfo(
-            usr, nice, system, idle, iowait, irq,
-            softirq, steal, guest, guest_nice
+            float(usr), float(nice), float(system),
+            float(idle), float(iowait), float(irq),
+            float(softirq), float(steal), float(guest), float(guest_nice)
         )
     else:
         return CPUInfo(
@@ -337,13 +347,36 @@ def get_cpu_usage(intvl_in_sec=1):
     namedtuple CPUInfo
     """
     decorators.needlinux(True)
-    cup.unittest.assert_ge(intvl_in_sec, 1)
+    cup.unittest.assert_gt(intvl_in_sec, 0)
     ret = []
     for i in range(0, len(_CPU_COLUMNS)):
         ret.append(0)
     cpu_info0 = _get_cput_by_stat()
     time.sleep(intvl_in_sec)
     cpu_info1 = _get_cput_by_stat()
+    total = float(0.0)
+    for i in range(0, len(cpu_info1)):
+        minus = float(cpu_info1[i]) - float(cpu_info0[i])
+        total = total + minus
+        ret[i] = minus
+
+    for i in range(0, len(ret)):
+        ret[i] = ret[i] * 100 / total
+    return CPUInfo(*ret)
+
+
+def get_cpu_core_usage(coreindex, intvl_in_sec=1):
+    """
+    :param index:
+        cpu core index
+    """
+    decorators.needlinux(True)
+    cup.unittest.assert_gt(intvl_in_sec, 0)
+    ret = []
+    ret = [0 for _ in _CPU_COLUMNS]
+    cpu_info0 = _get_cput_by_stat(coreindex)
+    time.sleep(intvl_in_sec)
+    cpu_info1 = _get_cput_by_stat(coreindex)
     total = float(0.0)
     for i in range(0, len(cpu_info1)):
         minus = float(cpu_info1[i]) - float(cpu_info0[i])
@@ -874,6 +907,16 @@ class Process(object):
         utime = float(values[11]) / _CLOCK_TICKS
         stime = float(values[12]) / _CLOCK_TICKS
         return self._nt_cputimes(utime, stime)
+
+    @wrap_exceptions
+    def get_cpu_usage(self, interval=0.5):
+        """get cpu usage"""
+        now = self.get_cpu_times()
+        time.sleep(interval)
+        then = self.get_cpu_times()
+        return float(
+            (then[0] - now[0] + then[1] - now[1]) * 100 / interval
+        )
 
     @wrap_exceptions
     def get_process_create_time(self):
@@ -1495,6 +1538,7 @@ if '__main__' == __name__:
 
     # resouce info
     print(get_cpu_usage(2))
+    print(get_cpu_core_usage(0, 0.5))
     print(get_meminfo())
     print(get_swapinfo())
     print(get_net_through('xgbe0'))

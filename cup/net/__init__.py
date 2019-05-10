@@ -5,6 +5,7 @@
 :description:
     network related module
 """
+import os
 import sys
 import time
 import socket
@@ -31,7 +32,8 @@ __all__ = [
     'set_sock_quickack',
     'async',
     'localport_free',
-    'port_listened'
+    'port_listened',
+    'get_interfaces'
 ]
 
 
@@ -209,5 +211,23 @@ def port_listened(host, port, is_ipv6=False):
     finally:
         sock.close()
     return listened
+
+
+def get_interfaces():
+    """
+    :return:
+        a python list of network interfaces/adapters
+    """
+    eths = []
+    srcpath = '/sys/class/net/'
+    if os.path.exists(srcpath):
+        interfaces = os.listdir(srcpath)
+        for inter in interfaces:
+            if inter == 'lo':
+                continue
+            eths.append(inter)
+        return eths
+    else:
+        raise NotImplementedError('not supported other than linux')
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

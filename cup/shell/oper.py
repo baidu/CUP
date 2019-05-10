@@ -30,11 +30,11 @@ from cup import err
 # linux only import
 if platform.system() == 'Linux':
     __all__ = [
-        'rm', 'rmrf',
-        'kill',
+        'rm', 'rmrf', 'kill',
         'is_process_used_port', 'is_port_used', 'is_proc_exist',
         'is_proc_exist', 'is_process_running',
-        'contains_file', 'backup_file'
+        'contains_file', 'backup_file',
+        'ShellExec'
     ]
 # universal import (platform indepedent)
 else:
@@ -316,10 +316,10 @@ class Asynccontent(object):
         self.timeout = None
         self.pid = None
         self.ret = None
-        self.child_list = []
-        self.__cmdthd = None
-        self.__monitorthd = None
-        self.__subpro = None
+        # self.child_list = []
+        self.cmdthd = None
+        self.monitorthd = None
+        self.subproc = None
 
 
 class ShellExec(object):  # pylint: disable=R0903
@@ -340,17 +340,16 @@ class ShellExec(object):  # pylint: disable=R0903
         self._subpro = None
         self._subpro_data = None
 
-    def __kill_process(self, pid):
-        os.kill(pid, signal.SIGKILL)
-
-    def kill_all_process(self, async_content):
+    @classmethod
+    def kill_all_process(cls, async_content):
         """
         to kill all process
         """
         for pid in async_content.child_list:
-            self.__kill_process(pid)
+            os.kill(pid, signal.SIGKILL)
 
-    def get_async_run_status(self, async_content):
+    @classmethod
+    def get_async_run_status(cls, async_content):
         """
         get the command's status
         """
@@ -362,7 +361,8 @@ class ShellExec(object):  # pylint: disable=R0903
             res = "process is destructor"
         return res
 
-    def get_async_run_res(self, async_content):
+    @classmethod
+    def get_async_run_res(cls, async_content):
         """
         if the process is still running the res shoule be None,None,0
         """
@@ -384,25 +384,20 @@ class ShellExec(object):  # pylint: disable=R0903
             signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
         def _target(argcontent):
-            argcontent.__subpro = subprocess.Popen(
-                    argcontent.cmd, shell=True, stdout=subprocess.PIPE,
+            argcontent.subproc = subprocess.Popen(
+                    argcontent.cmd.split(), stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     preexec_fn=_signal_handle)
             from cup.res import linux
-            parent = linux.Process(argcontent.__subpro.pid)
-            children = parent.children(True)
-            ret_dict = []
-            for process in children:
-                ret_dict.append(process)
-            argcontent.child_list = ret_dict
+            parent = linux.Process(argcontent.subproc.pid)
 
         def _monitor(start_time, argcontent):
             while(int(time.mktime(datetime.datetime.now().timetuple())) - int(start_time) <
                     int(argcontent.timeout)):
                 time.sleep(1)
-                if argcontent.__subpro.poll() is not None:
-                    self._subpro_data = argcontent.__subpro.communicate()
-                    argcontent.ret['returncode'] = argcontent.__subpro.returncode
+                if argcontent.subproc.poll() is not None:
+                    self._subpro_data = argcontent.subproc.communicate()
+                    argcontent.ret['returncode'] = argcontent.subproc.returncode
                     argcontent.ret['stdout'] = self._subpro_data[0]
                     argcontent.ret['stderr'] = self._subpro_data[1]
                     return
@@ -410,13 +405,9 @@ class ShellExec(object):  # pylint: disable=R0903
                 'Shell "%s"execution timout:%d. To kill it' % (argcontent.cmd,
                     argcontent.timeout)
             )
-            argcontent.__subpro.terminate()
+            argcontent.subproc.terminate()
             argcontent.ret['returncode'] = 999
             argcontent.ret['stderr'] = str_warn
-
-            for process in argcontent.child_list:
-                self.__kill_process(process)
-            del argcontent.child_list[:]
 
         argcontent = Asynccontent()
         argcontent.cmd = cmd
@@ -426,19 +417,19 @@ class ShellExec(object):  # pylint: disable=R0903
             'stderr': None,
             'returncode': -999
         }
-        argcontent.__cmdthd = threading.Thread(target=_target, args=(argcontent,))
-        argcontent.__cmdthd.start()
+        argcontent.cmdthd = threading.Thread(target=_target, args=(argcontent,))
+        argcontent.cmdthd.start()
         start_time = int(time.mktime(datetime.datetime.now().timetuple()))
-        argcontent.__cmdthd.join(0.1)
-        argcontent.pid = argcontent.__subpro.pid
-        argcontent.__monitorthd = threading.Thread(target=_monitor,
+        argcontent.cmdthd.join(0.1)
+        argcontent.pid = argcontent.subproc.pid
+        argcontent.monitorthd = threading.Thread(target=_monitor,
                 args=(start_time, argcontent))
-        argcontent.__monitorthd.start()
+        argcontent.monitorthd.start()
         #this join should be del if i can make if quicker in Process.children
-        argcontent.__cmdthd.join(0.5)
+        argcontent.cmdthd.join(0.5)
         return argcontent
 
-    def run(self, cmd, timeout):
+    def run(self, cmd, timeout, run_as_shell=False):
         """
         refer to the class description
 
@@ -448,12 +439,12 @@ class ShellExec(object):  # pylint: disable=R0903
             execution returns
 
         :return:
-            returncode == 0 means success, while 999 means timeout
             {
                 'stdout' : 'Success',
                 'stderr' : None,
                 'returncode' : 0
             }
+            returncode == 0 means success, while 999 means timeout
 
         E.g.
 
@@ -469,24 +460,36 @@ class ShellExec(object):  # pylint: disable=R0903
             """
             signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
-        def _target(cmd):
-            self._subpro = subprocess.Popen(
-                cmd, shell=True, stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                preexec_fn=_signal_handle
-            )
+        def _pipe_asshell(cmd, run_as_shell):
+            """
+            run shell with subprocess.Popen
+            """
+            if run_as_shell:
+                self._subpro = subprocess.Popen(
+                    cmd, shell=True, stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    preexec_fn=_signal_handle
+                )
+
+            else:
+                self._subpro = subprocess.Popen(
+                    cmd.split(), stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE, preexec_fn=_signal_handle
+                )
             self._subpro_data = self._subpro.communicate()
         ret = {
             'stdout': None,
             'stderr': None,
             'returncode': 0
         }
-        cmdthd = threading.Thread(target=_target, args=(cmd, ))
+        cmdthd = threading.Thread(
+            target=_pipe_asshell, args=(cmd, run_as_shell)
+        )
         cmdthd.start()
         cmdthd.join(timeout)
-        if cmdthd.isAlive() is True:
+        if cmdthd.isAlive():
             str_warn = (
-                'Shell "%s"execution timout:%d. To kill it' % (cmd, timeout)
+                'Shell "%s"execution timout:%d. Killed it' % (cmd, timeout)
             )
             warnings.warn(str_warn, RuntimeWarning)
             self._subpro.terminate()
@@ -641,7 +644,10 @@ def md5file(filename):
             strtmp = fhandle.read(131072)  # read 128k one time
             if len(strtmp) <= 0:
                 break
-            md5obj.update(strtmp.encode('utf-8'))
+            if isinstance(strtmp, unicode):
+                md5obj.update(strtmp.encode('utf-8'))
+            else:
+                md5obj.update(strtmp)
     return md5obj.hexdigest()
 
 

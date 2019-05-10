@@ -349,6 +349,12 @@ class CConnectionManager(object):
             self._mlock.release()
         # pylint: disable=W0212
         self._thdpool.add_1job(_cleanup_context, context._send_queue, peerinfo)
+        listened_peer = context.get_listened_peer()
+        if listened_peer is not None and (listened_peer in self._peer2context):
+            log.info(
+                'clean up socket: this socket has listened peer {0}, will'
+                ' clean up it as well.'.format(listened_peer))
+            self.cleanup_error_context(self._peer2context[listened_peer])
 
     def close_socket(self, msg, recv_socket):
         """

@@ -13,7 +13,7 @@ __all__ = [
 ]
 
 
-VERSION = '2.0.4'
+VERSION = '2.1.0'
 AUTHOR = 'CUP-DEV Team'
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

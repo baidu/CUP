@@ -56,6 +56,7 @@ class CConnContext(object):  # pylint: disable=R0902
         self._last_retry_time = None
         self._function = None
         self._resend_flag = None
+        self._listened_peer = None
 
     def to_destroy(self):
         """
@@ -138,6 +139,13 @@ class CConnContext(object):  # pylint: disable=R0902
                 self._conn.get_recv_queue().put(
                     (self._recving_msg.get_flag(), self._recving_msg)
                 )
+                if self.get_listened_peer() is None:
+                    listened_peer = self._recving_msg.get_from_addr()[0]
+                    self.set_listened_peer(listened_peer)
+                    log.info(
+                        'set listened peer {0} for this context({1})'.format(
+                            listened_peer, self._peerinfo)
+                    )
                 self._recving_msg = None
                 if self._conn.get_recv_queue().qsize() >= 500:
                     time.sleep(0.1)
@@ -305,6 +313,18 @@ class CConnContext(object):  # pylint: disable=R0902
         get peerinfo
         """
         return self._peerinfo
+
+    def get_listened_peer(self):
+        """
+        return peer listened peer info
+        """
+        return self._listened_peer
+
+    def set_listened_peer(self, peer):
+        """
+        set peer listened peer
+        """
+        self._listened_peer = peer
 
     def get_sending_queue(self):
         """return sending queue"""
