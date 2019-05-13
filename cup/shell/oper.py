@@ -9,8 +9,10 @@
 from __future__ import print_function
 
 import os
-import time
 import sys
+import time
+import uuid
+import tempfile
 import shutil
 import signal
 import random
@@ -21,10 +23,12 @@ import datetime
 import threading
 import subprocess
 
-
 import cup
+from cup.res import linux
 from cup import decorators
 from cup import err
+from cup import log
+from cup import exfile
 
 
 # linux only import
@@ -315,8 +319,12 @@ class Asynccontent(object):
         self.cmd = None
         self.timeout = None
         self.pid = None
-        self.ret = None
-        # self.child_list = []
+        self.ret = {
+            'stdout': None,
+            'stderr': None,
+            'returncode': 0
+        }
+        self.child_list = []
         self.cmdthd = None
         self.monitorthd = None
         self.subproc = None
@@ -336,9 +344,15 @@ class ShellExec(object):  # pylint: disable=R0903
         shellexec.run(cmd='/bin/ls', timeout=100)
     """
 
-    def __init__(self):
+    def __init__(self, tmpdir='/tmp/'):
+        """
+        :param tmpdir:
+            shellexec will use tmpdir to handle temp files
+        """
         self._subpro = None
         self._subpro_data = None
+        self._tmpdir = tmpdir
+        self._tmpprefix = 'cup.shell.{0}'.format(uuid.uuid4())
 
     @classmethod
     def kill_all_process(cls, async_content):
@@ -347,6 +361,17 @@ class ShellExec(object):  # pylint: disable=R0903
         """
         for pid in async_content.child_list:
             os.kill(pid, signal.SIGKILL)
+
+    @classmethod
+    def which(cls, pgm):
+        """get executable"""
+        if os.path.exists(pgm) and os.access(pgm, os.X_OK):
+            return pgm
+        path = os.getenv('PATH')
+        for fpath in path.split(os.path.pathsep):
+            fpath = os.path.join(fpath, pgm)
+            if os.path.exists(fpath) and os.access(fpath, os.X_OK):
+                return fpath
 
     @classmethod
     def get_async_run_status(cls, async_content):
@@ -384,12 +409,29 @@ class ShellExec(object):  # pylint: disable=R0903
             signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
         def _target(argcontent):
-            argcontent.subproc = subprocess.Popen(
-                    argcontent.cmd.split(), stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    preexec_fn=_signal_handle)
-            from cup.res import linux
-            parent = linux.Process(argcontent.subproc.pid)
+            tempscript = tempfile.NamedTemporaryFile(
+                dir=self._tmpdir, prefix=self._tmpprefix,
+                delete=True
+            )
+            with open(tempscript.name, 'w+b') as fhandle:
+                fhandle.write('cd {0};\n'.format(os.getcwd()))
+                fhandle.write(argcontent.cmd)
+            shexe = self.which('sh')
+            cmds = [shexe, tempscript.name]
+            log.info(
+                'to async execute {0} with script {1}'.format(
+                    argcontent.cmd, cmds)
+            )
+            try:
+                argcontent.subproc = subprocess.Popen(
+                        cmds, stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        preexec_fn=_signal_handle)
+            except OSError:
+                argcontent.ret['returncode'] = -1
+                argcontent.ret['stderr'] = (
+                    'failed to execute the cmd, plz check it out\'s'
+                )
 
         def _monitor(start_time, argcontent):
             while(int(time.mktime(datetime.datetime.now().timetuple())) - int(start_time) <
@@ -401,13 +443,20 @@ class ShellExec(object):  # pylint: disable=R0903
                     argcontent.ret['stdout'] = self._subpro_data[0]
                     argcontent.ret['stderr'] = self._subpro_data[1]
                     return
+            parent = linux.Process(argcontent.subproc.pid)
+            children = parent.children(True)
+            ret_dict = []
+            for process in children:
+                ret_dict.append(process)
+            argcontent.child_list = ret_dict
             str_warn = (
-                'Shell "%s"execution timout:%d. To kill it' % (argcontent.cmd,
-                    argcontent.timeout)
+                'Shell "{0}"execution timout:{1}. To kill it'.format(
+                    argcontent.cmd, argcontent.timeout)
             )
-            argcontent.subproc.terminate()
+            self.kill_all_process(argcontent)
             argcontent.ret['returncode'] = 999
             argcontent.ret['stderr'] = str_warn
+            argcontent.subproc.terminate()
 
         argcontent = Asynccontent()
         argcontent.cmd = cmd
@@ -417,19 +466,22 @@ class ShellExec(object):  # pylint: disable=R0903
             'stderr': None,
             'returncode': -999
         }
-        argcontent.cmdthd = threading.Thread(target=_target, args=(argcontent,))
+        argcontent.cmdthd = threading.Thread(
+            target=_target, args=(argcontent,))
+        argcontent.cmdthd.daemon = True
         argcontent.cmdthd.start()
         start_time = int(time.mktime(datetime.datetime.now().timetuple()))
         argcontent.cmdthd.join(0.1)
         argcontent.pid = argcontent.subproc.pid
         argcontent.monitorthd = threading.Thread(target=_monitor,
                 args=(start_time, argcontent))
+        argcontent.monitorthd.daemon = True
         argcontent.monitorthd.start()
         #this join should be del if i can make if quicker in Process.children
         argcontent.cmdthd.join(0.5)
         return argcontent
 
-    def run(self, cmd, timeout, run_as_shell=False):
+    def run(self, cmd, timeout):
         """
         refer to the class description
 
@@ -460,22 +512,28 @@ class ShellExec(object):  # pylint: disable=R0903
             """
             signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
-        def _pipe_asshell(cmd, run_as_shell):
+        def _pipe_asshell(cmd):
             """
             run shell with subprocess.Popen
             """
-            if run_as_shell:
-                self._subpro = subprocess.Popen(
-                    cmd, shell=True, stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    preexec_fn=_signal_handle
-                )
+            tempscript = tempfile.NamedTemporaryFile(
 
-            else:
-                self._subpro = subprocess.Popen(
-                    cmd.split(), stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE, preexec_fn=_signal_handle
-                )
+                dir=self._tmpdir, prefix=self._tmpprefix,
+                delete=True
+            )
+            with open(tempscript.name, 'w+b') as fhandle:
+                fhandle.write('cd {0};\n'.format(os.getcwd()))
+                fhandle.write(cmd)
+            shexe = self.which('sh')
+            cmds = [shexe, tempscript.name]
+            log.info(
+                'cup shell execute {0} with script {1}'.format(
+                    cmd, cmds)
+            )
+            self._subpro = subprocess.Popen(
+                cmds, stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE, preexec_fn=_signal_handle
+            )
             self._subpro_data = self._subpro.communicate()
         ret = {
             'stdout': None,
@@ -483,7 +541,7 @@ class ShellExec(object):  # pylint: disable=R0903
             'returncode': 0
         }
         cmdthd = threading.Thread(
-            target=_pipe_asshell, args=(cmd, run_as_shell)
+            target=_pipe_asshell, args=(cmd, )
         )
         cmdthd.start()
         cmdthd.join(timeout)
@@ -492,9 +550,12 @@ class ShellExec(object):  # pylint: disable=R0903
                 'Shell "%s"execution timout:%d. Killed it' % (cmd, timeout)
             )
             warnings.warn(str_warn, RuntimeWarning)
-            self._subpro.terminate()
+            parent = linux.Process(self._subpro.pid)
+            for child in parent.children(True):
+                os.kill(child, signal.SIGKILL)
             ret['returncode'] = 999
             ret['stderr'] = str_warn
+            self._subpro.terminate()
         else:
             self._subpro.wait()
             times = 0

@@ -19,7 +19,7 @@ if platforms.is_linux():
 
 __all__ = [
     'LockFile', 'FILELOCK_SHARED', 'FILELOCK_EXCLUSIVE',
-    'FILELOCK_NONBLOCKING', 'FILELOCK_UNLOCK', 'TempFile'
+    'FILELOCK_NONBLOCKING', 'FILELOCK_UNLOCK'
 ]
 
 
@@ -118,52 +118,5 @@ class LockFile(object):
         except Exception as error:
             raise err.LockFileError(error)
 
-
-class TempFile(object):
-    """
-    The temp file will be deleted immediately after the lifetime of it ends.
-
-    You can use cup TempFile like the original Python File Object.
-
-    ::
-
-        tmp = TempFile('./', prefix='xxxx', suffix='.tmp')
-        tmp.write / read /seek / etc
-        tmp.close()
-    """
-    def __init__(self, filedir, prefix='', suffix=''):
-        """
-        :param filedir:
-            temp file dir which contains the temp file
-
-        :prefix:
-            prefix of the temp filename
-
-        :suffix:
-            suffix of the file name. e.g. '.tmp'.
-        """
-        self._fdir = filedir
-        self._fp = None
-        self._prefix = prefix
-        self._suffix = suffix
-
-    def __enter__(self):
-        """enter"""
-        if platforms.is_linux():
-            self._fp = tempfile.TemporaryFile(
-                dir=self._fdir,
-                prefix=self._prefix,
-                suffix=self._suffix
-            )
-            return self._fp
-        else:
-            raise err.NotImplementedYet('TemporaryFile')
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """
-        exit
-        """
-        if platforms.is_linux():
-            self._fp.close()
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent
