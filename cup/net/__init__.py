@@ -81,25 +81,41 @@ def get_hostip(hostname=None):
     get ipaddr of a host
 
     :param hostname:
-        None, by default, will get localhost ipaddr
+        None, by default, will use udp to get ipaddr for ipv4 
+        if not None, will use hostname to convert to ipaddr
     """
-    times = 0
     ipaddr = None
-    got = False
-    while times < 10:
-        try:
-            if hostname is None:
-                hostname = get_local_hostname()
-            ipaddr = str(socket.gethostbyname(hostname))
-            got = True
-            break
-        except socket.gaierror:
-            times += 1
-            time.sleep(0.1)
-    if not got:
-        log.error('failed to get socket hostname for {0}'.format(hostname))
-    return ipaddr
+    times = 0
+    if hostname is not None:
+        times = 0
+        while times < 10:
+            try:
+                if hostname is None:
+                    hostname = get_local_hostname()
+                ipaddr = str(socket.gethostbyname(hostname))
+                got = True
+                break
+            except socket.gaierror:
+                times += 1
+                time.sleep(0.1)
+        else:
+            log.error('failed to get hostip for {0}'.format(hostname))
+        return ipaddr
+    else:
+        while times < 10:
+            try:
+                s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                s.connect(('8.8.8.8', 80))
+                ipaddr = s.getsockname()[0]
+                break
+            finally:
+                s.close()
+                times += 1
+        else:
+            log.error('failed to get hostip')
+        return ipaddr 
 
+ 
 def set_sock_keepalive_linux(
         sock, after_idle_sec=1, interval_sec=3, max_fails=5
 ):
