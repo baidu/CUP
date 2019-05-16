@@ -328,6 +328,7 @@ class Asynccontent(object):
         self.cmdthd = None
         self.monitorthd = None
         self.subproc = None
+        self.tempscript = None
 
 
 class ShellExec(object):  # pylint: disable=R0903
@@ -413,6 +414,7 @@ class ShellExec(object):  # pylint: disable=R0903
                 dir=self._tmpdir, prefix=self._tmpprefix,
                 delete=True
             )
+            argcontent.tempscript = tempscript
             with open(tempscript.name, 'w+b') as fhandle:
                 fhandle.write('cd {0};\n'.format(os.getcwd()))
                 fhandle.write(argcontent.cmd)
