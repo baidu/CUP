@@ -1,5 +1,15 @@
 # 1. Versions Released
+
+## Version 2.2.0 - 2019.5.11 ~ 5.29
+
+* [Fancy] Change a new logo, hats to community user @davidmind (from github) 
+* [New] `cup.res` - linux.Process add method `getpgid`
+* [New] add BceSms support
+* [Enhancement] `cup.shell` - enhance `oper.ShellExec`
+* [Enhancement] `cup.mail` - add smtp login method for authentication enabled server
+
 ## Version 2.1.0 - 2019.2.1 ~ 2019.5.10
+
     * [New] cup.net.get_interfaces - Get interfaces of a linux host
     * [New] cup.res.linux.get_cpu_core_usage - Get cpu core usage 
     * [Enhancement] cup.shell.oper - Md5 hexdigest generation (py3 compatibility)
@@ -8,6 +18,7 @@
     * [Bug] github socket closure (https://github.com/baidu/CUP/issues/32) 
 
 ## Version 2.0.0 - 2018.6.2 ~ 2018.12.31
+
 	* [New] pip support
 	* [New] cup.storage.obj - Add ftp/s3/local storage support (with universal apis)
 	* [Bug] cup.net.localport_free - Reversely result returned
@@ -22,6 +33,7 @@
 	* [Enhancement] Use rtd (read_the_doc theme) to reconsutrct cup api-doc
 
 ## Version 1.6.1 - starting from 2018.2.5 ~ 2018.6.1
+
 	* [New] cup.shell.is_proc_alive - Add optional to abandon vim|less|vi|tail|cat|more or custom filter	
 	* [Bug] cup.shell.get_pid - Fix grep to surely abandon vim|less|vi|tail|cat|more 
 	* [New] cup.log - Add support for stack manipulation, which can pop out function calls.
