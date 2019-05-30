@@ -9,7 +9,7 @@
 
 ### 2. Installation
 
-Install from pip, latest(2.0.3):
+Install from pip
 
 ```bash
 pip install cup
