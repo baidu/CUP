@@ -1,6 +1,6 @@
-**Plz visit http://cup.iobusy.com for details!**
+**Visit http://cup.iobusy.com for more details**
 
-**请大家访问官网 http://cup.iobusy.com 获取更多信息**
+**访问 http://cup.iobusy.com 获取更多信息**
 
 
 ## Quick Start
@@ -18,7 +18,7 @@ pip install cup
 Install from source code:
 
 ```bash
-    python setup.py install
+python setup.py install
 ```
 
 ### 3. Doc & Wiki
