@@ -1,3 +1,5 @@
+![cuplogo](http://cup.iobusy.com/cup.logo.png)
+
 **Visit http://cup.iobusy.com for more details**
 
 **访问 http://cup.iobusy.com 获取更多信息**
