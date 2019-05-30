@@ -1528,6 +1528,13 @@ class Process(object):
                     struct.pack('<4I', *struct.unpack('<4I', ip)))
         return (ip, port)
 
+    def getpgid(self):
+        """
+        return process group id (not pid, not gid either)
+        """
+        return os.getpgid(self._pid)
+
+
 if '__main__' == __name__:
     # system info
     print(get_boottime_since_epoch())

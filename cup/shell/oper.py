@@ -24,15 +24,14 @@ import threading
 import subprocess
 
 import cup
-from cup.res import linux
 from cup import decorators
 from cup import err
 from cup import log
-from cup import exfile
 
 
 # linux only import
 if platform.system() == 'Linux':
+    from cup.res import linux
     __all__ = [
         'rm', 'rmrf', 'kill',
         'is_process_used_port', 'is_port_used', 'is_proc_exist',
@@ -328,6 +327,7 @@ class Asynccontent(object):
         self.cmdthd = None
         self.monitorthd = None
         self.subproc = None
+        self.tempscript = None
 
 
 class ShellExec(object):  # pylint: disable=R0903
@@ -376,14 +376,17 @@ class ShellExec(object):  # pylint: disable=R0903
     @classmethod
     def get_async_run_status(cls, async_content):
         """
-        get the command's status
+        get the process status of executing async cmd
+
+        :return:
+            None if the process has finished.
+            Otherwise, return a object of linux.Process(async_pid)
         """
         try:
-            from cup.res import linux
             async_process = linux.Process(async_content.pid)
             res = async_process.get_process_status()
         except err.NoSuchProcess:
-            res = "process is destructor"
+            res = None
         return res
 
     @classmethod
@@ -409,15 +412,15 @@ class ShellExec(object):  # pylint: disable=R0903
             signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
         def _target(argcontent):
-            tempscript = tempfile.NamedTemporaryFile(
+            argcontent.tempscript = tempfile.NamedTemporaryFile(
                 dir=self._tmpdir, prefix=self._tmpprefix,
                 delete=True
             )
-            with open(tempscript.name, 'w+b') as fhandle:
+            with open(argcontent.tempscript.name, 'w+b') as fhandle:
                 fhandle.write('cd {0};\n'.format(os.getcwd()))
                 fhandle.write(argcontent.cmd)
             shexe = self.which('sh')
-            cmds = [shexe, tempscript.name]
+            cmds = [shexe, argcontent.tempscript.name]
             log.info(
                 'to async execute {0} with script {1}'.format(
                     argcontent.cmd, cmds)
