@@ -622,9 +622,11 @@ class FTPObjectSystem(ObjectInterface):
                 ftp_cmd = 'RETR {0}'.format(path)
                 resp = self._ftp_con.retrbinary(ftp_cmd, fhandle.write)
         except Exception as error:
-            log.error(traceback.format_exc())
             ret['returncode'] = -1
-            ret['msg'] = str(error)
+            ret['msg'] = 'failed to get {0} to {1}, err:{2}'.format(
+                path, localpath, error
+            )
+            log.error(ret['msg'])
         return ret
 
     def head(self, path):
