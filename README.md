@@ -94,7 +94,8 @@ cup
     - 克隆git代码或者下载已发布的tar包
 
 ### 2. 安装
-    - run `python setup.py install`
+    - pip 安装  `pip install cup`
+    - 源码安装 `python setup.py install`
 
 ### 3. 使用说明
 - Visit Wiki to see more details: https://github.com/Baidu/CUP/wiki
