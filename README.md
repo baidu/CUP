@@ -2,6 +2,8 @@
 
 **Visit http://cup.iobusy.com for more details** / **访问 http://cup.iobusy.com 获取更多信息**
 
+**If you want to use CUP within python3, pls refer to version py 3.0 alpha.**
+
 
 ## Quick Start
 ### 1. Download
