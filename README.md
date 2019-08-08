@@ -1,8 +1,9 @@
 ![cuplogo](http://cup.iobusy.com/cup.logo.png)
 
-**Visit http://cup.iobusy.com for more details** / **访问 http://cup.iobusy.com 获取更多信息**
+## Notice 
 
-**CUP is very steady on python 2.7.x. If you want to use CUP within python3, pls refer to version py 3.0 (alpha version, which is still under test/development)**
+- Visit http://cup.iobusy.com for more details** / **访问 http://cup.iobusy.com 获取更多信息**
+- CUP is **very steady on python 2.7.x**. If you want to use CUP within python3, pls refer to version py 3.0 (alpha version, which is still under test/development)
 
 
 ## Quick Start
