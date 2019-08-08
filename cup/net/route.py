@@ -6,11 +6,11 @@
 :description:
     host route info related module
 """
+from __future__ import print_function
 
 __all__ = ['RouteInfo']
 
 import copy
-import json
 import socket
 import struct
 
@@ -24,8 +24,8 @@ class RouteInfo(object):
 
         from cup.net import route
         ri = route.RouteInfo()
-        print json.dumps(ri.get_route_by_ip('10.32.19.92'), indent=1)
-        print json.dumps(ri.get_routes(), indent=1)
+        print(json.dumps(ri.get_route_by_ip('10.32.19.92'), indent=1))
+        print(json.dumps(ri.get_routes(), indent=1))
 
 
     *Return*
@@ -255,19 +255,18 @@ class RouteInfo(object):
 
 def _test():
     ri = RouteInfo()
-    # print ri._ip2int('1.0.0.0')
-    # print ri._raw_info
-    # print
-    # print json.dumps(ri.route, indent=1)
-    print json.dumps(ri.get_route_by_ip('10.32.19.92'), indent=1)
-    print json.dumps(ri.get_routes(), indent=1)
-    # print json.dumps(ri.get_routes(), indent=1)
-    # print ri.get_interfaces()
-    # print '10.32.19.1:',ri._dot_decimal_to_hex('10.32.19.1')
-    # print '255.255.255.0:',ri._dot_decimal_to_hex('255.255.255.0')
-    # print '0113200A:',ri._hex_to_dot_decimal('0113200A')
-    # print ri._get_net()
-    # print json.dumps(ri.route,indent=1)
+    # print(ri._ip2int('1.0.0.0'))
+    # print(ri._raw_info)
+    # print(json.dumps(ri.route, indent=1))
+    # print(json.dumps(ri.get_route_by_ip('10.32.19.92'), indent=1))
+    # print(json.dumps(ri.get_routes(), indent=1))
+    # print(json.dumps(ri.get_routes(), indent=1))
+    # print(ri.get_interfaces())
+    # print('10.32.19.1:',ri._dot_decimal_to_hex('10.32.19.1'))
+    # print('255.255.255.0:',ri._dot_decimal_to_hex('255.255.255.0'))
+    # print('0113200A:',ri._hex_to_dot_decimal('0113200A'))
+    # print(ri._get_net())
+    # print(json.dumps(ri.route,indent=1))
 
 
 if __name__ == '__main__':

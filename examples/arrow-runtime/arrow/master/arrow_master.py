@@ -149,7 +149,6 @@ def _main(argv):
     if len(argv) < 2:
         sys.stderr.write('should specify conf path')
         sys.exit(-1)
-    print argv[1]
     master = Master(argv[1])
     master.loop()
 
