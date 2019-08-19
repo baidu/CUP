@@ -113,7 +113,7 @@ def is_process_running(path, name):
                 ret = cup.shell.ShellExec().run(cmd, 10)
                 pid_path = ret['stdout'].strip().strip()
                 if pid_path.find(path) == 0:
-                    # print '%s is exist: %s' % (name, path)
+                    # print('%s is exist: %s' % (name, path))
                     return True
         return False
     return _real_is_proc_exist(path, name)

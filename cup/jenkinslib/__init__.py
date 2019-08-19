@@ -22,20 +22,20 @@ usage:
     jenkins = cup.jenkinslib.Jenkins('cup.jenkins.baidu.com')
 
     job = jenkins['cup_quick']
-    print job.name, job.last_stable_build_number, job.description
-    print job[5], job["lastSuccessBuild"], job.last_stable_build
+    # access job.name, job.last_stable_build_number, job.description
+    # access job[5], job["lastSuccessBuild"], job.last_stable_build
 
     qi = job.invoke()
     build = qi.block_until_building()
-    print build.name, build.number, build.timestamp
+    build.name, build.number, build.timestamp
 
     try:
         build.block_until_complete(timeout=20)
     except cup.jenkinslib.RunTimeout as err:
-        print "timeout:", err
+        print("timeout: {0}".format(err))
         build.stop()
 
-    print build.duration, build.result, build.description
+    # access build.duration, build.result, build.description
 
     build.description = "new description"
 

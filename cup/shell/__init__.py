@@ -25,6 +25,7 @@ from cup import err
 from cup.shell import expect
 from cup.shell import oper
 
+## for backwards support
 from cup.shell.oper import md5file
 from cup.shell.oper import kill9_byname
 from cup.shell.oper import del_if_exist

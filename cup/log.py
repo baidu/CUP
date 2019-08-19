@@ -45,6 +45,10 @@ G_INITED_LOGGER = []
 # pylint:disable=C0103
 info = logging.info
 warn = logging.warn
+try:
+    warn = logging.warning
+except Exception:
+    pass
 error = logging.error
 debug = logging.debug
 critical = logging.critical

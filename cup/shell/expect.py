@@ -8,6 +8,7 @@
     The original copyright belongs to the author of pexpect module.
     See it at http://pexpect.sourceforge.net/pexpect.html
 """
+from __future__ import print_function
 import os
 import sys
 

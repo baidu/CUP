@@ -12,6 +12,7 @@
 """
 Provie Linux Resource/State Info Query
 """
+from __future__ import print_function
 import os
 import re
 import sys
@@ -220,8 +221,8 @@ class MemInfo(collections.namedtuple('vmem', ' '.join([
     ::
         from cup.res import linux
         meminfo = linux.get_meminfo()
-        print meminfo.total
-        print meminfo.available
+        print(meminfo.total)
+        print(meminfo.available)
     """
 
 #    user
