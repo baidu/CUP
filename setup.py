@@ -38,6 +38,8 @@ def _find_packages(prefix=''):
             item = None
             if sys.platform.startswith('linux'):
                 item = re.sub('^[^A-z0-9_]', '', root.replace('/', '.'))
+                item = item.lstrip('.')
+                packages.append(item)
             elif sys.platform.startswith('win'):
                 item = re.sub('^[^A-z0-9_]', '', root.replace('\\', '.'))
             else:
@@ -75,6 +77,7 @@ setup(
     license='Apache 2',
     keywords='library common network threadpool baselib framework',
     packages=_find_packages(__name__),
+    package_dir={'cup': './cup'},
     package_data={
         '': [
             '*.so', '*.pyo',

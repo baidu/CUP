@@ -18,7 +18,6 @@ except ImportError as error:
     # 'Seems run on non-linux machine'
     pass
 
-from cup.net import async
 from cup import log
 from cup import platforms
 
@@ -31,7 +30,6 @@ __all__ = [
     'set_sock_reusable',
     'set_sock_linger',
     'set_sock_quickack',
-    'async',
     'localport_free',
     'port_listened',
     'get_interfaces'
