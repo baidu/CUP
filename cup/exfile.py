@@ -32,17 +32,16 @@ elif platforms.is_windows():
         """win file size"""
         return os.path.getsize(os.path.realpath(fobj.name) )
 
-    def lock_file(fobj, blocking=True):
+    def win_lockfile(fobj, blocking=True):
         """win lock file"""
         flags = msvcrt.LK_RLCK
         if not blocking:
             flags = msvcrt.LK_NBRLCK
         msvcrt.locking(fobj.fileno(), flags, file_size(fobj))
 
-    def unlock_file(fobj):
+    def win_unlockfile(fobj):
         """win unlock file"""
         msvcrt.locking(fobj.fileno(), msvcrt.LK_UNLCK, file_size(fobj))
-
 
 
 class LockFile(object):
@@ -130,7 +129,7 @@ class LockFile(object):
                 raise err.LockFileError(error)
             return ret
         elif platforms.is_windows():
-            lock_file(self._fhandle, blocking)
+            win_lockfile(self._fhandle, blocking)
 
     def unlock(self):
         """unlock the locked file"""
@@ -140,7 +139,13 @@ class LockFile(object):
             except Exception as error:
                 raise err.LockFileError(error)
         elif platforms.is_windows():
-            unlock_file(self._fhandle)
+            win_unlockfile(self._fhandle)
+
+    def filepath(self):
+        """
+        return filepath
+        """
+        return self._fpath
 
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

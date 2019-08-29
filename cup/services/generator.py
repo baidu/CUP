@@ -94,6 +94,13 @@ class CGeneratorMan(object):
         self._nlock.release()
         return temp
 
+    def get_next_uniqhex(self):
+        """
+        return next uniqhex
+        """
+        temp = self.get_next_uniq_num()
+        return str(hex(temp))
+
     @classmethod
     def get_random_str(cls, length):
         """get random str by length"""

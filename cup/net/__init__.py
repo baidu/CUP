@@ -101,8 +101,12 @@ def get_hostip(hostname=None):
         while times < 10:
             try:
                 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                # sock.connect(('8.8.8.8', 80))
+                sock.connect(('8.8.8.8', 80))
                 ipaddr = sock.getsockname()[0]
+                break
+            except socket.error:
+                hostname = get_local_hostname()
+                ipaddr = str(socket.gethostbyname(hostname))
                 break
             finally:
                 sock.close()

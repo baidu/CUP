@@ -9,6 +9,10 @@
 import time
 import collections
 import contextlib
+try:
+    import queue
+except ImportError:
+    import Queue as queue
 
 import cup
 from cup.util import thread
@@ -17,14 +21,17 @@ from cup.util import thread
 class KvCache(object):
     """
     Key-Value Cache object
+
+    When a k-v is hit, the expire_sec will be expanded to 2 * (expire_sec)
     """
     _STAT = collections.namedtuple(
         'kvcache_stat', 'key_num expired_num'
     )
 
-    def __init__(self):
+    def __init__(self, maxsize=0):
         # store kv_data
         self._kv_data = {}
+        self._orderedqueue = queue.PriorityQueue()
         self._lock = thread.RWLock()
 
     @contextlib.contextmanager
@@ -44,12 +51,12 @@ class KvCache(object):
             else:
                 self._lock.release_readlock()
 
-    def set(self, kvlist, expire_sec=None):
+    def set(self, kvdict, expire_sec=None):
         """
-        set cache with kvlist
+        set cache with kvdict
 
-        :param kvlist:
-            kvlist is a dict that contains your cache.
+        :param kvdict:
+            kvdict is a dict that contains your cache.
         :param expire_sec:
             if expire_sec is None, the cache will never expire.
         """
@@ -57,10 +64,10 @@ class KvCache(object):
         if expire_sec is not None:
             expire_value = expire_sec + time.time()
         with self._lock_release(b_rw_lock=True):
-            for key in kvlist:
+            for key in kvdict:
                 if key in self._kv_data:
                     cup.log.debug('Key:%s of KvCache updated.' % key)
-                self._kv_data[key] = (kvlist[key], expire_value)
+                self._kv_data[key] = (kvdict[key], expire_value)
 
     def get(self, key):
         """
@@ -76,10 +83,12 @@ class KvCache(object):
                 return None
             else:
                 cup.log.debug('key:%s of kvCache fetched.' % key)
+                self._kv_data[key] = (value, 2 * expire_sec)
                 return value
         return None
 
     def _get_expired_keys(self):
+        """get expired key of keys"""
         expired_keys = []
         keys = self._kv_data.keys()
         for key in keys:
