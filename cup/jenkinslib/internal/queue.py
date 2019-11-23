@@ -63,7 +63,8 @@ class Queue(base.JenkinsBase):
     def _get_queue_items_for_job(self, job_name):
         for item in self._data["items"]:
             if item['task']['name'] == job_name:
-                yield QueueItem(self.get_queue_item_url(item), jenkins_obj=self.jenkins)
+                yield QueueItem(self.get_queue_item_url(item), 
+                                jenkins=self.jenkins)
 
     def get_queue_items_for_job(self, job_name):
         """get queue items by job name."""

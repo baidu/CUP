@@ -16,7 +16,7 @@ from cup import platforms
 
 __all__ = [
     'LockFile', 'FILELOCK_SHARED', 'FILELOCK_EXCLUSIVE',
-    'FILELOCK_NONBLOCKING', 'FILELOCK_UNLOCK'
+    'FILELOCK_NONBLOCKING', 'FILELOCK_UNLOCK', 'mk_newnode'
 ]
 
 if platforms.is_linux():
@@ -147,5 +147,23 @@ class LockFile(object):
         """
         return self._fpath
 
+
+
+def mk_newnode(abspath, check_exsistence=False):
+    """
+    :param abspath:
+        plz use absolute path. Not relative path
+
+    :param check_exsistence:
+        if True, will check if the abspath existence (
+        raise IOError if abspath exists)
+    :raise Exception:
+        IOError
+    """
+    if check_exsistence:
+        if os.path.exists(abspath):
+            raise IOError('{0} already exists'.format(abspath))
+    with open(abspath, 'w+') as _:
+        pass
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

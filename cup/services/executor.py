@@ -29,7 +29,7 @@ class ExecutionService(object):
     execution service
     """
     def __init__(
-        self, delay_exe_thdnum=3, queue_exec_thdnum=4
+        self, delay_exe_thdnum=3, queue_exec_thdnum=4, name=None
     ):
         self.__toal_thdnum = delay_exe_thdnum + queue_exec_thdnum
         self.__delay_exe_thdnum = delay_exe_thdnum
@@ -45,6 +45,7 @@ class ExecutionService(object):
             'Executor service inited, delay_exec thread num:%d,'
             ' exec thread num:%d' % (delay_exe_thdnum, queue_exec_thdnum)
         )
+        self._name = '' if name is None else name
 
     def _do_delay_exe(self, task_data):
         self.__delay_queue.put(task_data)
@@ -83,8 +84,10 @@ class ExecutionService(object):
             try:
                 item = func_queue.get(timeout=check_interval)
             except queue.Empty:
-                # log.debug('no item found in exec queue')
                 continue
+            function = None
+            argvs = None
+            kwargs = None
             try:
                 _, (function, argvs, kwargs) = item
                 # pylint: disable=W0142
@@ -95,11 +98,11 @@ class ExecutionService(object):
             # we can NOT predict the exception type
             except Exception as error:
                 log.warn(
-                    '%s worker encountered exception:%s, func:%s, args:%s' %
-                    (worker_name, error, function, kwargs)
+                    '{0} worker encountered exception:{1}, func:{2},'
+                    'args:{3} {4} , executor service({5})'.format(
+                    worker_name, error, function, argvs, kwargs, self._name)
                 )
                 log.warn('error type:{0}'.format(type(error)))
-                log.warn(traceback.format_exc())
         log.debug(
             '%s worker thread exited as the service is stopping' % worker_name
         )
@@ -123,7 +126,11 @@ class ExecutionService(object):
                 self.__exec_queue,
                 'Exec'
             )
-        log.info('Executor service started')
+        log.info('Executor service {0} started'.format(self._name))
+
+    def start(self):
+        """alias for self.run"""
+        return self.run()
 
     def stop(self, wait_workerstop=True):
         """
@@ -136,12 +143,12 @@ class ExecutionService(object):
             Otherwise, the function will not hang, but tell you whether it's
             succeeded stopped. (True for stoped, False for not stopped yet)
         """
-        log.info('to stop executor')
+        log.info('to stop executor {0}'.format(self._name))
         self.__status = 2
         if wait_workerstop:
             self.__thdpool.stop()
         else:
             self.__thdpool.try_stop()
-        log.info('end stopping executor')
+        log.info('end stopping executor {0}'.format(self._name))
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

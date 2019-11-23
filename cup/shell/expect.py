@@ -13,6 +13,7 @@ import os
 import sys
 
 import cup
+from cup import log
 from cup.thirdp import pexpect
 
 
@@ -23,7 +24,7 @@ __all__ = [
 
 def _do_expect_ex(passwd, command, timeout=100, b_print_stdout=True):
     """ret 0 success 1 timeout others -1"""
-    ret = 0
+    retcode = 0
     try:
         pobj = pexpect.spawn('/bin/bash', ['-c', command], timeout=timeout)
         if b_print_stdout:
@@ -37,18 +38,18 @@ def _do_expect_ex(passwd, command, timeout=100, b_print_stdout=True):
             pobj.sendline("yes")
             pobj.expect(['password:'])
             pobj.sendline(passwd)
-        ret = pobj.expect(pexpect.EOF)
+        retcode = pobj.expect(pexpect.EOF)
     except pexpect.TIMEOUT:
         sys.stderr.write('Connection timeout\n')
-        ret = 1
+        retcode = 1
     except pexpect.EOF:
         pobj.close()
-        ret = pobj.exitstatus
+        retcode = pobj.exitstatus
     except Exception as error:
         sys.stderr.write('Connection close, error:%s\n' % error)
-        ret = -1
+        retcode = -1
     ret = {
-        'exitstatus': ret,
+        'exitstatus': retcode,
         'remote_exitstatus': pobj.exitstatus,
         'result': pobj.before
     }
@@ -99,7 +100,7 @@ def go(
 def _judge_ret(ret, msg=''):
     if not (ret['exitstatus'] and ret['remote_exitstatus']):
         return True
-    ret['result'] = msg + ' \n ' + ret['result']
+    ret['result'] = msg + ' \n ' + str(ret['result'])
     return False
 
 
@@ -168,6 +169,7 @@ def go_ex(
         return a dict with keys ('exitstatus' 'remote_exitstatus' 'result')
     """
     cmd = """ssh %s@%s '%s'""" % (username, hostname, command)
+    log.info('go_ex {0}'.format(cmd))
     ret = _do_expect_ex(passwd, cmd, timeout, b_print_stdout)
     return ret
 
@@ -183,6 +185,7 @@ def lscp(
         return a dict with keys ('exitstatus' 'remote_exitstatus' 'result')
     """
     cmd = 'scp -r %s %s@%s:%s' % (src, username, hostname, dst)
+    log.info('{0}'.format(cmd))
     return _do_expect_ex(passwd, cmd, timeout, b_print_stdout)
 
 

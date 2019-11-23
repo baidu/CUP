@@ -37,6 +37,7 @@ except ImportError:
     import queue
 import copy
 import time
+import traceback
 import contextlib
 import threading
 
@@ -233,8 +234,8 @@ class ThreadPool(object):
                 except Exception as error:
                     success = False
                     log.warn(
-                        'Func failed, func:%s, error_msg: %s'  %
-                        (str(function), str(error))
+                        'Func failed, func:{0}, error_msg: {1}'.format(
+                        function, error)
                     )
                     if result_callback is None:
                         log.warn('This func does not have callback.')
