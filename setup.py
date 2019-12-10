@@ -9,6 +9,7 @@ from __future__ import print_function
 import os
 import re
 import sys
+import platform
 import textwrap
 import traceback
 import setuptools
@@ -24,8 +25,13 @@ except Exception:
     print(traceback.print_exc())
     exit(-1)
 
-with open('README.md', 'r', encoding='utf-8') as fh:
-    LONG_DESCRIPTION = fh.read()
+LONG_DESCRIPTION = None
+if platform.python_version() < str(3):
+    with open('README.md', 'r') as fh:
+        LONG_DESCRIPTION = fh.read()
+else:
+    with open('README.md', 'r', encoding='utf-8') as fh:
+        LONG_DESCRIPTION = fh.read()
 
 # Guannan add windows platform support on 2014/11/4 20:04
 def _find_packages(prefix=''):
@@ -34,6 +40,8 @@ def _find_packages(prefix=''):
     path = '.'
     prefix = prefix
     for root, _, files in os.walk(path):
+        if root.find('examples') >= 0:
+            continue
         if '__init__.py' in files:
             item = None
             if sys.platform.startswith('linux'):
