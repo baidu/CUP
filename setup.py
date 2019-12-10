@@ -24,7 +24,7 @@ except Exception:
     print(traceback.print_exc())
     exit(-1)
 
-with open('README.md', 'r',encoding='utf-8') as fh:
+with open('README.md', 'r', encoding='utf-8') as fh:
     LONG_DESCRIPTION = fh.read()
 
 # Guannan add windows platform support on 2014/11/4 20:04

@@ -133,6 +133,10 @@ class ObjectInterface(object):
             }
         """
 
+    @abc.abstractmethod
+    def rename(self, frompath, topath):
+        """rename from path to path"""
+
 
 class AFSObjectSystem(ObjectInterface):
     """
@@ -220,6 +224,10 @@ class AFSObjectSystem(ObjectInterface):
 
     def rmdir(self, path):
         """rmdir of a path"""
+
+    def rename(self, frompath, topath):
+        """rename"""
+        raise err.NotImplementedYet('AFSObjectSystem.rename')
 
 
 # pylint: disable=R0902
@@ -476,6 +484,10 @@ class S3ObjectSystem(ObjectInterface):
             ret['msg'] = str(error)
         return ret
 
+    def rename(self, frompath, topath):
+        """rename"""
+        raise err.NotImplementedYet('AFSObjectSystem.rename')
+
 
 class FTPObjectSystem(ObjectInterface):
     """
@@ -511,7 +523,7 @@ class FTPObjectSystem(ObjectInterface):
         self._host = self._uri.split(':')[1][2:]
         self._port = ftplib.FTP_PORT
         if len(self._uri.split(':')[2]) > 0:
-            self.port = int(self._uri.split(':')[2])
+            self._port = int(self._uri.split(':')[2])
         self._ftp_con.connect(self._host, self._port, self._dufault_timeout)
         self._ftp_con.login(self._user, self._passwd)
         self._last_optime = time.time()
@@ -755,6 +767,21 @@ class FTPObjectSystem(ObjectInterface):
         self._ftp_con.cwd(cwd)
         return False
 
+    def rename(self, frompath, topath):
+        """rename frompath to path"""
+        ret = {
+            'returncode': 0,
+            'msg': 'success'
+        }
+        try:
+            self._ftp_con.rename(frompath, topath)
+        except Exception as error:
+            ret['returncode'] = -1
+            ret['msg'] = 'failed to rename from {0} to {1}'.format(
+                frompath, topath
+            )
+        return ret
+
 
 class LocalObjectSystem(ObjectInterface):
     """local object system"""
@@ -866,6 +893,21 @@ class LocalObjectSystem(ObjectInterface):
         except IOError as error:
             ret['returncode'] = -1
             ret['msg'] = 'failed to rmdir, err:{0}'.format(error)
+        return ret
+
+    def rename(self, frompath, topath):
+        """rename from path to path"""
+        ret = {
+            'returncode': 0,
+            'msg': 'success'
+        }
+        try:
+            os.rename(frompath, topath)
+        except IOError as error:
+            ret['returncode'] = -1
+            ret['msg'] = 'failed to rename {0} to {1}'.format(
+                frompath, topath
+            )
         return ret
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent
