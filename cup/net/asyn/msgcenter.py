@@ -13,8 +13,8 @@ import socket
 import threading
 
 from cup import log
-from cup.net.async import conn
-from cup.net.async import msg as async_msg
+from cup.net.asyn import conn
+from cup.net.asyn import msg as async_msg
 
 
 __all__ = ['IMessageCenter']

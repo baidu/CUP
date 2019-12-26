@@ -32,8 +32,8 @@ from cup import err as cuperr
 from cup.util import misc
 from cup.util import threadpool
 from cup.services import executor
-from cup.net.async import msg as async_msg
-from cup.net.async import context as sockcontext
+from cup.net.asyn import msg as async_msg
+from cup.net.asyn import context as sockcontext
 
 
 __all__ = [

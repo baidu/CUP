@@ -3,7 +3,7 @@
 # Copyright: [CUP] - See LICENSE for details.
 # Authors: Guannan Ma (@mythmgn),
 """
-common function module for cup.net.async
+common function module for cup.net.asyn
 """
 import socket
 import struct

@@ -11,12 +11,15 @@ import sys
 import time
 import socket
 import struct
+import platform
 import warnings
+
 try:
     import fcntl
 except ImportError as error:
     # 'Seems run on non-linux machine'
     pass
+
 
 from cup import log
 from cup import platforms
@@ -34,6 +37,10 @@ __all__ = [
     'port_listened',
     'get_interfaces'
 ]
+
+if platform.python_version() <= '3.0.0':
+    from cup.net import asyn as async
+    __all__.append('async')
 
 
 if platforms.is_linux():

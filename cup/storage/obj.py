@@ -663,19 +663,26 @@ class FTPObjectSystem(ObjectInterface):
         path = self._get_relative_path(path, cwd)
         res_info = []
         f_flag = False
-        if self.is_file(path):
-            file_name = path[path.rfind('/') + 1:]
-            f_flag = True
         def _call_back(arg):
             if f_flag and arg.split()[-1].strip() == file_name:
                 return res_info.append(arg)
             if not f_flag:
                 res_info.append(arg)
         try:
+            if self.is_file(path):
+                file_name = path[path.rfind('/') + 1:]
+                f_flag = True
+                pos = path.rfind('/')
+                p_path = path[0: pos]
+                self._ftp_con.cwd(p_path)
+            else:
+                self._ftp_con.cwd(path)
+
             self._ftp_con.retrlines('LIST', _call_back)
             ret['fileinfo'] = res_info
             ret['returncode'] = 0
             ret['msg'] = 'success'
+            self._ftp_con.cwd(cwd)
         except Exception as error:
             ret['returncode'] = -1
             ret['msg'] = str(error)
@@ -755,16 +762,22 @@ class FTPObjectSystem(ObjectInterface):
             return res
         except Exception as e:
             pass
-        pos = path.rfind('/')
-        p_path = path[0: pos]
-        file_name = path[pos + 1:]
-        self._ftp_con.cwd(p_path)
-        self._ftp_con.retrlines('MLSD', _call_back)
-        for item in res_info:
-            if item.split(';')[-1].strip() == file_name and 'type=file' in item:
-                self._ftp_con.cwd(cwd)
-                return True
-        self._ftp_con.cwd(cwd)
+        try:
+            pos = path.rfind('/')
+            if pos == -1:
+                file_name = path
+            else:
+                p_path = path[0: pos]
+                file_name = path[pos + 1:]
+                self._ftp_con.cwd(p_path)
+            self._ftp_con.retrlines('MLSD', _call_back)
+            for item in res_info:
+                if item.split(';')[-1].strip() == file_name and 'type=file' in item:
+                    self._ftp_con.cwd(cwd)
+                    return True
+            self._ftp_con.cwd(cwd)
+        except Exception as error:
+            pass
         return False
 
     def rename(self, frompath, topath):

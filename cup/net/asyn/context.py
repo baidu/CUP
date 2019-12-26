@@ -19,7 +19,7 @@ except ImportError:
 import cup
 from cup import log
 from cup.util import misc
-from cup.net.async import msg as async_msg
+from cup.net.asyn import msg as async_msg
 
 
 __all__ = [

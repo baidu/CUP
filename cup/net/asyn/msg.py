@@ -12,7 +12,7 @@ import cup
 from cup import log
 from cup.util import misc
 from cup.util import generator
-from cup.net.async import common
+from cup.net.asyn import common
 
 
 MSG_RESENDING_FLAG = 0
