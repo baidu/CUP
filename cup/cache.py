@@ -9,10 +9,6 @@
 import time
 import collections
 import contextlib
-try:
-    import queue
-except ImportError:
-    import Queue as queue
 
 import cup
 from cup.util import thread
@@ -31,7 +27,6 @@ class KvCache(object):
     def __init__(self, maxsize=0):
         # store kv_data
         self._kv_data = {}
-        self._orderedqueue = queue.PriorityQueue()
         self._lock = thread.RWLock()
 
     @contextlib.contextmanager
