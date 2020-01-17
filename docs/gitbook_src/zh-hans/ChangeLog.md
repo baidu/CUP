@@ -1,5 +1,26 @@
 # 1. Versions Released
 
+## Version 3.2.x 
+
+* [Enhancement] Change cup.net.async to cup.net.asyn to avoid language keyword "async"
+* [New] Support Python version >= 3.5
+* [New] add safe_rmtree in cup.exfile
+* [Bug] fix bug for cup.exfile for macos
+* [Bug] fix bug for cup.shell.ShellExec
+
+## Version 3.1.x Under Development 2019.9 ~ 2019.12.26
+* [Enhancement] cup.services.serilizer - loglist
+* [New] cup.storage.obj - rename
+* [Bug] cup.storage.obj - ftp uri bug
+
+## Version 3.0.0 py support alpha 2019.6 ~ 2019.8.8
+* [Enhancement] cup.net get ip address
+* [New] Py3 support (excep for cup.net.async, tcp async msg stack)
+* [Bug] fix traceback for cup.storage.obj 
+* [Enhancement] cup.exfile - support lock_file for windows
+* [Bug] Fix installation bug in setup.py
+* [New] Add get unique hexid for cup.services.generator
+
 ## Version 2.2.0 - 2019.5.11 ~ 5.29
 
 * [Fancy] Change a new logo, hats to community user @davidmind (from github) 

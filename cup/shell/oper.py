@@ -524,7 +524,7 @@ class ShellExec(object):  # pylint: disable=R0903
                 dir=self._tmpdir, prefix=self._tmpprefix,
                 delete=True
             )
-            with open(tempscript.name, 'w+b') as fhandle:
+            with open(tempscript.name, 'w+') as fhandle:
                 fhandle.write('cd {0};\n'.format(os.getcwd()))
                 fhandle.write(cmd)
             shexe = self.which('sh')
