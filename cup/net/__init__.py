@@ -38,10 +38,6 @@ __all__ = [
     'get_interfaces'
 ]
 
-if platform.python_version() <= '3.0.0':
-    from cup.net import asyn as async
-    __all__.append('async')
-
 
 if platforms.is_linux():
     _SOCK = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

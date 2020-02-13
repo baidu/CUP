@@ -1,12 +1,12 @@
 # 1. Versions Released
 
-## Version 3.2.x 
-
+## Version 3.2.x  2020.1 ~ 
 * [Enhancement] Change cup.net.async to cup.net.asyn to avoid language keyword "async"
 * [New] Support Python version >= 3.5
 * [New] add safe_rmtree in cup.exfile
 * [Bug] fix bug for cup.exfile for macos
 * [Bug] fix bug for cup.shell.ShellExec
+* [New] Add support for global socket keepalive
 
 ## Version 3.1.x Under Development 2019.9 ~ 2019.12.26
 * [Enhancement] cup.services.serilizer - loglist
@@ -37,38 +37,39 @@
     * [New] Py3 compatibility test and reconsutrction is undergoing
     * [Enhancement] cup.shell.oper - Change subprocess.Pipe(shell=True by default to shell=False)
     * [Bug] github socket closure (https://github.com/baidu/CUP/issues/32) 
+    * [Bug] cup.shell.oper async_run, kill procedure for children pids has bugs 
 
 ## Version 2.0.0 - 2018.6.2 ~ 2018.12.31
 
-	* [New] pip support
-	* [New] cup.storage.obj - Add ftp/s3/local storage support (with universal apis)
-	* [Bug] cup.net.localport_free - Reversely result returned
-	* [Bug] cup.net.async - Msg class class variable 
-	* [Bug] cup.net.async - logging typo
-	* [Bug] cup.net.async - Msg disorder bug (an import bug fix!)
-	* [New] cup.net.async - Add get_context related class method
-	* [Bug] cup.decorators - fix wrap exception
-	* [Bug] cup.unittest - Fix bug for assert_lt
-	* [Bug] cup.res.linux - Add support for customized linux kernel
-	* [Enahcnement] cup.net.set_sock_keepalive_linux - add exception catch code lines
-	* [Enhancement] Use rtd (read_the_doc theme) to reconsutrct cup api-doc
+* [New] pip support
+* [New] cup.storage.obj - Add ftp/s3/local storage support (with universal apis)
+* [Bug] cup.net.localport_free - Reversely result returned
+* [Bug] cup.net.async - Msg class class variable 
+* [Bug] cup.net.async - logging typo
+* [Bug] cup.net.async - Msg disorder bug (an import bug fix!)
+* [New] cup.net.async - Add get_context related class method
+* [Bug] cup.decorators - fix wrap exception
+* [Bug] cup.unittest - Fix bug for assert_lt
+* [Bug] cup.res.linux - Add support for customized linux kernel
+* [Enahcnement] cup.net.set_sock_keepalive_linux - add exception catch code lines
+* [Enhancement] Use rtd (read_the_doc theme) to reconsutrct cup api-doc
 
 ## Version 1.6.1 - starting from 2018.2.5 ~ 2018.6.1
 
-	* [New] cup.shell.is_proc_alive - Add optional to abandon vim|less|vi|tail|cat|more or custom filter	
-	* [Bug] cup.shell.get_pid - Fix grep to surely abandon vim|less|vi|tail|cat|more 
-	* [New] cup.log - Add support for stack manipulation, which can pop out function calls.
-	* [New] cup.err - Add UnImplemented exception class.
-	* [New] cup.exfile - Support temp files which will be removed immediately after the variable life ends.
-	* [Enhancement] cup.util.conf - support $ in a conf key
-	* [Doc] cup.shell - Fix doc bug. 
-	* [New] cup.shell - Add grep support string with space
-	* [New] cup.storage.obj - Support common object storage apis including ftp, s3
-	* [Bug] cup.res.linux - Getting cpuinfo has bugs (new kernel 3.10)
-	* [Enhancement] - cup.util.threadpool, add daemon_threads as the parameter
-		that you can use to let the threadpool threads behave like daemon-thread
-		(when the main thread exits, it exits as well)
-	* [Enhancement] - conf.util.conf - support conf line "[.test] # comments" 
+* [New] cup.shell.is_proc_alive - Add optional to abandon vim|less|vi|tail|cat|more or custom filter	
+* [Bug] cup.shell.get_pid - Fix grep to surely abandon vim|less|vi|tail|cat|more 
+* [New] cup.log - Add support for stack manipulation, which can pop out function calls.
+* [New] cup.err - Add UnImplemented exception class.
+* [New] cup.exfile - Support temp files which will be removed immediately after the variable life ends.
+* [Enhancement] cup.util.conf - support $ in a conf key
+* [Doc] cup.shell - Fix doc bug. 
+* [New] cup.shell - Add grep support string with space
+* [New] cup.storage.obj - Support common object storage apis including ftp, s3
+* [Bug] cup.res.linux - Getting cpuinfo has bugs (new kernel 3.10)
+* [Enhancement] - cup.util.threadpool, add daemon_threads as the parameter
+    that you can use to let the threadpool threads behave like daemon-thread
+    (when the main thread exits, it exits as well)
+* [Enhancement] - conf.util.conf - support conf line "[.test] # comments" 
 
 ## Version 1.6.0 - starting from 2017.9.6 ~ 2017.12.29
 	* [New] cup.bidu.icafe - interact with baidu icafe.

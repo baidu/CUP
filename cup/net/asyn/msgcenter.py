@@ -45,6 +45,30 @@ class IMessageCenter(object):
         """bind port for message center"""
         self._conn_mgr.bind()
 
+    def global_sock_keepalive(self,
+        after_idle_sec=1, interval_sec=3, max_fails=5
+    ):
+        """
+        Set TCP keepalive on an open socket.
+        It activates after 1 second (after_idle_sec) of idleness,
+        then sends a keepalive ping once every 3 seconds (interval_sec),
+        and closes the connection after 5 failed ping (max_fails), or 15 sec
+
+        Notice, this will set all sockets this way.
+
+        :param sock:
+            socket
+        :param after_idle_sec:
+            for TCP_KEEPIDLE. May not work, depends on ur system
+        :param interval_sec:
+            for TCP_KEEPINTVL
+        :param max_fails:
+            for TCP_KEEPCNT
+        """
+        self._conn_mgr.global_sock_keepalive(
+            after_idle_sec, interval_sec, max_fails
+        )
+
     def setup(self):
         """
         setup the message center

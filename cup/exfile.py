@@ -8,6 +8,8 @@
 """
 import os
 import sys
+import copy
+import shutil
 
 
 from cup import err
@@ -19,7 +21,13 @@ __all__ = [
     'FILELOCK_NONBLOCKING', 'FILELOCK_UNLOCK', 'mk_newnode'
 ]
 
-if platforms.is_linux():
+
+CANNOT_DEL_PATHLIST = [
+    '/'
+]
+
+
+if platforms.is_linux() or platforms.is_mac():
     import fcntl
     FILELOCK_EXCLUSIVE = fcntl.LOCK_EX
     FILELOCK_SHARED = fcntl.LOCK_SH
@@ -165,5 +173,44 @@ def mk_newnode(abspath, check_exsistence=False):
             raise IOError('{0} already exists'.format(abspath))
     with open(abspath, 'w+') as _:
         pass
+
+
+def safe_rmtree(abspath, not_del_list=None):
+    """
+    :param abspath:
+        pass in absolute path
+    :param not_del_list:
+        cannot del path list
+
+    :raise Exception:
+        ValueError, if abspath is in exfile.CANNOT_DEL_PATHLIST or not_del_list
+        IOError, if cup encounters any problem
+    """
+    normpath = os.path.normpath(abspath)
+    tmplist = copy.deepcopy(CANNOT_DEL_PATHLIST)
+    if not_del_list is not None:
+        tmplist.extend(not_del_list)
+    if abspath in tmplist:
+        raise ValueError(
+            'cannot delete path in {0}'.format(tmplist)
+        )
+    shutil.rmtree(normpath)
+
+
+def safe_delete(abspath, not_del_list):
+    """
+    :param abspath:
+        pass in absolute path
+    :param not_del_list:
+        cannot del path list
+
+    :raise Exception:
+        ValueError, if abspath is in exfile.CANNOT_DEL_PATHLIST or not_del_list
+        IOError, if cup encounters any problem
+    """
+    if os.path.isdir(abspath):
+        safe_rmtree(abspath, not_del_list)
+    else:
+        os.unlink(abspath)
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

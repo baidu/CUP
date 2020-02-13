@@ -15,6 +15,7 @@
     encounter TCP/IP stack full of data in the SEND buffer-queue of
     the network interface
 """
+import copy
 import socket
 import select
 import errno
@@ -73,6 +74,12 @@ class CConnectionManager(object):
         def __repr__(self):
             return self._msg
 
+    SOCK_ALIVE_PARAMS = {
+        'after_idle_sec': 1,
+        'interval_sec': 3,
+        'max_fails': 5
+    }
+
     def __init__(self, ip, bindport, thdpool_param):
         #  TODO: Close idle socket after 30 mins with no data sent or received.
         self._conns = {}
@@ -105,9 +112,44 @@ class CConnectionManager(object):
         self._type_man = async_msg.CMsgType()
         self._type_man.register_types(async_msg.MSG_TYPE2NUM)
 
+    def global_sock_keepalive(self,
+        after_idle_sec=1, interval_sec=3, max_fails=5
+    ):
+        """
+        Set TCP keepalive on an open socket.
+        It activates after 1 second (after_idle_sec) of idleness,
+        then sends a keepalive ping once every 3 seconds (interval_sec),
+        and closes the connection after 5 failed ping (max_fails), or 15 sec
+
+        Notice, this will set all sockets this way.
+
+        :param sock:
+            socket
+        :param after_idle_sec:
+            for TCP_KEEPIDLE. May not work, depends on ur system
+        :param interval_sec:
+            for TCP_KEEPINTVL
+        :param max_fails:
+            for TCP_KEEPCNT
+        """
+        before = copy.deepcopy(self.SOCK_ALIVE_PARAMS)
+        self.SOCK_ALIVE_PARAMS = {
+            'after_idle_sec': after_idle_sec,
+            'interval_sec': interval_sec,
+            'max_fails': max_fails
+        }
+        log.info(
+            'to set global socket keepalive params from {0} to {1}'.format(
+                before, self.SOCK_ALIVE_PARAMS)
+        )
+
     @classmethod
     def _set_sock_params(cls, sock):
-        cup.net.set_sock_keepalive_linux(sock, 1, 3, 3)
+        cup.net.set_sock_keepalive_linux(
+            sock, cls.SOCK_ALIVE_PARAMS['after_idle_sec'],
+            cls.SOCK_ALIVE_PARAMS['interval_sec'],
+            cls.SOCK_ALIVE_PARAMS['max_fails']
+        )
         cup.net.set_sock_linger(sock)
         cup.net.set_sock_quickack(sock)
         cup.net.set_sock_reusable(sock, True)
