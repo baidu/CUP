@@ -43,7 +43,6 @@ except ImportError:
 from cup import res
 from cup.shell import oper
 # from cup import oper
-from cup import thirdp
 from cup import platforms
 
 try:
@@ -51,13 +50,13 @@ try:
     bidu
     __all__ = [
         'err', 'net', 'bidu', 'log', 'mail', 'shell', 'time',
-        'util', 'unittest', 'decorators', 'thirdp', 'platforms'
+        'util', 'unittest', 'decorators', 'platforms'
     ]
 # pylint:disable=W0702
 except:
     __all__ = [
         'err', 'net', 'log', 'mail', 'shell', 'time',
-        'util', 'unittest', 'decorators', 'thirdp', 'platforms'
+        'util', 'unittest', 'decorators', 'platforms'
     ]
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

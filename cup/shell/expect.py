@@ -14,7 +14,7 @@ import sys
 
 import cup
 from cup import log
-from cup.thirdp import pexpect
+import pexpect
 
 
 __all__ = [

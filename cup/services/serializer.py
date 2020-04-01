@@ -508,7 +508,7 @@ class LocalFileSerilizer(BaseSerilizer):
                 return True
             # pylint:disable=W0703
             # need such an exception
-            except Exception as err:
+            except OSError as err:
                 log.error('failed to open log stream :{0}'.format(err))
                 return False
 

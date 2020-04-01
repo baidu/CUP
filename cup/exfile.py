@@ -18,12 +18,16 @@ from cup import platforms
 
 __all__ = [
     'LockFile', 'FILELOCK_SHARED', 'FILELOCK_EXCLUSIVE',
-    'FILELOCK_NONBLOCKING', 'FILELOCK_UNLOCK', 'mk_newnode'
+    'FILELOCK_NONBLOCKING', 'FILELOCK_UNLOCK', 'mk_newnode', 'safe_rmtree',
+    'safe_delete'
 ]
 
 
 CANNOT_DEL_PATHLIST = [
-    '/'
+    '/',
+    '/proc',
+    '/boot',
+    '/sys'
 ]
 
 
@@ -73,11 +77,6 @@ class LockFile(object):
         self._locktype = locktype
         self._fhandle = None
         try:
-            # if FILELOCK_EXCLUSIVE == locktype:
-            #     self._fhandle = os.open(
-            #         self._fpath, os.O_CREAT|os.O_EXCL|os.O_RDWR
-            #     )
-            # else:
             self._fhandle = os.open(
                 self._fpath, os.O_CREAT | os.O_RDWR
             )

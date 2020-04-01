@@ -29,6 +29,7 @@ except ImportError:
 
 import cup
 from cup import log
+from cup import thread
 from cup import err as cuperr
 from cup.util import misc
 from cup.util import threadpool
@@ -97,7 +98,7 @@ class CConnectionManager(object):
         self._recv_queue = queue.PriorityQueue(0)
         self._stopsign = False
         self._recv_msg_ind = 0
-        self._mlock = threading.Lock()
+        self._rwlock = thread.RWLock()
         # _needack_context_queue
         # infinite queue  TODO:  may change it in the future
         self._needack_context_queue = queue.Queue()
@@ -239,8 +240,9 @@ class CConnectionManager(object):
             log.info('To create a new context for the sock:{0}'.format(
                 peer)
             )
-            self._mlock.acquire()
+            self._rwlock.acquire_readlock()
             if peer not in self._peer2context:
+                self._rwlock.release_readlock()
                 sock = self.connect(peer)
                 if sock is not None:
                     context = sockcontext.CConnContext()
@@ -248,9 +250,11 @@ class CConnectionManager(object):
                     context.set_sock(sock)
                     context.set_peerinfo(peer)
                     fileno = sock.fileno()
+                    self._rwlock.acquire_writelock()
                     self._peer2context[peer] = context
                     self._fileno2context[fileno] = context
                     self._context2fileno_peer[context] = (fileno, peer)
+                    self._rwlock.release_writelock()
                     ret = 0
                     try:
                         self._epoll.register(
@@ -275,7 +279,7 @@ class CConnectionManager(object):
                     ret = -1
             else:
                 context = self._peer2context[peer]
-            self._mlock.release()
+                self._rwlock.release_readlock()
         else:
             context = self._peer2context[peer]
         if ret != 0:
@@ -321,7 +325,6 @@ class CConnectionManager(object):
             return None
 
     def _handle_new_conn(self, newsock, peer):
-        self._mlock.acquire()
         self._set_sock_params(newsock)
         self._set_sock_nonblocking(newsock)
         context = sockcontext.CConnContext()
@@ -331,11 +334,12 @@ class CConnectionManager(object):
         self._epoll.register(
             newsock.fileno(), select.EPOLLIN | select.EPOLLET | select.EPOLLERR
         )
+        self._rwlock.acquire_writelock()
         self._fileno2context[newsock.fileno()] = context
         self._peer2context[peer] = context
         self._context2fileno_peer[context] = (newsock.fileno(), peer)
-        log.info('a new connection: %s:%s' % (peer[0], peer[1]))
-        self._mlock.release()
+        self._rwlock.release_writelock()
+        log.info('a new connection: {0}'.format(peer))
 
     def cleanup_error_context(self, context):
         """clean up error context"""
@@ -356,14 +360,15 @@ class CConnectionManager(object):
                     break
         if context is None:
             return
-        self._mlock.acquire()
         try:
             peerinfo = context.get_peerinfo()
             log.info(
                 'handle socket reset by peer, to close the socket:%s:%s' %
                 (peerinfo[0], peerinfo[1])
             )
+            self._rwlock.acquire_readlock()
             fileno_peer = self._context2fileno_peer[context]
+            self._rwlock.release_readlock()
             try:
                 sock = context.get_sock()
                 sock.close()
@@ -381,14 +386,14 @@ class CConnectionManager(object):
                     'epoll unregister error:%s, peerinfo:%s' %
                     (str(error), str(fileno_peer[1]))
                 )
+            self._rwlock.acquire_writelock()
             del self._fileno2context[fileno_peer[0]]
             del self._peer2context[fileno_peer[1]]
             del self._context2fileno_peer[context]
+            self._rwlock.release_writelock()
             log.info('socket {0} closed successfully'.format(peerinfo))
         except Exception as error:
             pass
-        finally:
-            self._mlock.release()
         # pylint: disable=W0212
         self._thdpool.add_1job(_cleanup_context, context._send_queue, peerinfo)
         listened_peer = context.get_listened_peer()
