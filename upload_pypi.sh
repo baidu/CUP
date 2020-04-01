@@ -7,6 +7,6 @@
 #   succ: 0                                                                                            
 #   fail: not 0                                                                                        
 # ##########################################################################   
-rm -rf ./build ./cup.egg-info ./dist
+bash ./clean_build.sh
 python setup.py bdist_wheel
-twine upload  dist/*
+twine upload  ./output/dist/*
