@@ -5,11 +5,8 @@
 - Visit http://cup.iobusy.com for more details
     - **访问 http://cup.iobusy.com 获取更多信息**
 - CUP is **very steady on python 2.7.x**. 
-- CUP for py3 has been released
-    - (alpha version, which is still under test/development) on the top left of the page
-    - Installation Guide
-        - python3 setup.py sdist
-        - pip3 install sdist/*.tar.gz
+- CUP for py3 beta has been released
+    - python3 -m pip install cup
 
 
 ## Quick Start
