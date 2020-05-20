@@ -367,8 +367,10 @@ class CConnectionManager(object):
                 (peerinfo[0], peerinfo[1])
             )
             self._rwlock.acquire_readlock()
-            fileno_peer = self._context2fileno_peer[context]
+            fileno_peer = self._context2fileno_peer.get(context)
             self._rwlock.release_readlock()
+            if fileno_peer is None:
+                return
             try:
                 sock = context.get_sock()
                 sock.close()
@@ -387,9 +389,12 @@ class CConnectionManager(object):
                     (str(error), str(fileno_peer[1]))
                 )
             self._rwlock.acquire_writelock()
-            del self._fileno2context[fileno_peer[0]]
-            del self._peer2context[fileno_peer[1]]
-            del self._context2fileno_peer[context]
+            try:
+                del self._fileno2context[fileno_peer[0]]
+                del self._peer2context[fileno_peer[1]]
+                del self._context2fileno_peer[context]
+            except KeyError:
+                pass
             self._rwlock.release_writelock()
             log.info('socket {0} closed successfully'.format(peerinfo))
         except Exception as error:

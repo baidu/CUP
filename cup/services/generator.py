@@ -34,6 +34,7 @@ import random
 import string
 import socket
 import struct
+import hashlib
 import threading
 try:
     import Queue as queue
@@ -211,7 +212,13 @@ class CachedUUID(object):
         """
         while num > 0:
             try:
-                self._fifoque.put(self._uuidgen().hex, block=False)
+                md5obj = hashlib.md5()
+                hexstr = self._uuidgen().hex
+                if isinstance(hexstr, unicode):
+                    md5obj.update(hexstr.encode('utf-8'))
+                else:
+                    md5obj.update(hexstr)
+                self._fifoque.put(md5obj.hexdigest(), block=False)
                 num -= 1
             except queue.Full:
                 break

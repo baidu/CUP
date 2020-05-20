@@ -128,6 +128,8 @@ def _kill_child(pid, sign):
     ret = cup.shell.ShellExec().run(cmd, 10)
     pids = ret['stdout'].strip().split('\n')
     for proc in pids:
+        if len(proc) == 0:
+            continue
         p_id = proc.split()
         if p_id[1] == pid:
             _kill_child(p_id[0], sign)
@@ -515,6 +517,14 @@ class ShellExec(object):  # pylint: disable=R0903
             """
             signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
+        def _trans_bytes(data):
+            if isinstance(data, bytes):
+                try:
+                    data = bytes.decode(data)
+                except Exception:
+                    data = 'Error to decode result'
+            return data
+
         def _pipe_asshell(cmd):
             """
             run shell with subprocess.Popen
@@ -568,8 +578,8 @@ class ShellExec(object):  # pylint: disable=R0903
             ret['returncode'] = self._subpro.returncode
             assert type(self._subpro_data) == tuple, \
                 'self._subpro_data should be a tuple'
-            ret['stdout'] = self._subpro_data[0]
-            ret['stderr'] = self._subpro_data[1]
+            ret['stdout'] = _trans_bytes(self._subpro_data[0])
+            ret['stderr'] = _trans_bytes(self._subpro_data[1])
         return ret
 
 

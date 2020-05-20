@@ -1,104 +1,307 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*
 # Copyright: [CUP] - See LICENSE for details.
-# Authors: Guannan Ma (@mythmgn),
+# Authors: Weiyan Lin
 """
 :description:
-    **Guannan just made a wraper out of pexpect.**
-    The original copyright belongs to the author of pexpect module.
-    See it at http://pexpect.sourceforge.net/pexpect.html
+    made a wraper out of paramiko.**
+    The original copyright belongs to the author of paramiko module.
+    See it at http://docs.paramiko.org/en/stable/
 """
-from __future__ import print_function
 import os
-import sys
+import traceback
+import stat
 
 import cup
-from cup import log
-import pexpect
+import paramiko
+from paramiko import ssh_exception
 
 
 __all__ = [
-    'go', 'go_ex', 'checkssh', 'go_with_scp', 'lscp', 'dscp'
+    'checkssh', 'go_ex', 'lscp', 'dscp', 'go_with_scp'
 ]
 
 
-def _do_expect_ex(passwd, command, timeout=100, b_print_stdout=True):
-    """ret 0 success 1 timeout others -1"""
-    retcode = 0
+def _connect(hostname, username, passwd, timeout, port=22):
+    """
+    get connect
+    :param hostname:
+    :param username:
+    :param passwd:
+    :param timeout:
+    :param port:
+    :return:
+    """
+    client = None
     try:
-        pobj = pexpect.spawn('/bin/bash', ['-c', command], timeout=timeout)
-        if b_print_stdout:
-            pobj.logfile = sys.stdout
-        i = pobj.expect(
-            ['password:', 'continue connecting (yes/no)?'], timeout=timeout
-        )
-        if i == 0:
-            pobj.sendline(passwd)
-        elif i == 1:
-            pobj.sendline("yes")
-            pobj.expect(['password:'])
-            pobj.sendline(passwd)
-        retcode = pobj.expect(pexpect.EOF)
-    except pexpect.TIMEOUT:
-        sys.stderr.write('Connection timeout\n')
-        retcode = 1
-    except pexpect.EOF:
-        pobj.close()
-        retcode = pobj.exitstatus
-    except Exception as error:
-        sys.stderr.write('Connection close, error:%s\n' % error)
-        retcode = -1
-    ret = {
-        'exitstatus': retcode,
-        'remote_exitstatus': pobj.exitstatus,
-        'result': pobj.before
-    }
-    if ret['exitstatus'] is None:
-        if ret['remote_exitstatus'] == 0 or ret['remote_exitstatus'] is None:
-            ret['exitstatus'] = 0
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.connect(hostname, port, username, passwd, timeout=timeout)
+    except ssh_exception.NoValidConnectionsError as e:
+        print("username not exists")
+    except ssh_exception.AuthenticationException as e:
+        print("passwd not correct")
+    except Exception as e:
+        print("*** Caught exception: %s: %s" % (e.__class__, e))
+        traceback.print_exc()
+    return client
+
+
+def _sftp_connect(hostname, username, passwd, timeout, port=22):
+    """
+    get sftp connect
+    :param hostname:
+    :param username:
+    :param passwd:
+    :param timeout:
+    :param port:
+    :return:
+    """
+    client = None
+    sftp = None
+    try:
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.connect(hostname, port, username, passwd, timeout=timeout)
+        sftp = paramiko.SFTPClient.from_transport(client.get_transport())
+    except ssh_exception.NoValidConnectionsError as e:
+        print("username not exists")
+    except ssh_exception.AuthenticationException as e:
+        print("passwd not correct")
+    except Exception as e:
+        print("*** Caught exception: %s: %s" % (e.__class__, e))
+        traceback.print_exc()
+    return client, sftp
+
+
+def _close(client):
+    """
+    disconnect client
+    :param client:
+    :return:
+    """
+    try:
+        client.close()
+    except Exception as e:
+        print("*** Caught exception: %s: %s" % (e.__class__, e))
+        traceback.print_exc()
+
+
+def _is_exists(path, function):
+    """
+    check path exists
+    :param path:
+    :param function:
+    :return:
+    """
+    path = path.replace('\\', '/')
+    try:
+        function(path)
+    except Exception as e:
+        return False
+    else:
+        return True
+
+
+def _check_local(local):
+    """
+    check dir exists, if not exists then make dir
+    :param local:
+    :return:
+    """
+    if not os.path.exists(local):
+        try:
+            os.mkdir(local)
+            return True
+        except IOError as err:
+            print(err)
+            return False
+
+
+def _put(sftp, src, dst, msg=''):
+    """
+    put file/dir
+    :param sftp:
+    :param src:
+    :param dst:
+    :return: msg
+    """
+    name = os.path.basename(os.path.normpath(src))
+    dst = os.path.join(dst, name).replace('\\', '/')
+    if os.path.isdir(src):
+        _is_exists(dst, function=sftp.mkdir)
+        for file in os.listdir(src):
+            src_file = os.path.join(src, file).replace('\\', '/')
+            msg = _put(sftp=sftp, src=src_file, dst=dst, msg=msg)
+    if os.path.isfile(src):
+        try:
+            sftp.put(src, dst)
+        except Exception as e:
+            msg += '[put] ' + src + '==>' + dst + ' failed\n'
         else:
-            ret['exitstatus'] = ret['remote_exitstatus']
-    if ret['remote_exitstatus'] is None:
-        if ret['exitstatus'] == 0 or ret['exitstatus'] is None:
-            ret['remote_exitstatus'] = 0
+            msg += '[put] ' + src + '==>' + dst + ' successed\n'
+    return msg
+
+
+def _get(sftp, src, dst, msg=''):
+    """
+    get file/dir
+    :param sftp:
+    :param src:
+    :param dst:
+    :return: msg
+    """
+    result = sftp.stat(src)
+    if stat.S_ISDIR(result.st_mode):
+        dirname = os.path.basename(os.path.normpath(src))
+        dst = os.path.join(dst, dirname)
+        _check_local(dst)
+        for file in sftp.listdir(src):
+            sub_remote = os.path.join(src, file).replace('\\', '/')
+            msg = _get(sftp, sub_remote, dst, msg=msg)
+    else:
+        dst = os.path.join(dst, os.path.basename(src))
+        try:
+            sftp.get(src, dst)
+        except IOError as err:
+            msg += '[get] ' + src + '==>' + dst + ' failed\n'
         else:
-            ret['remote_exitstatus'] = ret['exitstatus']
+            msg += '[get] ' + src + '==>' + dst + ' successed\n'
+    return msg
 
-    return ret
 
-
-def _do_expect(passwd, command, timeout=100, b_print_stdout=True):
-    """ invoke _do_expect_ex"""
-    ret = _do_expect_ex(passwd, command, timeout, b_print_stdout)
-    return (ret['exitstatus'], ret['result'])
+def to_str(bytes_or_str):
+    """
+    把byte类型转换为str
+    :param bytes_or_str:
+    :return:
+    """
+    if isinstance(bytes_or_str, bytes):
+        value = bytes_or_str.decode('utf-8')
+    else:
+        value = bytes_or_str
+    return value
 
 
 def checkssh(hostname, username, passwd):
     """
-    check if we can ssh to hostname. Return True if succeed, False otherwise.
+    check if we can ssh to hostname.
+    :return:a dict with keys ('exitstatus', 'result') exitstatus 0 success -1 others
     """
-    _, rev = go(
-        hostname, username, passwd, 'echo "testSSH"',
-        timeout=8, b_print_stdout=False
-    )
-    if str(rev).strip().find('testSSH') >= 0:
-        return True
-    else:
-        return False
+    return go_ex(hostname, username, passwd, 'echo "testSSH"', timeout=8)
 
 
-def go(
-    hostname, username, passwd, command='', timeout=800, b_print_stdout=True
-):
+def go_ex(hostname, username, passwd, command='', timeout=600):
     """
-    deprecated, recommand using go_ex or go_with_scp
+    execute command at remote.
+    :return:a dict with keys ('exitstatus', 'result') exitstatus 0 success -1 others
     """
-    cmd = """ssh %s@%s '%s'""" % (username, hostname, command)
-    return _do_expect(passwd, cmd, timeout, b_print_stdout)
+    ret = {
+        'exitstatus': -1,
+        'remote_exitstatus': -1,
+        'result': ''
+    }
+    client = _connect(hostname, username, passwd, timeout, 22)
+    try:
+        stdin, stdout, stderr = client.exec_command(command)
+        res = to_str(stdout.read())
+        error = to_str(stderr.read())
+        if error.strip():
+            ret['result'] = error
+        else:
+            ret['exitstatus'] = 0
+            ret['remote_exitstatus'] = 0
+            ret['result'] = res
+    except Exception as e:
+        print("*** Caught exception: %s: %s" % (e.__class__, e))
+        traceback.print_exc()
+        ret['exitstatus'] = -1
+        ret['remote_exitstatus'] = -1
+    finally:
+        _close(client)
+        return ret
+
+
+def lscp(src, hostname, username, passwd, dst, timeout=800):
+    """
+    copy [localhost]:src to [hostname]:[dst]
+
+    :return:a dict with keys ('exitstatus', 'result') exitstatus 0 success -1 others
+
+    """
+    ret = {
+        'exitstatus': -1,
+        'remote_exitstatus': -1,
+        'result': ''
+    }
+    client, sftp = _sftp_connect(hostname, username, passwd, timeout, 22)
+    if not client or not sftp:
+        ret['result'] = 'connect remote host error'
+        return ret
+    if not _is_exists(src, function=os.stat):
+        ret['result'] = "'" + src + "': No such file or directory in local"
+        return ret
+    if not _is_exists(dst, function=sftp.stat):
+        ret['result'] = "'" + dst + "': No such directory at remote"
+        return ret
+    try:
+        msg = _put(sftp, src, dst)
+        ret['result'] = msg
+        if msg.__contains__('failed'):
+            return ret
+        ret['exitstatus'] = 0
+        ret['remote_exitstatus'] = 0
+    except Exception as e:
+        print("*** Caught exception: %s: %s" % (e.__class__, e))
+        traceback.print_exc()
+        ret['exitstatus'] = -1
+        ret['remote_exitstatus'] = -1
+    finally:
+        _close(client)
+        return ret
+
+
+def dscp(hostname, username, passwd, src, dst, timeout=9000):
+    """
+    copy [hostname]:[src] to [localhost]:[dst].
+
+    :return:
+           a dict with keys ('exitstatus', 'result') exitstatus 0 success -1 others
+    """
+    ret = {
+        'exitstatus': -1,
+        'remote_exitstatus': -1,
+        'result': ''
+    }
+    client, sftp = _sftp_connect(hostname, username, passwd, timeout, 22)
+    if not client or not sftp:
+        ret['result'] = 'connect remote host error'
+        return ret
+    if not _is_exists(src, function=sftp.stat):
+        ret['result'] = "'" + src + "': No such file or directory at remote"
+        return ret
+    if not _is_exists(dst, function=os.stat):
+        ret['result'] = "'" + dst + "': No such file or directory in local"
+        return ret
+    try:
+        msg = _get(sftp, src, dst)
+        ret['result'] = msg
+        if msg.__contains__('failed'):
+            return ret
+        ret['exitstatus'] = 0
+        ret['remote_exitstatus'] = 0
+    except Exception as e:
+        print("*** Caught exception: %s: %s" % (e.__class__, e))
+        traceback.print_exc()
+        ret['exitstatus'] = -1
+        ret['remote_exitstatus'] = -1
+    finally:
+        _close(client)
+        return ret
 
 
 def _judge_ret(ret, msg=''):
-    if not (ret['exitstatus'] and ret['remote_exitstatus']):
+    if not (ret['exitstatus']):
         return True
     ret['result'] = msg + ' \n ' + str(ret['result'])
     return False
@@ -107,7 +310,7 @@ def _judge_ret(ret, msg=''):
 def go_with_scp(
     hostname, username, passwd, command='',
     host_tmp='/tmp/', remote_tmp='/tmp/',
-    timeout=800, b_print_stdout=True
+    timeout=800
 ):
     """
     Recommand using this function to remotely execute cmds.
@@ -123,7 +326,7 @@ def go_with_scp(
         timeout
 
     :return:
-        a dict with keys ('exitstatus' 'remote_exitstatus' 'result')
+        a dict with keys ('exitstatus', 'result')
 
     """
     ret = {
@@ -138,73 +341,15 @@ def go_with_scp(
         fhandle.write(command)
     if not os.path.exists(host_file):
         return ret
-    ret = lscp(host_file, hostname, username, passwd, remote_file, timeout, b_print_stdout)
+    ret = lscp(host_file, hostname, username, passwd, remote_tmp, timeout)
     if not _judge_ret(ret, 'scp ret:'):
         return ret
     cmd = ' sh %s ' % remote_file
-    ret = go_ex(hostname, username, passwd, cmd, timeout, b_print_stdout)
-    cmd = ' rm -f %s ' % host_file
-    res = cup.shell.execshell(cmd, b_print_stdout)
-    if res:
-        ret['result'] = 'rm -f host_file fail, ret:%s' % res
-        return ret
+    ret = go_ex(hostname, username, passwd, cmd, timeout)
+    os.unlink(host_file)
     cmd = ' rm -f %s ' % remote_file
-    res = go_ex(hostname, username, passwd, cmd, 10, b_print_stdout)
+    res = go_ex(hostname, username, passwd, cmd, 10)
     if not _judge_ret(res, 'rm -f remote_file ret:'):
         return res
     return ret
 
-
-def go_ex(
-    hostname, username, passwd, command='', timeout=800, b_print_stdout=True
-):
-    """
-    Run [command] on remote [hostname] and return result. If you have a lot
-    of escape sign in the command, recommand using go_with_scp
-
-    :param timeout:
-        execution timeout, by default 800 seconds
-
-    :return:
-        return a dict with keys ('exitstatus' 'remote_exitstatus' 'result')
-    """
-    cmd = """ssh %s@%s '%s'""" % (username, hostname, command)
-    log.info('go_ex {0}'.format(cmd))
-    ret = _do_expect_ex(passwd, cmd, timeout, b_print_stdout)
-    return ret
-
-
-def lscp(
-    src, hostname, username, passwd, dst,
-    timeout=800, b_print_stdout=True
-):
-    """
-    copy [localhost]:src to [hostname]:[dst]
-
-    :return:
-        return a dict with keys ('exitstatus' 'remote_exitstatus' 'result')
-    """
-    cmd = 'scp -r %s %s@%s:%s' % (src, username, hostname, dst)
-    log.info('{0}'.format(cmd))
-    return _do_expect_ex(passwd, cmd, timeout, b_print_stdout)
-
-
-def lscp_prod(scpstr, passwd, dst_path, timeout=800, b_print_stdout=True):
-    """
-    deprecated. Kept here for compatibility only.
-    """
-    cmd = 'scp -r ' + scpstr + ' ' + dst_path
-    return _do_expect(passwd, cmd, timeout, b_print_stdout)
-
-
-def dscp(
-    hostname, username, passwd, src, dst, timeout=9000, b_print_stdout=False
-):
-    """
-    copy [hostname]:[src] to [localhost]:[dst].
-
-    :return:
-        return a dict with keys ('exitstatus' 'remote_exitstatus' 'result')
-    """
-    cmd = 'scp -r %s@%s:%s %s' % (username, hostname, src, dst)
-    return _do_expect_ex(passwd, cmd, timeout, b_print_stdout)
