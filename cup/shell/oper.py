@@ -24,9 +24,10 @@ import threading
 import subprocess
 
 import cup
-from cup import decorators
 from cup import err
 from cup import log
+from cup import platforms
+from cup import decorators
 
 
 # linux only import
@@ -518,6 +519,9 @@ class ShellExec(object):  # pylint: disable=R0903
             signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
         def _trans_bytes(data):
+            """trans bytes into unicode for python3"""
+            if platforms.is_py2():
+                return data
             if isinstance(data, bytes):
                 try:
                     data = bytes.decode(data)
