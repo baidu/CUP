@@ -191,7 +191,9 @@ def checkssh(hostname, username, passwd):
     return go_ex(hostname, username, passwd, 'echo "testSSH"', timeout=8)
 
 
-def go_ex(hostname, username, passwd, command='', timeout=600):
+def go_ex(hostname, username, passwd, command='', timeout=600,
+    b_print_stdout=True
+):
     """
     execute command at remote.
     :return:a dict with keys ('exitstatus', 'result') exitstatus 0 success -1 others
@@ -212,6 +214,8 @@ def go_ex(hostname, username, passwd, command='', timeout=600):
             ret['exitstatus'] = 0
             ret['remote_exitstatus'] = 0
             ret['result'] = res
+        if b_print_stdout:
+            print(ret['result'])
     except Exception as e:
         print("*** Caught exception: %s: %s" % (e.__class__, e))
         traceback.print_exc()

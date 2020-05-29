@@ -650,7 +650,10 @@ class CronExecution(ExecutionService):
                 next_schedtime.tzinfo.localize(datetime.datetime.now())
             )
         )
-        self.delay_exec(wait_seoncds, crontask, function, *args, **kwargs)
+        # pylint: disable=W0142
+        self.delay_exec(
+            wait_seoncds, function, URGENCY_NORMAL, *args, **kwargs
+        )
         self._task_dict[crontask.taskid()] = crontask
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent
