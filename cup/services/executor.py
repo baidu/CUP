@@ -652,7 +652,7 @@ class CronExecution(ExecutionService):
         )
         # pylint: disable=W0142
         self.delay_exec(
-            wait_seoncds, function, URGENCY_NORMAL, *args, **kwargs
+            wait_seoncds, crontask, function, URGENCY_NORMAL, *args, **kwargs
         )
         self._task_dict[crontask.taskid()] = crontask
 
