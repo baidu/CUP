@@ -1,41 +1,84 @@
 # 1. Versions Released
+## Version 3.3.x
+* [Enhancement] *cup.services.generator* | Add visibility to Cached UUID
+* [Enhancement] *cup.util.conf* |  Fix py3 support bug
+* [New] *cup.services.executor* | Add Crontab-like execution service
+* [Bug] *cup.net.asyn.context* | Fix bug which introduces RW Lock problem
+
+## Version 3.2.7  2020.1.1 ~ 2020.3.31
+* [Enhancement] Change cup.net.async to cup.net.asyn to avoid language keyword "async"
+* [New] Support Python version >= 3.5
+* [New] add safe_rmtree in cup.exfile
+* [Bug] *cup.exfile* fix bug for cup.exfile for macos
+* [Bug] *cup.shell.ShellExec* fix bug for 
+* [New] Add support for global socket keepalive
+* [Enhancement] *cup.exfile* Add some path into CANNOT_DEL_PATHLIST
+* [New] *cup.services.generator* Add cached generator 
+* [Enhancement] *cup.shell.expect* Replace shell expect with paramiko based remote cmd execution
+* [Enhancement] *cup.net.async.conn* Replace mutex lock with ReadWriteLock to speed up 
+
+## Version 3.1.x Under Development 2019.9 ~ 2019.12.26
+* [Enhancement] cup.services.serilizer - loglist
+* [New] cup.storage.obj - rename
+* [Bug] cup.storage.obj - ftp uri bug
+
+## Version 3.0.0 py support alpha 2019.6 ~ 2019.8.8
+* [Enhancement] cup.net get ip address
+* [New] Py3 support (excep for cup.net.async, tcp async msg stack)
+* [Bug] fix traceback for cup.storage.obj 
+* [Enhancement] cup.exfile - support lock_file for windows
+* [Bug] Fix installation bug in setup.py
+* [New] Add get unique hexid for cup.services.generator
+
+## Version 2.2.0 - 2019.5.11 ~ 5.29
+
+* [Fancy] Change a new logo, hats to community user @davidmind (from github) 
+* [New] `cup.res` - linux.Process add method `getpgid`
+* [New] add BceSms support
+* [Enhancement] `cup.shell` - enhance `oper.ShellExec`
+* [Enhancement] `cup.mail` - add smtp login method for authentication enabled server
+
 ## Version 2.1.0 - 2019.2.1 ~ 2019.5.10
+
     * [New] cup.net.get_interfaces - Get interfaces of a linux host
     * [New] cup.res.linux.get_cpu_core_usage - Get cpu core usage 
     * [Enhancement] cup.shell.oper - Md5 hexdigest generation (py3 compatibility)
     * [New] Py3 compatibility test and reconsutrction is undergoing
     * [Enhancement] cup.shell.oper - Change subprocess.Pipe(shell=True by default to shell=False)
     * [Bug] github socket closure (https://github.com/baidu/CUP/issues/32) 
+    * [Bug] cup.shell.oper async_run, kill procedure for children pids has bugs 
 
 ## Version 2.0.0 - 2018.6.2 ~ 2018.12.31
-	* [New] pip support
-	* [New] cup.storage.obj - Add ftp/s3/local storage support (with universal apis)
-	* [Bug] cup.net.localport_free - Reversely result returned
-	* [Bug] cup.net.async - Msg class class variable 
-	* [Bug] cup.net.async - logging typo
-	* [Bug] cup.net.async - Msg disorder bug (an import bug fix!)
-	* [New] cup.net.async - Add get_context related class method
-	* [Bug] cup.decorators - fix wrap exception
-	* [Bug] cup.unittest - Fix bug for assert_lt
-	* [Bug] cup.res.linux - Add support for customized linux kernel
-	* [Enahcnement] cup.net.set_sock_keepalive_linux - add exception catch code lines
-	* [Enhancement] Use rtd (read_the_doc theme) to reconsutrct cup api-doc
+
+* [New] pip support
+* [New] cup.storage.obj - Add ftp/s3/local storage support (with universal apis)
+* [Bug] cup.net.localport_free - Reversely result returned
+* [Bug] cup.net.async - Msg class class variable 
+* [Bug] cup.net.async - logging typo
+* [Bug] cup.net.async - Msg disorder bug (an import bug fix!)
+* [New] cup.net.async - Add get_context related class method
+* [Bug] cup.decorators - fix wrap exception
+* [Bug] cup.unittest - Fix bug for assert_lt
+* [Bug] cup.res.linux - Add support for customized linux kernel
+* [Enahcnement] cup.net.set_sock_keepalive_linux - add exception catch code lines
+* [Enhancement] Use rtd (read_the_doc theme) to reconsutrct cup api-doc
 
 ## Version 1.6.1 - starting from 2018.2.5 ~ 2018.6.1
-	* [New] cup.shell.is_proc_alive - Add optional to abandon vim|less|vi|tail|cat|more or custom filter	
-	* [Bug] cup.shell.get_pid - Fix grep to surely abandon vim|less|vi|tail|cat|more 
-	* [New] cup.log - Add support for stack manipulation, which can pop out function calls.
-	* [New] cup.err - Add UnImplemented exception class.
-	* [New] cup.exfile - Support temp files which will be removed immediately after the variable life ends.
-	* [Enhancement] cup.util.conf - support $ in a conf key
-	* [Doc] cup.shell - Fix doc bug. 
-	* [New] cup.shell - Add grep support string with space
-	* [New] cup.storage.obj - Support common object storage apis including ftp, s3
-	* [Bug] cup.res.linux - Getting cpuinfo has bugs (new kernel 3.10)
-	* [Enhancement] - cup.util.threadpool, add daemon_threads as the parameter
-		that you can use to let the threadpool threads behave like daemon-thread
-		(when the main thread exits, it exits as well)
-	* [Enhancement] - conf.util.conf - support conf line "[.test] # comments" 
+
+* [New] cup.shell.is_proc_alive - Add optional to abandon vim|less|vi|tail|cat|more or custom filter	
+* [Bug] cup.shell.get_pid - Fix grep to surely abandon vim|less|vi|tail|cat|more 
+* [New] cup.log - Add support for stack manipulation, which can pop out function calls.
+* [New] cup.err - Add UnImplemented exception class.
+* [New] cup.exfile - Support temp files which will be removed immediately after the variable life ends.
+* [Enhancement] cup.util.conf - support $ in a conf key
+* [Doc] cup.shell - Fix doc bug. 
+* [New] cup.shell - Add grep support string with space
+* [New] cup.storage.obj - Support common object storage apis including ftp, s3
+* [Bug] cup.res.linux - Getting cpuinfo has bugs (new kernel 3.10)
+* [Enhancement] - cup.util.threadpool, add daemon_threads as the parameter
+    that you can use to let the threadpool threads behave like daemon-thread
+    (when the main thread exits, it exits as well)
+* [Enhancement] - conf.util.conf - support conf line "[.test] # comments" 
 
 ## Version 1.6.0 - starting from 2017.9.6 ~ 2017.12.29
 	* [New] cup.bidu.icafe - interact with baidu icafe.

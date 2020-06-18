@@ -13,6 +13,7 @@ import threading
 import collections
 
 from cup import log
+from cup import exfile
 
 __all__ = [
     'LOGFILE_GOOD', 'LOGFILE_EOF', 'LOGFILE_BAD_RECORD', 'LOG_MOD_ADD',
@@ -84,7 +85,7 @@ MsgPostRevision = collections.namedtuple(
 class LocalFileSerilizer(BaseSerilizer):
     """ local file serilizer"""
     def __init__(
-        self, storage_dir, skip_badlog=False, max_logfile_size=512 * 1024,
+        self, storage_dir, skip_badlog=False, max_logfile_size=1024 * 1024,
         persist_after_sec=10 * 60
     ):
         """
@@ -98,7 +99,7 @@ class LocalFileSerilizer(BaseSerilizer):
         """
         BaseSerilizer.__init__(self)
         self._skip_badlog = skip_badlog
-        self._storage = storage_dir
+        self._storage = os.path.abspath(storage_dir)
         self._logid = 0
         self._max_log_file_size = max_logfile_size
         self._current_filesize = 0
@@ -110,17 +111,17 @@ class LocalFileSerilizer(BaseSerilizer):
         self._record_lenbytes = 4
 
         self._loglist_stream = None
-        self._logfile_switching = False
+        self._loglist_switching = False
         self._logfile_list = '{0}/logfile.list'.format(storage_dir)
         self._logfile_listnew = '{0}.new'.format(self._logfile_list)
+        self._logfile_listold = '{0}.old'.format(self._logfile_list)
         self._loglist_switch = '{0}.switch'.format(self._logfile_list)
-        self._loglist_switched = '{0}.switched'.format(self._logfile_list)
         self._mlock = threading.Lock()
         self._name = self.__class__
 
     def set_name(self, name):
         """set a name of str for the serializer"""
-        self._name = name
+        self._name = 'serilizer: ({0})'.format(name)
 
     @classmethod
     def __cmp_logfile_id(cls, first, second):
@@ -332,32 +333,29 @@ class LocalFileSerilizer(BaseSerilizer):
 
     def _check_need_new_logfile(self):
         """if need new log file"""
-        if os.path.exists(self._loglist_switched) and self._logfile_switching:
-            try:
-                os.rename(self._logfile_listnew, self._logfile_list)
-                os.remove(self._loglist_switch)
-                os.remove(self._loglist_switched)
-            # pylint: disable=W0703
-            except Exception as err:
-                log.error('failed to rename loglist, old:{0} new:{1}'.format(
-                    self._loglist_switched, self._loglist_switch)
-                )
-                return False
         if os.path.exists(self._loglist_switch) and \
-                (not self._logfile_switching):
+                (not self._loglist_switching):
+            # start to switch
+            log.info('{0} loglist start to switch'.format(self._name))
+            self._loglist_switching = True
             self._loglist_stream.write('NEED_SWITCH_LOCALFILE\n')
             self._loglist_stream.flush()
             os.fsync(self._loglist_stream)
             self._loglist_stream.close()
-            self._logfile_switching = True
             if not os.path.exists(self._logfile_listnew):
                 try:
-                    os.mknod(self._logfile_listnew)
+                    exfile.mk_newnode(self._logfile_listnew)
                 # pylint: disable=W0703
                 except Exception as err:
                     log.error('switch loglist file failed:{0}'.format(err))
                     return False
-            self._loglist_stream = open(self._logfile_listnew, 'a')
+            log.info('{0} loglist file {1} switched'.format(
+                self._name, self._logfile_list)
+            )
+            os.rename(self._logfile_list, self._logfile_listold)
+            os.rename(self._logfile_listnew, self._logfile_list)
+            self._loglist_stream = open(self._logfile_list, 'a')
+            self._loglist_switching = False
         if self._current_filesize >= self._max_log_file_size:
             # log.info('serilizer file needs moving to a new one')
             last_logid = self._writestream.name.split('.')[-1]
@@ -388,6 +386,12 @@ class LocalFileSerilizer(BaseSerilizer):
             return True
         else:
             return False
+
+    def switch_logfilelist(self):
+        """switch logfile to logfile.old"""
+        log.info('serializer ({0}) to swtich loglist'.format(self._name))
+        if not os.path.exists(self._loglist_switch):
+            exfile.mk_newnode(self._loglist_switch)
 
     def add_log(self, log_type, log_mode, log_binary):
         """add log into the local file
@@ -465,6 +469,10 @@ class LocalFileSerilizer(BaseSerilizer):
                 )
             if ind % 1000:
                 time.sleep(0.1)
+        log.info(
+            '{0} purge data finished, to switch loglist'.format(self._name)
+        )
+        self.switch_logfilelist()
 
     def _do_open4read(self, start_logid=-1):
         """
@@ -500,7 +508,7 @@ class LocalFileSerilizer(BaseSerilizer):
                 return True
             # pylint:disable=W0703
             # need such an exception
-            except Exception as err:
+            except OSError as err:
                 log.error('failed to open log stream :{0}'.format(err))
                 return False
 
@@ -527,7 +535,7 @@ class LocalFileSerilizer(BaseSerilizer):
         """
         try:
             if not os.path.exists(self._logfile_list):
-                os.mknod(self._logfile_list)
+                exfile.mk_newnode(self._logfile_list)
             self._loglist_stream = open(self._logfile_list, 'a')
         except Exception as err:
             log.error('cannot create loglist, raise IOError')

@@ -12,6 +12,7 @@
 """
 Provie Linux Resource/State Info Query
 """
+from __future__ import print_function
 import os
 import re
 import sys
@@ -220,8 +221,8 @@ class MemInfo(collections.namedtuple('vmem', ' '.join([
     ::
         from cup.res import linux
         meminfo = linux.get_meminfo()
-        print meminfo.total
-        print meminfo.available
+        print(meminfo.total)
+        print(meminfo.available)
     """
 
 #    user
@@ -1527,6 +1528,13 @@ class Process(object):
                     socket.AF_INET6,
                     struct.pack('<4I', *struct.unpack('<4I', ip)))
         return (ip, port)
+
+    def getpgid(self):
+        """
+        return process group id (not pid, not gid either)
+        """
+        return os.getpgid(self._pid)
+
 
 if '__main__' == __name__:
     # system info

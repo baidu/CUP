@@ -5,19 +5,22 @@
 :description:
     network related module
 """
+from __future__ import print_function
 import os
 import sys
 import time
 import socket
 import struct
+import platform
 import warnings
+
 try:
     import fcntl
 except ImportError as error:
     # 'Seems run on non-linux machine'
     pass
 
-from cup.net import async
+
 from cup import log
 from cup import platforms
 
@@ -30,7 +33,6 @@ __all__ = [
     'set_sock_reusable',
     'set_sock_linger',
     'set_sock_quickack',
-    'async',
     'localport_free',
     'port_listened',
     'get_interfaces'
@@ -53,9 +55,9 @@ def getip_byinterface(iface='eth0'):
     E.g.
     ::
         import cup
-        print cup.net.getip_byinterface('eth0')
-        print cup.net.getip_byinterface('eth1')
-        print cup.net.getip_byinterface('xgbe0')
+        print(cup.net.getip_byinterface('eth0'))
+        print(cup.net.getip_byinterface('eth1'))
+        print(cup.net.getip_byinterface('xgbe0'))
     """
     if platforms.is_linux():
         ifreq = struct.pack('16sH14s', iface, socket.AF_INET, '\x00' * 14)
@@ -81,7 +83,7 @@ def get_hostip(hostname=None):
     get ipaddr of a host
 
     :param hostname:
-        None, by default, will use udp to get ipaddr for ipv4 
+        None, by default, will use udp to get ipaddr for ipv4
         if not None, will use hostname to convert to ipaddr
     """
     ipaddr = None
@@ -90,10 +92,7 @@ def get_hostip(hostname=None):
         times = 0
         while times < 10:
             try:
-                if hostname is None:
-                    hostname = get_local_hostname()
                 ipaddr = str(socket.gethostbyname(hostname))
-                got = True
                 break
             except socket.gaierror:
                 times += 1
@@ -104,18 +103,22 @@ def get_hostip(hostname=None):
     else:
         while times < 10:
             try:
-                s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                s.connect(('8.8.8.8', 80))
-                ipaddr = s.getsockname()[0]
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                sock.connect(('8.8.8.8', 80))
+                ipaddr = sock.getsockname()[0]
+                break
+            except socket.error:
+                hostname = get_local_hostname()
+                ipaddr = str(socket.gethostbyname(hostname))
                 break
             finally:
-                s.close()
+                sock.close()
                 times += 1
         else:
             log.error('failed to get hostip')
-        return ipaddr 
+        return ipaddr
 
- 
+
 def set_sock_keepalive_linux(
         sock, after_idle_sec=1, interval_sec=3, max_fails=5
 ):

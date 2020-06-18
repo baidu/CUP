@@ -133,6 +133,10 @@ class ObjectInterface(object):
             }
         """
 
+    @abc.abstractmethod
+    def rename(self, frompath, topath):
+        """rename from path to path"""
+
 
 class AFSObjectSystem(ObjectInterface):
     """
@@ -220,6 +224,10 @@ class AFSObjectSystem(ObjectInterface):
 
     def rmdir(self, path):
         """rmdir of a path"""
+
+    def rename(self, frompath, topath):
+        """rename"""
+        raise err.NotImplementedYet('AFSObjectSystem.rename')
 
 
 # pylint: disable=R0902
@@ -476,6 +484,10 @@ class S3ObjectSystem(ObjectInterface):
             ret['msg'] = str(error)
         return ret
 
+    def rename(self, frompath, topath):
+        """rename"""
+        raise err.NotImplementedYet('AFSObjectSystem.rename')
+
 
 class FTPObjectSystem(ObjectInterface):
     """
@@ -511,7 +523,7 @@ class FTPObjectSystem(ObjectInterface):
         self._host = self._uri.split(':')[1][2:]
         self._port = ftplib.FTP_PORT
         if len(self._uri.split(':')[2]) > 0:
-            self.port = int(self._uri.split(':')[2])
+            self._port = int(self._uri.split(':')[2])
         self._ftp_con.connect(self._host, self._port, self._dufault_timeout)
         self._ftp_con.login(self._user, self._passwd)
         self._last_optime = time.time()
@@ -622,9 +634,11 @@ class FTPObjectSystem(ObjectInterface):
                 ftp_cmd = 'RETR {0}'.format(path)
                 resp = self._ftp_con.retrbinary(ftp_cmd, fhandle.write)
         except Exception as error:
-            log.error(traceback.format_exc())
             ret['returncode'] = -1
-            ret['msg'] = str(error)
+            ret['msg'] = 'failed to get {0} to {1}, err:{2}'.format(
+                path, localpath, error
+            )
+            log.error(ret['msg'])
         return ret
 
     def head(self, path):
@@ -649,19 +663,26 @@ class FTPObjectSystem(ObjectInterface):
         path = self._get_relative_path(path, cwd)
         res_info = []
         f_flag = False
-        if self.is_file(path):
-            file_name = path[path.rfind('/') + 1:]
-            f_flag = True
         def _call_back(arg):
             if f_flag and arg.split()[-1].strip() == file_name:
                 return res_info.append(arg)
             if not f_flag:
                 res_info.append(arg)
         try:
+            if self.is_file(path):
+                file_name = path[path.rfind('/') + 1:]
+                f_flag = True
+                pos = path.rfind('/')
+                p_path = path[0: pos]
+                self._ftp_con.cwd(p_path)
+            else:
+                self._ftp_con.cwd(path)
+
             self._ftp_con.retrlines('LIST', _call_back)
             ret['fileinfo'] = res_info
             ret['returncode'] = 0
             ret['msg'] = 'success'
+            self._ftp_con.cwd(cwd)
         except Exception as error:
             ret['returncode'] = -1
             ret['msg'] = str(error)
@@ -741,17 +762,38 @@ class FTPObjectSystem(ObjectInterface):
             return res
         except Exception as e:
             pass
-        pos = path.rfind('/')
-        p_path = path[0: pos]
-        file_name = path[pos + 1:]
-        self._ftp_con.cwd(p_path)
-        self._ftp_con.retrlines('MLSD', _call_back)
-        for item in res_info:
-            if item.split(';')[-1].strip() == file_name and 'type=file' in item:
-                self._ftp_con.cwd(cwd)
-                return True
-        self._ftp_con.cwd(cwd)
+        try:
+            pos = path.rfind('/')
+            if pos == -1:
+                file_name = path
+            else:
+                p_path = path[0: pos]
+                file_name = path[pos + 1:]
+                self._ftp_con.cwd(p_path)
+            self._ftp_con.retrlines('MLSD', _call_back)
+            for item in res_info:
+                if item.split(';')[-1].strip() == file_name and 'type=file' in item:
+                    self._ftp_con.cwd(cwd)
+                    return True
+            self._ftp_con.cwd(cwd)
+        except Exception as error:
+            pass
         return False
+
+    def rename(self, frompath, topath):
+        """rename frompath to path"""
+        ret = {
+            'returncode': 0,
+            'msg': 'success'
+        }
+        try:
+            self._ftp_con.rename(frompath, topath)
+        except Exception as error:
+            ret['returncode'] = -1
+            ret['msg'] = 'failed to rename from {0} to {1}'.format(
+                frompath, topath
+            )
+        return ret
 
 
 class LocalObjectSystem(ObjectInterface):
@@ -864,6 +906,21 @@ class LocalObjectSystem(ObjectInterface):
         except IOError as error:
             ret['returncode'] = -1
             ret['msg'] = 'failed to rmdir, err:{0}'.format(error)
+        return ret
+
+    def rename(self, frompath, topath):
+        """rename from path to path"""
+        ret = {
+            'returncode': 0,
+            'msg': 'success'
+        }
+        try:
+            os.rename(frompath, topath)
+        except IOError as error:
+            ret['returncode'] = -1
+            ret['msg'] = 'failed to rename {0} to {1}'.format(
+                frompath, topath
+            )
         return ret
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

@@ -41,8 +41,9 @@
 python setup.py install
 ```
 - pip 安装
-    - pip安装依赖pypi社区批准cup替换原有的cup lib.
-    - 当前功能已 ready, 还在等待pypi社区审批
+```bash
+pip install cup
+```
 
 ## 3. 问题反馈
 - Open Github Issues

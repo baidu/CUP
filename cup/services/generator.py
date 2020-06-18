@@ -29,19 +29,35 @@ only 1 instance per process.
 """
 import os
 import time
+import uuid
 import random
 import string
 import socket
 import struct
+import hashlib
 import threading
+try:
+    import Queue as queue
+except ImportError:
+    import queue
 
 import cup
+from cup import log
 from cup import decorators
 
 
 __all__ = [
     'CGeneratorMan',
-    'CycleIDGenerator'
+    'CycleIDGenerator',
+    'CachedUUID'
+]
+
+
+UUID1 = 0
+UUID4 = 1
+_UUID_LISTS_FUNCS = [
+    uuid.uuid1,
+    uuid.uuid4
 ]
 
 
@@ -93,6 +109,13 @@ class CGeneratorMan(object):
         self._nind += 1
         self._nlock.release()
         return temp
+
+    def get_next_uniqhex(self):
+        """
+        return next uniqhex
+        """
+        temp = self.get_next_uniq_num()
+        return str(hex(temp))
 
     @classmethod
     def get_random_str(cls, length):
@@ -152,5 +175,54 @@ class CycleIDGenerator(object):
         str_num = str(hex(num))
         return str_num
 
+
+@decorators.Singleton
+class CachedUUID(object):
+    """cached uuid object"""
+    def __init__(self, mode=UUID1, max_cachenum=100):
+        """
+        ip, port will be encoded into the ID
+        """
+        if mode > len(_UUID_LISTS_FUNCS):
+            raise ValueError('only support UUID1 UUID4')
+        self._uuidgen = _UUID_LISTS_FUNCS[mode]
+        self._fifoque = queue.Queue(max_cachenum)
+        self._max_cachenum = max_cachenum
+
+    def get_uuid(self, num=1):
+        """
+        get serveral uuids by 'num'
+
+        :return:
+            a list of uuids (in hex string)
+        """
+        ret = []
+        while num > 0:
+            try:
+                item = self._fifoque.get(block=False)
+                ret.append(item)
+                num -= 1
+            except queue.Empty:
+                self.gen_cached_uuid()
+        return ret
+
+    def gen_cached_uuid(self, num=50):
+        """
+        generate num of uuid into cached queue
+        """
+        while num > 0:
+            try:
+                md5obj = hashlib.md5()
+                hexstr = self._uuidgen().hex
+                if isinstance(hexstr, unicode):
+                    md5obj.update(hexstr.encode('utf-8'))
+                else:
+                    md5obj.update(hexstr)
+                self._fifoque.put(md5obj.hexdigest(), block=False)
+                num -= 1
+            except queue.Full:
+                break
+        size = self._fifoque.qsize()
+        log.info('after generate cached uuid queue size :{0}'.format(size))
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

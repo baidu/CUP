@@ -7,6 +7,7 @@
     Const variable for internal use. Use it when you know
     what this _const really means
 """
+from __future__ import print_function
 import cup
 from cup import version
 
@@ -32,7 +33,7 @@ class _const(object):
 
 # you can access CUP const like below:
 # from cup import const
-# print const.VERSION
+# print(const.VERSION)
 
 import sys
 # pylint: disable=C0103

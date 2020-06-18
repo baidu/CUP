@@ -130,6 +130,7 @@ class SmtpMailer(object):  # pylint: disable=R0903
         self._port = None
         self._sender = None
         self._is_html = False
+        self._login_params = None
         self.setup(sender, server, port, is_html)
 
     def setup(self, sender, server, port=25, is_html=False):
@@ -140,6 +141,14 @@ class SmtpMailer(object):  # pylint: disable=R0903
         self._port = port
         self._sender = sender
         self._is_html = is_html
+
+    def login(self, username, passwords):
+        """
+        if the smtp need login, plz call this method before you call
+        sendmail
+        """
+        log.info('smtp server will login with user {0}'.format(username))
+        self._login_params = (username, passwords)
 
     @classmethod
     def _check_type(cls, instance, type_list):
@@ -270,13 +279,17 @@ class SmtpMailer(object):  # pylint: disable=R0903
         outer.attach(msg_body)
         # handle attachments
         composed = outer.as_string()
+        ret = (False, 'failed to send email')
         try:
             smtp = smtplib.SMTP(self._server, self._port)
+            if self._login_params is not None:
+                smtp.login(self._login_params[0], self._login_params[1])
             smtp.sendmail(self._sender, toaddrs, composed)
             smtp.quit()
-            return (True, None)
+            ret = (True, None)
         except smtplib.SMTPException as smtperr:
-            errmsg = str(smtperr)
-            return (False, errmsg)
+            ret = (False, str(errmsg))
+        return ret
+
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

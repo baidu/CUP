@@ -8,6 +8,7 @@ This module provides PromotionBuild object.
 
 import contextlib
 import logging
+import time
 
 from cup.jenkinslib.internal import base
 from cup.jenkinslib.internal import exception
@@ -38,7 +39,8 @@ class PromotionBuild(base.JenkinsBase):
     def _poll(self, tree=None):
         """poll out api info.
 
-        Add param 'depth', so we can get more information of upstream and downstream.
+        Add param 'depth', so we can get more information of \
+        upstream and downstream.
         """
         url = self.python_api_url(self.url)
         params = {} if self.depth is None else {'depth': self.depth}
@@ -86,7 +88,8 @@ class PromotionBuild(base.JenkinsBase):
         """
         url = "%s/submitDescription" % self.url
         data = {"description": description}
-        self.get_jenkins_obj().requester.post_and_confirm_status(url, data=data)
+        self.get_jenkins_obj().requester. \
+            post_and_confirm_status(url, data=data)
         # update info
         self._data["description"] = self.poll(tree="description")["description"]
 

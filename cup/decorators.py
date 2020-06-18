@@ -156,13 +156,13 @@ class TraceUsedTime(object):
 
         @decorators.TraceUsedTime(True)
         def test():
-            print 'test'
+            print('test')
             time.sleep(4)
 
 
         # trace something with context. E.g. event_id
         def _test_trace_time_map(sleep_time):
-            print "ready to work"
+            print('ready to work')
             time.sleep(sleep_time)
 
 
@@ -197,7 +197,7 @@ class TraceUsedTime(object):
         def _wrapper_log(*args, **kwargs):
             now = time.time()
             if self._b_print_stdout:
-                print ('**enter func:{0},time:{1}, msg:{2}'.format(
+                print('**enter func:{0},time:{1}, msg:{2}'.format(
                     function, datetime_in.now(), self._enter_msg
                 ))
             cup.log.info(

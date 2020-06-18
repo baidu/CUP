@@ -10,20 +10,18 @@ from __future__ import print_function
 import os
 import time
 import copy
-import shutil
-from xml.dom import minidom
 import json
+import shutil
+import functools
+from xml.dom import minidom
 
 import cup
-
-# G_TOOL_PATH = None
 
 
 __all__ = [
     'Configure2Dict', 'Dict2Configure',
     'HdfsXmlConf'
 ]
-
 
 
 class CConf(object):
@@ -373,6 +371,7 @@ class ConfDict(dict):
                 self._reverse_ind += 1
 
     def _compare_keys(self, keyx, keyy):
+        """compare keys"""
         if self._extra_dict[keyx][0] == self._extra_dict[keyy][0]:
             return 0
         elif self._extra_dict[keyx][0] < self._extra_dict[keyy][0]:
@@ -384,7 +383,7 @@ class ConfDict(dict):
         """
         get keys in order
         """
-        keys = sorted(self.keys(), self._compare_keys)
+        keys = sorted(self.keys(), key=functools.cmp_to_key(self._compare_keys))
         return keys
 
 

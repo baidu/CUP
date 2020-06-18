@@ -7,6 +7,7 @@
 """
 query mac resource module
 """
+from __future__ import print_function
 import os
 
 from cup import decorators
@@ -110,7 +111,7 @@ def get_disk_info():
 
 if '__main__' == __name__:
     # system info
-    print get_cpu_nums()
-    print get_kernel_version()
-    print get_disk_usage_all()
-    print get_disk_info()
+    print(get_cpu_nums())
+    print(get_kernel_version())
+    print(get_disk_usage_all())
+    print(get_disk_info())

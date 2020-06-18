@@ -1,6 +1,12 @@
-**Plz visit http://cup.iobusy.com for details!**
+![cuplogo](http://cup.iobusy.com/cup.logo.png)
 
-**请大家访问官网 http://cup.iobusy.com 获取更多信息**
+## Notice 
+
+- Visit http://cup.iobusy.com for more details
+    - **访问 http://cup.iobusy.com 获取更多信息**
+- CUP is **very steady on python 2.7.x**. 
+- CUP for py3 beta has been released
+    - python3 -m pip install cup
 
 
 ## Quick Start
@@ -9,7 +15,7 @@
 
 ### 2. Installation
 
-Install from pip, latest(2.0.3):
+Install from pip
 
 ```bash
 pip install cup
@@ -18,7 +24,7 @@ pip install cup
 Install from source code:
 
 ```bash
-    python setup.py install
+python setup.py install
 ```
 
 ### 3. Doc & Wiki
@@ -94,7 +100,8 @@ cup
     - 克隆git代码或者下载已发布的tar包
 
 ### 2. 安装
-    - run `python setup.py install`
+    - pip 安装  `pip install cup`
+    - 源码安装 `python setup.py install`
 
 ### 3. 使用说明
 - Visit Wiki to see more details: https://github.com/Baidu/CUP/wiki

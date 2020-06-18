@@ -24,15 +24,15 @@ import threading
 import subprocess
 
 import cup
-from cup.res import linux
-from cup import decorators
 from cup import err
 from cup import log
-from cup import exfile
+from cup import platforms
+from cup import decorators
 
 
 # linux only import
 if platform.system() == 'Linux':
+    from cup.res import linux
     __all__ = [
         'rm', 'rmrf', 'kill',
         'is_process_used_port', 'is_port_used', 'is_proc_exist',
@@ -114,7 +114,7 @@ def is_process_running(path, name):
                 ret = cup.shell.ShellExec().run(cmd, 10)
                 pid_path = ret['stdout'].strip().strip()
                 if pid_path.find(path) == 0:
-                    # print '%s is exist: %s' % (name, path)
+                    # print('%s is exist: %s' % (name, path))
                     return True
         return False
     return _real_is_proc_exist(path, name)
@@ -129,6 +129,8 @@ def _kill_child(pid, sign):
     ret = cup.shell.ShellExec().run(cmd, 10)
     pids = ret['stdout'].strip().split('\n')
     for proc in pids:
+        if len(proc) == 0:
+            continue
         p_id = proc.split()
         if p_id[1] == pid:
             _kill_child(p_id[0], sign)
@@ -377,14 +379,17 @@ class ShellExec(object):  # pylint: disable=R0903
     @classmethod
     def get_async_run_status(cls, async_content):
         """
-        get the command's status
+        get the process status of executing async cmd
+
+        :return:
+            None if the process has finished.
+            Otherwise, return a object of linux.Process(async_pid)
         """
         try:
-            from cup.res import linux
             async_process = linux.Process(async_content.pid)
             res = async_process.get_process_status()
         except err.NoSuchProcess:
-            res = "process is destructor"
+            res = None
         return res
 
     @classmethod
@@ -410,16 +415,15 @@ class ShellExec(object):  # pylint: disable=R0903
             signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
         def _target(argcontent):
-            tempscript = tempfile.NamedTemporaryFile(
+            argcontent.tempscript = tempfile.NamedTemporaryFile(
                 dir=self._tmpdir, prefix=self._tmpprefix,
                 delete=True
             )
-            argcontent.tempscript = tempscript
-            with open(tempscript.name, 'w+b') as fhandle:
+            with open(argcontent.tempscript.name, 'w+b') as fhandle:
                 fhandle.write('cd {0};\n'.format(os.getcwd()))
                 fhandle.write(argcontent.cmd)
             shexe = self.which('sh')
-            cmds = [shexe, tempscript.name]
+            cmds = [shexe, argcontent.tempscript.name]
             log.info(
                 'to async execute {0} with script {1}'.format(
                     argcontent.cmd, cmds)
@@ -514,6 +518,17 @@ class ShellExec(object):  # pylint: disable=R0903
             """
             signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
+        def _trans_bytes(data):
+            """trans bytes into unicode for python3"""
+            if platforms.is_py2():
+                return data
+            if isinstance(data, bytes):
+                try:
+                    data = bytes.decode(data)
+                except Exception:
+                    data = 'Error to decode result'
+            return data
+
         def _pipe_asshell(cmd):
             """
             run shell with subprocess.Popen
@@ -523,7 +538,7 @@ class ShellExec(object):  # pylint: disable=R0903
                 dir=self._tmpdir, prefix=self._tmpprefix,
                 delete=True
             )
-            with open(tempscript.name, 'w+b') as fhandle:
+            with open(tempscript.name, 'w+') as fhandle:
                 fhandle.write('cd {0};\n'.format(os.getcwd()))
                 fhandle.write(cmd)
             shexe = self.which('sh')
@@ -567,8 +582,8 @@ class ShellExec(object):  # pylint: disable=R0903
             ret['returncode'] = self._subpro.returncode
             assert type(self._subpro_data) == tuple, \
                 'self._subpro_data should be a tuple'
-            ret['stdout'] = self._subpro_data[0]
-            ret['stderr'] = self._subpro_data[1]
+            ret['stdout'] = _trans_bytes(self._subpro_data[0])
+            ret['stderr'] = _trans_bytes(self._subpro_data[1])
         return ret
 
 

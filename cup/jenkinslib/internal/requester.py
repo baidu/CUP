@@ -6,7 +6,8 @@
 This module provides some requester to access jenkins.
 """
 
-from cup.thirdp import requests
+import requests
+
 from cup.jenkinslib.internal import exception
 
 

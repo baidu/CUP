@@ -6,7 +6,7 @@
 :description:
     heartbeat related module
 """
-
+from __future__ import print_function
 import time
 import pickle
 import platform
