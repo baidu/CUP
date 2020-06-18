@@ -201,19 +201,16 @@ def go_ex(hostname, username, passwd, command='', timeout=600,
     ret = {
         'exitstatus': -1,
         'remote_exitstatus': -1,
-        'result': ''
+        'result': '',
+        'result_stderr': ''
     }
     client = _connect(hostname, username, passwd, timeout, 22)
     try:
         stdin, stdout, stderr = client.exec_command(command)
-        res = to_str(stdout.read())
-        error = to_str(stderr.read())
-        if error.strip():
-            ret['result'] = error
-        else:
-            ret['exitstatus'] = 0
-            ret['remote_exitstatus'] = 0
-            ret['result'] = res
+        ret['remote_exitstatus'] = stdout.channel.recv_exit_status()
+        ret['exitstatus'] = 0
+        ret['result'] = to_str(stdout.read())
+        ret['result_stderr'] = to_str(stderr.read())
         if b_print_stdout:
             print(ret['result'])
     except Exception as e:
@@ -221,6 +218,7 @@ def go_ex(hostname, username, passwd, command='', timeout=600,
         traceback.print_exc()
         ret['exitstatus'] = -1
         ret['remote_exitstatus'] = -1
+        ret['result_stderr'] = e
     finally:
         _close(client)
         return ret
