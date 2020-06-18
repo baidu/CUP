@@ -414,7 +414,7 @@ class ShellExec(object):  # pylint: disable=R0903
             """
             signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
-        def _target(argcontent):
+        def _target(argcontent, proc_cond):
             argcontent.tempscript = tempfile.NamedTemporaryFile(
                 dir=self._tmpdir, prefix=self._tmpprefix,
                 delete=True
@@ -429,11 +429,16 @@ class ShellExec(object):  # pylint: disable=R0903
                     argcontent.cmd, cmds)
             )
             try:
+                proc_cond.acquire()
                 argcontent.subproc = subprocess.Popen(
                         cmds, stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
                         preexec_fn=_signal_handle)
+                proc_cond.notify()
+                proc_cond.release()
             except OSError:
+                proc_cond.notify()
+                proc_cond.release()
                 argcontent.ret['returncode'] = -1
                 argcontent.ret['stderr'] = (
                     'failed to execute the cmd, plz check it out\'s'
@@ -472,19 +477,24 @@ class ShellExec(object):  # pylint: disable=R0903
             'stderr': None,
             'returncode': -999
         }
+        proc_cond = threading.Condition(threading.Lock())
         argcontent.cmdthd = threading.Thread(
-            target=_target, args=(argcontent,))
+            target=_target, args=(argcontent, proc_cond))
         argcontent.cmdthd.daemon = True
         argcontent.cmdthd.start()
         start_time = int(time.mktime(datetime.datetime.now().timetuple()))
         argcontent.cmdthd.join(0.1)
-        argcontent.pid = argcontent.subproc.pid
-        argcontent.monitorthd = threading.Thread(target=_monitor,
-                args=(start_time, argcontent))
-        argcontent.monitorthd.daemon = True
-        argcontent.monitorthd.start()
-        #this join should be del if i can make if quicker in Process.children
-        argcontent.cmdthd.join(0.5)
+        proc_cond.acquire()
+        proc_cond.wait()
+        proc_cond.release()
+        if argcontent.subproc is not None:
+            argcontent.pid = argcontent.subproc.pid
+            argcontent.monitorthd = threading.Thread(target=_monitor,
+                    args=(start_time, argcontent))
+            argcontent.monitorthd.daemon = True
+            argcontent.monitorthd.start()
+            #this join should be del if i can make if quicker in Process.children
+            argcontent.cmdthd.join(0.5)
         return argcontent
 
     def run(self, cmd, timeout):
