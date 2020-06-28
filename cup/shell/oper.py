@@ -481,10 +481,10 @@ class ShellExec(object):  # pylint: disable=R0903
         argcontent.cmdthd = threading.Thread(
             target=_target, args=(argcontent, proc_cond))
         argcontent.cmdthd.daemon = True
+        proc_cond.acquire()
         argcontent.cmdthd.start()
         start_time = int(time.mktime(datetime.datetime.now().timetuple()))
         argcontent.cmdthd.join(0.1)
-        proc_cond.acquire()
         proc_cond.wait()
         proc_cond.release()
         if argcontent.subproc is not None:
