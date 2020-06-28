@@ -241,7 +241,8 @@ class CronTask(object):
     _GEN = generator.CachedUUID()
 
     def __init__(
-        self, name, pytz_timezone, timer_dict, function, *args, **kwargs
+        self, name, pytz_timezone, timer_dict, md5uuid,
+        function, *args, **kwargs
     ):
         """
         :param pytz_timezone:
@@ -284,7 +285,11 @@ class CronTask(object):
         self._timer_params = self._generate_timer_params(self._timer_dict)
         self._check_param_valids(self._timer_params)
         self._lastsched_time = None
-        self._md5_id = self._GEN.get_uuid()[0]
+        if md5uuid is None:
+            self._md5_id = self._GEN.get_uuid()[0]
+        else:
+            self._md5_id = md5uuid
+        self._timer = None
 
     def get_funcargs(self):
         """return (function, args, kwargs)"""
@@ -521,6 +526,14 @@ class CronTask(object):
         """return info of the crontask"""
         return 'CronTask(ID:{0} Name:{1})'.format(self.taskid(), self._name)
 
+    def set_timer(self, timer):
+        """set timer to this crontask"""
+        self._timer = timer
+
+    def get_timer(self):
+        """return timer of the crontask"""
+        return self._timer
+
 
 class CronExecution(ExecutionService):
     """
@@ -613,6 +626,7 @@ class CronExecution(ExecutionService):
             delay_time_insec, self._do_delay_exe,
             [task_data]
         )
+        crontask.set_timer(timer)
         timer.start()
 
     def schedule(self, crontask):
@@ -655,5 +669,14 @@ class CronExecution(ExecutionService):
             wait_seoncds, crontask, function, URGENCY_NORMAL, *args, **kwargs
         )
         self._task_dict[crontask.taskid()] = crontask
+
+    def calcel_delay_exec(self, taskid):
+        """calcel delayexec by taskid"""
+        task = self._task_dict.get(taskid, None)
+        if task is None:
+            log.warn('delay exec task id {0} not found'.format(taskid))
+            return
+        timer = task.get_timer()
+        timer.cancel()
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent
