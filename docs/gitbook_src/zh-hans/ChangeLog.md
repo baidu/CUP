@@ -4,6 +4,9 @@
 * [Enhancement] *cup.util.conf* |  Fix py3 support bug
 * [New] *cup.services.executor* | Add Crontab-like execution service
 * [Bug] *cup.net.asyn.context* | Fix bug which introduces RW Lock problem
+* [Compatibility] * cup.shell.expect | Fix compatibility bug related to remote execution
+* [New] *cup.timeplus* | Add TimePlus for i18n time related functions
+* [Bug] *cup.shell.oper and cup.shell.expect* | Fix bugs for remote execution and async shell run
 
 ## Version 3.2.7  2020.1.1 ~ 2020.3.31
 * [Enhancement] Change cup.net.async to cup.net.asyn to avoid language keyword "async"
