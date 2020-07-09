@@ -10,20 +10,25 @@ from __future__ import print_function
 
 __all__ = [
     'debug', 'info', 'warn', 'critical',
-    'init_comlog', 'setloglevel',
-    'ROTATION', 'INFINITE',
-    'reinit_comlog', 'get_inited_loggername', 'parse',
+    'init_comlog', 'setloglevel', 'ROTATION', 'INFINITE',
+    'reinit_comlog', 'parse',
     'backtrace_info', 'backtrace_debug', 'backtrace_error',
-    'backtrace_critical'
+    'backtrace_critical',
+    'info_if', 'debug_if', 'warn_if', 'error_if', 'critical_if',
+
+    # x* functions are for loggers other than logging.root (the global logger)
+    'xinit_comlog', 'xdebug', 'xinfo', 'xwarn', 'xerror', 'xcritical'
 ]
 
 
 import os
 import re
 import sys
+import uuid
 import logging
-import threading
 from logging import handlers
+import threading
+import collections
 
 import cup
 from cup import err
@@ -52,6 +57,16 @@ except Exception:
 error = logging.error
 debug = logging.debug
 critical = logging.critical
+
+
+LoggerParams = collections.namedtuple('LoggerParams', [
+    'loglevel',   # one of logging.INFO logging.DEBUG logging.xxx levels
+    'logfile',    # valid logfile position,  e.g.   /home/test/test.log
+    'logtype',    # log.ROTATION  log.INFINITE
+    'maxlogsize', # logsize for one log, in bytes
+    'bprint_console', # True, logger will printn to stdout, False, otherwise
+    'gen_wf'          # True/False, generate log lines with level >= WARNNING
+])
 
 
 class _Singleton(object):  # pylint: disable=R0903
@@ -87,64 +102,38 @@ class _MsgFilter(logging.Filter):
             return True
 
 
-# pylint: disable=R0903
-@_Singleton
-class _LoggerMan(object):
-    _instance = None
-    _pylogger = None
-    _maxsize = 0
-    _b_rotation = False
-    _logfile = ''
-    _logtype = ROTATION
-
-    def __init__(self):
-        pass
-
-    def _getlogger(self):
-        if self._pylogger is None:
-            raise err.LoggerException(
-                'The Cup logger has not been initalized Yet. '
-                'Call init_comlog first'
-            )
-        return self._pylogger
-
-    def _setlogger(self, logger):
-        if self._pylogger is not None:
-            raise err.LoggerException(
-                """WARNING!!! The cup logger has been initalized already\
-                .Plz do NOT init_comlog twice""")
-        self._pylogger = logger
-
-    def _reset_logger(self, logger):
-        del self._pylogger
-        self._pylogger = logger
-        logging.root = logger
-
-    def is_initalized(self):
+class LogInitializer(object):
+    """
+    default log initalizer
+    """
+    # def config_filelogger(self,
+    #     logger, loglevel, strlogfile, logtype,
+    #     maxsize, bprint_console, gen_wf=False
+    # ):  # too many arg pylint: disable=R0913
+    @classmethod
+    def setup_filelogger(cls, logger, logparams):
         """
-            Initialized or not
+        config logger
         """
-        if self._pylogger is None:
-            return False
-        else:
-            return True
-
-    def _config_filelogger(
-        self, loglevel, strlogfile, logtype, maxsize, bprint_console,
-        gen_wf=False
-    ):  # too many arg pylint: disable=R0913
+        loglevel = logparams.loglevel
+        strlogfile = logparams.logfile
+        logtype = logparams.logtype
+        maxsize = logparams.maxlogsize
+        bprint_console = logparams.bprint_console
+        gen_wf = logparams.gen_wf
         if not os.path.exists(strlogfile):
             try:
-                os.mknod(strlogfile)
+                if platforms.is_linux():
+                    os.mknod(strlogfile)
+                else:
+                    with open(strlogfile, 'w+') as fhandle:
+                        fhandle.write('\n')
             except IOError:
                 raise err.LoggerException(
                     'logfile does not exist. '
                     'try to create it. but file creation failed'
                 )
-        self._logfile = strlogfile
-        self._logtype = logtype
-        self._pylogger.setLevel(loglevel)
-        self._maxsize = maxsize
+        logger.setLevel(loglevel)
         # '%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(message)s'
         formatter = logging.Formatter(
             '%(levelname)s:\t %(asctime)s * '
@@ -155,60 +144,111 @@ class _LoggerMan(object):
             streamhandler = logging.StreamHandler()
             streamhandler.setLevel(loglevel)
             streamhandler.setFormatter(formatter)
-            self._pylogger.addHandler(streamhandler)
+            logger.addHandler(streamhandler)
         fdhandler = None
         if logtype == ROTATION:
             fdhandler = handlers.RotatingFileHandler(
-                self._logfile, 'a', maxsize, ROTATION_COUNTS, encoding='utf-8'
+                strlogfile, 'a', maxsize, ROTATION_COUNTS, encoding='utf-8'
             )
         else:
             fdhandler = logging.FileHandler(
-                self._logfile, 'a', encoding='utf-8'
+                strlogfile, 'a', encoding='utf-8'
             )
         fdhandler.setFormatter(formatter)
         fdhandler.setLevel(loglevel)
         if gen_wf:
             # add .wf handler
-            file_wf = str(self._logfile) + '.wf'
+            file_wf = str(strlogfile) + '.wf'
             warn_handler = logging.FileHandler(file_wf, 'a', encoding='utf-8')
             warn_handler.setLevel(logging.WARNING)
             warn_handler.setFormatter(formatter)
-            self._pylogger.addHandler(warn_handler)
+            logger.addHandler(warn_handler)
             fdhandler.addFilter(_MsgFilter(logging.WARNING))
+        logger.addHandler(fdhandler)
 
-        self._pylogger.addHandler(fdhandler)
+    @classmethod
+    def proc_thd_id(cls):
+        """return proc thread id"""
+        return '{0}:{1}'.format(
+            os.getpid(), threading.current_thread().ident
+        )
 
+    @classmethod
+    def get_codeline(cls, back=0):
+        """get code line"""
+        return sys._getframe(back + 1).f_lineno  # traceback pylint:disable=W0212
 
-def _line(back=0):
-    return sys._getframe(back + 1).f_lineno  # traceback pylint:disable=W0212
+    @classmethod
+    def get_codefile(cls, back=0):
+        """
+        get code file
+        """
+        # pylint: disable=W0212
+        # to get code filename
+        return os.path.basename(sys._getframe(back + 1).f_code.co_filename)
 
-
-def _file(back=0):
-    # pylint:disable=W0212
-    return os.path.basename(sys._getframe(back + 1).f_code.co_filename)
-
-
-# def _func(back=0):
-#     # traceback functionality. pylint:disable=W0212
-#     return sys._getframe(back + 1).f_code.co_name \
-
-
-def _proc_thd_id():
-    # return str(os.getpid()) # traceback functionality. pylint:disable=W0212
-    return str(os.getpid()) + ':' + str(threading.current_thread().ident)
-
-
-def _log_file_func_info(msg, back_trace_len=0):
-    tempmsg = ' * [%s] [%s:%s] ' % (
-        _proc_thd_id(), _file(2 + back_trace_len),
-        _line(2 + back_trace_len)
-    )
-
-    msg = '%s%s' % (tempmsg, msg)
-    if isinstance(msg, unicode):
-        return msg
-    else:
+    @classmethod
+    def log_file_func_info(cls, msg, back_trace_len=0):
+        """return log traceback info"""
+        tempmsg = ' * [%s] [%s:%s] ' % (
+            cls.proc_thd_id(), cls.get_codefile(2 + back_trace_len),
+            cls.get_codeline(2 + back_trace_len)
+        )
+        msg = '%s%s' % (tempmsg, msg)
+        if isinstance(msg, unicode):
+            return msg
         return msg.decode('utf8')
+
+
+# pylint: disable=R0903
+@_Singleton
+class _RootLogerMan(object):
+    _instance = None
+    _rootlogger = None
+    _b_rotation = False
+    _logfile = ''
+    _logtype = ROTATION
+    _loggername = None
+
+    def __init__(self):
+        pass
+
+    def get_rootlogger(self):
+        if self._rootlogger is None:
+            raise err.LoggerException(
+                'The Cup logger has not been initalized Yet. '
+                'Call init_comlog first'
+            )
+        return self._rootlogger
+
+    def set_rootlogger(self, loggername, logger):
+        if self._rootlogger is not None:
+            raise err.LoggerException(
+                """WARNING!!! The cup logger has been initalized already\
+                .Plz do NOT init_comlog twice""")
+        self._rootlogger = logger
+        self._loggername = loggername
+
+    def reset_logger(self, loggername, logger):
+        """reset logger by loggername"""
+
+    def reset_rootlogger(self, logger):
+        """reset root logger"""
+        global G_INITED_LOGGER
+        tmplogger = self._rootlogger
+        while len(tmplogger.handlers) > 0:
+            tmplogger.removeHandler(tmplogger.handlers[0])
+        del tmplogger
+        self._rootlogger = logger
+        logging.root = logger
+
+    def is_initalized(self):
+        """
+            Initialized or not
+        """
+        if self._rootlogger is None:
+            return False
+        return True
 
 
 def init_comlog(
@@ -217,10 +257,10 @@ def init_comlog(
     gen_wf=False
 ):  # too many arg pylint: disable=R0913
     """
-    Initialize your logging
+    Initialize your default logger
 
     :param loggername:
-        Unique logger name
+        Unique logger name for default logging.
     :param loglevel:
         4 default levels: log.DEBUG log.INFO log.ERROR log.CRITICAL
     :param logfile:
@@ -256,74 +296,69 @@ def init_comlog(
         log.critical('test critical')
 
     """
-    loggerman = _LoggerMan()
+    loggerman = _RootLogerMan()
+    rootloger = logging.getLogger()
     if not loggerman.is_initalized():
-        # loggerman._setlogger(logging.getLogger(loggername))
-        loggerman._setlogger(logging.getLogger())
+        loggerman.set_rootlogger(loggername, rootloger)
         if os.path.exists(logfile) is False:
             if platforms.is_linux():
                 os.mknod(logfile)
             else:
                 with open(logfile, 'w+') as fhandle:
-                    fhandle.write('----Windows File Creation ----\n')
+                    fhandle.write('\n')
         elif os.path.isfile(logfile) is False:
             raise err.LoggerException(
                 'The log file exists. But it\'s not regular file'
             )
-        loggerman._config_filelogger(
+        loggerparams = LoggerParams(
             loglevel, logfile, logtype, maxlogsize, bprint_console, gen_wf
-        )  # too many arg pylint: disable=w0212
+        )
+        LogInitializer.setup_filelogger(rootloger, loggerparams)
         info('-' * 20 + 'Log Initialized Successfully' + '-' * 20)
         global G_INITED_LOGGER
         G_INITED_LOGGER.append(loggername)
     else:
         print('[{0}:{1}] init_comlog has been already initalized'.format(
-            _file(1), _line(1))
-        )
+            LogInitializer.get_codefile(1), LogInitializer.get_codeline(1)
+        ))
     return
 
 
-def reinit_comlog(
-    loggername, loglevel=logging.INFO, logfile='cup.log',
+# too many arg pylint: disable=R0913
+def reinit_comlog(loggername, loglevel=logging.INFO, logfile='cup.log',
     logtype=ROTATION, maxlogsize=1073741824, bprint_console=False,
-    gen_wf=False
-):  # too many arg pylint: disable=R0913
+    gen_wf=False):
     """
-    reinitalize logging system, paramters same to init_comlog.
-    reinit_comlog will reset all logging parameters，
-    Make sure you used a different loggername from the old one!
+    reinitialize default root logger for cup logging
+
+    :param loggername:
+        logger name, should be different from the original one
     """
     global G_INITED_LOGGER
     if loggername in G_INITED_LOGGER:
-        msg = 'loggername:%s has been already initalized!!!' % loggername
+        msg = ('loggername:{0} has been already used!!! Change a name'.format(
+            loggername))
         raise ValueError(msg)
     G_INITED_LOGGER.append(loggername)
-
-    loggerman = _LoggerMan()
-    loggerman._reset_logger(logging.getLogger(loggername))
+    tmplogger = logging.getLogger(loggername)
     if os.path.exists(logfile) is False:
         if platforms.is_linux():
             os.mknod(logfile)
         else:
             with open(logfile, 'w+') as fhandle:
-                fhandle.write('----Windows File Creation ----\n')
+                fhandle.write('\n')
     elif os.path.isfile(logfile) is False:
         raise err.LoggerException(
             'The log file exists. But it\'s not regular file'
         )
-    loggerman._config_filelogger(
+    loggerman = _RootLogerMan()
+    loggerparms = LoggerParams(
         loglevel, logfile, logtype, maxlogsize, bprint_console, gen_wf
-    )  # too many arg pylint: disable=w0212
+    )
+    LogInitializer.setup_filelogger(tmplogger, loggerparms)
+    loggerman.reset_rootlogger(tmplogger)
     info('-' * 20 + 'Log Reinitialized Successfully' + '-' * 20)
     return
-
-
-def get_inited_loggername():
-    """
-    get initialized logger name
-    """
-    global G_INITED_LOGGER
-    return G_INITED_LOGGER
 
 
 def _fail_handle(msg, e):
@@ -337,9 +372,9 @@ def backtrace_info(msg, back_trace_len=0):
     info with backtrace support
     """
     try:
-        msg = _log_file_func_info(msg, back_trace_len)
-        loggerman = _LoggerMan()
-        loggerman._getlogger().info(msg)
+        msg = LogInitializer.log_file_func_info(msg, back_trace_len)
+        loggerman = _RootLogerMan()
+        loggerman.get_rootlogger().info(msg)
     except err.LoggerException:
         return
     except Exception as e:
@@ -351,9 +386,9 @@ def backtrace_debug(msg, back_trace_len=0):
     debug with backtrace support
     """
     try:
-        msg = _log_file_func_info(msg, back_trace_len)
-        loggerman = _LoggerMan()
-        loggerman._getlogger().debug(msg)
+        msg = LogInitializer.log_file_func_info(msg, back_trace_len)
+        loggerman = _RootLogerMan()
+        loggerman.get_rootlogger().debug(msg)
     except err.LoggerException:
         return
     except Exception as e:
@@ -365,9 +400,9 @@ def backtrace_warn(msg, back_trace_len=0):
     warning msg with backtrace support
     """
     try:
-        msg = _log_file_func_info(msg, back_trace_len)
-        loggerman = _LoggerMan()
-        loggerman._getlogger().warn(msg)
+        msg = LogInitializer.log_file_func_info(msg, back_trace_len)
+        loggerman = _RootLogerMan()
+        loggerman.get_rootlogger().warn(msg)
     except err.LoggerException:
         return
     except Exception as e:
@@ -379,9 +414,9 @@ def backtrace_error(msg, back_trace_len=0):
     error msg with backtarce support
     """
     try:
-        msg = _log_file_func_info(msg, back_trace_len)
-        loggerman = _LoggerMan()
-        loggerman._getlogger().error(msg)
+        msg = LogInitializer.log_file_func_info(msg, back_trace_len)
+        loggerman = _RootLogerMan()
+        loggerman.get_rootlogger().error(msg)
     except err.LoggerException:
         return
     except Exception as error:
@@ -393,21 +428,21 @@ def backtrace_critical(msg, back_trace_len=0):
     logging.CRITICAL with backtrace support
     """
     try:
-        msg = _log_file_func_info(msg, back_trace_len)
-        loggerman = _LoggerMan()
-        loggerman._getlogger().critical(msg)
+        msg = LogInitializer.log_file_func_info(msg, back_trace_len)
+        loggerman = _RootLogerMan()
+        loggerman.get_rootlogger().critical(msg)
     except err.LoggerException:
         return
-    except Exception as e:
-        _fail_handle(msg, e)
+    except Exception as error:
+        _fail_handle(msg, error)
 
 
 def setloglevel(logginglevel):
     """
     change log level during runtime
     """
-    loggerman = _LoggerMan()
-    loggerman._getlogger().setLevel(logginglevel)
+    loggerman = _RootLogerMan()
+    loggerman.get_rootlogger().setLevel(logginglevel)
 
 
 def parse(logline):
@@ -477,6 +512,118 @@ def debug_if(bol, msg, back_trace_len=1):
     """log msg with critical loglevel if bol is true"""
     if bol:
         debug(msg, back_trace_len)
+
+
+def xinit_comlog(loggername, logger_params):
+    """
+    xinit_comlog along with xdebug xinfo xwarn xerror are functions for
+    different loggers other than logging.root (the global logger).
+    Code example:
+    ::
+        logparams = log.LoggerParams(
+            log.DEBUG, 'cup.x.log', log.ROTATION, 100 * 1024 * 1024,
+            True, True
+        )
+        log.xinit_comlog('log.x', logparams)
+        log.xdebug('log.x', 'xdebug')
+        log.xinfo('log.x', 'xinfo')
+        log.xerror('log.x', 'xerror')
+        logparams = log.LoggerParams(
+            log.DEBUG, 'cup.y.log', log.ROTATION, 100 * 1024 * 1024,
+            True, True
+        )
+        log.xinit_comlog('log.y', logparams)
+        log.xdebug('log.y', 'ydebug')
+        log.xinfo('log.y', 'yinfo')
+        log.xerror('log.y', 'yerror')
+
+    :param loggername:
+        loggername, example:  http.access,
+
+    :logger_params:
+        object of LoggerParams
+    """
+    if not isinstance(logger_params, LoggerParams):
+        raise TypeError('logger_params should be a object of log.LoggerParams')
+    logger = logging.getLogger(loggername)
+    LogInitializer.setup_filelogger(logger, logger_params)
+
+
+def xdebug(loggername, msg, back_trace_len=1):
+    """
+    :param loggername:
+        shoule be xinit_comlog before calling xdebug/xinfo/xerror/xcritical
+    :param msg:
+        log msg
+    :back_trace_len:
+
+    """
+    logger = logging.getLogger(loggername)
+    logger.debug(LogInitializer.log_file_func_info(msg, back_trace_len))
+
+
+def xinfo(loggername, msg, back_trace_len=1):
+    """
+    :param loggername:
+        shoule be xinit_comlog before calling xdebug/xinfo/xerror/xcritical
+    :param msg:
+        log msg
+    :back_trace_len:
+        default 1, just ignore this param if you don't know what it is.
+        This param will trace back 1 layer and get the
+        [code_filename:code_lines]
+
+    """
+    logger = logging.getLogger(loggername)
+    logger.info(LogInitializer.log_file_func_info(msg, back_trace_len))
+
+
+def xwarn(loggername, msg, back_trace_len=1):
+    """
+    :param loggername:
+        shoule be xinit_comlog before calling xdebug/xinfo/xerror/xcritical
+    :param msg:
+        log msg
+    :back_trace_len:
+        default 1, just ignore this param if you don't know what it is.
+        This param will trace back 1 layer and get the
+        [code_filename:code_lines]
+
+    """
+    logger = logging.getLogger(loggername)
+    logger.warn(LogInitializer.log_file_func_info(msg, back_trace_len))
+
+
+def xerror(loggername, msg, back_trace_len=1):
+    """
+    :param loggername:
+        shoule be xinit_comlog before calling xdebug/xinfo/xerror/xcritical
+    :param msg:
+        log msg
+    :back_trace_len:
+        default 1, just ignore this param if you don't know what it is.
+        This param will trace back 1 layer and get the
+        [code_filename:code_lines]
+
+    """
+    logger = logging.getLogger(loggername)
+    logger.error(LogInitializer.log_file_func_info(msg, back_trace_len))
+
+
+def xcritical(loggername, msg, back_trace_len=1):
+    """
+    :param loggername:
+        shoule be xinit_comlog before calling xdebug/xinfo/xerror/xcritical
+    :param msg:
+        log msg
+    :back_trace_len:
+        default 1, just ignore this param if you don't know what it is.
+        This param will trace back 1 layer and get the
+        [code_filename:code_lines]
+
+    """
+    logger = logging.getLogger(loggername)
+    logger.critical(LogInitializer.log_file_func_info(msg, back_trace_len))
 
 
 if __name__ == '__main__':

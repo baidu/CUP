@@ -6,7 +6,7 @@ Subpackages
 
 .. toctree::
 
-    cup.net.async
+    cup.net.asyn
 
 Submodules
 ----------

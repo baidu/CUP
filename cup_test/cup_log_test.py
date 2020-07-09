@@ -74,6 +74,40 @@ def test_log_parse():
     unittest.assert_none(log.parse(newlog))
 
 
+def test_log_reinitcomlog():
+    """test reinitcom log"""
+    log.reinit_comlog(
+        "Yang Honggang1", logging.DEBUG, "cup.new.log",
+        log.ROTATION, gen_wf=True
+    )
+    log.info("new info")
+    log.critical("new critical")
+    log.error("new error")
+    log.warn("new warning")
+    log.debug("new debug")
+
+
+def test_log_xfuncs():
+    """test x log functions"""
+    logparams = log.LoggerParams(
+        log.DEBUG, 'cup.x.log', log.ROTATION, 100 * 1024 * 1024,
+        True, True
+    )
+    log.xinit_comlog('log.x', logparams)
+    log.xdebug('log.x', 'xdebug')
+    log.xinfo('log.x', 'xinfo')
+    log.xerror('log.x', 'xerror')
+    logparams = log.LoggerParams(
+        log.DEBUG, 'cup.y.log', log.ROTATION, 100 * 1024 * 1024,
+        True, True
+    )
+    log.xinit_comlog('log.y', logparams)
+    log.xdebug('log.y', 'ydebug')
+    log.xinfo('log.y', 'yinfo')
+    log.xerror('log.y', 'yerror')
+
+
+
 def _main():
     test_gen_wf()
     test_log_parse()

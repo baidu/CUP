@@ -1,5 +1,9 @@
 # 1. Versions Released
-## Version 3.3.x
+## Version 3.2.20
+* [Enhancement] *cup.log* | Add xdebug/xinfo/xinit_comlog in order to support different loggers
+* [Removal] *cup.jenkinslib* | Recommand using python-jenkins to replace cup.jenkinslib
+
+## Version 3.2.19
 * [Enhancement] *cup.services.generator* | Add visibility to Cached UUID
 * [Enhancement] *cup.util.conf* |  Fix py3 support bug
 * [New] *cup.services.executor* | Add Crontab-like execution service
