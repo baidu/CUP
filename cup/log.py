@@ -451,6 +451,7 @@ def parse(logline):
     Otherwise, return None
 
     ::
+
         dict_info:= {
            'loglevel': 'DEBUG',
            'date': '2015-10-14',
@@ -518,8 +519,16 @@ def xinit_comlog(loggername, logger_params):
     """
     xinit_comlog along with xdebug xinfo xwarn xerror are functions for
     different loggers other than logging.root (the global logger).
+
+    :param loggername:
+        loggername, example:  http.access,
+
+    :param logger_params:
+        object of LoggerParams
+
     Code example:
     ::
+
         logparams = log.LoggerParams(
             log.DEBUG, 'cup.x.log', log.ROTATION, 100 * 1024 * 1024,
             True, True
@@ -537,11 +546,6 @@ def xinit_comlog(loggername, logger_params):
         log.xinfo('log.y', 'yinfo')
         log.xerror('log.y', 'yerror')
 
-    :param loggername:
-        loggername, example:  http.access,
-
-    :logger_params:
-        object of LoggerParams
     """
     if not isinstance(logger_params, LoggerParams):
         raise TypeError('logger_params should be a object of log.LoggerParams')

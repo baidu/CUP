@@ -1,6 +1,11 @@
 cup.net package
 ===============
 
+.. automodule:: cup.net
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -20,10 +25,3 @@ cup.net.route module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: cup.net
-    :members:
-    :undoc-members:
-    :show-inheritance:

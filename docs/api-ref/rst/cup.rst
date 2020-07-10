@@ -1,6 +1,11 @@
 cup package
 ===========
 
+.. automodule:: cup
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -8,11 +13,10 @@ Subpackages
 
     cup.net
     cup.res
-    cup.util
     cup.services
     cup.shell
     cup.storage
-    cup.jenkinslib
+    cup.util
     cup.web
 
 Submodules
@@ -123,10 +127,3 @@ cup.version module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: cup
-    :members:
-    :undoc-members:
-    :show-inheritance:
