@@ -16,16 +16,23 @@ from cup.util import thread
 
 class KvCache(object):
     """
-    Key-Value Cache object
+    Key-Value Cache object.
 
-    When a k-v is hit, the expire_sec will be expanded to 2 * (expire_sec)
+    You can use function set/get to access KeyValue Cache.
+
+    When a k-v is hit by function **get**,
+    the expire_sec will be expanded to 2 * (expire_sec)
     """
     _STAT = collections.namedtuple(
         'kvcache_stat', 'key_num expired_num'
     )
 
     def __init__(self, maxsize=0):
-        # store kv_data
+        """
+        :param maxsize:
+            not used yet, for future use
+        """
+        self._maxsize = maxsize
         self._kv_data = {}
         self._lock = thread.RWLock()
 
@@ -49,6 +56,13 @@ class KvCache(object):
     def set(self, kvdict, expire_sec=None):
         """
         set cache with kvdict
+        ::
+
+            {
+                'key1': 'value1',
+                'key2': 'value2',
+                ....
+            }
 
         :param kvdict:
             kvdict is a dict that contains your cache.
@@ -61,7 +75,9 @@ class KvCache(object):
         with self._lock_release(b_rw_lock=True):
             for key in kvdict:
                 if key in self._kv_data:
-                    cup.log.debug('Key:%s of KvCache updated.' % key)
+                    cup.log.debug(
+                        'KvCache: Key:{0} updated.'.format(key)
+                    )
                 self._kv_data[key] = (kvdict[key], expire_value)
 
     def get(self, key):
@@ -76,13 +92,12 @@ class KvCache(object):
             value, expire_sec = self._kv_data[key]
             if expire_sec is not None and time.time() > expire_sec:
                 return None
-            else:
-                cup.log.debug('key:%s of kvCache fetched.' % key)
-                self._kv_data[key] = (value, 2 * expire_sec)
-                return value
+            cup.log.debug('key:%s of kvCache fetched.' % key)
+            self._kv_data[key] = (value, 2 * expire_sec)
+            return value
         return None
 
-    def _get_expired_keys(self):
+    def get_expired_keys(self):
         """get expired key of keys"""
         expired_keys = []
         keys = self._kv_data.keys()
@@ -98,7 +113,7 @@ class KvCache(object):
         """
         expired_keys = None
         with self._lock_release(b_rw_lock=True):
-            expired_keys = self._get_expired_keys()
+            expired_keys = self.get_expired_keys()
             for key in expired_keys:
                 del self._kv_data[key]
                 cup.log.debug('key:%s cleaned up' % key)
@@ -108,15 +123,16 @@ class KvCache(object):
         """
         :return:
             A dict.
-            Return expired items. Return type is a dict (
+            Return expired items. Return type is a dict
+            ::
+
                 {
                     'key' : (value, expire_time)
                 }
-            )
         """
         kvlist = {}
         with self._lock_release(b_rw_lock=False):
-            keys = self._get_expired_keys()
+            keys = self.get_expired_keys()
             for key in keys:
                 value = self._kv_data[key]
                 kvlist[key] = (value)
@@ -129,7 +145,7 @@ class KvCache(object):
         """
         with self._lock_release(b_rw_lock=False):
             key_num = len(self._kv_data)
-            expired_num = len(self._get_expired_keys())
+            expired_num = len(self.get_expired_keys())
         return (key_num, expired_num)
 
     def clear(self):

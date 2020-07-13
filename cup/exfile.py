@@ -58,7 +58,18 @@ elif platforms.is_windows():
 
 class LockFile(object):
     """
-    lock file class
+    Lock file in order to prevent others from trying to lock it again
+
+    Code Example:
+    ::
+
+        from cup import exfile
+
+        filelock = exfile.LockFile()
+        # xxxx do something
+        filelock.lock(blocking=True)
+        # xxxxx do something else
+        filelock.unlock()
     """
 
     def __init__(self, fpath, locktype=FILELOCK_EXCLUSIVE):
@@ -158,9 +169,10 @@ class LockFile(object):
 
 def mk_newnode(abspath, check_exsistence=False):
     """
+    make new file node for abspath
+
     :param abspath:
         plz use absolute path. Not relative path
-
     :param check_exsistence:
         if True, will check if the abspath existence (
         raise IOError if abspath exists)
@@ -176,6 +188,9 @@ def mk_newnode(abspath, check_exsistence=False):
 
 def safe_rmtree(abspath, not_del_list=None):
     """
+    the function will safely remove files/dirs of abspath with not_del_list
+    excluded
+
     :param abspath:
         pass in absolute path
     :param not_del_list:
@@ -198,6 +213,10 @@ def safe_rmtree(abspath, not_del_list=None):
 
 def safe_delete(abspath, not_del_list):
     """
+    the function will safely delete file/object of abspath.
+
+    If the abspath in not_del_list, safe delete will raise ValueError
+
     :param abspath:
         pass in absolute path
     :param not_del_list:
@@ -207,6 +226,9 @@ def safe_delete(abspath, not_del_list):
         ValueError, if abspath is in exfile.CANNOT_DEL_PATHLIST or not_del_list
         IOError, if cup encounters any problem
     """
+    normpath = os.path.normpath(abspath)
+    if normpath in not_del_list:
+        raise ValueError('cannot delete files in {0}'.format(not_del_list))
     if os.path.isdir(abspath):
         safe_rmtree(abspath, not_del_list)
     else:

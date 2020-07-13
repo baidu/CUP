@@ -440,6 +440,10 @@ def backtrace_critical(msg, back_trace_len=0):
 def setloglevel(logginglevel):
     """
     change log level during runtime
+    ::
+
+        from cup import log
+        log.setloglevel(log.DEBUG)
     """
     loggerman = _RootLogerMan()
     loggerman.get_rootlogger().setLevel(logginglevel)
@@ -560,7 +564,7 @@ def xdebug(loggername, msg, back_trace_len=1):
     :param msg:
         log msg
     :back_trace_len:
-
+        1 by default, ignore this if you don't need this
     """
     logger = logging.getLogger(loggername)
     logger.debug(LogInitializer.log_file_func_info(msg, back_trace_len))

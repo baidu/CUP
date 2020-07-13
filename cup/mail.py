@@ -103,6 +103,8 @@ class SmtpMailer(object):  # pylint: disable=R0903
             'xxxx.smtp.xxx.com',
             is_html=True
         )
+        # if your smtp server needs login , pls uncomment line below:
+        # mailer.login(usernname, password)
         mailer.sendmail(
             [
                 'maguannan',
@@ -121,10 +123,20 @@ class SmtpMailer(object):  # pylint: disable=R0903
     """
     _COMMA_SPLITTER = ','
 
-    def __init__(
-        self, sender, server='mail2-in.baidu.com', port=25, is_html=False
-    ):
+    def __init__(self, sender, server, port=25,\
+        is_html=False):
         """
+
+        :param sender:
+            sender email address,  xxx@xxx.com
+        :param server:
+            smtp server
+        :param port:
+            25 by default
+        :param is_html:
+            is email format a html style, False by default.
+            You can set it to True if the email format is html based.
+
         """
         self._server = None
         self._port = None
@@ -238,9 +250,6 @@ class SmtpMailer(object):  # pylint: disable=R0903
         :return:
             return (True, None) on success, return (False, error_msg) otherwise
         """
-        errmsg = None
-        # self._check_type(recipients, [str, list])
-        # self._check_type(subject, [str])
         toaddrs = []
         # self._check_type(body, [str])
         if self._is_html:
@@ -256,7 +265,7 @@ class SmtpMailer(object):  # pylint: disable=R0903
             outer['To'] = recipients
             toaddrs.append(recipients)
         if cc is not None:
-            if type(cc) == str:
+            if any([isinstance(bcc, str), isinstance(bcc, unicode)]):
                 outer['Cc'] = cc
                 toaddrs.append(cc)
             elif isinstance(cc, list):
@@ -265,7 +274,10 @@ class SmtpMailer(object):  # pylint: disable=R0903
             else:
                 raise TypeError('cc only accepts string or list')
         if bcc is not None:
-            if type(bcc) == str:
+            if any([
+                    isinstance(bcc, str),
+                    isinstance(bcc, unicode),
+            ]):
                 outer['Bcc'] = bcc
                 toaddrs.append(bcc)
             elif isinstance(bcc, list):
@@ -288,7 +300,7 @@ class SmtpMailer(object):  # pylint: disable=R0903
             smtp.quit()
             ret = (True, None)
         except smtplib.SMTPException as smtperr:
-            ret = (False, str(errmsg))
+            ret = (False, '{0}'.format(smtperr))
         return ret
 
 
