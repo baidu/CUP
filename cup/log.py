@@ -214,6 +214,9 @@ class _RootLogerMan(object):
         pass
 
     def get_rootlogger(self):
+        """
+        get default(root) logger
+        """
         if self._rootlogger is None:
             raise err.LoggerException(
                 'The Cup logger has not been initalized Yet. '
@@ -222,15 +225,15 @@ class _RootLogerMan(object):
         return self._rootlogger
 
     def set_rootlogger(self, loggername, logger):
+        """
+        set default(root) logger with a new loggername
+        """
         if self._rootlogger is not None:
             raise err.LoggerException(
                 """WARNING!!! The cup logger has been initalized already\
                 .Plz do NOT init_comlog twice""")
         self._rootlogger = logger
         self._loggername = loggername
-
-    def reset_logger(self, loggername, logger):
-        """reset logger by loggername"""
 
     def reset_rootlogger(self, logger):
         """reset root logger"""
