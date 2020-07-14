@@ -1,0 +1,435 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cup.services.generator &mdash; Cup 3.2.19 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Cup
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../cup.html">cup package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Cup</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>cup.services.generator</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cup.services.generator</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*</span>
+<span class="c1"># Copyright: [CUP] - See LICENSE for details.</span>
+<span class="c1"># Authors: Guannan Ma (@mythmgn),</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">class CGeneratorMan(object)</span>
+<span class="sd">===========================</span>
+<span class="sd">Generate unique integers, strings and auto incremental uint.</span>
+<span class="sd">Notice CGeneratorMan is a singleton class, which means cup will keep</span>
+<span class="sd">only 1 instance per process.</span>
+
+<span class="sd">:init:</span>
+<span class="sd">    __init__(self, str_prefix=get_local_hostname())</span>
+<span class="sd">        local hostname will be used by default.</span>
+
+<span class="sd">:methods:</span>
+<span class="sd">    **get_uniqname()**</span>
+<span class="sd">        get unique name.</span>
+<span class="sd">        Host-Level unique name (build upon str_prefix, pid, threadid)</span>
+<span class="sd">    **get_next_uniq_num()**</span>
+<span class="sd">        Process-level auto incremental uint. Thread-safe</span>
+<span class="sd">    **reset_uniqid_start(num=0)**</span>
+<span class="sd">        Reset next uniqid to which genman starts from</span>
+<span class="sd">    **get_random_str()**</span>
+<span class="sd">        Get random string by length</span>
+<span class="sd">    **get_uuid()**</span>
+<span class="sd">        Get uuid</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">Queue</span> <span class="k">as</span> <span class="nn">queue</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">queue</span>
+
+<span class="kn">import</span> <span class="nn">cup</span>
+<span class="kn">from</span> <span class="nn">cup</span> <span class="k">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cup</span> <span class="k">import</span> <span class="n">decorators</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;CGeneratorMan&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CycleIDGenerator&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CachedUUID&#39;</span>
+<span class="p">]</span>
+
+
+<span class="n">UUID1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">UUID4</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">_UUID_LISTS_FUNCS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">,</span>
+    <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span>
+<span class="p">]</span>
+
+
+<span class="nd">@decorators</span><span class="o">.</span><span class="n">Singleton</span>
+<span class="k">class</span> <span class="nc">CGeneratorMan</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    refer to the docstring</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">str_prefix</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate unique integers, strings and auto incremental uint.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">str_prefix</span> <span class="o">==</span> <span class="s1">&#39;localhost&#39;</span><span class="p">:</span>
+            <span class="n">prefix</span> <span class="o">=</span> <span class="n">cup</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">get_local_hostname</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">prefix</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">str_prefix</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ind</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nlock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nind</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">reset_uniqid_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        reset next uniqid to which genman starts from.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nind</span> <span class="o">=</span> <span class="n">num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_uniqname</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get a unique name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="n">strrev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ind</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_thd_&#39;</span> <span class="o">+</span> \
+            <span class="nb">str</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span><span class="o">.</span><span class="n">ident</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ind</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">strrev</span>
+
+    <span class="k">def</span> <span class="nf">get_next_uniq_num</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get next uniq num. Thread-safe</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nlock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nind</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nind</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nlock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">temp</span>
+
+    <span class="k">def</span> <span class="nf">get_next_uniqhex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return next uniqhex</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_next_uniq_num</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="n">temp</span><span class="p">))</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_random_str</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get random str by length&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">lowercase</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_uuid</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get random uuid&quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">uuid</span>
+        <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="CycleIDGenerator"><a class="viewcode-back" href="../../../cup.services.html#cup.services.generator.CycleIDGenerator">[docs]</a><span class="k">class</span> <span class="nc">CycleIDGenerator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    cycle id generator. 128bit ID will be produced.</span>
+
+<span class="sd">    128 bit contains: a. 64bit [ip, port, etc]  b. 64bit[auto increment id]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ip, port will be encoded into the ID</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ip</span> <span class="o">=</span> <span class="n">ip</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_port</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="n">packed</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_aton</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ip</span><span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;!L&quot;</span><span class="p">,</span> <span class="n">packed</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="mi">96</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pre_num</span> <span class="o">=</span> <span class="n">tmp</span> <span class="o">|</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_id</span> <span class="o">=</span> <span class="mh">0X1</span> <span class="o">&lt;&lt;</span> <span class="mi">63</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_next_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+
+<div class="viewcode-block" id="CycleIDGenerator.reset_nextid"><a class="viewcode-back" href="../../../cup.services.html#cup.services.generator.CycleIDGenerator.reset_nextid">[docs]</a>    <span class="k">def</span> <span class="nf">reset_nextid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nextid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;reset nextid that will return to you&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">nextid</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_id</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_next_id</span> <span class="o">=</span> <span class="n">nextid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="CycleIDGenerator.next_id"><a class="viewcode-back" href="../../../cup.services.html#cup.services.generator.CycleIDGenerator.next_id">[docs]</a>    <span class="k">def</span> <span class="nf">next_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get next id&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pre_num</span> <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_id</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_id</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_next_id</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_next_id</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">num</span></div>
+
+<div class="viewcode-block" id="CycleIDGenerator.id2_hexstring"><a class="viewcode-back" href="../../../cup.services.html#cup.services.generator.CycleIDGenerator.id2_hexstring">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">id2_hexstring</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;return hex of the id&quot;&quot;&quot;</span>
+        <span class="n">str_num</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="n">num</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">str_num</span></div></div>
+
+
+<span class="nd">@decorators</span><span class="o">.</span><span class="n">Singleton</span>
+<span class="k">class</span> <span class="nc">CachedUUID</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;cached uuid object&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">UUID1</span><span class="p">,</span> <span class="n">max_cachenum</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ip, port will be encoded into the ID</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">_UUID_LISTS_FUNCS</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;only support UUID1 UUID4&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_uuidgen</span> <span class="o">=</span> <span class="n">_UUID_LISTS_FUNCS</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fifoque</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="n">max_cachenum</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_cachenum</span> <span class="o">=</span> <span class="n">max_cachenum</span>
+
+    <span class="k">def</span> <span class="nf">get_uuid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get serveral uuids by &#39;num&#39;</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            a list of uuids (in hex string)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="n">num</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fifoque</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+                <span class="n">num</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="n">queue</span><span class="o">.</span><span class="n">Empty</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">gen_cached_uuid</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="k">def</span> <span class="nf">gen_cached_uuid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        generate num of uuid into cached queue</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="n">num</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">md5obj</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
+                <span class="n">hexstr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uuidgen</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hexstr</span><span class="p">,</span> <span class="n">unicode</span><span class="p">):</span>
+                    <span class="n">md5obj</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">hexstr</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">md5obj</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">hexstr</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fifoque</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">md5obj</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span> <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">num</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="n">queue</span><span class="o">.</span><span class="n">Full</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fifoque</span><span class="o">.</span><span class="n">qsize</span><span class="p">()</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;after generate cached uuid queue size :</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+
+<span class="c1"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, CUP-DEV.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'3.2.19',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

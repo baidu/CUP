@@ -1,0 +1,306 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cup.timeplus &mdash; Cup 3.2.19 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Cup
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cup.html">cup package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Cup</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>cup.timeplus</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cup.timeplus</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: utf-8 -*</span>
+<span class="c1"># Copyright: [CUP] - See LICENSE for details.</span>
+<span class="c1"># Authors: Guannan Ma (@mythmgn),</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:desc:</span>
+<span class="sd">    time related module. looking forward to accepting new patches</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="kn">import</span> <span class="nn">pytz</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;get_str_now&#39;</span><span class="p">,</span> <span class="s1">&#39;TimePlus&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="get_str_now"><a class="viewcode-back" href="../../cup.html#cup.timeplus.get_str_now">[docs]</a><span class="k">def</span> <span class="nf">get_str_now</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">-%H-%M-%S&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    return string of &#39;now&#39;</span>
+
+<span class="sd">    :param fmt:</span>
+<span class="sd">        print-format, &#39;%Y-%m-%d-%H-%M-%S&#39; by default</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">()))</span></div>
+
+
+<div class="viewcode-block" id="TimePlus"><a class="viewcode-back" href="../../cup.html#cup.timeplus.TimePlus">[docs]</a><span class="k">class</span> <span class="nc">TimePlus</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TimePlus can convert printable time from 1 timezone 2 another including</span>
+<span class="sd">    utc.</span>
+
+<span class="sd">    Code Example:</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        from __future__ import print_function</span>
+<span class="sd">        from cup import timeplus</span>
+<span class="sd">        import pytz</span>
+<span class="sd">        tz_shanghai = pytz.timezone(&#39;Aisa/Shanghai&#39;)</span>
+<span class="sd">        tplus = timeplus.TimePlus(tz_shanghai)</span>
+<span class="sd">        dtobj = datetime.datetime.now()</span>
+<span class="sd">        print(tplus.utc2local(dtobj))</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timezone</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        initialize with timezone setup</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">timezone</span><span class="p">,</span> <span class="n">pytz</span><span class="o">.</span><span class="n">BaseTzInfo</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;not a object of pytz.timezone(&quot;xxx/xxx&quot;)&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timezone</span> <span class="o">=</span> <span class="n">timezone</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_utc_tz</span> <span class="o">=</span> <span class="n">pytz</span><span class="o">.</span><span class="n">timezone</span><span class="p">(</span><span class="s1">&#39;UTC&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TimePlus.get_timezone"><a class="viewcode-back" href="../../cup.html#cup.timeplus.TimePlus.get_timezone">[docs]</a>    <span class="k">def</span> <span class="nf">get_timezone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return current pytz timezone object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timezone</span></div>
+
+<div class="viewcode-block" id="TimePlus.set_newtimezone"><a class="viewcode-back" href="../../cup.html#cup.timeplus.TimePlus.set_newtimezone">[docs]</a>    <span class="k">def</span> <span class="nf">set_newtimezone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pytz_timezone</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        refresh timezone</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            True if refreshing is done. False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timezone</span> <span class="o">=</span> <span class="n">pytz_timezone</span></div>
+
+<div class="viewcode-block" id="TimePlus.utc_now"><a class="viewcode-back" href="../../cup.html#cup.timeplus.TimePlus.utc_now">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">utc_now</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;return utc_now&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">pytz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TimePlus.local2utc"><a class="viewcode-back" href="../../cup.html#cup.timeplus.TimePlus.local2utc">[docs]</a>    <span class="k">def</span> <span class="nf">local2utc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dateobj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        local timezone to utc conversion</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            a datetime.datetime object with utc timezone enabled</span>
+
+<span class="sd">        :raise:</span>
+<span class="sd">            ValueError if dateobj is not a datetime.datetime object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dateobj</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;dateobj is not a datetime.datetime&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dateobj</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_utc_tz</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TimePlus.utc2local"><a class="viewcode-back" href="../../cup.html#cup.timeplus.TimePlus.utc2local">[docs]</a>    <span class="k">def</span> <span class="nf">utc2local</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dateobj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        utc datetime to local timezone datetime.datetime</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dateobj</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;dateobj is not a datetime.datetime&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dateobj</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_timezone</span><span class="p">)</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">get_str_now</span><span class="p">())</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, CUP-DEV.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.2.19',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

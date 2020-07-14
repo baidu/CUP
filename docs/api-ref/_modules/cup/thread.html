@@ -1,0 +1,396 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cup.thread &mdash; Cup 3.2.19 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Cup
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cup.html">cup package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Cup</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>cup.thread</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cup.thread</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*</span>
+<span class="c1"># Copyright: [CUP] - See LICENSE for details.</span>
+<span class="c1"># Author: Zhaominghao, Guannan Ma</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:description:</span>
+<span class="sd">    cup thread module</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;async_raise&#39;</span><span class="p">,</span> <span class="s1">&#39;CupThread&#39;</span><span class="p">,</span> <span class="s1">&#39;RWLock&#39;</span><span class="p">]</span>
+
+
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">ctypes</span>
+
+<span class="kn">import</span> <span class="nn">cup</span>
+
+
+<div class="viewcode-block" id="async_raise"><a class="viewcode-back" href="../../cup.html#cup.thread.async_raise">[docs]</a><span class="k">def</span> <span class="nf">async_raise</span><span class="p">(</span><span class="n">tid</span><span class="p">,</span> <span class="n">exctype</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raises an exception in the threads with id tid</span>
+
+<span class="sd">    :param tid:</span>
+<span class="sd">        thread id in python</span>
+<span class="sd">    :param exctype:</span>
+<span class="sd">        exception class, e.g. IOError</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">pythonapi</span><span class="o">.</span><span class="n">PyThreadState_SetAsyncExc</span><span class="p">(</span>
+        <span class="n">tid</span><span class="p">,</span>
+        <span class="n">ctypes</span><span class="o">.</span><span class="n">py_object</span><span class="p">(</span><span class="n">exctype</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CupThread"><a class="viewcode-back" href="../../cup.html#cup.thread.CupThread">[docs]</a><span class="k">class</span> <span class="nc">CupThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    CupThread is a sub-class inherited from threading.Thread;</span>
+
+<span class="sd">    .. HINT::</span>
+
+<span class="sd">        CupThread has 3 more methods:</span>
+
+<span class="sd">        1. raise_exc, to send a raise-exception signal to the thread,\</span>
+<span class="sd">            TRY to let the thread raise an exception.</span>
+<span class="sd">        2. get_my_tid, get thread id</span>
+<span class="sd">        3. terminate, to stop the thread</span>
+
+<span class="sd">    .. CAUTION::</span>
+
+<span class="sd">        Notice if a thread in busy running under kernel-sysmode, it may not</span>
+<span class="sd">        response to the signals! Thus, it may not raise any exception/terminate</span>
+<span class="sd">        even though cup has send a CupThread signal!</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CupThread.get_my_tid"><a class="viewcode-back" href="../../cup.html#cup.thread.CupThread.get_my_tid">[docs]</a>    <span class="k">def</span> <span class="nf">get_my_tid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return thread id</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isAlive</span><span class="p">():</span>
+            <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;the thread is not active&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="c1"># do we have it cached?</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_thread_id&#39;</span><span class="p">):</span>
+            <span class="c1"># pylint: disable=E0203</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thread_id</span>
+        <span class="c1"># pylint: disable=W0212</span>
+        <span class="c1"># no, look for it in the _active dict</span>
+        <span class="k">for</span> <span class="n">tid</span><span class="p">,</span> <span class="n">tobj</span> <span class="ow">in</span> <span class="n">threading</span><span class="o">.</span><span class="n">_active</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">tobj</span> <span class="ow">is</span> <span class="bp">self</span><span class="p">:</span>
+                <span class="c1"># pylint: disable=W0201</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_thread_id</span> <span class="o">=</span> <span class="n">tid</span>
+                <span class="k">return</span> <span class="n">tid</span></div>
+
+<div class="viewcode-block" id="CupThread.raise_exc"><a class="viewcode-back" href="../../cup.html#cup.thread.CupThread.raise_exc">[docs]</a>    <span class="k">def</span> <span class="nf">raise_exc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exctype</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        asynchrously send &#39;raise exception&#39; signal to the thread.</span>
+
+<span class="sd">        :param exctype:</span>
+<span class="sd">            raise Exception, exctype type is class</span>
+<span class="sd">        :return:</span>
+<span class="sd">            return 1 on success. 0 otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">async_raise</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_my_tid</span><span class="p">(),</span> <span class="n">exctype</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CupThread.terminate"><a class="viewcode-back" href="../../cup.html#cup.thread.CupThread.terminate">[docs]</a>    <span class="k">def</span> <span class="nf">terminate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">times</span><span class="o">=</span><span class="mi">15</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        asynchrously terminate the thread.</span>
+
+<span class="sd">        Return True if the termination is successful or the thread is already</span>
+<span class="sd">        stopped. Return False, otherwise.</span>
+
+<span class="sd">        :times:</span>
+<span class="sd">            retry times until call for failure.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">isAlive</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">raise_exc</span><span class="p">(</span><span class="n">cup</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">ThreadTermException</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">cnt</span> <span class="o">&gt;</span> <span class="n">times</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div></div>
+
+
+<div class="viewcode-block" id="RWLock"><a class="viewcode-back" href="../../cup.html#cup.thread.RWLock">[docs]</a><span class="k">class</span> <span class="nc">RWLock</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read Write Lock is a typical lock type in computer world.</span>
+
+<span class="sd">    Code example:</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        from cup import thread</span>
+<span class="sd">        rwlock = thread.RWLock()</span>
+<span class="sd">        # can acquire read lock</span>
+<span class="sd">        rwlock.acquire_readlock()</span>
+<span class="sd">        # can acquire read lock again if there has not been WRITE locked</span>
+<span class="sd">        rwlock.acquire_readlock()   # &lt;-- this will succeed</span>
+<span class="sd">        # rwlock.acquire_writelock()  # &lt;--- this will hang if uncommented</span>
+<span class="sd">        rwlock.release_readlock()</span>
+<span class="sd">        rwlock.acquire_writelock()</span>
+<span class="sd">        # rwlock.acquire_readlock() # &lt;--- this will hang if uncommented</span>
+<span class="sd">        rwlock.release_writelock()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cond</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Condition</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rd_num</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wt_num</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="RWLock.acquire_writelock"><a class="viewcode-back" href="../../cup.html#cup.thread.RWLock.acquire_writelock">[docs]</a>    <span class="k">def</span> <span class="nf">acquire_writelock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait_time</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Acquire write lock.</span>
+
+<span class="sd">        .. IMPORTANT::</span>
+
+<span class="sd">            If wait_time is not None and wait_time &gt;=0,</span>
+<span class="sd">            cup will wait until wait_time passes. If the call timeouts and</span>
+<span class="sd">            cannot get the lock, will raise RuntimeError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cond</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wt_num</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rd_num</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cond</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">wait_time</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wt_num</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cond</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RWLock.release_writelock"><a class="viewcode-back" href="../../cup.html#cup.thread.RWLock.release_writelock">[docs]</a>    <span class="k">def</span> <span class="nf">release_writelock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        release write lock</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cond</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wt_num</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wt_num</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cond</span><span class="o">.</span><span class="n">notify_all</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cond</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RWLock.acquire_readlock"><a class="viewcode-back" href="../../cup.html#cup.thread.RWLock.acquire_readlock">[docs]</a>    <span class="k">def</span> <span class="nf">acquire_readlock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait_time</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Acquire readlock.</span>
+
+<span class="sd">        :param wait_time:</span>
+<span class="sd">            same to wait_time for acquire_writelock</span>
+
+<span class="sd">        :raise:</span>
+<span class="sd">            RuntimeError if after wait_time, cup still can NOT getthe lock</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cond</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wt_num</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cond</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">wait_time</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rd_num</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cond</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RWLock.release_readlock"><a class="viewcode-back" href="../../cup.html#cup.thread.RWLock.release_readlock">[docs]</a>    <span class="k">def</span> <span class="nf">release_readlock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        release read lock</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cond</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rd_num</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rd_num</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wt_num</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cond</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cond</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div></div>
+
+<span class="c1"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, CUP-DEV.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.2.19',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

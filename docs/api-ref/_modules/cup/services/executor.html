@@ -1,0 +1,913 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cup.services.executor &mdash; Cup 3.2.19 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Cup
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../cup.html">cup package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Cup</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>cup.services.executor</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cup.services.executor</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*</span>
+<span class="c1"># Copyright: [CUP] - See LICENSE for details.</span>
+<span class="c1"># Authors: Guannan Ma (@mythmgn),</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:description:</span>
+<span class="sd">    1. Delay-execute sth after several seconds</span>
+
+<span class="sd">    2. Schedule some tasks in a queue.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">pdb</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># pylint:disable=F0401</span>
+    <span class="kn">import</span> <span class="nn">queue</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">Queue</span> <span class="k">as</span> <span class="nn">queue</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">calendar</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+
+<span class="kn">import</span> <span class="nn">pytz</span>
+<span class="kn">from</span> <span class="nn">cup.util</span> <span class="k">import</span> <span class="n">threadpool</span>
+<span class="kn">from</span> <span class="nn">cup</span> <span class="k">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cup.services</span> <span class="k">import</span> <span class="n">generator</span>
+
+<span class="n">URGENCY_HIGH</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">URGENCY_NORMAL</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">URGENCY_LOW</span> <span class="o">=</span> <span class="mi">2</span>
+
+
+<div class="viewcode-block" id="AbstractExecution"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.AbstractExecution">[docs]</a><span class="k">class</span> <span class="nc">AbstractExecution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    abstract execution service</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delay_exe_thdnum</span><span class="p">,</span> <span class="n">queue_exec_thdnum</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        init</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_toal_thdnum</span> <span class="o">=</span> <span class="n">delay_exe_thdnum</span> <span class="o">+</span> <span class="n">queue_exec_thdnum</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delay_exe_thdnu</span> <span class="o">=</span> <span class="n">delay_exe_thdnum</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_queue_exe_thdnum</span> <span class="o">=</span> <span class="n">queue_exec_thdnum</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delay_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">PriorityQueue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exec_queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">PriorityQueue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_thdpool</span> <span class="o">=</span> <span class="n">threadpool</span><span class="o">.</span><span class="n">ThreadPool</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_toal_thdnum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toal_thdnum</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;executor_pool&#39;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 0 inited, 1 running 2 stopping</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;Executor service inited, delay_exec thread num:</span><span class="si">%d</span><span class="s1">,&#39;</span>
+            <span class="s1">&#39; exec thread num:</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">delay_exe_thdnum</span><span class="p">,</span> <span class="n">queue_exec_thdnum</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">name</span>
+
+<div class="viewcode-block" id="AbstractExecution.exec_worker"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.AbstractExecution.exec_worker">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">exec_worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_interval</span><span class="p">,</span> <span class="n">func_queue</span><span class="p">,</span> <span class="n">worker_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;exec worker&quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="AbstractExecution.delay_exec"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.AbstractExecution.delay_exec">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">delay_exec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+        <span class="n">delay_time_insec</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">urgency</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;delay exec for the abstract&quot;&quot;&quot;</span></div></div>
+
+
+<div class="viewcode-block" id="ExecutionService"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.ExecutionService">[docs]</a><span class="k">class</span> <span class="nc">ExecutionService</span><span class="p">(</span><span class="n">AbstractExecution</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    execution service</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">delay_exe_thdnum</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">queue_exec_thdnum</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="n">AbstractExecution</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">delay_exe_thdnum</span><span class="p">,</span> <span class="n">queue_exec_thdnum</span><span class="p">,</span> <span class="n">name</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_do_delay_exe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delay_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">task_data</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ExecutionService.delay_exec"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.ExecutionService.delay_exec">[docs]</a>    <span class="k">def</span> <span class="nf">delay_exec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+        <span class="n">delay_time_insec</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">urgency</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        delay_execute function after delay_time seconds</span>
+
+<span class="sd">        You can use urgency := executor.URGENCY_NORMAL, by default</span>
+
+<span class="sd">        :TODO:</span>
+<span class="sd">            consider about stopping timers when invoking stop function</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;got delay exec, func:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">function</span><span class="p">))</span>
+        <span class="n">task_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">urgency</span><span class="p">,</span> <span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">))</span>
+        <span class="n">timer</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span>
+            <span class="n">delay_time_insec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_delay_exe</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">task_data</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">timer</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ExecutionService.queue_exec"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.ExecutionService.queue_exec">[docs]</a>    <span class="k">def</span> <span class="nf">queue_exec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">urgency</span><span class="p">,</span> <span class="o">*</span><span class="n">argvs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        execute function in a queue. Functions will be queued in line to</span>
+<span class="sd">        be scheduled.</span>
+
+<span class="sd">        You can use urgency := executor.URGENCY_NORMAL, by default.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">task_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">urgency</span><span class="p">,</span> <span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">argvs</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exec_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">task_data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ExecutionService.exec_worker"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.ExecutionService.exec_worker">[docs]</a>    <span class="k">def</span> <span class="nf">exec_worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_interval</span><span class="p">,</span> <span class="n">func_queue</span><span class="p">,</span> <span class="n">worker_name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="n">func_queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">check_interval</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">queue</span><span class="o">.</span><span class="n">Empty</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">function</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">argvs</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_</span><span class="p">,</span> <span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">argvs</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span> <span class="o">=</span> <span class="n">item</span>
+                <span class="c1"># pylint: disable=W0142</span>
+                <span class="k">if</span> <span class="n">func_queue</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delay_queue</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;to delay exec func:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">function</span><span class="p">))</span>
+                <span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">argvs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="c1"># pylint: disable=W0703</span>
+            <span class="c1"># we can NOT predict the exception type</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> worker encountered exception:</span><span class="si">{1}</span><span class="s1">, func:</span><span class="si">{2}</span><span class="s1">,&#39;</span>
+                    <span class="s1">&#39;args:</span><span class="si">{3}</span><span class="s1"> </span><span class="si">{4}</span><span class="s1"> , executor service(</span><span class="si">{5}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">worker_name</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">argvs</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;error type:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">error</span><span class="p">)))</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> worker thread exited as the service &#39;</span>
+            <span class="s1">&#39;is stopping&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">worker_name</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ExecutionService.run"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.ExecutionService.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delayexec worker checks task every 20ms</span>
+<span class="sd">        QueueExec worker checks task every 100ms</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_thdpool</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delay_exe_thdnu</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_thdpool</span><span class="o">.</span><span class="n">add_1job</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">exec_worker</span><span class="p">,</span>
+                <span class="mf">0.1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delay_queue</span><span class="p">,</span>
+                <span class="s1">&#39;Delayexec&#39;</span>
+            <span class="p">)</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queue_exe_thdnum</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_thdpool</span><span class="o">.</span><span class="n">add_1job</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">exec_worker</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_exec_queue</span><span class="p">,</span>
+                <span class="s1">&#39;Exec&#39;</span>
+            <span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Executor service </span><span class="si">{0}</span><span class="s1"> started&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="ExecutionService.start"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.ExecutionService.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;alias for self.run&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ExecutionService.stop"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.ExecutionService.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait_workerstop</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        stop the executor service.</span>
+
+<span class="sd">        :wait_workerstop:</span>
+<span class="sd">            If wait_workerstop is True, the function will hang util all workers</span>
+<span class="sd">            finish thier tasks.</span>
+
+<span class="sd">            Otherwise, the function will not hang, but tell you whether it&#39;s</span>
+<span class="sd">            succeeded stopped. (True for stoped, False for not stopped yet)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;to stop executor </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="n">wait_workerstop</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_thdpool</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_thdpool</span><span class="o">.</span><span class="n">try_stop</span><span class="p">()</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;end stopping executor </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="CronTask"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronTask">[docs]</a><span class="k">class</span> <span class="nc">CronTask</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    crontask for CronExecution</span>
+
+<span class="sd">    Typical exmaples for timer_dict:</span>
+
+<span class="sd">    1. one specific time  Jan 1st, 2020 18:01</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        timer_dict {</span>
+<span class="sd">            &#39;minute&#39;: [1], &#39;hour&#39;: [18], &#39;weekday&#39;: None,</span>
+<span class="sd">            &#39;monthday&#39;: [1], &#39;month&#39;: [1]</span>
+<span class="sd">        }</span>
+
+<span class="sd">    2. every minute {</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        timer_dict {</span>
+<span class="sd">                &#39;minute&#39;: [0, 1, 2, ....59], &#39;hour&#39;: None, &#39;weekday&#39;: None,</span>
+<span class="sd">                &#39;monthday&#39;: None, &#39;month&#39;: None</span>
+<span class="sd">        }</span>
+
+<span class="sd">    3. every hour</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        timer_dict {</span>
+<span class="sd">                &#39;minute&#39;: [0], &#39;hour&#39;: None, &#39;weekday&#39;: None,</span>
+<span class="sd">                &#39;monthday&#39;: None, &#39;month&#39;: None</span>
+<span class="sd">        }</span>
+
+<span class="sd">    4. every 20:00 PM</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        timer_dict {</span>
+<span class="sd">            &#39;minute&#39;: [0], &#39;hour&#39;: [20], &#39;weekday&#39;: None,</span>
+<span class="sd">            &#39;monthday&#39;: None, &#39;month&#39;: None</span>
+<span class="sd">        }</span>
+
+<span class="sd">    5. every 20:00 PM at workdays (Monday to Friday)</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        timer_dict {</span>
+<span class="sd">                &#39;minute&#39;: [0], &#39;hour&#39;: [20], &#39;weekday&#39;: [1, 2, 3, 4, 5],</span>
+<span class="sd">                &#39;monthday&#39;: None, &#39;month&#39;: None</span>
+<span class="sd">        }</span>
+
+<span class="sd">    6. every 20:00 PM at workdays for Jan and July</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        timer_dict {</span>
+<span class="sd">            &#39;minute&#39;: [0], &#39;hour&#39;: [20], &#39;weekday&#39;: [1, 2, 3, 4, 5],</span>
+<span class="sd">            &#39;monthday&#39;: None, &#39;month&#39;: [1, 7]</span>
+<span class="sd">        }</span>
+
+<span class="sd">    7. every 20:00 PM at 1st, 3rd of Jan and July</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        timer_dict {</span>
+<span class="sd">            &#39;minute&#39;: [0], &#39;hour&#39;: [20], &#39;weekday&#39;: None,</span>
+<span class="sd">            &#39;monthday&#39;: [1, 3], &#39;month&#39;: [1, 7]</span>
+<span class="sd">        }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_CHECK_ORDER</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;monthday&#39;</span><span class="p">,</span> <span class="s1">&#39;weekday&#39;</span><span class="p">,</span> <span class="s1">&#39;hour&#39;</span><span class="p">,</span> <span class="s1">&#39;minute&#39;</span><span class="p">]</span>
+    <span class="n">_NONE_FILLING</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">13</span><span class="p">),</span>
+        <span class="s1">&#39;monthday&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
+        <span class="s1">&#39;weekday&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>
+        <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">24</span><span class="p">),</span>
+        <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="n">_GEN</span> <span class="o">=</span> <span class="n">generator</span><span class="o">.</span><span class="n">CachedUUID</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">pytz_timezone</span><span class="p">,</span> <span class="n">timer_dict</span><span class="p">,</span> <span class="n">md5uuid</span><span class="p">,</span>
+        <span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param pytz_timezone:</span>
+<span class="sd">            which can be initialized like: tz = pytz.timezone(&#39;Asia/Beijing&#39;)</span>
+<span class="sd">        :param timer_dict:</span>
+<span class="sd">            {   &#39;minute&#39;: minute_list,</span>
+<span class="sd">                &#39;hour&#39;: hour_list,</span>
+<span class="sd">                &#39;weekday&#39;: weekday_list,    # [1~7]</span>
+<span class="sd">                &#39;monthday&#39;: monday_list,    # [1~31]</span>
+<span class="sd">                &#39;month&#39;: month_list,         # [1~12, 1~12]</span>
+<span class="sd">            } # None stands for all valid, don&#39;t consider this field</span>
+<span class="sd">        :param function:</span>
+<span class="sd">            function that to be scheduled</span>
+<span class="sd">        :param args:</span>
+<span class="sd">            args of function</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            key args of function</span>
+
+<span class="sd">        :raise:</span>
+<span class="sd">            ValueError if function is not callable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;param function should be callable&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pytz_timezone</span><span class="p">,</span> <span class="n">pytz</span><span class="o">.</span><span class="n">BaseTzInfo</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;not a valid pytz timezone&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_funcargs</span> <span class="o">=</span> <span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pytz</span> <span class="o">=</span> <span class="n">pytz_timezone</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timer_dict</span> <span class="o">=</span> <span class="n">timer_dict</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span>
+            <span class="s1">&#39;minute&#39;</span> <span class="ow">in</span> <span class="n">timer_dict</span><span class="p">,</span>
+            <span class="s1">&#39;hour&#39;</span> <span class="ow">in</span> <span class="n">timer_dict</span><span class="p">,</span>
+            <span class="s1">&#39;weekday&#39;</span> <span class="ow">in</span> <span class="n">timer_dict</span><span class="p">,</span>
+            <span class="s1">&#39;monthday&#39;</span> <span class="ow">in</span> <span class="n">timer_dict</span><span class="p">,</span>
+            <span class="s1">&#39;month&#39;</span> <span class="ow">in</span> <span class="n">timer_dict</span>
+        <span class="p">]):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;keys &#39;</span>
+                <span class="s1">&#39;(minute hour weekday monthday month should be in dict)&#39;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timer_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_timer_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_timer_dict</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_param_valids</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_timer_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lastsched_time</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">md5uuid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_md5_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_GEN</span><span class="o">.</span><span class="n">get_uuid</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_md5_id</span> <span class="o">=</span> <span class="n">md5uuid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="CronTask.get_funcargs"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronTask.get_funcargs">[docs]</a>    <span class="k">def</span> <span class="nf">get_funcargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;return (function, args, kwargs)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_funcargs</span></div>
+
+<div class="viewcode-block" id="CronTask.name"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronTask.name">[docs]</a>    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;return name of the crontask&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span></div>
+
+<div class="viewcode-block" id="CronTask.taskid"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronTask.taskid">[docs]</a>    <span class="k">def</span> <span class="nf">taskid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get 32 byte taskid&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_md5_id</span></div>
+
+<div class="viewcode-block" id="CronTask.last_schedtime"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronTask.last_schedtime">[docs]</a>    <span class="k">def</span> <span class="nf">last_schedtime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;return last schedtime&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lastsched_time</span></div>
+
+    <span class="k">def</span> <span class="nf">_generate_timer_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timer_dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;generate timer params&quot;&quot;&quot;</span>
+        <span class="n">tmp_timer_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">check_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_CHECK_ORDER</span><span class="p">:</span>
+            <span class="n">valid_items</span> <span class="o">=</span> <span class="n">timer_dict</span><span class="p">[</span><span class="n">check_key</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">valid_items</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tmp_timer_dict</span><span class="p">[</span><span class="n">check_key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_NONE_FILLING</span><span class="p">[</span><span class="n">check_key</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tmp_timer_dict</span><span class="p">[</span><span class="n">check_key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">valid_items</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tmp_timer_dict</span>
+
+<div class="viewcode-block" id="CronTask.pytz_timezone"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronTask.pytz_timezone">[docs]</a>    <span class="k">def</span> <span class="nf">pytz_timezone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;return pytz timezone&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pytz</span></div>
+
+<div class="viewcode-block" id="CronTask.set_last_schedtime"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronTask.set_last_schedtime">[docs]</a>    <span class="k">def</span> <span class="nf">set_last_schedtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datetime_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;set_last_schedtime.</span>
+
+<span class="sd">        :param timestamp:</span>
+<span class="sd">            E.g. set timestamp to time.time() for &quot;now&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">datetime_obj</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;datetime_obj should be a datetime.datetime obj&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lastsched_time</span> <span class="o">=</span> <span class="n">datetime_obj</span></div>
+
+<div class="viewcode-block" id="CronTask.get_last_schedtime"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronTask.get_last_schedtime">[docs]</a>    <span class="k">def</span> <span class="nf">get_last_schedtime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get last sched time, return with a datetime.datetime object.</span>
+<span class="sd">        Plz notice the timezone is enabled</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lastsched_time</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_check_param_valids</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">timer_params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        check if params r valid</span>
+
+<span class="sd">        :raise:</span>
+<span class="sd">            ValueError if not valid</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">check_key</span> <span class="ow">in</span> <span class="n">timer_params</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">timer_params</span><span class="p">[</span><span class="n">check_key</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> less than 1 element&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">check_key</span><span class="p">))</span>
+
+<div class="viewcode-block" id="CronTask.next_month"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronTask.next_month">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">next_month</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tmp_dict</span><span class="p">,</span> <span class="n">timer_params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set tmp_dict to next valid date, specifically month</span>
+
+<span class="sd">        :param tmp_dict:</span>
+<span class="sd">            ::</span>
+
+<span class="sd">                {</span>
+<span class="sd">                    &#39;year&#39;: xxxx,</span>
+<span class="sd">                    &#39;month&#39;: xxxx,</span>
+<span class="sd">                    &#39;monthday&#39;: xxxx,</span>
+<span class="sd">                    &#39;weekday&#39;: xxxx,</span>
+<span class="sd">                    &#39;hour&#39;: xxxx,</span>
+<span class="sd">                    &#39;minute&#39;: xxxx</span>
+<span class="sd">                }</span>
+<span class="sd">        :param timer_params:</span>
+<span class="sd">            valid timer dict, same to self._timer_params</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">timer_params</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]:</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">12</span><span class="p">:</span>
+                    <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timer_params</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">break</span>
+        <span class="n">monthday</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span>
+            <span class="nb">range</span><span class="p">(</span>
+                <span class="mi">1</span><span class="p">,</span>
+                <span class="n">calendar</span><span class="o">.</span><span class="n">monthrange</span><span class="p">(</span><span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">],</span> <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">])[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="p">)</span> \
+            <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">timer_params</span><span class="p">[</span><span class="s1">&#39;monthday&#39;</span><span class="p">]</span>
+        <span class="p">]</span>
+        <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;monthday&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">monthday</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timer_params</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timer_params</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;weekday&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">weekday</span><span class="p">(</span>
+            <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">],</span> <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">],</span> <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;monthday&#39;</span><span class="p">]</span>
+        <span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">timer_params</span><span class="p">[</span><span class="s1">&#39;monthday&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">monthday</span></div>
+
+<div class="viewcode-block" id="CronTask.check_monthday_weekday"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronTask.check_monthday_weekday">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">check_monthday_weekday</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tmp_dict</span><span class="p">,</span> <span class="n">timer_params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;check if monthday / weekday valid&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">day</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">weekday</span><span class="p">(</span>
+                <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">],</span> <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">],</span> <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;monthday&#39;</span><span class="p">]</span>
+            <span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="c1"># e.g.  invalid date, 4.31</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">day</span> <span class="ow">in</span> <span class="n">timer_params</span><span class="p">[</span><span class="s1">&#39;weekday&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="CronTask.next_monthday_weekday"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronTask.next_monthday_weekday">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">next_monthday_weekday</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tmp_dict</span><span class="p">,</span> <span class="n">timer_params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set next monthday &amp;&amp; weekday</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">plus</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;monthday&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">plus</span>
+            <span class="k">if</span> <span class="n">plus</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">plus</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">([</span>
+                <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;monthday&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">timer_params</span><span class="p">[</span><span class="s1">&#39;monthday&#39;</span><span class="p">],</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">check_monthday_weekday</span><span class="p">(</span><span class="n">tmp_dict</span><span class="p">,</span> <span class="n">timer_params</span><span class="p">)</span>
+            <span class="p">]):</span>
+                <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timer_params</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timer_params</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;monthday&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">31</span><span class="p">:</span>
+                    <span class="bp">cls</span><span class="o">.</span><span class="n">next_month</span><span class="p">(</span><span class="n">tmp_dict</span><span class="p">,</span> <span class="n">timer_params</span><span class="p">)</span>
+                    <span class="n">plus</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="CronTask.next_hour"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronTask.next_hour">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">next_hour</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tmp_dict</span><span class="p">,</span> <span class="n">timer_params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return:</span>
+<span class="sd">            { &#39;year&#39;: xxx,</span>
+<span class="sd">              &#39;month&#39;: xxx,</span>
+<span class="sd">              &#39;monthday&#39;:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">plus</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">plus</span>
+            <span class="k">if</span> <span class="n">plus</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">plus</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">timer_params</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">]:</span>
+                <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timer_params</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">23</span><span class="p">:</span>
+                    <span class="bp">cls</span><span class="o">.</span><span class="n">next_monthday_weekday</span><span class="p">(</span><span class="n">tmp_dict</span><span class="p">,</span> <span class="n">timer_params</span><span class="p">)</span>
+                    <span class="n">plus</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="CronTask.next_minute"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronTask.next_minute">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">next_minute</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tmp_dict</span><span class="p">,</span> <span class="n">timer_params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return:</span>
+<span class="sd">            { &#39;year&#39;: xxx,</span>
+<span class="sd">              &#39;month&#39;: xxx,</span>
+<span class="sd">              &#39;monthday&#39;:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">plus</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">plus</span>
+            <span class="k">if</span> <span class="n">plus</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">plus</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">timer_params</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">]:</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">59</span><span class="p">:</span>
+                    <span class="bp">cls</span><span class="o">.</span><span class="n">next_hour</span><span class="p">(</span><span class="n">tmp_dict</span><span class="p">,</span> <span class="n">timer_params</span><span class="p">)</span>
+                    <span class="n">plus</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="CronTask.next_schedtime"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronTask.next_schedtime">[docs]</a>    <span class="k">def</span> <span class="nf">next_schedtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">starting_fromdate</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return next schedule time with timezone enabled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">starting_fromdate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+            <span class="n">datenow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pytz</span><span class="o">.</span><span class="n">localize</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">datenow</span> <span class="o">=</span> <span class="n">starting_fromdate</span>
+        <span class="n">tmp_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="n">datenow</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+            <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="n">datenow</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
+            <span class="s1">&#39;monthday&#39;</span><span class="p">:</span> <span class="n">datenow</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
+            <span class="s1">&#39;weekday&#39;</span><span class="p">:</span> <span class="n">datenow</span><span class="o">.</span><span class="n">isoweekday</span><span class="p">(),</span>
+            <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="n">datenow</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span>
+            <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="n">datenow</span><span class="o">.</span><span class="n">minute</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="p">}</span>
+        <span class="n">timer_params</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_timer_params</span><span class="p">)</span>
+        <span class="n">maxtimes</span> <span class="o">=</span> <span class="mi">365</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">60</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">timer_params</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_monthday_weekday</span><span class="p">(</span>
+                    <span class="n">tmp_dict</span><span class="p">,</span> <span class="n">timer_params</span>
+                <span class="p">):</span>
+                    <span class="k">if</span> <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">timer_params</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">timer_params</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">]:</span>
+                            <span class="k">break</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">next_minute</span><span class="p">(</span><span class="n">tmp_dict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timer_params</span><span class="p">)</span>
+                        <span class="n">maxtimes</span> <span class="o">-=</span> <span class="mi">1</span>
+                        <span class="k">if</span> <span class="n">maxtimes</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                                <span class="s1">&#39;No valid datetime in a year&#39;</span>
+                                <span class="s1">&#39;for crontask </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                            <span class="p">)</span>
+                            <span class="k">return</span> <span class="kc">None</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">next_hour</span><span class="p">(</span><span class="n">tmp_dict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timer_params</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">next_monthday_weekday</span><span class="p">(</span><span class="n">tmp_dict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timer_params</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">next_month</span><span class="p">(</span><span class="n">tmp_dict</span><span class="p">,</span> <span class="n">timer_params</span><span class="p">)</span>
+
+        <span class="n">local_dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pytz</span><span class="o">.</span><span class="n">localize</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span>
+            <span class="n">year</span><span class="o">=</span><span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">],</span>
+            <span class="n">month</span><span class="o">=</span><span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">],</span>
+            <span class="n">day</span><span class="o">=</span><span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;monthday&#39;</span><span class="p">],</span>
+            <span class="n">hour</span><span class="o">=</span><span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">],</span>
+            <span class="n">minute</span><span class="o">=</span><span class="n">tmp_dict</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">]</span>
+        <span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_last_schedtime</span><span class="p">(</span><span class="n">local_dt</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">local_dt</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;return info of the crontask&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;CronTask(ID:</span><span class="si">{0}</span><span class="s1"> Name:</span><span class="si">{1}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">taskid</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CronTask.set_timer"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronTask.set_timer">[docs]</a>    <span class="k">def</span> <span class="nf">set_timer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timer</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;set timer to this crontask&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span> <span class="o">=</span> <span class="n">timer</span></div>
+
+<div class="viewcode-block" id="CronTask.get_timer"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronTask.get_timer">[docs]</a>    <span class="k">def</span> <span class="nf">get_timer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;return timer of the crontask&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timer</span></div></div>
+
+
+<div class="viewcode-block" id="CronExecution"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronExecution">[docs]</a><span class="k">class</span> <span class="nc">CronExecution</span><span class="p">(</span><span class="n">ExecutionService</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    run execution like cron.</span>
+
+<span class="sd">    Plz notice the following circumstances:</span>
+<span class="sd">        - if the previous task is still running and the scheduing time comes,</span>
+<span class="sd">            executor will wait until the previous task finishes</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threads_num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param threads_num:</span>
+<span class="sd">            startup threads num</span>
+<span class="sd">        :param max_threadsnum:</span>
+<span class="sd">            max threads num</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_task_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">ExecutionService</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">delay_exe_thdnum</span><span class="o">=</span><span class="n">threads_num</span><span class="p">,</span> <span class="n">queue_exec_thdnum</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="CronExecution.get_tasks"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronExecution.get_tasks">[docs]</a>    <span class="k">def</span> <span class="nf">get_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get all cron execution tasks&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_task_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CronExecution.get_taskbyid"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronExecution.get_taskbyid">[docs]</a>    <span class="k">def</span> <span class="nf">get_taskbyid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">md5uuid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param md5uuid:</span>
+<span class="sd">            md5sum of uuid</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_task_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">md5uuid</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CronExecution.exec_worker"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronExecution.exec_worker">[docs]</a>    <span class="k">def</span> <span class="nf">exec_worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_interval</span><span class="p">,</span> <span class="n">func_queue</span><span class="p">,</span> <span class="n">worker_name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;CronExecution exec worker started&#39;</span><span class="p">)</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="n">func_queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">check_interval</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">queue</span><span class="o">.</span><span class="n">Empty</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">function</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">argvs</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">crontask</span><span class="p">,</span> <span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">argvs</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span> <span class="o">=</span> <span class="n">item</span>
+                <span class="c1"># pylint: disable=W0142</span>
+                <span class="k">if</span> <span class="n">func_queue</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delay_queue</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;to delay exec func:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">function</span><span class="p">))</span>
+                <span class="n">dtnow</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">crontask</span><span class="o">.</span><span class="n">pytz_timezone</span><span class="p">())</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">dtnow</span> <span class="o">-</span> <span class="n">crontask</span><span class="o">.</span><span class="n">get_last_schedtime</span><span class="p">())</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">60</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="s1">&#39;lagging crontask found (name:</span><span class="si">{0}</span><span class="s1"> id: </span><span class="si">{1}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">crontask</span><span class="o">.</span><span class="n">name</span><span class="p">(),</span> <span class="n">crontask</span><span class="o">.</span><span class="n">taskid</span><span class="p">()</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">argvs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">crontask</span><span class="p">)</span>
+            <span class="c1"># pylint: disable=W0703</span>
+            <span class="c1"># we can NOT predict the exception type</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> worker encountered exception:</span><span class="si">{1}</span><span class="s1">, func:</span><span class="si">{2}</span><span class="s1">,&#39;</span>
+                    <span class="s1">&#39;args:</span><span class="si">{3}</span><span class="s1"> </span><span class="si">{4}</span><span class="s1"> , executor service(</span><span class="si">{5}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">worker_name</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">argvs</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;error type:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">error</span><span class="p">)))</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> worker thread exited as the service &#39;</span>
+            <span class="s1">&#39;is stopping&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">worker_name</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CronExecution.delay_exec"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronExecution.delay_exec">[docs]</a>    <span class="k">def</span> <span class="nf">delay_exec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+        <span class="n">delay_time_insec</span><span class="p">,</span> <span class="n">crontask</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">urgency</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        delay_execute function after delay_time seconds</span>
+
+<span class="sd">        You can use urgency := executor.URGENCY_NORMAL, by default</span>
+
+<span class="sd">        :TODO:</span>
+<span class="sd">            consider about stopping timers when invoking stop function</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;CronExecution </span><span class="si">{0}</span><span class="s1"> got delay exec, func:</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">task_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">urgency</span><span class="p">,</span> <span class="n">crontask</span><span class="p">,</span> <span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">))</span>
+        <span class="n">timer</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span>
+            <span class="n">delay_time_insec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_delay_exe</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">task_data</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">crontask</span><span class="o">.</span><span class="n">set_timer</span><span class="p">(</span><span class="n">timer</span><span class="p">)</span>
+        <span class="n">timer</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CronExecution.schedule"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronExecution.schedule">[docs]</a>    <span class="k">def</span> <span class="nf">schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">crontask</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;schedule the crontask</span>
+
+<span class="sd">        :param timer_dict:</span>
+<span class="sd">            ::</span>
+
+<span class="sd">                {   &#39;minute&#39;: minute_list,</span>
+<span class="sd">                    &#39;hour&#39;: hour_list,</span>
+<span class="sd">                    &#39;weekday&#39;: weekday_list,</span>
+<span class="sd">                    &#39;monthday&#39;: monday_list,</span>
+<span class="sd">                    &#39;month&#39;: month_list</span>
+<span class="sd">                }</span>
+<span class="sd">        :param function:</span>
+<span class="sd">            function that to be scheduled</span>
+<span class="sd">        :param args:</span>
+<span class="sd">            args of function</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            key args of function</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">next_schedtime</span> <span class="o">=</span> <span class="n">crontask</span><span class="o">.</span><span class="n">next_schedtime</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">next_schedtime</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s1">&#39;CronExecution:crontask </span><span class="si">{0}</span><span class="s1"> will be deleted &#39;</span>
+                <span class="s1">&#39;from the crontask as &#39;</span>
+                <span class="s1">&#39;no valid schedule time is found&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">crontask</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="n">function</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">crontask</span><span class="o">.</span><span class="n">get_funcargs</span><span class="p">()</span>
+        <span class="n">tmpnow</span> <span class="o">=</span> <span class="n">crontask</span><span class="o">.</span><span class="n">pytz_timezone</span><span class="p">()</span><span class="o">.</span><span class="n">localize</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+        <span class="n">wait_seoncds</span> <span class="o">=</span> <span class="p">(</span><span class="n">next_schedtime</span> <span class="o">-</span> <span class="n">tmpnow</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;CronExecution: next schedule time for this crontask is </span><span class="si">{0}</span><span class="s1"> &#39;</span>
+            <span class="s1">&#39;timezone </span><span class="si">{1}</span><span class="s1">, wait for </span><span class="si">{2}</span><span class="s1"> seconds, timenwo is </span><span class="si">{3}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">next_schedtime</span><span class="p">,</span> <span class="n">next_schedtime</span><span class="o">.</span><span class="n">tzinfo</span><span class="p">,</span>
+                <span class="n">wait_seoncds</span><span class="p">,</span>
+                <span class="n">next_schedtime</span><span class="o">.</span><span class="n">tzinfo</span><span class="o">.</span><span class="n">localize</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="c1"># pylint: disable=W0142</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delay_exec</span><span class="p">(</span>
+            <span class="n">wait_seoncds</span><span class="p">,</span> <span class="n">crontask</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">URGENCY_NORMAL</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_task_dict</span><span class="p">[</span><span class="n">crontask</span><span class="o">.</span><span class="n">taskid</span><span class="p">()]</span> <span class="o">=</span> <span class="n">crontask</span></div>
+
+<div class="viewcode-block" id="CronExecution.calcel_delay_exec"><a class="viewcode-back" href="../../../cup.services.html#cup.services.executor.CronExecution.calcel_delay_exec">[docs]</a>    <span class="k">def</span> <span class="nf">calcel_delay_exec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">taskid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;calcel delayexec by taskid&quot;&quot;&quot;</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_task_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">taskid</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">task</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;delay exec task id </span><span class="si">{0}</span><span class="s1"> not found&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">taskid</span><span class="p">))</span>
+            <span class="k">return</span>
+        <span class="n">timer</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">get_timer</span><span class="p">()</span>
+        <span class="n">timer</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span></div></div>
+
+<span class="c1"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, CUP-DEV.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'3.2.19',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

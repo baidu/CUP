@@ -1,0 +1,1644 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cup.services package &mdash; Cup 3.2.19 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="cup.shell package" href="cup.shell.html" />
+    <link rel="prev" title="cup.res package" href="cup.res.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Cup
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="cup.html">cup package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="cup.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="cup.net.html">cup.net package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cup.res.html">cup.res package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">cup.services package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.services.autowait">cup.services.autowait module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.services.buffers">cup.services.buffers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.services.executor">cup.services.executor module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.services.generator">cup.services.generator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.services.heartbeat">cup.services.heartbeat module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.services.msgbroker">cup.services.msgbroker module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.services.serializer">cup.services.serializer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.services.threadpool">cup.services.threadpool module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.services">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cup.shell.html">cup.shell package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cup.storage.html">cup.storage package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cup.util.html">cup.util package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cup.web.html">cup.web package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.cache">cup.cache module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.const">cup.const module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.decorators">cup.decorators module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.err">cup.err module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.exfile">cup.exfile module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.flag">cup.flag module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.log">cup.log module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.mail">cup.mail module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.platforms">cup.platforms module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.thread">cup.thread module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.timeplus">cup.timeplus module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.unittest">cup.unittest module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.version">cup.version module</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Cup</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="cup.html">cup package</a> &raquo;</li>
+        
+      <li>cup.services package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/cup.services.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="cup-services-package">
+<h1>cup.services package<a class="headerlink" href="#cup-services-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cup.services.autowait">
+<span id="cup-services-autowait-module"></span><h2>cup.services.autowait module<a class="headerlink" href="#module-cup.services.autowait" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">description:</th><td class="field-body">auto wait related modules.</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="cup.services.autowait.wait_until_file_exist">
+<code class="descclassname">cup.services.autowait.</code><code class="descname">wait_until_file_exist</code><span class="sig-paren">(</span><em>dst_path</em>, <em>file_name</em>, <em>max_wait_sec=10</em>, <em>interval_sec=2</em>, <em>recursive=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/autowait.html#wait_until_file_exist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.autowait.wait_until_file_exist" title="Permalink to this definition">¶</a></dt>
+<dd><p>wait util the file exists or the function timeout</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dst_path</strong> – searching path</li>
+<li><strong>file_name</strong> – filename, support *</li>
+<li><strong>max_wait_sec</strong> – max wating time until timeout</li>
+<li><strong>interval_sec</strong> – check interval</li>
+<li><strong>recursive</strong> – recursively search or not</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">True if found.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.services.autowait.wait_until_reg_str_exist">
+<code class="descclassname">cup.services.autowait.</code><code class="descname">wait_until_reg_str_exist</code><span class="sig-paren">(</span><em>dst_file_path</em>, <em>reg_str</em>, <em>max_wait_sec=10</em>, <em>interval_sec=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/autowait.html#wait_until_reg_str_exist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.autowait.wait_until_reg_str_exist" title="Permalink to this definition">¶</a></dt>
+<dd><p>wait until any line in the file matches the     reg_str(regular expression string)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dst_file_path</strong> – searching path</li>
+<li><strong>reg_str</strong> – regular expression string</li>
+<li><strong>max_wait_sec</strong> – maximum waiting time until timeout</li>
+<li><strong>interval_sec</strong> – state check interval</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">True if found</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.services.autowait.wait_until_process_not_exist">
+<code class="descclassname">cup.services.autowait.</code><code class="descname">wait_until_process_not_exist</code><span class="sig-paren">(</span><em>process_path</em>, <em>max_wait_sec=10</em>, <em>interval_sec=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/autowait.html#wait_until_process_not_exist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.autowait.wait_until_process_not_exist" title="Permalink to this definition">¶</a></dt>
+<dd><p>wait until the process does not exist anymore or the function timeouts</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>process_path</strong> – process cwd</li>
+<li><strong>max_wait_sec</strong> – maximum waiting time until timeout. 10 seconds by default</li>
+<li><strong>interval_sec</strong> – state check interval, 0.5 second by default</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">return True if the process disapper before timeout</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.services.autowait.wait_until_port_used">
+<code class="descclassname">cup.services.autowait.</code><code class="descname">wait_until_port_used</code><span class="sig-paren">(</span><em>port</em>, <em>max_wait_sec=10</em>, <em>interval_sec=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/autowait.html#wait_until_port_used"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.autowait.wait_until_port_used" title="Permalink to this definition">¶</a></dt>
+<dd><p>wait until the port is used.  <em>Notice this function will invoke    a bash shell to execute command [netstat]!</em></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">return True if the port is used</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.services.autowait.wait_until_process_used_ports">
+<code class="descclassname">cup.services.autowait.</code><code class="descname">wait_until_process_used_ports</code><span class="sig-paren">(</span><em>process_path</em>, <em>ports</em>, <em>max_wait_sec=10</em>, <em>interval_sec=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/autowait.html#wait_until_process_used_ports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.autowait.wait_until_process_used_ports" title="Permalink to this definition">¶</a></dt>
+<dd><p>wait until the process has taken the ports before timeouts</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if all ports are used by the specific process.
+False, otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.services.autowait.wait_until_port_not_used">
+<code class="descclassname">cup.services.autowait.</code><code class="descname">wait_until_port_not_used</code><span class="sig-paren">(</span><em>port</em>, <em>max_wait_sec=10</em>, <em>interval_sec=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/autowait.html#wait_until_port_not_used"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.autowait.wait_until_port_not_used" title="Permalink to this definition">¶</a></dt>
+<dd><p>wait until the port is free</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">return True if the port is free before timeout</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.services.autowait.wait_until_process_exist">
+<code class="descclassname">cup.services.autowait.</code><code class="descname">wait_until_process_exist</code><span class="sig-paren">(</span><em>process_path</em>, <em>max_wait_sec=10</em>, <em>interval_sec=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/autowait.html#wait_until_process_exist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.autowait.wait_until_process_exist" title="Permalink to this definition">¶</a></dt>
+<dd><p>wait until the process exists</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>process_path</strong> – the specific process working path</li>
+<li><strong>max_wait_sec</strong> – maximum waiting time until timeout</li>
+<li><strong>interval_sec</strong> – state check interval</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">return True if the process is found before timeout</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cup.services.autowait.wait_until_process_killed">
+<code class="descclassname">cup.services.autowait.</code><code class="descname">wait_until_process_killed</code><span class="sig-paren">(</span><em>process_path</em>, <em>ports</em>, <em>max_wait_sec=10</em>, <em>interval_sec=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/autowait.html#wait_until_process_killed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.autowait.wait_until_process_killed" title="Permalink to this definition">¶</a></dt>
+<dd><p>wait until the [process] does not exists and all [ports] are free</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>process_path</strong> – process cwd</li>
+<li><strong>ports</strong> – port list</li>
+<li><strong>interval_sec</strong> – state check interval</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">True if all conditions meet.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.services.buffers">
+<span id="cup-services-buffers-module"></span><h2>cup.services.buffers module<a class="headerlink" href="#module-cup.services.buffers" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">description:</th><td class="field-body">buffer pool</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="cup.services.buffers.Buffer">
+<em class="property">class </em><code class="descclassname">cup.services.buffers.</code><code class="descname">Buffer</code><span class="sig-paren">(</span><em>items</em>, <em>block_size</em>, <em>uniqid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/buffers.html#Buffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.buffers.Buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Buffer object which you get from BufferPool.allocate(num)</p>
+<dl class="method">
+<dt id="cup.services.buffers.Buffer.get">
+<code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/buffers.html#Buffer.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.buffers.Buffer.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>return (True, (content, block_size, total_length)) if succeed</p>
+<p>Otherwise, return (False, err_msg, None)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.buffers.Buffer.get_byte_arrays">
+<code class="descname">get_byte_arrays</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/buffers.html#Buffer.get_byte_arrays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.buffers.Buffer.get_byte_arrays" title="Permalink to this definition">¶</a></dt>
+<dd><p>get byte arrays in the buffer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.buffers.Buffer.get_uniq_id">
+<code class="descname">get_uniq_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/buffers.html#Buffer.get_uniq_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.buffers.Buffer.get_uniq_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the uniqid for this object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.buffers.Buffer.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>content</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/buffers.html#Buffer.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.buffers.Buffer.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>return (True, None) if succeed.</p>
+<p>return (False, error_msg) otherwise</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.services.buffers.BufferPool">
+<em class="property">class </em><code class="descclassname">cup.services.buffers.</code><code class="descname">BufferPool</code><span class="sig-paren">(</span><em>pool_size</em>, <em>block_size=135168</em>, <em>extendable=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/buffers.html#BufferPool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.buffers.BufferPool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>buffer pool class which will ease memory fragment</p>
+<dl class="method">
+<dt id="cup.services.buffers.BufferPool.allocate">
+<code class="descname">allocate</code><span class="sig-paren">(</span><em>num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/buffers.html#BufferPool.allocate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.buffers.BufferPool.allocate" title="Permalink to this definition">¶</a></dt>
+<dd><p>acclocate buff with num * block_size</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(True, Buffer object)<p>(False, str_error_msg)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.buffers.BufferPool.deallocate">
+<code class="descname">deallocate</code><span class="sig-paren">(</span><em>buff</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/buffers.html#BufferPool.deallocate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.buffers.BufferPool.deallocate" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the acclocated buff back to the pool</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.services.executor">
+<span id="cup-services-executor-module"></span><h2>cup.services.executor module<a class="headerlink" href="#module-cup.services.executor" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">description:</th><td class="field-body"><ol class="first last arabic simple">
+<li>Delay-execute sth after several seconds</li>
+<li>Schedule some tasks in a queue.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="cup.services.executor.AbstractExecution">
+<em class="property">class </em><code class="descclassname">cup.services.executor.</code><code class="descname">AbstractExecution</code><span class="sig-paren">(</span><em>delay_exe_thdnum</em>, <em>queue_exec_thdnum</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#AbstractExecution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.AbstractExecution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>abstract execution service</p>
+<dl class="method">
+<dt id="cup.services.executor.AbstractExecution.delay_exec">
+<code class="descname">delay_exec</code><span class="sig-paren">(</span><em>delay_time_insec</em>, <em>function</em>, <em>urgency</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#AbstractExecution.delay_exec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.AbstractExecution.delay_exec" title="Permalink to this definition">¶</a></dt>
+<dd><p>delay exec for the abstract</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.AbstractExecution.exec_worker">
+<code class="descname">exec_worker</code><span class="sig-paren">(</span><em>check_interval</em>, <em>func_queue</em>, <em>worker_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#AbstractExecution.exec_worker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.AbstractExecution.exec_worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>exec worker</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.services.executor.CronExecution">
+<em class="property">class </em><code class="descclassname">cup.services.executor.</code><code class="descname">CronExecution</code><span class="sig-paren">(</span><em>threads_num=3</em>, <em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronExecution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronExecution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.services.executor.ExecutionService" title="cup.services.executor.ExecutionService"><code class="xref py py-class docutils literal notranslate"><span class="pre">cup.services.executor.ExecutionService</span></code></a></p>
+<p>run execution like cron.</p>
+<dl class="docutils">
+<dt>Plz notice the following circumstances:</dt>
+<dd><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>if the previous task is still running and the scheduing time comes,</dt>
+<dd>executor will wait until the previous task finishes</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="cup.services.executor.CronExecution.calcel_delay_exec">
+<code class="descname">calcel_delay_exec</code><span class="sig-paren">(</span><em>taskid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronExecution.calcel_delay_exec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronExecution.calcel_delay_exec" title="Permalink to this definition">¶</a></dt>
+<dd><p>calcel delayexec by taskid</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.CronExecution.delay_exec">
+<code class="descname">delay_exec</code><span class="sig-paren">(</span><em>delay_time_insec</em>, <em>crontask</em>, <em>function</em>, <em>urgency</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronExecution.delay_exec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronExecution.delay_exec" title="Permalink to this definition">¶</a></dt>
+<dd><p>delay_execute function after delay_time seconds</p>
+<p>You can use urgency := executor.URGENCY_NORMAL, by default</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">TODO:</th><td class="field-body">consider about stopping timers when invoking stop function</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.CronExecution.exec_worker">
+<code class="descname">exec_worker</code><span class="sig-paren">(</span><em>check_interval</em>, <em>func_queue</em>, <em>worker_name=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronExecution.exec_worker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronExecution.exec_worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>exec worker</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.CronExecution.get_taskbyid">
+<code class="descname">get_taskbyid</code><span class="sig-paren">(</span><em>md5uuid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronExecution.get_taskbyid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronExecution.get_taskbyid" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>md5uuid</strong> – md5sum of uuid</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.CronExecution.get_tasks">
+<code class="descname">get_tasks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronExecution.get_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronExecution.get_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all cron execution tasks</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.CronExecution.schedule">
+<code class="descname">schedule</code><span class="sig-paren">(</span><em>crontask</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronExecution.schedule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronExecution.schedule" title="Permalink to this definition">¶</a></dt>
+<dd><p>schedule the crontask</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>timer_dict</strong> – <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>   <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="n">minute_list</span><span class="p">,</span>
+    <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="n">hour_list</span><span class="p">,</span>
+    <span class="s1">&#39;weekday&#39;</span><span class="p">:</span> <span class="n">weekday_list</span><span class="p">,</span>
+    <span class="s1">&#39;monthday&#39;</span><span class="p">:</span> <span class="n">monday_list</span><span class="p">,</span>
+    <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="n">month_list</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><strong>function</strong> – function that to be scheduled</li>
+<li><strong>args</strong> – args of function</li>
+<li><strong>kwargs</strong> – key args of function</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.services.executor.CronTask">
+<em class="property">class </em><code class="descclassname">cup.services.executor.</code><code class="descname">CronTask</code><span class="sig-paren">(</span><em>name</em>, <em>pytz_timezone</em>, <em>timer_dict</em>, <em>md5uuid</em>, <em>function</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>crontask for CronExecution</p>
+<p>Typical exmaples for timer_dict:</p>
+<p>1. one specific time  Jan 1st, 2020 18:01</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">timer_dict</span> <span class="p">{</span>
+    <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">18</span><span class="p">],</span> <span class="s1">&#39;weekday&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s1">&#39;monthday&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>2. every minute {</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">timer_dict</span> <span class="p">{</span>
+        <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">....</span><span class="mi">59</span><span class="p">],</span> <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;weekday&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;monthday&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="kc">None</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>3. every hour</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">timer_dict</span> <span class="p">{</span>
+        <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;weekday&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;monthday&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="kc">None</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>4. every 20:00 PM</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">timer_dict</span> <span class="p">{</span>
+    <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">],</span> <span class="s1">&#39;weekday&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s1">&#39;monthday&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="kc">None</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>5. every 20:00 PM at workdays (Monday to Friday)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">timer_dict</span> <span class="p">{</span>
+        <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">],</span> <span class="s1">&#39;weekday&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+        <span class="s1">&#39;monthday&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="kc">None</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>6. every 20:00 PM at workdays for Jan and July</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">timer_dict</span> <span class="p">{</span>
+    <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">],</span> <span class="s1">&#39;weekday&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+    <span class="s1">&#39;monthday&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>7. every 20:00 PM at 1st, 3rd of Jan and July</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">timer_dict</span> <span class="p">{</span>
+    <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">],</span> <span class="s1">&#39;weekday&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s1">&#39;monthday&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="classmethod">
+<dt id="cup.services.executor.CronTask.check_monthday_weekday">
+<em class="property">classmethod </em><code class="descname">check_monthday_weekday</code><span class="sig-paren">(</span><em>tmp_dict</em>, <em>timer_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronTask.check_monthday_weekday"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronTask.check_monthday_weekday" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if monthday / weekday valid</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.CronTask.get_funcargs">
+<code class="descname">get_funcargs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronTask.get_funcargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronTask.get_funcargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>return (function, args, kwargs)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.CronTask.get_last_schedtime">
+<code class="descname">get_last_schedtime</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronTask.get_last_schedtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronTask.get_last_schedtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>get last sched time, return with a datetime.datetime object.
+Plz notice the timezone is enabled</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.CronTask.get_timer">
+<code class="descname">get_timer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronTask.get_timer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronTask.get_timer" title="Permalink to this definition">¶</a></dt>
+<dd><p>return timer of the crontask</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.CronTask.last_schedtime">
+<code class="descname">last_schedtime</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronTask.last_schedtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronTask.last_schedtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>return last schedtime</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.CronTask.name">
+<code class="descname">name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronTask.name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronTask.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>return name of the crontask</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="cup.services.executor.CronTask.next_hour">
+<em class="property">classmethod </em><code class="descname">next_hour</code><span class="sig-paren">(</span><em>tmp_dict</em>, <em>timer_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronTask.next_hour"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronTask.next_hour" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>{ ‘year’: xxx,</dt>
+<dd>’month’: xxx,
+‘monthday’:</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="cup.services.executor.CronTask.next_minute">
+<em class="property">classmethod </em><code class="descname">next_minute</code><span class="sig-paren">(</span><em>tmp_dict</em>, <em>timer_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronTask.next_minute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronTask.next_minute" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>{ ‘year’: xxx,</dt>
+<dd>’month’: xxx,
+‘monthday’:</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="cup.services.executor.CronTask.next_month">
+<em class="property">classmethod </em><code class="descname">next_month</code><span class="sig-paren">(</span><em>tmp_dict</em>, <em>timer_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronTask.next_month"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronTask.next_month" title="Permalink to this definition">¶</a></dt>
+<dd><p>set tmp_dict to next valid date, specifically month</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tmp_dict</strong> – <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="n">xxxx</span><span class="p">,</span>
+    <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="n">xxxx</span><span class="p">,</span>
+    <span class="s1">&#39;monthday&#39;</span><span class="p">:</span> <span class="n">xxxx</span><span class="p">,</span>
+    <span class="s1">&#39;weekday&#39;</span><span class="p">:</span> <span class="n">xxxx</span><span class="p">,</span>
+    <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="n">xxxx</span><span class="p">,</span>
+    <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="n">xxxx</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><strong>timer_params</strong> – valid timer dict, same to self._timer_params</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="cup.services.executor.CronTask.next_monthday_weekday">
+<em class="property">classmethod </em><code class="descname">next_monthday_weekday</code><span class="sig-paren">(</span><em>tmp_dict</em>, <em>timer_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronTask.next_monthday_weekday"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronTask.next_monthday_weekday" title="Permalink to this definition">¶</a></dt>
+<dd><p>set next monthday &amp;&amp; weekday</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.CronTask.next_schedtime">
+<code class="descname">next_schedtime</code><span class="sig-paren">(</span><em>starting_fromdate=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronTask.next_schedtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronTask.next_schedtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>return next schedule time with timezone enabled.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.CronTask.pytz_timezone">
+<code class="descname">pytz_timezone</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronTask.pytz_timezone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronTask.pytz_timezone" title="Permalink to this definition">¶</a></dt>
+<dd><p>return pytz timezone</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.CronTask.set_last_schedtime">
+<code class="descname">set_last_schedtime</code><span class="sig-paren">(</span><em>datetime_obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronTask.set_last_schedtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronTask.set_last_schedtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>set_last_schedtime.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timestamp</strong> – E.g. set timestamp to time.time() for “now”</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.CronTask.set_timer">
+<code class="descname">set_timer</code><span class="sig-paren">(</span><em>timer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronTask.set_timer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronTask.set_timer" title="Permalink to this definition">¶</a></dt>
+<dd><p>set timer to this crontask</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.CronTask.taskid">
+<code class="descname">taskid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#CronTask.taskid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.CronTask.taskid" title="Permalink to this definition">¶</a></dt>
+<dd><p>get 32 byte taskid</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.services.executor.ExecutionService">
+<em class="property">class </em><code class="descclassname">cup.services.executor.</code><code class="descname">ExecutionService</code><span class="sig-paren">(</span><em>delay_exe_thdnum=3</em>, <em>queue_exec_thdnum=4</em>, <em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#ExecutionService"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.ExecutionService" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.services.executor.AbstractExecution" title="cup.services.executor.AbstractExecution"><code class="xref py py-class docutils literal notranslate"><span class="pre">cup.services.executor.AbstractExecution</span></code></a></p>
+<p>execution service</p>
+<dl class="method">
+<dt id="cup.services.executor.ExecutionService.delay_exec">
+<code class="descname">delay_exec</code><span class="sig-paren">(</span><em>delay_time_insec</em>, <em>function</em>, <em>urgency</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#ExecutionService.delay_exec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.ExecutionService.delay_exec" title="Permalink to this definition">¶</a></dt>
+<dd><p>delay_execute function after delay_time seconds</p>
+<p>You can use urgency := executor.URGENCY_NORMAL, by default</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">TODO:</th><td class="field-body">consider about stopping timers when invoking stop function</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.ExecutionService.exec_worker">
+<code class="descname">exec_worker</code><span class="sig-paren">(</span><em>check_interval</em>, <em>func_queue</em>, <em>worker_name=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#ExecutionService.exec_worker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.ExecutionService.exec_worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>exec worker</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.ExecutionService.queue_exec">
+<code class="descname">queue_exec</code><span class="sig-paren">(</span><em>function</em>, <em>urgency</em>, <em>*argvs</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#ExecutionService.queue_exec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.ExecutionService.queue_exec" title="Permalink to this definition">¶</a></dt>
+<dd><p>execute function in a queue. Functions will be queued in line to
+be scheduled.</p>
+<p>You can use urgency := executor.URGENCY_NORMAL, by default.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.ExecutionService.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#ExecutionService.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.ExecutionService.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delayexec worker checks task every 20ms
+QueueExec worker checks task every 100ms</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.ExecutionService.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#ExecutionService.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.ExecutionService.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias for self.run</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.executor.ExecutionService.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><em>wait_workerstop=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/executor.html#ExecutionService.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.executor.ExecutionService.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>stop the executor service.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Wait_workerstop:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><p class="first">If wait_workerstop is True, the function will hang util all workers
+finish thier tasks.</p>
+<p class="last">Otherwise, the function will not hang, but tell you whether it’s
+succeeded stopped. (True for stoped, False for not stopped yet)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.services.generator">
+<span id="cup-services-generator-module"></span><h2>cup.services.generator module<a class="headerlink" href="#module-cup.services.generator" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="class-cgeneratorman-object">
+<h3>class CGeneratorMan(object)<a class="headerlink" href="#class-cgeneratorman-object" title="Permalink to this headline">¶</a></h3>
+<p>Generate unique integers, strings and auto incremental uint.
+Notice CGeneratorMan is a singleton class, which means cup will keep
+only 1 instance per process.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">init:</th><td class="field-body"><dl class="first docutils">
+<dt>__init__(self, str_prefix=get_local_hostname())</dt>
+<dd><p class="first last">local hostname will be used by default.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">methods:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>get_uniqname()</strong></dt>
+<dd><p class="first last">get unique name.
+Host-Level unique name (build upon str_prefix, pid, threadid)</p>
+</dd>
+<dt><strong>get_next_uniq_num()</strong></dt>
+<dd><p class="first last">Process-level auto incremental uint. Thread-safe</p>
+</dd>
+<dt><strong>reset_uniqid_start(num=0)</strong></dt>
+<dd><p class="first last">Reset next uniqid to which genman starts from</p>
+</dd>
+<dt><strong>get_random_str()</strong></dt>
+<dd><p class="first last">Get random string by length</p>
+</dd>
+<dt><strong>get_uuid()</strong></dt>
+<dd><p class="first last">Get uuid</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="cup.services.generator.CycleIDGenerator">
+<em class="property">class </em><code class="descclassname">cup.services.generator.</code><code class="descname">CycleIDGenerator</code><span class="sig-paren">(</span><em>ip</em>, <em>port</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/generator.html#CycleIDGenerator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.generator.CycleIDGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>cycle id generator. 128bit ID will be produced.</p>
+<p>128 bit contains: a. 64bit [ip, port, etc]  b. 64bit[auto increment id]</p>
+<dl class="classmethod">
+<dt id="cup.services.generator.CycleIDGenerator.id2_hexstring">
+<em class="property">classmethod </em><code class="descname">id2_hexstring</code><span class="sig-paren">(</span><em>num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/generator.html#CycleIDGenerator.id2_hexstring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.generator.CycleIDGenerator.id2_hexstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>return hex of the id</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.generator.CycleIDGenerator.next_id">
+<code class="descname">next_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/generator.html#CycleIDGenerator.next_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.generator.CycleIDGenerator.next_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>get next id</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.generator.CycleIDGenerator.reset_nextid">
+<code class="descname">reset_nextid</code><span class="sig-paren">(</span><em>nextid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/generator.html#CycleIDGenerator.reset_nextid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.generator.CycleIDGenerator.reset_nextid" title="Permalink to this definition">¶</a></dt>
+<dd><p>reset nextid that will return to you</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-cup.services.heartbeat">
+<span id="cup-services-heartbeat-module"></span><h2>cup.services.heartbeat module<a class="headerlink" href="#module-cup.services.heartbeat" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">description:</th><td class="field-body">heartbeat related module</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="cup.services.heartbeat.Device">
+<em class="property">class </em><code class="descclassname">cup.services.heartbeat.</code><code class="descname">Device</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#Device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.Device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for all devices in heartbeat service</p>
+<dl class="method">
+<dt id="cup.services.heartbeat.Device.deserilize">
+<code class="descname">deserilize</code><span class="sig-paren">(</span><em>binary</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#Device.deserilize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.Device.deserilize" title="Permalink to this definition">¶</a></dt>
+<dd><p>deserilize it from binary</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.Device.get_dict_resinfo">
+<code class="descname">get_dict_resinfo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#Device.get_dict_resinfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.Device.get_dict_resinfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>get dict of resource info</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.Device.get_last_healthy">
+<code class="descname">get_last_healthy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#Device.get_last_healthy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.Device.get_last_healthy" title="Permalink to this definition">¶</a></dt>
+<dd><p>get last_healthy time of the device</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.Device.get_name">
+<code class="descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#Device.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.Device.get_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>get name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.Device.serilize">
+<code class="descname">serilize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#Device.serilize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.Device.serilize" title="Permalink to this definition">¶</a></dt>
+<dd><p>serilize device info</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.Device.set_last_healthy">
+<code class="descname">set_last_healthy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#Device.set_last_healthy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.Device.set_last_healthy" title="Permalink to this definition">¶</a></dt>
+<dd><p>set last_healthy time</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.services.heartbeat.HeartbeatService">
+<em class="property">class </em><code class="descclassname">cup.services.heartbeat.</code><code class="descname">HeartbeatService</code><span class="sig-paren">(</span><em>judge_lost_in_sec</em>, <em>keep_lost=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#HeartbeatService"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.HeartbeatService" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>HeartBeat service</p>
+<dl class="method">
+<dt id="cup.services.heartbeat.HeartbeatService.adjust_judge_lost_time">
+<code class="descname">adjust_judge_lost_time</code><span class="sig-paren">(</span><em>time_in_sec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#HeartbeatService.adjust_judge_lost_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.HeartbeatService.adjust_judge_lost_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>adjust judge_lost_in_sec</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.HeartbeatService.cleanup_oldlost">
+<code class="descname">cleanup_oldlost</code><span class="sig-paren">(</span><em>dump_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#HeartbeatService.cleanup_oldlost"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.HeartbeatService.cleanup_oldlost" title="Permalink to this definition">¶</a></dt>
+<dd><p>cleanup old lost devices.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dump_file</strong> – if dump_file is not None, we will store devices info into dump_file
+Otherwise, we will cleanup the lost devices only.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.HeartbeatService.get_lost">
+<code class="descname">get_lost</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#HeartbeatService.get_lost"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.HeartbeatService.get_lost" title="Permalink to this definition">¶</a></dt>
+<dd><p>get lost devices</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.HeartbeatService.is_device_registered">
+<code class="descname">is_device_registered</code><span class="sig-paren">(</span><em>key</em>, <em>including_dead=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#HeartbeatService.is_device_registered"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.HeartbeatService.is_device_registered" title="Permalink to this definition">¶</a></dt>
+<dd><p>tell if the device is registered</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.HeartbeatService.refresh">
+<code class="descname">refresh</code><span class="sig-paren">(</span><em>key</em>, <em>device_obj=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#HeartbeatService.refresh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.HeartbeatService.refresh" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> – refresh the device by key</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">if key does not exist, return False
+else, fresh the last_healthy time of the device</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.services.heartbeat.LinuxHost">
+<em class="property">class </em><code class="descclassname">cup.services.heartbeat.</code><code class="descname">LinuxHost</code><span class="sig-paren">(</span><em>name</em>, <em>init_this_host=False</em>, <em>iface='eth0'</em>, <em>port=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.services.heartbeat.Device" title="cup.services.heartbeat.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">cup.services.heartbeat.Device</span></code></a></p>
+<p>a linux host resource</p>
+<dl class="method">
+<dt id="cup.services.heartbeat.LinuxHost.get_cpu_idle">
+<code class="descname">get_cpu_idle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost.get_cpu_idle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost.get_cpu_idle" title="Permalink to this definition">¶</a></dt>
+<dd><p>get cpu idle rate</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.LinuxHost.get_ip">
+<code class="descname">get_ip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost.get_ip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost.get_ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>return ip information</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.LinuxHost.get_ip_port">
+<code class="descname">get_ip_port</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost.get_ip_port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost.get_ip_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>return ip:port</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.LinuxHost.get_mem_info">
+<code class="descname">get_mem_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost.get_mem_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost.get_mem_info" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(mem_inuse, mem_total), in MB</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.LinuxHost.get_net_usage">
+<code class="descname">get_net_usage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost.get_net_usage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost.get_net_usage" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(net_in, net_out)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.LinuxHost.set_cpu_idle">
+<code class="descname">set_cpu_idle</code><span class="sig-paren">(</span><em>idle_rate</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost.set_cpu_idle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost.set_cpu_idle" title="Permalink to this definition">¶</a></dt>
+<dd><p>set cpu idle rate</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.LinuxHost.set_ip_port">
+<code class="descname">set_ip_port</code><span class="sig-paren">(</span><em>ipaddr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost.set_ip_port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost.set_ip_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>set ip information</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ipaddr</strong> – ipaddr should be string and something like 10.10.10.1</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.LinuxHost.set_linux_res_bydict">
+<code class="descname">set_linux_res_bydict</code><span class="sig-paren">(</span><em>info_dict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost.set_linux_res_bydict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost.set_linux_res_bydict" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>info_dict</strong> – <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;iface&#39;</span><span class="p">:</span> <span class="s1">&#39;eth0&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ipaddr&#39;</span><span class="p">:</span> <span class="s1">&#39;10.10.10.1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;port&#39;</span><span class="p">:</span>   <span class="mi">8089</span><span class="p">,</span>
+    <span class="s1">&#39;cpu_idle&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="s1">&#39;mem_inuse&#39;</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>        <span class="c1"># MB</span>
+    <span class="s1">&#39;mem_total&#39;</span><span class="p">:</span> <span class="mi">8192</span><span class="p">,</span>
+    <span class="s1">&#39;net_in&#39;</span><span class="p">:</span>    <span class="mi">8192</span><span class="p">,</span>        <span class="c1"># kb</span>
+    <span class="s1">&#39;net_out&#39;</span><span class="p">:</span>   <span class="mi">102400</span><span class="p">,</span>      <span class="c1"># kb</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.LinuxHost.set_mem_usage">
+<code class="descname">set_mem_usage</code><span class="sig-paren">(</span><em>mem_inuse</em>, <em>mem_total</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost.set_mem_usage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost.set_mem_usage" title="Permalink to this definition">¶</a></dt>
+<dd><p>set up mem_inuse and mem_total.
+Will update any of them if it is not None.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.heartbeat.LinuxHost.set_net_usage">
+<code class="descname">set_net_usage</code><span class="sig-paren">(</span><em>net_in</em>, <em>net_out</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/heartbeat.html#LinuxHost.set_net_usage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.heartbeat.LinuxHost.set_net_usage" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>net_in</strong> – net_in in kB/s. If net_in is None, will update nothing.</li>
+<li><strong>net_out</strong> – net_out in kB/s. If net_out is None, will update nothing.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.services.msgbroker">
+<span id="cup-services-msgbroker-module"></span><h2>cup.services.msgbroker module<a class="headerlink" href="#module-cup.services.msgbroker" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">description:</th><td class="field-body"><p class="first">Msg Broker Service. Every component of a process can produce_msg.</p>
+<p class="last">This msg broker feature is still exprimental. Do not use it in production
+until this comment is deleted.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="cup.services.msgbroker.BrokerCenter">
+<em class="property">class </em><code class="descclassname">cup.services.msgbroker.</code><code class="descname">BrokerCenter</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/msgbroker.html#BrokerCenter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.msgbroker.BrokerCenter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cup.services.msgbroker.BaseBroker</span></code></p>
+<p>Errmsg broker center</p>
+<dl class="method">
+<dt id="cup.services.msgbroker.BrokerCenter.comsume_msg">
+<code class="descname">comsume_msg</code><span class="sig-paren">(</span><em>msg_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/msgbroker.html#BrokerCenter.comsume_msg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.msgbroker.BrokerCenter.comsume_msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>get msg_type from the broker center</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.msgbroker.BrokerCenter.produce_msg">
+<code class="descname">produce_msg</code><span class="sig-paren">(</span><em>msg_type</em>, <em>extra_info</em>, <em>error</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/msgbroker.html#BrokerCenter.produce_msg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.msgbroker.BrokerCenter.produce_msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>register msg</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.services.msgbroker.SystemErrmsgBroker">
+<em class="property">class </em><code class="descclassname">cup.services.msgbroker.</code><code class="descname">SystemErrmsgBroker</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/msgbroker.html#SystemErrmsgBroker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.msgbroker.SystemErrmsgBroker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.services.msgbroker.BrokerCenter" title="cup.services.msgbroker.BrokerCenter"><code class="xref py py-class docutils literal notranslate"><span class="pre">cup.services.msgbroker.BrokerCenter</span></code></a></p>
+<p>system errmsg broker, you can use it to determine whether
+exiting from the system is on the way</p>
+<dl class="method">
+<dt id="cup.services.msgbroker.SystemErrmsgBroker.clean_data">
+<code class="descname">clean_data</code><span class="sig-paren">(</span><em>path</em>, <em>exclude_msgtypes=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/msgbroker.html#SystemErrmsgBroker.clean_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.msgbroker.SystemErrmsgBroker.clean_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>clean data of the remaining data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.msgbroker.SystemErrmsgBroker.fatal_alert">
+<code class="descname">fatal_alert</code><span class="sig-paren">(</span><em>path</em>, <em>msg</em>, <em>need_stop=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/msgbroker.html#SystemErrmsgBroker.fatal_alert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.msgbroker.SystemErrmsgBroker.fatal_alert" title="Permalink to this definition">¶</a></dt>
+<dd><p>fatal alert systems</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.msgbroker.SystemErrmsgBroker.get_fatal_alerts">
+<code class="descname">get_fatal_alerts</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/msgbroker.html#SystemErrmsgBroker.get_fatal_alerts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.msgbroker.SystemErrmsgBroker.get_fatal_alerts" title="Permalink to this definition">¶</a></dt>
+<dd><p>get fatal alerts of the current running round</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.msgbroker.SystemErrmsgBroker.need_stop">
+<code class="descname">need_stop</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/msgbroker.html#SystemErrmsgBroker.need_stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.msgbroker.SystemErrmsgBroker.need_stop" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>return True if the system registered on</dt>
+<dd>the path needs to stop immediately</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.msgbroker.SystemErrmsgBroker.register_msg">
+<code class="descname">register_msg</code><span class="sig-paren">(</span><em>path</em>, <em>msgtype</em>, <em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/msgbroker.html#SystemErrmsgBroker.register_msg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.msgbroker.SystemErrmsgBroker.register_msg" title="Permalink to this definition">¶</a></dt>
+<dd><p>register msg into the system</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.msgbroker.SystemErrmsgBroker.register_msgtype_callback">
+<code class="descname">register_msgtype_callback</code><span class="sig-paren">(</span><em>path</em>, <em>msg_type</em>, <em>callback_func</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/msgbroker.html#SystemErrmsgBroker.register_msgtype_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.msgbroker.SystemErrmsgBroker.register_msgtype_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>register msgtype with callback functions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.msgbroker.SystemErrmsgBroker.register_wakeup">
+<code class="descname">register_wakeup</code><span class="sig-paren">(</span><em>path</em>, <em>msgtype</em>, <em>alert_cap_num</em>, <em>callfunc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/msgbroker.html#SystemErrmsgBroker.register_wakeup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.msgbroker.SystemErrmsgBroker.register_wakeup" title="Permalink to this definition">¶</a></dt>
+<dd><p>register wakeups.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>alert_cap_num</strong> – If alert_cap_num is 0, whenever a msg of msgtype is received,
+the callfunc will be called.</li>
+<li><strong>msgtype</strong> – [msgbroker.FATAL|msgbroker.WARN]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.msgbroker.SystemErrmsgBroker.warnning_alert">
+<code class="descname">warnning_alert</code><span class="sig-paren">(</span><em>path</em>, <em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/msgbroker.html#SystemErrmsgBroker.warnning_alert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.msgbroker.SystemErrmsgBroker.warnning_alert" title="Permalink to this definition">¶</a></dt>
+<dd><p>warnning alert</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.services.serializer">
+<span id="cup-services-serializer-module"></span><h2>cup.services.serializer module<a class="headerlink" href="#module-cup.services.serializer" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">description:</th><td class="field-body">serilizers including local file serilizer</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="cup.services.serializer.LogRecord">
+<em class="property">class </em><code class="descclassname">cup.services.serializer.</code><code class="descname">LogRecord</code><span class="sig-paren">(</span><em>length</em>, <em>log_id</em>, <em>log_type</em>, <em>log_mode</em>, <em>log_binary</em><span class="sig-paren">)</span><a class="headerlink" href="#cup.services.serializer.LogRecord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="attribute">
+<dt id="cup.services.serializer.LogRecord.length">
+<code class="descname">length</code><a class="headerlink" href="#cup.services.serializer.LogRecord.length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.services.serializer.LogRecord.log_binary">
+<code class="descname">log_binary</code><a class="headerlink" href="#cup.services.serializer.LogRecord.log_binary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.services.serializer.LogRecord.log_id">
+<code class="descname">log_id</code><a class="headerlink" href="#cup.services.serializer.LogRecord.log_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.services.serializer.LogRecord.log_mode">
+<code class="descname">log_mode</code><a class="headerlink" href="#cup.services.serializer.LogRecord.log_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cup.services.serializer.LogRecord.log_type">
+<code class="descname">log_type</code><a class="headerlink" href="#cup.services.serializer.LogRecord.log_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cup.services.serializer.LocalFileSerilizer">
+<em class="property">class </em><code class="descclassname">cup.services.serializer.</code><code class="descname">LocalFileSerilizer</code><span class="sig-paren">(</span><em>storage_dir</em>, <em>skip_badlog=False</em>, <em>max_logfile_size=1048576</em>, <em>persist_after_sec=600</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/serializer.html#LocalFileSerilizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.serializer.LocalFileSerilizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">cup.services.serializer.BaseSerilizer</span></code></p>
+<p>local file serilizer</p>
+<dl class="method">
+<dt id="cup.services.serializer.LocalFileSerilizer.add_log">
+<code class="descname">add_log</code><span class="sig-paren">(</span><em>log_type</em>, <em>log_mode</em>, <em>log_binary</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/serializer.html#LocalFileSerilizer.add_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.serializer.LocalFileSerilizer.add_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>add log into the local file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a tuple (result_True_or_False, logid_or_None)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.serializer.LocalFileSerilizer.close_read">
+<code class="descname">close_read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/serializer.html#LocalFileSerilizer.close_read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.serializer.LocalFileSerilizer.close_read" title="Permalink to this definition">¶</a></dt>
+<dd><p>close open4read</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.serializer.LocalFileSerilizer.close_write">
+<code class="descname">close_write</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/serializer.html#LocalFileSerilizer.close_write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.serializer.LocalFileSerilizer.close_write" title="Permalink to this definition">¶</a></dt>
+<dd><p>close the writer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.serializer.LocalFileSerilizer.get_subdir">
+<code class="descname">get_subdir</code><span class="sig-paren">(</span><em>log_id=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/serializer.html#LocalFileSerilizer.get_subdir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.serializer.LocalFileSerilizer.get_subdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>get log dir</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.serializer.LocalFileSerilizer.is_empty">
+<code class="descname">is_empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/serializer.html#LocalFileSerilizer.is_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.serializer.LocalFileSerilizer.is_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>return if there is no log</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.serializer.LocalFileSerilizer.is_stream_wbopen">
+<code class="descname">is_stream_wbopen</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/serializer.html#LocalFileSerilizer.is_stream_wbopen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.serializer.LocalFileSerilizer.is_stream_wbopen" title="Permalink to this definition">¶</a></dt>
+<dd><p>is stream open</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.serializer.LocalFileSerilizer.open4read">
+<code class="descname">open4read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/serializer.html#LocalFileSerilizer.open4read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.serializer.LocalFileSerilizer.open4read" title="Permalink to this definition">¶</a></dt>
+<dd><p>open logs for read</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.serializer.LocalFileSerilizer.open4write">
+<code class="descname">open4write</code><span class="sig-paren">(</span><em>truncate_last_failure=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/serializer.html#LocalFileSerilizer.open4write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.serializer.LocalFileSerilizer.open4write" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>Exception</strong> – if encounter any IOError, will raise IOError(errmsg)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.serializer.LocalFileSerilizer.purge_data">
+<code class="descname">purge_data</code><span class="sig-paren">(</span><em>before_logid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/serializer.html#LocalFileSerilizer.purge_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.serializer.LocalFileSerilizer.purge_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>log files which contains log (less than before_logid) will be purged.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.serializer.LocalFileSerilizer.read">
+<code class="descname">read</code><span class="sig-paren">(</span><em>record_num=128</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/serializer.html#LocalFileSerilizer.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.serializer.LocalFileSerilizer.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>load log into memory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Notice:</th><td class="field-body"><p class="first">If skip_badlog is not True, will raise IOError if the stream
+encounters any error.</p>
+<p>Otherwise, the stream will skip the bad log file, move to next one
+and continue reading</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ol class="loweralpha simple">
+<li>return a list of “record_num” of LogRecord.</li>
+</ol>
+<p>b. If the count number of list is less than record_num,
+it means the stream encounter EOF, plz read again afterwards.</p>
+<ol class="loweralpha simple" start="3">
+<li><dl class="first docutils">
+<dt>If the returned is None, it means the stream got nothing, plz</dt>
+<dd>try again.</dd>
+</dl>
+</li>
+</ol>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.serializer.LocalFileSerilizer.set_current_logid">
+<code class="descname">set_current_logid</code><span class="sig-paren">(</span><em>logid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/serializer.html#LocalFileSerilizer.set_current_logid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.serializer.LocalFileSerilizer.set_current_logid" title="Permalink to this definition">¶</a></dt>
+<dd><p>reset current log id</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.serializer.LocalFileSerilizer.set_name">
+<code class="descname">set_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/serializer.html#LocalFileSerilizer.set_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.serializer.LocalFileSerilizer.set_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>set a name of str for the serializer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.serializer.LocalFileSerilizer.switch_logfilelist">
+<code class="descname">switch_logfilelist</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/serializer.html#LocalFileSerilizer.switch_logfilelist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.serializer.LocalFileSerilizer.switch_logfilelist" title="Permalink to this definition">¶</a></dt>
+<dd><p>switch logfile to logfile.old</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.services.threadpool">
+<span id="cup-services-threadpool-module"></span><h2>cup.services.threadpool module<a class="headerlink" href="#module-cup.services.threadpool" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Guannan back-ported threadpool from twisted.python.
+if any concern, feel free to contact Guannan (<a class="reference external" href="mailto:mythmgn&#37;&#52;&#48;gmail&#46;com">mythmgn<span>&#64;</span>gmail<span>&#46;</span>com</a>)</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<dl class="last docutils">
+<dt>Mit License applied for twisted:</dt>
+<dd><p class="first"><a class="reference external" href="http://www.opensource.org/licenses/mit-license.php">http://www.opensource.org/licenses/mit-license.php</a></p>
+<p>Permission is hereby granted, free of charge,
+to any person obtaining a copy of this software and associated
+documentation files (the “Software”),
+to deal in the Software without restriction,
+including without limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of the Software,
+and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.</p>
+<p class="last">THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+</dd>
+</dl>
+</div>
+<dl class="class">
+<dt id="cup.services.threadpool.ThreadPool">
+<em class="property">class </em><code class="descclassname">cup.services.threadpool.</code><code class="descname">ThreadPool</code><span class="sig-paren">(</span><em>minthreads=5</em>, <em>maxthreads=20</em>, <em>name=None</em>, <em>daemon_threads=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/threadpool.html#ThreadPool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.threadpool.ThreadPool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Threadpool class</p>
+<dl class="method">
+<dt id="cup.services.threadpool.ThreadPool.add_1job">
+<code class="descname">add_1job</code><span class="sig-paren">(</span><em>func</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/threadpool.html#ThreadPool.add_1job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.threadpool.ThreadPool.add_1job" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add one job that you want the pool to schedule.</p>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p class="last">Notice if you need to handle data after finishing [func], plz use
+[add_1job_with_callback] which supports a [callback] option.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>func</strong> – function that will be scheduled by the thread pool</li>
+<li><strong>*args</strong> – args that the [func] needs</li>
+<li><strong>**kw</strong> – kwargs that [func] needs</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.threadpool.ThreadPool.add_1job_with_callback">
+<code class="descname">add_1job_with_callback</code><span class="sig-paren">(</span><em>result_callback</em>, <em>func</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/threadpool.html#ThreadPool.add_1job_with_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.threadpool.ThreadPool.add_1job_with_callback" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>result_callback</strong> – <div class="admonition important">
+<p class="first admonition-title">Important</p>
+<p>plz notice whether succeed or fail, the result_callback
+function will be called after [func] is called.</p>
+<p>function result_callback needs to accept two parameters:
+(ret_in_bool, result). (True, result) will be passed to the
+[func] on success. (False, result) will be passed otherwise.</p>
+<p class="last">if [func] raise any Exception, result_callback will get
+(False, failure_info) as well.</p>
+</div>
+</li>
+<li><strong>func</strong> – same to func for add_1job</li>
+<li><strong>*args</strong> – args for [func]</li>
+<li><strong>**kwargs</strong> – kwargs for [func]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.threadpool.ThreadPool.adjust_poolsize">
+<code class="descname">adjust_poolsize</code><span class="sig-paren">(</span><em>minthreads=None</em>, <em>maxthreads=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/threadpool.html#ThreadPool.adjust_poolsize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.threadpool.ThreadPool.adjust_poolsize" title="Permalink to this definition">¶</a></dt>
+<dd><p>adjust pool size</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.threadpool.ThreadPool.dump_stats">
+<code class="descname">dump_stats</code><span class="sig-paren">(</span><em>print_stdout=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/threadpool.html#ThreadPool.dump_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.threadpool.ThreadPool.dump_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump the threadpool stat to log or stdout. Info is from class method
+[get_stats]</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.threadpool.ThreadPool.get_stats">
+<code class="descname">get_stats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/threadpool.html#ThreadPool.get_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.threadpool.ThreadPool.get_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>get threadpool running stats
+waiters_num is pending thread num
+working_num is working thread num
+thread_num is the total size of threads</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">stat</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">stat</span><span class="p">[</span><span class="s1">&#39;queue_len&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jobqueue</span><span class="o">.</span><span class="n">qsize</span><span class="p">()</span>
+<span class="n">stat</span><span class="p">[</span><span class="s1">&#39;waiters_num&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_waiters</span><span class="p">)</span>
+<span class="n">stat</span><span class="p">[</span><span class="s1">&#39;working_num&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_working</span><span class="p">)</span>
+<span class="n">stat</span><span class="p">[</span><span class="s1">&#39;thread_num&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_threads</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.threadpool.ThreadPool.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/threadpool.html#ThreadPool.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.threadpool.ThreadPool.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>call start before you use the threadpool</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.threadpool.ThreadPool.start1worker">
+<code class="descname">start1worker</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/threadpool.html#ThreadPool.start1worker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.threadpool.ThreadPool.start1worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>add a thread for worker threads in the pool</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.threadpool.ThreadPool.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><em>force_stop=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/threadpool.html#ThreadPool.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.threadpool.ThreadPool.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>stop the thread pool. Notice calling this method will wait there util
+all worker threads exit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>force_stop</strong> – if force_stop is True, try to stop the threads in the pool
+immediately (and this may do DAMAGE to your code logic)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.threadpool.ThreadPool.stop1worker">
+<code class="descname">stop1worker</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/threadpool.html#ThreadPool.stop1worker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.threadpool.ThreadPool.stop1worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>decrease one thread for the worker threads</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cup.services.threadpool.ThreadPool.try_stop">
+<code class="descname">try_stop</code><span class="sig-paren">(</span><em>check_interval=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/services/threadpool.html#ThreadPool.try_stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.services.threadpool.ThreadPool.try_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>try to stop the threadpool.</p>
+<p>If it cannot stop the pool RIGHT NOW, will NOT block.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cup.services">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cup.services" title="Permalink to this headline">¶</a></h2>
+<p>&#64;author Guannan Ma &#64;mythmgn</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="cup.shell.html" class="btn btn-neutral float-right" title="cup.shell package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="cup.res.html" class="btn btn-neutral" title="cup.res package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, CUP-DEV.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'3.2.19',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/language_data.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

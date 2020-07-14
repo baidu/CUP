@@ -1,0 +1,462 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cup.net &mdash; Cup 3.2.19 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Cup
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cup.html">cup package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Cup</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>cup.net</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cup.net</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*</span>
+<span class="c1"># Copyright: [CUP] - See LICENSE for details.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:description:</span>
+<span class="sd">    network related module</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">fcntl</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+    <span class="c1"># &#39;Seems run on non-linux machine&#39;</span>
+    <span class="k">pass</span>
+
+
+<span class="kn">from</span> <span class="nn">cup</span> <span class="k">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cup</span> <span class="k">import</span> <span class="n">platforms</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;get_local_hostname&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;get_hostip&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;getip_byinterface&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;set_sock_keepalive_linux&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;set_sock_reusable&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;set_sock_linger&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;set_sock_quickack&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;localport_free&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;port_listened&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;get_interfaces&#39;</span>
+<span class="p">]</span>
+
+
+<span class="k">if</span> <span class="n">platforms</span><span class="o">.</span><span class="n">is_linux</span><span class="p">():</span>
+    <span class="n">_SOCK</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+    <span class="n">_SOCKFD</span> <span class="o">=</span> <span class="n">_SOCK</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
+    <span class="n">_SIOCGIFADDR</span> <span class="o">=</span> <span class="mh">0x8915</span>
+
+
+<div class="viewcode-block" id="getip_byinterface"><a class="viewcode-back" href="../../cup.net.html#cup.net.getip_byinterface">[docs]</a><span class="k">def</span> <span class="nf">getip_byinterface</span><span class="p">(</span><span class="n">iface</span><span class="o">=</span><span class="s1">&#39;eth0&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get ipaddr of a network adapter</span>
+
+<span class="sd">    :platform:</span>
+<span class="sd">        Linux/Unix</span>
+
+<span class="sd">    E.g.</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        import cup</span>
+<span class="sd">        print(cup.net.getip_byinterface(&#39;eth0&#39;))</span>
+<span class="sd">        print(cup.net.getip_byinterface(&#39;eth1&#39;))</span>
+<span class="sd">        print(cup.net.getip_byinterface(&#39;xgbe0&#39;))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">platforms</span><span class="o">.</span><span class="n">is_linux</span><span class="p">():</span>
+        <span class="n">ifreq</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;16sH14s&#39;</span><span class="p">,</span> <span class="n">iface</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="mi">14</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">fcntl</span><span class="o">.</span><span class="n">ioctl</span><span class="p">(</span><span class="n">_SOCKFD</span><span class="p">,</span> <span class="n">_SIOCGIFADDR</span><span class="p">,</span> <span class="n">ifreq</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c1"># pylint: disable=W0703,W0612</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">ipaddr</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;16sH2x4s8x&#39;</span><span class="p">,</span> <span class="n">res</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_ntoa</span><span class="p">(</span><span class="n">ipaddr</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Not implemented on this platform&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_local_hostname"><a class="viewcode-back" href="../../cup.net.html#cup.net.get_local_hostname">[docs]</a><span class="k">def</span> <span class="nf">get_local_hostname</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get hostname of this machine</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="get_hostip"><a class="viewcode-back" href="../../cup.net.html#cup.net.get_hostip">[docs]</a><span class="k">def</span> <span class="nf">get_hostip</span><span class="p">(</span><span class="n">hostname</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get ipaddr of a host</span>
+
+<span class="sd">    :param hostname:</span>
+<span class="sd">        None, by default, will use udp to get ipaddr for ipv4</span>
+<span class="sd">        if not None, will use hostname to convert to ipaddr</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ipaddr</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">hostname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">times</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ipaddr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">gethostbyname</span><span class="p">(</span><span class="n">hostname</span><span class="p">))</span>
+                <span class="k">break</span>
+            <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">:</span>
+                <span class="n">times</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;failed to get hostip for </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hostname</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ipaddr</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">while</span> <span class="n">times</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span>
+                <span class="n">sock</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="s1">&#39;8.8.8.8&#39;</span><span class="p">,</span> <span class="mi">80</span><span class="p">))</span>
+                <span class="n">ipaddr</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">break</span>
+            <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+                <span class="n">hostname</span> <span class="o">=</span> <span class="n">get_local_hostname</span><span class="p">()</span>
+                <span class="n">ipaddr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">gethostbyname</span><span class="p">(</span><span class="n">hostname</span><span class="p">))</span>
+                <span class="k">break</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="n">times</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;failed to get hostip&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ipaddr</span></div>
+
+
+<div class="viewcode-block" id="set_sock_keepalive_linux"><a class="viewcode-back" href="../../cup.net.html#cup.net.set_sock_keepalive_linux">[docs]</a><span class="k">def</span> <span class="nf">set_sock_keepalive_linux</span><span class="p">(</span>
+        <span class="n">sock</span><span class="p">,</span> <span class="n">after_idle_sec</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">interval_sec</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">max_fails</span><span class="o">=</span><span class="mi">5</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set TCP keepalive on an open socket.</span>
+<span class="sd">    It activates after 1 second (after_idle_sec) of idleness,</span>
+<span class="sd">    then sends a keepalive ping once every 3 seconds (interval_sec),</span>
+<span class="sd">    and closes the connection after 5 failed ping (max_fails), or 15 seconds</span>
+
+<span class="sd">    :param sock:</span>
+<span class="sd">        socket</span>
+<span class="sd">    :param after_idle_sec:</span>
+<span class="sd">        for TCP_KEEPIDLE. May not work, depends on ur system</span>
+<span class="sd">    :param interval_sec:</span>
+<span class="sd">        for TCP_KEEPINTVL</span>
+<span class="sd">    :param max_fails:</span>
+<span class="sd">        for TCP_KEEPCNT</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_KEEPALIVE</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">TCP_KEEPIDLE</span><span class="p">,</span> <span class="n">after_idle_sec</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">TCP_KEEPINTVL</span><span class="p">,</span> <span class="n">interval_sec</span><span class="p">)</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">TCP_KEEPCNT</span><span class="p">,</span> <span class="n">max_fails</span><span class="p">)</span></div>
+
+
+<span class="c1"># pylint: disable=W0613</span>
+<span class="k">def</span> <span class="nf">set_keepalive_osx</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">after_idle_sec</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">interval_sec</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">max_fails</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set TCP keepalive on an open socket.</span>
+<span class="sd">    Sends a keepalive ping once every 3 seconds (interval_sec)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># scraped from /usr/include, not exported by python&#39;s socket module</span>
+    <span class="c1"># pylint: disable=C0103</span>
+    <span class="n">TCP_KEEPALIVE</span> <span class="o">=</span> <span class="mh">0x10</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_KEEPALIVE</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">TCP_KEEPALIVE</span><span class="p">,</span> <span class="n">interval_sec</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="set_sock_reusable"><a class="viewcode-back" href="../../cup.net.html#cup.net.set_sock_reusable">[docs]</a><span class="k">def</span> <span class="nf">set_sock_reusable</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">resuable</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    set socket reusable</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">resuable</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_sock_linger"><a class="viewcode-back" href="../../cup.net.html#cup.net.set_sock_linger">[docs]</a><span class="k">def</span> <span class="nf">set_sock_linger</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">l_onoff</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">l_linger</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    set socket linger param (socket.SO_LINGER)</span>
+
+<span class="sd">    I.g.</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        sock.setsockopt(</span>
+<span class="sd">            socket.SOL_SOCKET, socket.SO_LINGER,</span>
+<span class="sd">            struct.pack(&#39;ii&#39;, 0, 0)</span>
+<span class="sd">        )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># l_onoff = 1</span>
+    <span class="c1"># l_linger = 0</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span>
+        <span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_LINGER</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span>
+            <span class="s1">&#39;ii&#39;</span><span class="p">,</span> <span class="n">l_onoff</span><span class="p">,</span> <span class="n">l_linger</span>
+        <span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_sock_quickack"><a class="viewcode-back" href="../../cup.net.html#cup.net.set_sock_quickack">[docs]</a><span class="k">def</span> <span class="nf">set_sock_quickack</span><span class="p">(</span><span class="n">sock</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    open quickack for the socket</span>
+
+<span class="sd">    I.g.</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)</span>
+<span class="sd">        sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_QUICKACK, 1)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">TCP_NODELAY</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">TCP_QUICKACK</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="localport_free"><a class="viewcode-back" href="../../cup.net.html#cup.net.localport_free">[docs]</a><span class="k">def</span> <span class="nf">localport_free</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">is_ipv6</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;judge if a port is used. IPV4, by default&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="n">port_listened</span><span class="p">(</span><span class="n">get_local_hostname</span><span class="p">(),</span> <span class="n">port</span><span class="p">,</span> <span class="n">is_ipv6</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="port_listened"><a class="viewcode-back" href="../../cup.net.html#cup.net.port_listened">[docs]</a><span class="k">def</span> <span class="nf">port_listened</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">is_ipv6</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;check if the port is being listened on the host&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">is_ipv6</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;ipv6 not supported yet&#39;</span><span class="p">)</span>
+    <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+    <span class="n">sock</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">set_sock_reusable</span><span class="p">(</span><span class="n">sock</span><span class="p">)</span>
+    <span class="n">listened</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">connect_ex</span><span class="p">((</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+        <span class="c1"># 35 means EAGIN</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">result</span> <span class="o">==</span> <span class="mi">35</span><span class="p">:</span>
+            <span class="n">listened</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="c1"># pylint: disable=W0703</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">listened</span></div>
+
+
+<div class="viewcode-block" id="get_interfaces"><a class="viewcode-back" href="../../cup.net.html#cup.net.get_interfaces">[docs]</a><span class="k">def</span> <span class="nf">get_interfaces</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :return:</span>
+<span class="sd">        a python list of network interfaces/adapters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">eths</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">srcpath</span> <span class="o">=</span> <span class="s1">&#39;/sys/class/net/&#39;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">srcpath</span><span class="p">):</span>
+        <span class="n">interfaces</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">srcpath</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">inter</span> <span class="ow">in</span> <span class="n">interfaces</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inter</span> <span class="o">==</span> <span class="s1">&#39;lo&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">eths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inter</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">eths</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;not supported other than linux&#39;</span><span class="p">)</span></div>
+
+<span class="c1"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, CUP-DEV.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.2.19',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
