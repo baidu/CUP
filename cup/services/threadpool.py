@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*
 """
-:description:
-    Guannan back-ported threadpool from twisted.python.
-    if any concern, plz contact Guannan (mythmgn@gmail.com)
+.. NOTE::
 
-:license:
+    Guannan back-ported threadpool from twisted.python.
+    if any concern, feel free to contact Guannan (mythmgn@gmail.com)
+
+.. NOTE::
+
+
     Mit License applied for twisted:
         http://www.opensource.org/licenses/mit-license.php
 
@@ -147,16 +150,19 @@ class ThreadPool(object):
     def add_1job(self, func, *args, **kwargs):
         """
         Add one job that you want the pool to schedule.
-        Notice if you need to handle data after finishing [func], plz use
-        [add_1job_with_callback] which supports a [callback] option.
+
+        .. CAUTION::
+
+            Notice if you need to handle data after finishing [func], plz use
+            [add_1job_with_callback] which supports a [callback] option.
 
         :param func:
             function that will be scheduled by the thread pool
 
-        :param *args:
+        :param \*args:
             args that the [func] needs
 
-        :param **kw:
+        :param \*\*kw:
             kwargs that [func] needs
         """
         self.add_1job_with_callback(None, func, *args, **kwargs)
@@ -164,23 +170,25 @@ class ThreadPool(object):
     def add_1job_with_callback(self, result_callback, func, *args, **kwargs):
         """
         :param result_callback:
-            plz notice whether succeed or fail, the result_callback function
-            will be called after [func] is called.
+            .. IMPORTANT::
 
-            function result_callback needs to accept two parameters:
-            (ret_in_bool, result). (True, result) will be passed to the [func]
-            on success. (False, result) will be passed otherwise.
+                plz notice whether succeed or fail, the result_callback
+                function will be called after [func] is called.
 
-            if [func] raise any Exception, result_callback will get (False,
-                failure_info) as well.
+                function result_callback needs to accept two parameters:
+                (ret_in_bool, result). (True, result) will be passed to the
+                [func] on success. (False, result) will be passed otherwise.
+
+                if [func] raise any Exception, result_callback will get
+                (False, failure_info) as well.
 
         :param func:
             same to func for add_1job
 
-        :param *args:
+        :param \*args:
             args for [func]
 
-        :param **kwargs:
+        :param \*\*kwargs:
             kwargs for [func]
         """
         if self._joined:
@@ -277,7 +285,7 @@ class ThreadPool(object):
         stop the thread pool. Notice calling this method will wait there util
         all worker threads exit.
 
-        :force_stop:
+        :param force_stop:
             if force_stop is True, try to stop the threads in the pool
             immediately (and this may do DAMAGE to your code logic)
         """
@@ -357,6 +365,7 @@ class ThreadPool(object):
         thread_num is the total size of threads
 
         ::
+
             stat = {}
             stat['queue_len'] = self._jobqueue.qsize()
             stat['waiters_num'] = len(self._waiters)

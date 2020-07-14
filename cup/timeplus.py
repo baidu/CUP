@@ -27,7 +27,22 @@ def get_str_now(fmt='%Y-%m-%d-%H-%M-%S'):
 
 
 class TimePlus(object):
-    """arrow time"""
+    """
+    TimePlus can convert printable time from 1 timezone 2 another including
+    utc.
+
+    Code Example:
+    ::
+
+        from __future__ import print_function
+        from cup import timeplus
+        import pytz
+        tz_shanghai = pytz.timezone('Aisa/Shanghai')
+        tplus = timeplus.TimePlus(tz_shanghai)
+        dtobj = datetime.datetime.now()
+        print(tplus.utc2local(dtobj))
+
+    """
     def __init__(self, timezone):
         """
         initialize with timezone setup

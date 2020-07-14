@@ -2,19 +2,23 @@
 # -*- coding: utf-8 -*
 """
 :description:
+
     constant related module
     *test-case-name: twisted.python.test.test_constants*
     Copyright (c) Twisted Matrix Laboratories.
     See LICENSE for details.
 
 :license:
+
     CUP dev team modified and redistrbuted this module,
-        according to MIT license
-        (http://opensource.org/licenses/mit-license.php)
-        that Twisted lib obeys.
+    according to MIT license
+    (http://opensource.org/licenses/mit-license.php)
+    that Twisted lib obeys.
+
     If any concern, plz contact mythmgn@gmail.com.
 
     Mit License applied for twisted
+
         http://www.opensource.org/licenses/mit-license.php
         Permission is hereby granted, free of charge,
         to any person obtaining a copy of this software and associated
@@ -54,13 +58,13 @@ _CONSTANT_ORDER = functools.partial(next, itertools.count())
 
 class _Constant(object):  # pylint: disable=R0903
     """
-    @ivar _index: A C{int} allocated from a shared itertools.counter in order
+    :ivar _index: A C{int} allocated from a shared itertools.counter in order
         to keep track of the order in which L{_Constant}s are instantiated.
 
-    @ivar name: A C{str} giving the name of this constant; only set once the
+    :ivar name: A C{str} giving the name of this constant; only set once the
         constant is initialized by L{_ConstantsContainer}.
 
-    @ivar _container: The L{_ConstantsContainer} subclass this constant belongs
+    :ivar _container: The L{_ConstantsContainer} subclass this constant belongs
         to; C{None} until the constant is initialized by that subclass.
     """
     def __init__(self):
@@ -79,12 +83,12 @@ class _Constant(object):  # pylint: disable=R0903
         """
         Complete the initialization of this L{_Constant}.
 
-        @param container: The L{_ConstantsContainer} subclass this constant is
+        :param container: The L{_ConstantsContainer} subclass this constant is
             part of.
 
-        @param name: The name of this constant in its container.
+        :param name: The name of this constant in its container.
 
-        @param value: The value of this constant; not used, as named constants
+        :param value: The value of this constant; not used, as named constants
             have no value apart from their identity.
         """
         self._container = container
@@ -104,15 +108,15 @@ class _ConstantsContainerType(type):
         key, the new class will not be initialized as a constants container and
         it will behave as a normal class.
 
-        @param name: The name of the container class.
-        @type name: L{str}
+        :param name: The name of the container class.
+        :type name: L{str}
 
-        @param bases: A tuple of the base classes for the new container class.
-        @type bases: L{tuple} of L{_ConstantsContainerType} instances
+        :param bases: A tuple of the base classes for the new container class.
+        :type bases: L{tuple} of L{_ConstantsContainerType} instances
 
-        @param attributes: The attributes of the new container class, including
+        :param attributes: The attributes of the new container class, including
             any constants it is to contain.
-        @type attributes: L{dict}
+        :type attributes: L{dict}
         """
         cls = super(_ConstantsContainerType, self).__new__(
             self, name, bases, attributes)
@@ -161,10 +165,10 @@ class _ConstantsContainer(_ConstantsContainerType('', (object, ), {})):
     constants.  It is up to subclasses to specify what kind of constants are
     allowed.
 
-    @cvar _constantType: Specified by a L{_ConstantsContainer} subclass to
+    :cvar _constantType: Specified by a L{_ConstantsContainer} subclass to
         specify the type of constants allowed by that subclass.
 
-    @cvar _enumerants: A C{dict} mapping the names of constants (eg
+    :cvar _enumerants: A C{dict} mapping the names of constants (eg
         L{NamedConstant} instances) found in the class definition to those
         instances.
     """
@@ -185,12 +189,12 @@ class _ConstantsContainer(_ConstantsContainerType('', (object, ), {})):
         """
         Construct the value for a new constant to add to this container.
 
-        @param name: The name of the constant to create.
+        :param name: The name of the constant to create.
 
-        @param descriptor: An instance of a L{_Constant} subclass (eg
+        :param descriptor: An instance of a L{_Constant} subclass (eg
             L{NamedConstant}) which is assigned to C{name}.
 
-        @return: L{NamedConstant} instances have no value apart from identity,
+        :return: L{NamedConstant} instances have no value apart from identity,
             so return a meaningless dummy value.
         """
         return _UNSPECIFIED
@@ -201,13 +205,13 @@ class _ConstantsContainer(_ConstantsContainerType('', (object, ), {})):
         Retrieve a constant by its name or raise a C{ValueError} if there is no
         constant associated with that name.
 
-        @param name: A C{str} giving the name of one of the constants defined
+        :param name: A C{str} giving the name of one of the constants defined
         by C{cls}.
 
-        @raise ValueError: If C{name} is not the name of one of the constants
+        :raise ValueError: If C{name} is not the name of one of the constants
             defined by C{cls}.
 
-        @return: The L{NamedConstant} associated with C{name}.
+        :return: The L{NamedConstant} associated with C{name}.
         """
         if name in cls._enumerants:
             return getattr(cls, name)
@@ -272,12 +276,12 @@ class Values(_ConstantsContainer):
         Retrieve a constant by its value or raise a C{ValueError} if there is
         no constant associated with that value.
 
-        @param value: The value of one of the constants defined by C{cls}.
+        :param value: The value of one of the constants defined by C{cls}.
 
-        @raise ValueError: If C{value} is not the value of one of the constants
+        :raise ValueError: If C{value} is not the value of one of the constants
             defined by C{cls}.
 
-        @return: The L{ValueConstant} associated with C{value}.
+        :return: The L{ValueConstant} associated with C{value}.
         """
         for constant in cls.iterconstants():
             if constant.value == value:
@@ -289,13 +293,13 @@ def _flagOp(op, left, right):
     """
     Implement a binary operator for a L{FlagConstant} instance.
 
-    @param op: A two-argument callable implementing the binary operation.  For
+    :param op: A two-argument callable implementing the binary operation.  For
         example, C{operator.operator.or_}.
 
-    @param left: The left-hand L{FlagConstant} instance.
-    @param right: The right-hand L{FlagConstant} instance.
+    :param left: The left-hand L{FlagConstant} instance.
+    :param right: The right-hand L{FlagConstant} instance.
 
-    @return: A new L{FlagConstant} instance representing the result of the
+    :return: A new L{FlagConstant} instance representing the result of the
         operation.
     """
     value = op(left.value, right.value)
@@ -325,9 +329,9 @@ class FlagConstant(_Constant):
         that a L{FlagConstant} may have several names which apply to it, due to
         flags being combined with various operators.
 
-        @param container: The L{Flags} subclass this constant is part of.
+        :param container: The L{Flags} subclass this constant is part of.
 
-        @param names: When a single-flag value is being initialized, a C{str}
+        :param names: When a single-flag value is being initialized, a C{str}
             giving the name of that flag.  This is the case which happens when
             a L{Flags} subclass is being initialized and L{FlagConstant}
             instances from its body are being realized.
@@ -383,16 +387,16 @@ class FlagConstant(_Constant):
 
     def __iter__(self):
         """
-        @return: An iterator of flags set on this instance set.
+        :return: An iterator of flags set on this instance set.
         """
         return (self._container.lookupByName(name) for name in self.names)
 
     def __contains__(self, flag):
         """
-        @param flag: The flag to test for membership in this instance
+        :param flag: The flag to test for membership in this instance
             set.
 
-        @return: C{True} if C{flag} is in this instance set, else
+        :return: C{True} if C{flag} is in this instance set, else
             C{False}.
         """
         # Optimization for testing membership without iteration.
@@ -400,7 +404,7 @@ class FlagConstant(_Constant):
 
     def __nonzero__(self):
         """
-        @return: C{False} if this flag's value is 0, else C{True}.
+        :return: C{False} if this flag's value is 0, else C{True}.
         """
         return bool(self.value)
     __bool__ = __nonzero__
@@ -422,13 +426,13 @@ class Flags(Values):
         For L{FlagConstant} instances with no explicitly defined value, assign
         the next power of two as its value.
 
-        @param name: The name of the constant to create.
+        :param name: The name of the constant to create.
 
-        @param descriptor: An instance of a L{FlagConstant}
+        :param descriptor: An instance of a L{FlagConstant}
             which is assigned to
             C{name}.
 
-        @return: Either the value passed to the C{descriptor} constructor, or
+        :return: Either the value passed to the C{descriptor} constructor, or
             the next power of 2 value which will be assigned to C{descriptor},
             relative to the value of the last defined L{FlagConstant}.
         """

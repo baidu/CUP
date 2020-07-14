@@ -251,11 +251,10 @@ class _RootLogerMan(object):
         return True
 
 
-def init_comlog(
-    loggername, loglevel=logging.INFO, logfile='cup.log',
-    logtype=ROTATION, maxlogsize=1073741824, bprint_console=False,
-    gen_wf=False
-):  # too many arg pylint: disable=R0913
+# too many arg pylint: disable=R0913
+def init_comlog(loggername, loglevel=logging.INFO, logfile='cup.log',
+                logtype=ROTATION, maxlogsize=1073741824, bprint_console=False,
+                gen_wf=False):
     """
     Initialize your default logger
 
@@ -282,6 +281,7 @@ def init_comlog(
 
     *E.g.*
     ::
+
         import logging
         from cup import log
         log.init_comlog(
@@ -326,8 +326,8 @@ def init_comlog(
 
 # too many arg pylint: disable=R0913
 def reinit_comlog(loggername, loglevel=logging.INFO, logfile='cup.log',
-    logtype=ROTATION, maxlogsize=1073741824, bprint_console=False,
-    gen_wf=False):
+                  logtype=ROTATION, maxlogsize=1073741824,
+                  bprint_console=False, gen_wf=False):
     """
     reinitialize default root logger for cup logging
 

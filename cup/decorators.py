@@ -107,6 +107,7 @@ def needposix(function):
 
     example
     ::
+
         from cup import decorators
         @decorators.needposix
         def your_func():
@@ -128,6 +129,7 @@ def needmac(function):
 
     example
     ::
+
         from cup import decorators
         @decorators.needmac
         def your_func():

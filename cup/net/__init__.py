@@ -54,6 +54,7 @@ def getip_byinterface(iface='eth0'):
 
     E.g.
     ::
+
         import cup
         print(cup.net.getip_byinterface('eth0'))
         print(cup.net.getip_byinterface('eth1'))
@@ -175,6 +176,7 @@ def set_sock_linger(sock, l_onoff=1, l_linger=0):
 
     I.g.
     ::
+
         sock.setsockopt(
             socket.SOL_SOCKET, socket.SO_LINGER,
             struct.pack('ii', 0, 0)
@@ -195,6 +197,7 @@ def set_sock_quickack(sock):
 
     I.g.
     ::
+
         sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_QUICKACK, 1)
     """

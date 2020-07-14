@@ -27,6 +27,7 @@ import collections
 from functools import wraps
 
 import cup
+from cup import err
 from cup import decorators
 
 
@@ -219,6 +220,7 @@ class MemInfo(collections.namedtuple('vmem', ' '.join([
 
     E.g.:
     ::
+
         from cup.res import linux
         meminfo = linux.get_meminfo()
         print(meminfo.total)
@@ -278,25 +280,26 @@ _COLUMN_LOCK.release()
 
 class CPUInfo(collections.namedtuple('CPUInfo', _CPU_COLUMNS)):
     """
-        CPUInfo is used for get_cpu_usage function. The following attr will be
-        in the namedtuple:
-        usr,
-        nice,
-        system,
-        idle,
-        iowait,
-        irq,
-        softirq,
-        steal,
-        guest
+    CPUInfo is used for get_cpu_usage function. The following attr will be
+    in the namedtuple:
+    usr,
+    nice,
+    system,
+    idle,
+    iowait,
+    irq,
+    softirq,
+    steal,
+    guest
 
-        I.g.
-        ::
-            import cup
-            # count cpu usage
-            from cup.res import linux
-            cpuinfo = linux.get_cpu_usage(intvl_in_sec=60)
-            print cpuinfo.usr
+    I.g.
+    ::
+
+        import cup
+        # count cpu usage
+        from cup.res import linux
+        cpuinfo = linux.get_cpu_usage(intvl_in_sec=60)
+        print cpuinfo.usr
     """
 
 
@@ -511,24 +514,28 @@ def net_io_counters():
     """
     get network statistics with a list of namedtuple
     (bytes_sent, bytes_recv, packets_sent, packets_recv,
-                         errin, errout, dropin, dropout)
-    example
-    ::
-       {
-           'lo':
-            (
-                235805206817, 235805206817, 315060887, 315060887, 0, 0, 0, 0
-            ),
-            'eth1':
-            (
-                18508976300272, 8079464483699, 32776530804,
-                32719666038, 0, 0, 708015, 0
-            ),
-            'eth0':
-            (
-                0, 0, 0, 0, 0, 0, 0, 0
-            )
-        }
+    errin, errout, dropin, dropout)
+
+
+    :return:
+        ::
+
+            # return a dict like below:
+            {
+                'lo':
+                 (
+                     235805206817, 235805206817, 315060887, 315060887, 0, 0, 0, 0
+                 ),
+                 'eth1':
+                 (
+                     18508976300272, 8079464483699, 32776530804,
+                     32719666038, 0, 0, 708015, 0
+                 ),
+                 'eth0':
+                 (
+                     0, 0, 0, 0, 0, 0, 0, 0
+                 )
+            }
     """
     decorators.needlinux(True)
     fhandle = open("/proc/net/dev", "r")
@@ -583,8 +590,9 @@ def get_net_transmit_speed(str_interface, intvl_in_sec=1):
 
     E.g.
     ::
-        import cup
-        print cup.res.linux.get_net_transmit_speed('eth1', 5)
+
+        from cup.res import linux
+        print(linux.get_net_transmit_speed('eth1', 5))
 
     """
     decorators.needlinux(True)
@@ -611,7 +619,7 @@ def get_net_recv_speed(str_interface, intvl_in_sec):
 def wrap_exceptions(fun):
     """
     Decorator which translates bare OSError and IOError exceptions
-    into cup.err.NoSuchProcess and cup.err.AccessDenied.
+    into err.NoSuchProcess and err.AccessDenied.
     """
     @wraps(fun)
     def wrapper(self, *args, **kwargs):
@@ -627,9 +635,9 @@ def wrap_exceptions(fun):
             err = sys.exc_info()[1]
             if err.errno in (errno.ENOENT, errno.ESRCH):
                 # pylint: disable=W0212
-                raise cup.err.NoSuchProcess(self._pid, self._process_name)
+                raise err.NoSuchProcess(self._pid, self._process_name)
             if err.errno in (errno.EPERM, errno.EACCES):
-                raise cup.err.ResException('EPERM or EACCES')
+                raise err.ResException('EPERM or EACCES')
             raise error
     return wrapper
 
@@ -656,7 +664,8 @@ _pmap = {}
 
 
 def process_iter():
-    """Return a generator yielding a Process instance for all
+    """
+    Return a generator yielding a Process instance for all
     running processes.
 
     Every new Process instance is only created once and then cached
@@ -667,17 +676,18 @@ def process_iter():
     case the cached instance is updated.
 
     yuetian:
-    1. the origion use a check_running function to check whether
-    PID has been reused by another process in which case yield a new
-    Process instance
-    hint:i did not use check_running function because the container of
-    pid is set
 
-    2. the origion use a sorted list(_pmap.items()) +
+        1. the origion use a check_running function to check whether
+        PID has been reused by another process in which case yield a new
+        Process instance
+        hint:i did not use check_running function because the container of
+        pid is set
+
+        2. the origion use a sorted list(_pmap.items()) +
         list(dict.fromkeys(new_pids).items()
-    to get pid and proc to make res.proc is only a instance of a pid Process
-    hint(bugs):i did not use fromkeys(new_pids) because i did not get the meanning
-    of using proc
+        to get pid and proc to make res.proc is only a instance of a pid Process
+        hint(bugs):i did not use fromkeys(new_pids) because i did not get the meanning
+        of using proc
     """
     decorators.needlinux(True)
     pid_set = set(pids())
@@ -685,7 +695,7 @@ def process_iter():
         try:
             check_process = Process(pid)
             res = check_process.get_process_name()
-        except cup.err.NoSuchProcess:
+        except err.NoSuchProcess:
             pass
         else:
             yield check_process
@@ -705,7 +715,7 @@ class Process(object):
         self._process_name = None
         self._create_time = None
         if not os.path.lexists("/proc/%s/exe" % self._pid):
-            raise cup.err.NoSuchProcess(self._pid, self._process_name)
+            raise err.NoSuchProcess(self._pid, self._process_name)
         else:
             self._create_time = self.create_time()
 
@@ -713,7 +723,7 @@ class Process(object):
         """return -1 represent the process does not exists
         """
         #if not os.path.lexists("/proc/%s/exe" % self._pid):
-        #    raise cup.err.NoSuchProcess(self._pid, self._process_name)
+        #    raise err.NoSuchProcess(self._pid, self._process_name)
         #else:
         try:
             with open("/proc/%s/stat" % self._pid, 'rb') as f:
@@ -733,14 +743,15 @@ class Process(object):
         If recursive is True return all the parent descendants.
 
         Example (A == this process):
+        ::
 
-         A ─┐
-            │
-            ├─ B (child) ─┐
-            │             └─ X (grandchild) ─┐
-            │                                └─ Y (great grandchild)
-            ├─ C (child)
-            └─ D (child)
+             A ─┐
+                │
+                ├─ B (child) ─┐
+                │             └─ X (grandchild) ─┐
+                │                                └─ Y (great grandchild)
+                ├─ C (child)
+                └─ D (child)
         """
         ppid_map = None
         ret = []
@@ -753,7 +764,7 @@ class Process(object):
                     # (self) it means child's PID has been reused
                     if self.create_time() <= p.create_time():
                         ret.append(p._pid)
-                #except (cup.err.NoSuchProcess):
+                #except (err.NoSuchProcess):
                 #    pass
         else:
             # construct a dict where 'values' are all the processes
@@ -762,7 +773,7 @@ class Process(object):
             for p in process_iter():
                 try:
                     table[p.get_process_ppid()].append(p)
-                except (cup.err.NoSuchProcess):
+                except (err.NoSuchProcess):
                     pass
             # At this point we have a mapping table where table[self.pid]
             # are the current process' children.
@@ -775,7 +786,7 @@ class Process(object):
                         # if child happens to be older than its parent
                         # (self) it means child's PID has been reused
                         intime = self.create_time() <= child.create_time()
-                    except (cup.err.NoSuchProcess):
+                    except (err.NoSuchProcess):
                         pass
                     else:
                         if intime:
@@ -815,9 +826,9 @@ class Process(object):
                     return ""
                 else:
                     # ok, it is a process which has gone away
-                    raise cup.err.NoSuchProcess(self._pid, self._process_name)
+                    raise err.NoSuchProcess(self._pid, self._process_name)
             if err.errno in (errno.EPERM, errno.EACCES):
-                raise cup.err.AccessDenied(self._pid, self._process_name)
+                raise err.AccessDenied(self._pid, self._process_name)
             raise error
 
         # readlink() might return paths containing null bytes causing
@@ -1089,9 +1100,9 @@ class Process(object):
                 f.close()
             err = sys.exc_info()[1]
             if err.errno in (errno.ENOENT, errno.ESRCH):
-                raise cup.err.NoSuchProcess(self._pid, self._process_name)
+                raise err.NoSuchProcess(self._pid, self._process_name)
             if err.errno in (errno.EPERM, errno.EACCES):
-                raise cup.err.AccessDenied(self._pid, self._process_name)
+                raise err.AccessDenied(self._pid, self._process_name)
             raise error
         except Exception as error:
             if f is not None:

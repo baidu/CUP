@@ -193,37 +193,57 @@ class CronTask(object):
 
     Typical exmaples for timer_dict:
 
-    1) one specific time  Jan 1st, 2020 18:01
+    1. one specific time  Jan 1st, 2020 18:01
+    ::
+
         timer_dict {
             'minute': [1], 'hour': [18], 'weekday': None,
             'monthday': [1], 'month': [1]
         }
-    2) every minute {
+
+    2. every minute {
+    ::
+
         timer_dict {
                 'minute': [0, 1, 2, ....59], 'hour': None, 'weekday': None,
                 'monthday': None, 'month': None
         }
-    3) every hour
+
+    3. every hour
+    ::
+
         timer_dict {
                 'minute': [0], 'hour': None, 'weekday': None,
                 'monthday': None, 'month': None
         }
-    4) every 20:00 PM
+
+    4. every 20:00 PM
+    ::
+
         timer_dict {
             'minute': [0], 'hour': [20], 'weekday': None,
             'monthday': None, 'month': None
         }
-    5) every 20:00 PM at workdays (Monday to Friday)
+
+    5. every 20:00 PM at workdays (Monday to Friday)
+    ::
+
         timer_dict {
                 'minute': [0], 'hour': [20], 'weekday': [1, 2, 3, 4, 5],
                 'monthday': None, 'month': None
         }
-    6) every 20:00 PM at workdays for Jan and July
+
+    6. every 20:00 PM at workdays for Jan and July
+    ::
+
         timer_dict {
             'minute': [0], 'hour': [20], 'weekday': [1, 2, 3, 4, 5],
             'monthday': None, 'month': [1, 7]
         }
-    7) every 20:00 PM at 1st, 3rd of Jan and July
+
+    7. every 20:00 PM at 1st, 3rd of Jan and July
+    ::
+
         timer_dict {
             'minute': [0], 'hour': [20], 'weekday': None,
             'monthday': [1, 3], 'month': [1, 7]
@@ -356,14 +376,16 @@ class CronTask(object):
         set tmp_dict to next valid date, specifically month
 
         :param tmp_dict:
-            {
-                'year': xxxx,
-                'month': xxxx,
-                'monthday': xxxx,
-                'weekday': xxxx,
-                'hour': xxxx,
-                'minute': xxxx
-            }
+            ::
+
+                {
+                    'year': xxxx,
+                    'month': xxxx,
+                    'monthday': xxxx,
+                    'weekday': xxxx,
+                    'hour': xxxx,
+                    'minute': xxxx
+                }
         :param timer_params:
             valid timer dict, same to self._timer_params
         """
@@ -630,15 +652,17 @@ class CronExecution(ExecutionService):
         timer.start()
 
     def schedule(self, crontask):
-        """schedule.
+        """schedule the crontask
 
         :param timer_dict:
-            {   'minute': minute_list,
-                'hour': hour_list,
-                'weekday': weekday_list,
-                'monthday': monday_list,
-                'month': month_list
-            }
+            ::
+
+                {   'minute': minute_list,
+                    'hour': hour_list,
+                    'weekday': weekday_list,
+                    'monthday': monday_list,
+                    'month': month_list
+                }
         :param function:
             function that to be scheduled
         :param args:

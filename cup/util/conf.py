@@ -411,12 +411,14 @@ class Configure2Dict(object):  # pylint: disable=R0903
             - global section is the 0th layer section
 
             e.g.
+            ::
 
                 # test.conf
                 global-key: value
                 global-key1: value1
 
         2.2 child section
+
             - [section1] means a child section under Global. And it's the
               1st layer section
             - [.section2] means a child section under the nearest section
@@ -424,8 +426,7 @@ class Configure2Dict(object):  # pylint: disable=R0903
             - [..section3] means a child section under the nearest section
               above. And the prefix .. means it is the 3rd layer section
 
-            e.g.:
-            test.conf:
+            e.g.: test.conf:
             ::
 
                 global-key: value
@@ -440,6 +441,7 @@ class Configure2Dict(object):  # pylint: disable=R0903
                                 wow_key:  wow_value
 
         2.3 section access method
+
             get_dict method will convert conf into a ConfDict which is derived
             from python dict.
 
@@ -451,11 +453,13 @@ class Configure2Dict(object):  # pylint: disable=R0903
     3. key:value and key:value array
 
         3.1 key:value
+
             key:value can be set under Global section which is closely after the
             1st line with no [section] above.
 
             key:value can also be set under sections.
             ::
+
                 # test.conf
                 key1: value1
                 [section]
@@ -464,8 +468,10 @@ class Configure2Dict(object):  # pylint: disable=R0903
                         key_section_child: value_section_child
 
         3.2 key:value arrays
+
             key:value arrays can be access with confdict['section']['disk'].
             You will get a ConfList derived from python list.
+
         ::
 
             # test.conf
@@ -480,7 +486,9 @@ class Configure2Dict(object):  # pylint: disable=R0903
                 @disk: /home/disk/disk2
 
     4. Example
+
     ::
+
         # test.conf
         # Global layer, key:value
         host: abc.com
@@ -1178,13 +1186,15 @@ class HdfsXmlConf(object):
         """
         return hadoop config items as a dict.
 
-        ::
-            {
-                'dfs.datanode.max.xcievers':  {
-                    'value': 'true', 'description': 'xxxxxxxxxx'
-                },
-                ......
-            }
+        :return:
+            ::
+
+                {
+                    'dfs.datanode.max.xcievers':  {
+                        'value': 'true', 'description': 'xxxxxxxxxx'
+                    },
+                    ......
+                }
         """
         return self._load_items()
 
@@ -1241,11 +1251,13 @@ class HdfsXmlConf(object):
         """
         update config items with a dict kvs. Refer to the example above.
 
-        ::
-            {
-                key : { 'value': value, 'description': 'description'},
-                ......
-            }
+        :param kvs:
+            ::
+
+                {
+                    key : { 'value': value, 'description': 'description'},
+                    ......
+                }
         """
         self._load_items()
         str_xml = self._write_to_conf(kvs)

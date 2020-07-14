@@ -18,7 +18,15 @@ import cup
 
 
 def async_raise(tid, exctype):
-    """Raises an exception in the threads with id tid"""
+    """
+    Raises an exception in the threads with id tid
+
+    :param tid:
+        thread id in python
+    :param exctype:
+        exception class, e.g. IOError
+
+    """
     return ctypes.pythonapi.PyThreadState_SetAsyncExc(
         tid,
         ctypes.py_object(exctype)
@@ -29,16 +37,18 @@ class CupThread(threading.Thread):
     """
     CupThread is a sub-class inherited from threading.Thread;
 
-    CupThread has 3 more methods:
+    .. HINT::
 
-    1. raise_exc, to send a raise-exception signal to the thread,
-        TRY to let the thread raise an exception.
+        CupThread has 3 more methods:
 
-    2.  get_my_tid, get thread id
+        1. raise_exc, to send a raise-exception signal to the thread,\
+            TRY to let the thread raise an exception.
+        2. get_my_tid, get thread id
+        3. terminate, to stop the thread
 
-    3. terminate, to stop the thread
+    .. CAUTION::
 
-    Notice if a thread in busy running under kernel-sysmode, it may not
+        Notice if a thread in busy running under kernel-sysmode, it may not
         response to the signals! Thus, it may not raise any exception/terminate
         even though cup has send a CupThread signal!
     """
@@ -64,6 +74,7 @@ class CupThread(threading.Thread):
     def raise_exc(self, exctype):
         """
         asynchrously send 'raise exception' signal to the thread.
+
         :param exctype:
             raise Exception, exctype type is class
         :return:
@@ -93,7 +104,23 @@ class CupThread(threading.Thread):
 
 class RWLock(object):
     """
-    read/write lock
+    Read Write Lock is a typical lock type in computer world.
+
+    Code example:
+    ::
+
+        from cup import thread
+        rwlock = thread.RWLock()
+        # can acquire read lock
+        rwlock.acquire_readlock()
+        # can acquire read lock again if there has not been WRITE locked
+        rwlock.acquire_readlock()   # <-- this will succeed
+        # rwlock.acquire_writelock()  # <--- this will hang if uncommented
+        rwlock.release_readlock()
+        rwlock.acquire_writelock()
+        # rwlock.acquire_readlock() # <--- this will hang if uncommented
+        rwlock.release_writelock()
+
     """
     def __init__(self):
         self._lock = threading.Lock()
@@ -103,9 +130,13 @@ class RWLock(object):
 
     def acquire_writelock(self, wait_time=None):
         """
-        Acquire write lock. If wait_time is not None and wait_time >=0,
-        cup will wait until wait_time passes. If the call timeouts and
-        cannot get the lock, will raise RuntimeError
+        Acquire write lock.
+
+        .. IMPORTANT::
+
+            If wait_time is not None and wait_time >=0,
+            cup will wait until wait_time passes. If the call timeouts and
+            cannot get the lock, will raise RuntimeError
         """
         self._cond.acquire()
         if self._wt_num > 0 or self._rd_num > 0:

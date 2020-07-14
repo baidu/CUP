@@ -31,6 +31,7 @@ class RouteInfo(object):
 
     *Return*
     ::
+
         {
          "Use": "0",
          "Iface": "eth1",
@@ -132,7 +133,10 @@ class RouteInfo(object):
     def _int2ip(dec):
         """
         change integer to ip address
-        :param dec: decimal integer in type fo string
+
+        :param dec:
+            decimal integer in type fo string
+
         :return: ip address
         """
         return socket.inet_ntoa(struct.pack("!I", dec))
@@ -178,6 +182,7 @@ class RouteInfo(object):
     def _raw2view(self, r):
         """
         change raw route_info to be readable
+
         :param r:
             raw route_info
         :return:
@@ -194,7 +199,9 @@ class RouteInfo(object):
     def get_routes(self):
         """
         get all the route_info of this host
-        :return: all the readable route_info of this host
+
+        :return:
+            all the readable route_info of this host
         """
         res_l = []
         for r in self._raw:
@@ -204,8 +211,10 @@ class RouteInfo(object):
     def get_interface_by_ip(self, ip):
         """
         get the interface which can reach to the ip
+
         :param ip:
             destination ip
+
         :return:
             interface name which can reach to the ip.
             None if failed.
@@ -221,8 +230,10 @@ class RouteInfo(object):
     def get_route_by_ip(self, ip):
         """
         get the route_info which can reach to the ip address
+
         :param ip:
             destination ip address
+
         :return:
             route_info in type of dict
         """

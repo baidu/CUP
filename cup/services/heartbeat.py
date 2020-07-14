@@ -130,16 +130,19 @@ class LinuxHost(Device):
 
     def set_linux_res_bydict(self, info_dict):
         """
-            {
-                'iface': 'eth0',
-                'ipaddr': '10.10.10.1',
-                'port':   8089,
-                'cpu_idle': 50,
-                'mem_inuse': 1024,        # MB
-                'mem_total': 8192,
-                'net_in':    8192,        # kb
-                'net_out':   102400,      # kb
-            }
+        :param info_dict:
+            ::
+
+                {
+                    'iface': 'eth0',
+                    'ipaddr': '10.10.10.1',
+                    'port':   8089,
+                    'cpu_idle': 50,
+                    'mem_inuse': 1024,        # MB
+                    'mem_total': 8192,
+                    'net_in':    8192,        # kb
+                    'net_out':   102400,      # kb
+                }
         """
         for key in info_dict:
             if key not in self._dict_info:

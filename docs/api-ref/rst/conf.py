@@ -19,14 +19,14 @@
 
 # -- Project information -----------------------------------------------------
 
-project = u'cup'
-copyright = u'2018, CUP-DEV'
+project = u'Cup'
+copyright = u'2020, CUP-DEV'
 author = u'CUP-DEV'
 
 # The short X.Y version
-version = u'1.7'
+version = u'3.2.0'
 # The full version, including alpha/beta/rc tags
-release = u'1.7.0'
+release = u'3.2.19'
 
 
 # -- General configuration ---------------------------------------------------
@@ -146,7 +146,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'cup.tex', u'cup Documentation',
+    (master_doc, 'cup.tex', u'Cup Documentation',
      u'Author', 'manual'),
 ]
 
@@ -156,7 +156,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'cup', u'cup Documentation',
+    (master_doc, 'cup', u'Cup Documentation',
      [author], 1)
 ]
 

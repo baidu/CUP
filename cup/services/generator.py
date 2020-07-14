@@ -132,8 +132,8 @@ class CGeneratorMan(object):
 class CycleIDGenerator(object):
     """
     cycle id generator. 128bit ID will be produced.
-    128 bit contains:
-        a. 64bit [ip, port, etc]  b. 64bit[auto increment id]
+
+    128 bit contains: a. 64bit [ip, port, etc]  b. 64bit[auto increment id]
     """
     def __init__(self, ip, port):
         """
