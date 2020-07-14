@@ -140,7 +140,7 @@ class ObjectInterface(object):
 
 class AFSObjectSystem(ObjectInterface):
     """
-    afs object
+    AFSObjectSystem implemented interface.
     """
     def __init__(self, config):
         """
@@ -173,53 +173,59 @@ class AFSObjectSystem(ObjectInterface):
             object path
 
         :return:
-            {
-                'returncode': 0 for success, others for failure,
-                'msg': 'if any'
+            ::
 
-            }
+                {
+                    'returncode': 0 for success, others for failure,
+                    'msg': 'if any'
+                }
         """
 
     def get(self, path, localpath):
         """
         get the object into localpath
+
         :return:
-            {
-                'returncode': 0 for success, others for failure,
-                'msg': 'if any'
+            ::
 
-            }
-
+                {
+                    'returncode': 0 for success, others for failure,
+                    'msg': 'if any'
+                }
         """
 
     def head(self, path):
         """
         get the object info
-        :return:
-           {
-               'returncode': 0 for success, others for failure,
-               'msg': 'if any'
-               'objectinfo': {
-                   size: 1024,
-                   .......
-               }
 
-           }
+        :return:
+            ::
+
+                {
+                    'returncode': 0 for success, others for failure,
+                    'msg': 'if any'
+                    'objectinfo': {
+                    size: 1024,
+                    .......
+                    }
+                }
         """
 
     def mkdir(self, path):
         """
         mkdir dir of a path
-        :return:
-           {
-               'returncode': 0 for success, others for failure,
-               'msg': 'if any'
-               'objectinfo': {
-                   size: 1024,
-                   .......
-               }
 
-           }
+        :return:
+            ::
+
+                {
+                    'returncode': 0 for success, others for failure,
+                    'msg': 'if any'
+                    'objectinfo': {
+                    size: 1024,
+                    .......
+                    }
+                }
         """
 
     def rmdir(self, path):
@@ -282,11 +288,12 @@ class S3ObjectSystem(ObjectInterface):
             localfile
 
         :return:
-            {
-                'returncode': 0 for success, others for failure,
-                'msg': 'if any'
+            ::
 
-            }
+                {
+                    'returncode': 0 for success, others for failure,
+                    'msg': 'if any'
+                }
         """
         ret = {
             'returncode': -1,
@@ -337,6 +344,7 @@ class S3ObjectSystem(ObjectInterface):
     def get(self, path, localpath):
         """
         get the object into localpath
+
         :return:
             {
                 'returncode': 0 for success, others for failure,
@@ -364,16 +372,18 @@ class S3ObjectSystem(ObjectInterface):
     def head(self, path):
         """
         get the object info
-        :return:
-           {
-               'returncode': 0 for success, others for failure,
-               'msg': 'if any'
-               'objectinfo': {
-                   size: 1024,
-                   .......
-               }
 
-           }
+        :return:
+            ::
+
+                {
+                    'returncode': 0 for success, others for failure,
+                    'msg': 'if any'
+                    'objectinfo': {
+                        size: 1024,
+                        .......
+                    }
+                }
         """
         ret = {
             'returncode': -1,
@@ -395,15 +405,18 @@ class S3ObjectSystem(ObjectInterface):
     def mkdir(self, path):
         """
         mkdir dir of a path
+
         :return:
-           {
-               'returncode': 0 for success, others for failure,
-               'msg': 'if any'
-               'objectinfo': {
-                   size: 1024,
-                   .......
-               }
-           }
+            ::
+
+                {
+                    'returncode': 0 for success, others for failure,
+                    'msg': 'if any',
+                    'objectinfo': {
+                        size: 1024,
+                        ..
+                    }
+                }
         """
         raise err.NotImplementedYet('mkdir not supported for S3ObjectSystem')
 
@@ -644,14 +657,17 @@ class FTPObjectSystem(ObjectInterface):
     def head(self, path):
         """
         get the file info
+
         :return:
-           {
-               'returncode': 0 for success, others for failure,
-               'msg': 'if any'
-               'fileinfo': [
-                   "-rw-rw-r-- 1 work work   201 Nov  9 17:03 __init__.py"
-               [
-           }
+            ::
+
+                {
+                    'returncode': 0 for success, others for failure,
+                    'msg': 'if any'
+                    'fileinfo': [
+                        "-rw-rw-r-- 1 work work   201 Nov  9 17:03 __init__.py"
+                    ]
+                }
 
         """
         ret = {

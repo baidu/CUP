@@ -261,6 +261,7 @@ def is_port_used(port):
     """
     judge if the port is used or not (It's not 100% sure as next second, some
     other process may steal the port as soon after this function returns)
+
     :platform:
         linux only (netstat command used inside)
     :param port:
