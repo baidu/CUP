@@ -346,6 +346,49 @@
                                 <section class="normal markdown-section">
                                 
                                 <h1 id="1-versions-released"><a name="1-versions-released" class="plugin-anchor" href="#1-versions-released"><i class="fa fa-link" aria-hidden="true"></i></a>1. Versions Released</h1>
+<h2 id="version-3220"><a name="version-3220" class="plugin-anchor" href="#version-3220"><i class="fa fa-link" aria-hidden="true"></i></a>Version 3.2.20</h2>
+<ul>
+<li>[Enhancement] <em>cup.log</em> | Add xdebug/xinfo/xinit_comlog in order to support different loggers</li>
+<li>[Removal] <em>cup.jenkinslib</em> | Recommand using python-jenkins to replace cup.jenkinslib</li>
+</ul>
+<h2 id="version-3219"><a name="version-3219" class="plugin-anchor" href="#version-3219"><i class="fa fa-link" aria-hidden="true"></i></a>Version 3.2.19</h2>
+<ul>
+<li>[Enhancement] <em>cup.services.generator</em> | Add visibility to Cached UUID</li>
+<li>[Enhancement] <em>cup.util.conf</em> |  Fix py3 support bug</li>
+<li>[New] <em>cup.services.executor</em> | Add Crontab-like execution service</li>
+<li>[Bug] <em>cup.net.asyn.context</em> | Fix bug which introduces RW Lock problem</li>
+<li>[Compatibility] * cup.shell.expect | Fix compatibility bug related to remote execution</li>
+<li>[New] <em>cup.timeplus</em> | Add TimePlus for i18n time related functions</li>
+<li>[Bug] <em>cup.shell.oper and cup.shell.expect</em> | Fix bugs for remote execution and async shell run</li>
+</ul>
+<h2 id="version-327--202011--2020331"><a name="version-327--202011--2020331" class="plugin-anchor" href="#version-327--202011--2020331"><i class="fa fa-link" aria-hidden="true"></i></a>Version 3.2.7  2020.1.1 ~ 2020.3.31</h2>
+<ul>
+<li>[Enhancement] Change cup.net.async to cup.net.asyn to avoid language keyword &quot;async&quot;</li>
+<li>[New] Support Python version &gt;= 3.5</li>
+<li>[New] add safe_rmtree in cup.exfile</li>
+<li>[Bug] <em>cup.exfile</em> fix bug for cup.exfile for macos</li>
+<li>[Bug] <em>cup.shell.ShellExec</em> fix bug for </li>
+<li>[New] Add support for global socket keepalive</li>
+<li>[Enhancement] <em>cup.exfile</em> Add some path into CANNOT_DEL_PATHLIST</li>
+<li>[New] <em>cup.services.generator</em> Add cached generator </li>
+<li>[Enhancement] <em>cup.shell.expect</em> Replace shell expect with paramiko based remote cmd execution</li>
+<li>[Enhancement] <em>cup.net.async.conn</em> Replace mutex lock with ReadWriteLock to speed up </li>
+</ul>
+<h2 id="version-31x-under-development-20199--20191226"><a name="version-31x-under-development-20199--20191226" class="plugin-anchor" href="#version-31x-under-development-20199--20191226"><i class="fa fa-link" aria-hidden="true"></i></a>Version 3.1.x Under Development 2019.9 ~ 2019.12.26</h2>
+<ul>
+<li>[Enhancement] cup.services.serilizer - loglist</li>
+<li>[New] cup.storage.obj - rename</li>
+<li>[Bug] cup.storage.obj - ftp uri bug</li>
+</ul>
+<h2 id="version-300-py-support-alpha-20196--201988"><a name="version-300-py-support-alpha-20196--201988" class="plugin-anchor" href="#version-300-py-support-alpha-20196--201988"><i class="fa fa-link" aria-hidden="true"></i></a>Version 3.0.0 py support alpha 2019.6 ~ 2019.8.8</h2>
+<ul>
+<li>[Enhancement] cup.net get ip address</li>
+<li>[New] Py3 support (excep for cup.net.async, tcp async msg stack)</li>
+<li>[Bug] fix traceback for cup.storage.obj </li>
+<li>[Enhancement] cup.exfile - support lock_file for windows</li>
+<li>[Bug] Fix installation bug in setup.py</li>
+<li>[New] Add get unique hexid for cup.services.generator</li>
+</ul>
 <h2 id="version-220---2019511--529"><a name="version-220---2019511--529" class="plugin-anchor" href="#version-220---2019511--529"><i class="fa fa-link" aria-hidden="true"></i></a>Version 2.2.0 - 2019.5.11 ~ 5.29</h2>
 <ul>
 <li>[Fancy] Change a new logo, hats to community user @davidmind (from github) </li>
@@ -361,35 +404,40 @@
 * [New] Py3 compatibility test and reconsutrction is undergoing
 * [Enhancement] cup.shell.oper - Change subprocess.Pipe(shell=True by default to shell=False)
 * [Bug] github socket closure (https://github.com/baidu/CUP/issues/32) 
+* [Bug] cup.shell.oper async_run, kill procedure for children pids has bugs 
 </code></pre><h2 id="version-200---201862--20181231"><a name="version-200---201862--20181231" class="plugin-anchor" href="#version-200---201862--20181231"><i class="fa fa-link" aria-hidden="true"></i></a>Version 2.0.0 - 2018.6.2 ~ 2018.12.31</h2>
-<pre><code>* [New] pip support
-* [New] cup.storage.obj - Add ftp/s3/local storage support (with universal apis)
-* [Bug] cup.net.localport_free - Reversely result returned
-* [Bug] cup.net.async - Msg class class variable 
-* [Bug] cup.net.async - logging typo
-* [Bug] cup.net.async - Msg disorder bug (an import bug fix!)
-* [New] cup.net.async - Add get_context related class method
-* [Bug] cup.decorators - fix wrap exception
-* [Bug] cup.unittest - Fix bug for assert_lt
-* [Bug] cup.res.linux - Add support for customized linux kernel
-* [Enahcnement] cup.net.set_sock_keepalive_linux - add exception catch code lines
-* [Enhancement] Use rtd (read_the_doc theme) to reconsutrct cup api-doc
-</code></pre><h2 id="version-161---starting-from-201825--201861"><a name="version-161---starting-from-201825--201861" class="plugin-anchor" href="#version-161---starting-from-201825--201861"><i class="fa fa-link" aria-hidden="true"></i></a>Version 1.6.1 - starting from 2018.2.5 ~ 2018.6.1</h2>
-<pre><code>* [New] cup.shell.is_proc_alive - Add optional to abandon vim|less|vi|tail|cat|more or custom filter    
-* [Bug] cup.shell.get_pid - Fix grep to surely abandon vim|less|vi|tail|cat|more 
-* [New] cup.log - Add support for stack manipulation, which can pop out function calls.
-* [New] cup.err - Add UnImplemented exception class.
-* [New] cup.exfile - Support temp files which will be removed immediately after the variable life ends.
-* [Enhancement] cup.util.conf - support $ in a conf key
-* [Doc] cup.shell - Fix doc bug. 
-* [New] cup.shell - Add grep support string with space
-* [New] cup.storage.obj - Support common object storage apis including ftp, s3
-* [Bug] cup.res.linux - Getting cpuinfo has bugs (new kernel 3.10)
-* [Enhancement] - cup.util.threadpool, add daemon_threads as the parameter
-    that you can use to let the threadpool threads behave like daemon-thread
-    (when the main thread exits, it exits as well)
-* [Enhancement] - conf.util.conf - support conf line &quot;[.test] # comments&quot; 
-</code></pre><h2 id="version-160---starting-from-201796--20171229"><a name="version-160---starting-from-201796--20171229" class="plugin-anchor" href="#version-160---starting-from-201796--20171229"><i class="fa fa-link" aria-hidden="true"></i></a>Version 1.6.0 - starting from 2017.9.6 ~ 2017.12.29</h2>
+<ul>
+<li>[New] pip support</li>
+<li>[New] cup.storage.obj - Add ftp/s3/local storage support (with universal apis)</li>
+<li>[Bug] cup.net.localport_free - Reversely result returned</li>
+<li>[Bug] cup.net.async - Msg class class variable </li>
+<li>[Bug] cup.net.async - logging typo</li>
+<li>[Bug] cup.net.async - Msg disorder bug (an import bug fix!)</li>
+<li>[New] cup.net.async - Add get_context related class method</li>
+<li>[Bug] cup.decorators - fix wrap exception</li>
+<li>[Bug] cup.unittest - Fix bug for assert_lt</li>
+<li>[Bug] cup.res.linux - Add support for customized linux kernel</li>
+<li>[Enahcnement] cup.net.set_sock_keepalive_linux - add exception catch code lines</li>
+<li>[Enhancement] Use rtd (read_the_doc theme) to reconsutrct cup api-doc</li>
+</ul>
+<h2 id="version-161---starting-from-201825--201861"><a name="version-161---starting-from-201825--201861" class="plugin-anchor" href="#version-161---starting-from-201825--201861"><i class="fa fa-link" aria-hidden="true"></i></a>Version 1.6.1 - starting from 2018.2.5 ~ 2018.6.1</h2>
+<ul>
+<li>[New] cup.shell.is_proc_alive - Add optional to abandon vim|less|vi|tail|cat|more or custom filter    </li>
+<li>[Bug] cup.shell.get_pid - Fix grep to surely abandon vim|less|vi|tail|cat|more </li>
+<li>[New] cup.log - Add support for stack manipulation, which can pop out function calls.</li>
+<li>[New] cup.err - Add UnImplemented exception class.</li>
+<li>[New] cup.exfile - Support temp files which will be removed immediately after the variable life ends.</li>
+<li>[Enhancement] cup.util.conf - support $ in a conf key</li>
+<li>[Doc] cup.shell - Fix doc bug. </li>
+<li>[New] cup.shell - Add grep support string with space</li>
+<li>[New] cup.storage.obj - Support common object storage apis including ftp, s3</li>
+<li>[Bug] cup.res.linux - Getting cpuinfo has bugs (new kernel 3.10)</li>
+<li>[Enhancement] - cup.util.threadpool, add daemon_threads as the parameter
+  that you can use to let the threadpool threads behave like daemon-thread
+  (when the main thread exits, it exits as well)</li>
+<li>[Enhancement] - conf.util.conf - support conf line &quot;[.test] # comments&quot; </li>
+</ul>
+<h2 id="version-160---starting-from-201796--20171229"><a name="version-160---starting-from-201796--20171229" class="plugin-anchor" href="#version-160---starting-from-201796--20171229"><i class="fa fa-link" aria-hidden="true"></i></a>Version 1.6.0 - starting from 2017.9.6 ~ 2017.12.29</h2>
 <pre><code>* [New] cup.bidu.icafe - interact with baidu icafe.
 * [New] MsgBroker - Add a broker for handling system failures
 * [New] cup.
@@ -516,7 +564,7 @@ ValueError
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"ReleaseNote","level":"1.6.2","depth":2,"previous":{"title":"RoadMap","level":"1.6.1","depth":2,"path":"RoadMap.md","ref":"RoadMap.md","articles":[]},"dir":"ltr"},"config":{"plugins":["-sharing","splitter","anchors","sharing-plus","favicon","insert-logo","chinese-video","github-buttons"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"splitter":{},"search":{},"sharing-plus":{"qq":false,"all":["facebook","google","twitter","instapaper","linkedin","pocket","stumbleupon"],"douban":false,"facebook":true,"weibo":false,"instapaper":false,"whatsapp":false,"hatenaBookmark":false,"twitter":true,"messenger":false,"line":false,"vk":false,"pocket":true,"google":false,"viber":false,"stumbleupon":false,"qzone":false,"linkedin":false},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"anchor-navigation-ex":{"showLevel":false,"mode":"float","pageTop":{"showLevelIcon":true,"level1Icon":"fa fa-hand-o-right","level2Icon":"fa fa-hand-o-right","level3Icon":"fa fa-hand-o-right"}},"favicon":{"shortcut":"./images/cup.logo.jpg","bookmark":"./images/cup.logo.jpg","appleTouch":"./images/cup.logo.jpg"},"github-buttons":{"repo":"baidu/CUP","types":["star","watch","fork"],"size":"large"},"chinese-video":{},"sharing":{"qq":false,"all":["google","facebook","weibo","twitter","qq","qzone","linkedin","pocket"],"douban":false,"facebook":false,"weibo":false,"instapaper":false,"whatsapp":false,"hatenaBookmark":false,"twitter":false,"messenger":false,"line":false,"vk":false,"pocket":false,"google":false,"viber":false,"stumbleupon":false,"qzone":false,"linkedin":false},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{},"insert-logo":{"style":"background: none;","url":"http://cup.iobusy.com/cup.logo.png"}},"theme":"default","author":"Guannan Ma","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Cup Documentation","language":"zh-hans","links":{"sidebar":{"Github Website":"https://github.com/baidu/CUP"}},"gitbook":"*","description":"Cup Documentation which you may refer to"},"file":{"path":"ChangeLog.md","mtime":"2019-05-30T02:39:23.028Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-05-30T02:42:02.185Z"},"basePath":".","book":{"language":"zh-hans"}});
+            gitbook.page.hasChanged({"page":{"title":"ReleaseNote","level":"1.6.2","depth":2,"previous":{"title":"RoadMap","level":"1.6.1","depth":2,"path":"RoadMap.md","ref":"RoadMap.md","articles":[]},"dir":"ltr"},"config":{"plugins":["-sharing","splitter","anchors","sharing-plus","favicon","insert-logo","chinese-video","github-buttons"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"splitter":{},"search":{},"sharing-plus":{"qq":false,"all":["facebook","google","twitter","instapaper","linkedin","pocket","stumbleupon"],"douban":false,"facebook":true,"weibo":false,"instapaper":false,"whatsapp":false,"hatenaBookmark":false,"twitter":true,"messenger":false,"line":false,"vk":false,"pocket":true,"google":false,"viber":false,"stumbleupon":false,"qzone":false,"linkedin":false},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"anchor-navigation-ex":{"showLevel":false,"mode":"float","pageTop":{"showLevelIcon":true,"level1Icon":"fa fa-hand-o-right","level2Icon":"fa fa-hand-o-right","level3Icon":"fa fa-hand-o-right"}},"favicon":{"shortcut":"./images/cup.logo.jpg","bookmark":"./images/cup.logo.jpg","appleTouch":"./images/cup.logo.jpg"},"github-buttons":{"repo":"baidu/CUP","types":["star","watch","fork"],"size":"large"},"chinese-video":{},"sharing":{"qq":false,"all":["google","facebook","weibo","twitter","qq","qzone","linkedin","pocket"],"douban":false,"facebook":false,"weibo":false,"instapaper":false,"whatsapp":false,"hatenaBookmark":false,"twitter":false,"messenger":false,"line":false,"vk":false,"pocket":false,"google":false,"viber":false,"stumbleupon":false,"qzone":false,"linkedin":false},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{},"insert-logo":{"style":"background: none;","url":"http://cup.iobusy.com/cup.logo.png"}},"theme":"default","author":"Guannan Ma","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Cup Documentation","language":"zh-hans","links":{"sidebar":{"Github Website":"https://github.com/baidu/CUP"}},"gitbook":"*","description":"Cup Documentation which you may refer to"},"file":{"path":"ChangeLog.md","mtime":"2020-07-09T08:47:33.907Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-14T09:31:09.653Z"},"basePath":".","book":{"language":"zh-hans"}});
         });
     </script>
 </div>
