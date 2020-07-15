@@ -48,9 +48,9 @@ class CupThread(threading.Thread):
 
     .. CAUTION::
 
-        Notice if a thread in busy running under kernel-sysmode, it may not
-        response to the signals! Thus, it may not raise any exception/terminate
-        even though cup has send a CupThread signal!
+        Notice if a thread is busy running under kernel-sysmode, it may not
+        response to the signals! In other words, it may not raise any
+        exception/terminate even though cup has send a CupThread signal!
     """
     def get_my_tid(self):
         """
@@ -70,6 +70,7 @@ class CupThread(threading.Thread):
                 # pylint: disable=W0201
                 self._thread_id = tid
                 return tid
+        return None
 
     def raise_exc(self, exctype):
         """
