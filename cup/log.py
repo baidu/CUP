@@ -194,10 +194,12 @@ class LogInitializer(object):
             cls.proc_thd_id(), cls.get_codefile(2 + back_trace_len),
             cls.get_codeline(2 + back_trace_len)
         )
-        msg = '%s%s' % (tempmsg, msg)
-        if isinstance(msg, unicode):
-            return msg
-        return msg.decode('utf8')
+        msg = '{0}{1}'.format(tempmsg, msg)
+        if platforms.is_py2():
+            if isinstance(msg, unicode):
+                return msg
+            return msg.decode('utf8')
+        return msg
 
 
 # pylint: disable=R0903
@@ -365,9 +367,12 @@ def reinit_comlog(loggername, loglevel=logging.INFO, logfile='cup.log',
 
 
 def _fail_handle(msg, e):
-    if not isinstance(msg, unicode):
-        msg = msg.decode('utf8')
-    print('{0}\nerror:{1}'.format(msg, e))
+    if platforms.is_py2():
+        if not isinstance(msg, unicode):
+            msg = msg.decode('utf8')
+        print('{0}\nerror:{1}'.format(msg, e))
+    elif platforms.is_py3():
+        print('{0}\nerror:{1}'.format(msg, e))
 
 
 def backtrace_info(msg, back_trace_len=0):

@@ -1,5 +1,6 @@
 # 1. Versions Released
 ## Version 3.2.20
+* [Compatibility] *cup.log* | Fix unicode bug for py3
 * [Enhancement] *cup.log* | Add xdebug/xinfo/xinit_comlog in order to support different loggers
 * [Removal] *cup.jenkinslib* | Recommand using python-jenkins to replace cup.jenkinslib
 
