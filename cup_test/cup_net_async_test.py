@@ -15,10 +15,10 @@ sys.path.insert(0, _NOW_PATH + '../')
 import cup
 from cup import unittest
 #from cup.unittest import CCaseExecutor
-from cup.net import async
-# from cup.net.async import ip_port2connaddr
-# from cup.net.async import add_stub2connaddr
-# from cup.net.async import add_future2connaddr
+from cup.net import asyn
+# from cup.net.asyn import ip_port2connaddr
+# from cup.net.asyn import add_stub2connaddr
+# from cup.net.asyn import add_future2connaddr
 
 
 class CTestAsync(unittest.CUTCase):
@@ -32,13 +32,13 @@ class CTestAsync(unittest.CUTCase):
         pass
 
     def _constrct_msg(self):
-        msg = async.CNetMsg()
+        msg = asyn.CNetMsg()
         msg.set_need_head(True)
         msg.push_data(msg.MSG_SIGN)
         cup.unittest.assert_eq(msg._data['head'], msg.MSG_SIGN)
         del msg
 
-        msg = async.CNetMsg()
+        msg = asyn.CNetMsg()
         msg.set_need_head(True)
         msg.push_data(msg.MSG_SIGN[0: len(msg.MSG_SIGN) - 2])
         msg.push_data(msg.MSG_SIGN[len(msg.MSG_SIGN) - 2: len(msg.MSG_SIGN)])
@@ -49,25 +49,25 @@ class CTestAsync(unittest.CUTCase):
         )
 
         peer = ('137.2.23.44', 6300)
-        pack = async.ip_port2connaddr(peer)
-        pack = async.add_stub2connaddr(pack, 15500)
-        pack = async.add_future2connaddr(pack, 45678)
+        pack = asyn.ip_port2connaddr(peer)
+        pack = asyn.add_stub2connaddr(pack, 15500)
+        pack = asyn.add_future2connaddr(pack, 45678)
 
         data = msg.asign_uint2byte_bybits(pack, 128)
         reverse_data = msg.convert_bytes2uint(data)
 
         cup.unittest.assert_eq(
-            cup.net.async.get_ip_and_port_connaddr(reverse_data),
+            cup.net.asyn.get_ip_and_port_connaddr(reverse_data),
             ('137.2.23.44', 6300)
         )
 
         cup.unittest.assert_eq(
-            cup.net.async.getstub_connaddr(reverse_data),
+            cup.net.asyn.getstub_connaddr(reverse_data),
             15500
         )
 
         cup.unittest.assert_eq(
-            cup.net.async.getfuture_connaddr(reverse_data),
+            cup.net.asyn.getfuture_connaddr(reverse_data),
             45678
         )
 

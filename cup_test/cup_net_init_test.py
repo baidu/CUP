@@ -6,6 +6,7 @@
 
 import os
 import sys
+import pdb
 import socket
 
 _NOW_PATH = os.path.dirname(os.path.abspath(__file__)) + '/'
@@ -18,7 +19,7 @@ from cup import unittest
 def test_port_free():
     """test port_listened"""
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind((net.get_hostip(), 61113))
+    sock.bind(('0.0.0.0', 61113))
     sock.settimeout(1)
     net.set_sock_reusable(sock)
     sock.listen(1)

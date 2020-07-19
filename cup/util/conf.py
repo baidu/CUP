@@ -16,6 +16,7 @@ import functools
 from xml.dom import minidom
 
 import cup
+from cup import platforms
 
 
 __all__ = [
@@ -333,7 +334,7 @@ class ConfDict(dict):
         self._reverse_ind = -99999999
 
     def __delitem__(self, key):
-        dict.__delitem__(key)
+        super(ConfDict, self).__delitem__(key)
         del self._extra_dict[key]
 
     def set_ex(self, key, value, comments):
@@ -341,7 +342,7 @@ class ConfDict(dict):
         In addtion to dict['key'] = value, set_ex also set comments along with
         the key.
         """
-        super(self.__class__, self).__setitem__(key, value)
+        super(ConfDict, self).__setitem__(key, value)
         if key not in self._extra_dict:
             if isinstance(value, list) or isinstance(value, dict):
                 self._extra_dict[key] = (self._index, comments)
@@ -957,7 +958,10 @@ class Dict2Configure(object):
     # pylint: disable=R0911
     @classmethod
     def _comp_write_keys(cls, valuex, valuey):
-        _py_type = [bool, int, float, str, unicode]
+        if platforms.is_py2():
+            _py_type = [bool, int, float, str, unicode]
+        else:
+            _py_type = [bool, int, float, str]
 
         if type(valuex) == type(valuey):
             return 0
@@ -997,9 +1001,10 @@ class Dict2Configure(object):
         try:
             order_keys = _dict.get_ordered_keys()
         except AttributeError:
-            order_keys = sorted(
-                _dict.keys(), lambda x, y: self._comp_write_keys(
-                    _dict[x], _dict[y]
+            order_keys = copy.deepcopy(list(_dict.keys()))
+            order_keys.sort(
+                key=functools.cmp_to_key(
+                    lambda x, y: self._comp_write_keys(_dict[x], _dict[y])
                 )
             )
         if '$include' in order_keys:

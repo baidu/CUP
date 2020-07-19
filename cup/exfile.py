@@ -128,7 +128,7 @@ class LockFile(object):
             raise cup.err.LockFileError if blocking is False and
             the lock action failed
         """
-        if platforms.is_linux():
+        if platforms.is_linux() or platforms.is_mac():
             flags = 0x1
             if FILELOCK_SHARED == self._locktype:
                 flags = FILELOCK_SHARED
@@ -151,7 +151,7 @@ class LockFile(object):
 
     def unlock(self):
         """unlock the locked file"""
-        if platforms.is_linux():
+        if platforms.is_linux() or platforms.is_mac():
             try:
                 fcntl.flock(self._fhandle, FILELOCK_UNLOCK)
             except Exception as error:

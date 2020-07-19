@@ -7,14 +7,30 @@
     decorators related module
 """
 import time
+import heapq
+try:
+    import Queue as queue
+except ImportError:
+    import queue
 import collections
 import contextlib
 
 import cup
+from cup import log
+from cup import err
 from cup.util import thread
 
 
-class KvCache(object):
+class CacheFull(err.BaseCupException):
+    """
+    CacheFull for cache.KvCache
+
+    """
+    def __init__(self, msg):
+        err.BaseCupException.__init__(self, msg)
+
+
+class KVCache(object):
     """
     Key-Value Cache object.
 
@@ -26,15 +42,34 @@ class KvCache(object):
     _STAT = collections.namedtuple(
         'kvcache_stat', 'key_num expired_num'
     )
+    INFINITE_TIME = 10000 * 365 * 24 * 60 * 60 # 10000 years, enough for cache
+    TIME_EXTENSION = 5 * 60   # 5 mins
 
-    def __init__(self, maxsize=0):
+    def __init__(self, name, maxsize=0, time_extension=None):
         """
         :param maxsize:
-            not used yet, for future use
+            0 by default which means store as more cache k/v as the system can
+        :param time_extension:
+            When a cache item has been hit, the expire_time will be refreshed
+            to the greater one, either (TIME_EXTENSION + time.time() or
+              (TIME_EXTENSION + expire_sec)
         """
+        self._name = name
+        self._sorted_keys = queue.PriorityQueue(maxsize=maxsize)
         self._maxsize = maxsize
         self._kv_data = {}
         self._lock = thread.RWLock()
+        if time_extension is None:
+            self._time_extension = self.TIME_EXTENSION
+        else:
+            self._time_extension = time_extension
+
+    def set_time_extension(self, time_extension):
+        """set time extension"""
+        if time_extension <= 0:
+            raise ValueError('time extension should > 0')
+        log.info('KVCache set time extension to {0}'.format(time_extension))
+        self._time_extension = time_extension
 
     @contextlib.contextmanager
     def _lock_release(self, b_rw_lock):
@@ -68,17 +103,84 @@ class KvCache(object):
             kvdict is a dict that contains your cache.
         :param expire_sec:
             if expire_sec is None, the cache will never expire.
+
+        :return:
+            True if set cache successfully. False otherwise.
         """
+        if all([
+                self._maxsize != 0,
+                len(kvdict) > self._maxsize
+        ]):
+            log.error(
+                'KVCache {0} cannot insert more '
+                'elements than the maxsize'.format(self._name)
+            )
+            return False
         expire_value = None
-        if expire_sec is not None:
+        if expire_sec is not None and expire_sec != self.INFINITE_TIME:
             expire_value = expire_sec + time.time()
+        else:
+            expire_value = self.INFINITE_TIME
         with self._lock_release(b_rw_lock=True):
             for key in kvdict:
                 if key in self._kv_data:
                     cup.log.debug(
-                        'KvCache: Key:{0} updated.'.format(key)
+                        'KVCache: Key:{0} updated.'.format(key)
                     )
-                self._kv_data[key] = (kvdict[key], expire_value)
+                    self._kv_data[key] = (expire_value, kvdict[key])
+                    continue
+                if not self._heapq_newset(key, kvdict[key], expire_value):
+                    return False
+        return True
+
+    def _heapq_newset(self, key, value, expire_value):
+        """
+        headp set
+        """
+        if any([
+                self._maxsize == 0,
+                len(self._kv_data) < self._maxsize
+        ]):
+            # no limit, just insert it into the queue
+            self._sorted_keys.put((expire_value, key))
+            self._kv_data[key] = (expire_value, value)
+            return True
+        else:
+            # need replace the smallest one
+            while True:
+                try:
+                    pop_value = self._sorted_keys.get_nowait()
+                except queue.Full:
+                    return False
+                real_value = self._kv_data.get(pop_value[1], None)
+                # key exipred, key deleted in self._kv_data
+                if real_value is None:
+                    self._kv_data[key] = (expire_value, value)
+                    self._sorted_keys.put((expire_value, key))
+                    return True
+                if real_value[0] > pop_value[0]:
+                    # resort, adjust real
+                    self._sorted_keys.put((expire_value, key))
+                else:
+                    if expire_value < pop_value[0]:
+                        log.error(
+                            'KVCache {0} the alorithm you design has faults '
+                            'the new inserted cache {1} expire time '
+                            '< the oldest cache {2} in it'.format(
+                                self._name, (key, expire_value), pop_value
+                            )
+                        )
+                        return False
+                    del self._kv_data[pop_value[1]]
+                    self._kv_data[key] = (expire_value, value)
+                    self._sorted_keys.put((expire_value, key))
+                    break
+        return True
+
+    def _get_refreshed_exipre_time(self, expire_sec):
+        new_refresh = time.time() + self._time_extension
+        new_expire = expire_sec + self._time_extension
+        return new_expire if new_expire < new_refresh else new_refresh
 
     def get(self, key):
         """
@@ -89,38 +191,23 @@ class KvCache(object):
         with self._lock_release(b_rw_lock=False):
             if key not in self._kv_data:
                 return None
-            value, expire_sec = self._kv_data[key]
-            if expire_sec is not None and time.time() > expire_sec:
-                return None
-            cup.log.debug('key:%s of kvCache fetched.' % key)
-            self._kv_data[key] = (value, 2 * expire_sec)
-            return value
-        return None
-
-    def get_expired_keys(self):
-        """get expired key of keys"""
-        expired_keys = []
-        keys = self._kv_data.keys()
-        for key in keys:
-            expire_sec = self._kv_data[key][1]
-            if expire_sec is not None and time.time() > expire_sec:
-                expired_keys.append(key)
-        return expired_keys
-
-    def cleanup_expired(self):
-        """
-        Delete all expired items
-        """
-        expired_keys = None
-        with self._lock_release(b_rw_lock=True):
-            expired_keys = self.get_expired_keys()
-            for key in expired_keys:
+            expire_sec, value = self._kv_data[key]
+            if time.time() > expire_sec:
+                log.info('KVCache {0}: key {1} hit, but exipred {1}'.format(
+                    self._name, key
+                ))
                 del self._kv_data[key]
-                cup.log.debug('key:%s cleaned up' % key)
-        return expired_keys
+                return None
+            log.debug('key:%s of kvCache fetched.' % key)
+            expire_sec = self._get_refreshed_exipre_time(expire_sec)
+            self._kv_data[key] = (expire_sec, value)
+            return value
 
-    def get_expired(self):
+    def pop_n_expired(self, num=0):
         """
+        :param num:
+            if num is 0, will get all expired key/values
+
         :return:
             A dict.
             Return expired items. Return type is a dict
@@ -131,22 +218,39 @@ class KvCache(object):
                 }
         """
         kvlist = {}
+        nowtime = time.time()
+        allexpire = True if num == 0 else False
         with self._lock_release(b_rw_lock=False):
-            keys = self.get_expired_keys()
-            for key in keys:
-                value = self._kv_data[key]
-                kvlist[key] = (value)
+            while True:
+                try:
+                    pop_value = self._sorted_keys.get_nowait()
+                except queue.Full:
+                    break
+                real_value = self._kv_data.get(pop_value[1], None)
+                # has already been deleted
+                if real_value is None:
+                    continue
+                if real_value[0] > pop_value[0]:
+                    # resort, adjust real
+                    self._sorted_keys.put((real_value[0], pop_value[1]))
+                else:
+                    if real_value[0] > nowtime:
+                        break
+                    else:
+                        kvlist[pop_value[1]] = real_value
+                        del self._kv_data[pop_value[1]]
+                        if not allexpire:
+                            num -= 1
+                if not allexpire and num <= 0:
+                    break
         return kvlist
 
-    def stat(self):
+    def size(self):
         """
         :return:
-            a tuple with (item_num, expired_num)
+            cached item size
         """
-        with self._lock_release(b_rw_lock=False):
-            key_num = len(self._kv_data)
-            expired_num = len(self.get_expired_keys())
-        return (key_num, expired_num)
+        return len(self._kv_data)
 
     def clear(self):
         """
@@ -155,5 +259,7 @@ class KvCache(object):
         with self._lock_release(b_rw_lock=True):
             del self._kv_data
             self._kv_data = {}
+            del self._sorted_keys
+            self._sorted_keys = queue.PriorityQueue(self._maxsize)
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

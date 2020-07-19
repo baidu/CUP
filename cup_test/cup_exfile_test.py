@@ -41,10 +41,8 @@ def test_sharedlockfile():
     # shared lockfile
     _lockfile = exfile.LockFile(LOCK_FILE, exfile.FILELOCK_SHARED)
     ret = _lockfile.lock(blocking=False)
-    print ret
     _lockfile2 = exfile.LockFile(LOCK_FILE, exfile.FILELOCK_SHARED)
     ret = _lockfile2.lock(blocking=False)
-    print ret
     _lockfile3 = exfile.LockFile(LOCK_FILE, exfile.FILELOCK_EXCLUSIVE)
     unittest.expect_raise(
         _lockfile3.lock,

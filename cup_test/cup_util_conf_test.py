@@ -6,6 +6,7 @@
 :description:
     unittest for cup.util.conf
 """
+from __future__ import print_function
 import unittest
 
 from cup.util import conf
@@ -49,7 +50,7 @@ class TestUtilConf(unittest.TestCase):
         confobj.write_conf('./conf/test.conf')
 
         test_dict = conf.Configure2Dict('./conf/test.conf').get_dict()
-        print 'test_comments:', confdict['test_comments']
+        print('test_comments:', confdict['test_comments'])
 
 
     def test_include_files(self):
