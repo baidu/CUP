@@ -6,27 +6,19 @@
 :description:
     unittest for cup.services.buffers
 """
-
-
-import os
-import sys
-import logging
-
-_TOP = os.path.dirname(os.path.abspath(__file__)) + '/../'
-sys.path.insert(0, _TOP)
-
 from cup.services import buffers
 from cup import unittest
+
 
 class CTestServiceBuffer(unittest.CUTCase):
     """
     service buffer
     """
     def __init__(self):
-        super(self.__class__, self).__init__()
+        unittest.CUTCase.__init__(self)
         self._buffpool = buffers.BufferPool(
-            buffers.MEDIUM_BLOCK_SIZE,
             102400,
+            buffers.MEDIUM_BLOCK_SIZE
         )
 
     def setup(self):
@@ -45,7 +37,6 @@ class CTestServiceBuffer(unittest.CUTCase):
         """test_run"""
         ret, buff = self._buffpool.allocate(102401)
         unittest.assert_eq(ret, False)
-
         ret, buff = self._buffpool.allocate(10)
         unittest.assert_eq(ret, True)
         # pylint: disable=W0212

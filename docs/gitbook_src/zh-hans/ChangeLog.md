@@ -5,6 +5,7 @@
 * [Enhancement] *cup.log* | Add xdebug/xinfo/xinit_comlog in order to support different loggers
 * [Removal] *cup.jenkinslib* | Recommand using python-jenkins to replace cup.jenkinslib
 * [Enhancement] *cup.cache*| Enhance KVCache, add pop_expired. Support setting up "maxsize" for the cache pool
+* [Enhancement] *cup.services.buffer*| Fix encode/decode bug for py3
 
 ## Version 3.2.19
 * [Enhancement] *cup.services.generator* | Add visibility to Cached UUID

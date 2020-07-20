@@ -6,7 +6,7 @@
 :description:
     ut for cup.services.generator
 """
-
+from __future__ import print_function
 import os
 import sys
 import time
@@ -19,8 +19,8 @@ from cup.services import generator
 def test_generator():
     a_gen = generator.CGeneratorMan()
     b_gen = generator.CGeneratorMan()
-    print a_gen
-    print b_gen
+    print(a_gen)
+    print(b_gen)
     assert a_gen == b_gen
 
 

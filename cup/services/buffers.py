@@ -28,20 +28,21 @@ class Buffer(object):
         self._length = -1
         self._uniqid = uniqid
 
-    def set(self, content):
+    def set(self, content, encoding='utf8'):
         """
         return (True, None) if succeed.
 
         return (False, error_msg) otherwise
 
         """
+        content = content.encode(encoding)
         length = len(content)
         ind = 0
         item_ind = 0
         if length > self._block_size * self._num:
             return (False, 'content size > Buffer size')
         while ind < length:
-            if ind + self._block_size <= length - 1:
+            if (ind + self._block_size) <= (length - 1):
                 loop_size = self._block_size
             else:
                 loop_size = length - ind
@@ -53,7 +54,7 @@ class Buffer(object):
 
     def get(self):
         """
-        return (True, (content, block_size, total_length)) if succeed
+        return (True, (blocks, block_size, total_length, encoding)) if succeed
 
         Otherwise, return (False, err_msg, None)
         """
