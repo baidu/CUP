@@ -8,9 +8,11 @@
 """
 import threading
 
-SMALL_BLOCK_SIZE =  4096 # kb
-MEDIUM_BLOCK_SIZE = (128 + 4) * 1024   # 8K
-LARGE_BLOCK_SIZE = 1 * 1024 * 1024 + SMALL_BLOCK_SIZE  # 1M
+from cup import platforms
+
+SMALL_BLOCK_SIZE = 4096 # 4kb
+MEDIUM_BLOCK_SIZE = (128 + 4) * 1024   # (128 + 4) K
+LARGE_BLOCK_SIZE = 1 * 1024 * 1024 + SMALL_BLOCK_SIZE  # 1M + 4K
 
 SMALL_BLOCK = 0
 MEDIUM_BLOCK = 1
@@ -19,23 +21,33 @@ LARGE_BLOCK = 2
 
 class Buffer(object):
     """
-    Buffer object which you get from BufferPool.allocate(num)
+    Buffer object which you get from BufferPool.allocate(num).
+
+    A **Buffer** consists of several bytearrays which is mutable compared to
+    a normal **str**. In other words, if you have senarios like: allocte mem
+    and deallocte mem frenquently. With high chance you can replace directly
+    using str by Buffer. It will reduce the memory fragments.
+
     """
     def __init__(self, items, block_size, uniqid):
         self._items = items
         self._block_size = block_size
         self._num = len(items)
-        self._length = -1
+        self._length = 0
         self._uniqid = uniqid
+        self._maxsize = block_size * self._num
 
     def set(self, content, encoding='utf8'):
         """
-        return (True, None) if succeed.
+        set content to buffers
 
-        return (False, error_msg) otherwise
+        :return:
+            return (True, None) if succeed.
+            return (False, error_msg) otherwise
 
         """
-        content = content.encode(encoding)
+        if platforms.is_py3():
+            content = content.encode(encoding)
         length = len(content)
         ind = 0
         item_ind = 0
@@ -59,7 +71,7 @@ class Buffer(object):
         Otherwise, return (False, err_msg, None)
         """
         rev = None
-        if self._length != -1:
+        if self._length != 0:
             rev = (True, (self._items, self._block_size, self._length))
         else:
             rev = (False, ('not initialized yet', self._block_size, None))
@@ -77,19 +89,28 @@ class Buffer(object):
         """
         return self._items
 
+    def maxsize(self):
+        """return how many unicode/str you can set to the buffer"""
+        return self._maxsize
+
+    def length(self):
+        """return the length you have used for the buffer"""
+        return self._length
+
 
 # pylint: disable=R0902
 class BufferPool(object):
     """
-    buffer pool class which will ease memory fragment
+    Buffer pool class which will ease memory fragment.
     """
     def __init__(
-        self, pool_size, block_size=MEDIUM_BLOCK_SIZE, extendable=False
+            self, pool_size, block_size=MEDIUM_BLOCK_SIZE, extendable=False
     ):
         if block_size not in (
-            SMALL_BLOCK_SIZE, MEDIUM_BLOCK_SIZE, LARGE_BLOCK_SIZE
+                SMALL_BLOCK_SIZE, MEDIUM_BLOCK_SIZE, LARGE_BLOCK_SIZE
         ):
-            raise ValueError('block_size should be buffers.SMALL_BLOCK_SIZE'
+            raise ValueError(
+                'block_size should be buffers.SMALL_BLOCK_SIZE'
                 ' or buffers.MEDIUM_BLOCK_SIZE or buffers.LARGE_BLOCK_SIZE'
             )
         # TODO If extendable, we should expand the pool
