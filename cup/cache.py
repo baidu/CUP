@@ -7,7 +7,7 @@
     decorators related module
 """
 import time
-import heapq
+import uuid
 try:
     import Queue as queue
 except ImportError:
@@ -19,6 +19,9 @@ import cup
 from cup import log
 from cup import err
 from cup.util import thread
+
+
+__all__ = ['CacheFull', 'KVCache', 'KvCache']
 
 
 class CacheFull(err.BaseCupException):
@@ -45,7 +48,7 @@ class KVCache(object):
     INFINITE_TIME = 10000 * 365 * 24 * 60 * 60 # 10000 years, enough for cache
     TIME_EXTENSION = 5 * 60   # 5 mins
 
-    def __init__(self, name, maxsize=0, time_extension=None):
+    def __init__(self, name=None, maxsize=0, time_extension=None):
         """
         :param maxsize:
             0 by default which means store as more cache k/v as the system can
@@ -54,7 +57,14 @@ class KVCache(object):
             to the greater one, either (TIME_EXTENSION + time.time() or
               (TIME_EXTENSION + expire_sec)
         """
-        self._name = name
+        if name is not None:
+            self._name = name
+        else:
+            self._name = 'cache.noname.{0}'.format(uuid.uuid4())
+            log.warn(
+                'You initialize the KVCache with no name. Strongly suggest'
+                'you pick up a meaningful name for it in order to debug'
+            )
         self._sorted_keys = queue.PriorityQueue(maxsize=maxsize)
         self._maxsize = maxsize
         self._kv_data = {}
@@ -262,4 +272,7 @@ class KVCache(object):
             del self._sorted_keys
             self._sorted_keys = queue.PriorityQueue(self._maxsize)
 
+
+# for compatibility
+KvCache = KVCache
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

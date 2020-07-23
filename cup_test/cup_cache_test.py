@@ -91,7 +91,7 @@ def test_cache_replace():
 
 def test_cache_getexpired():
     """test get expired"""
-    kvcache = cache.KVCache('basic_test', 5)
+    kvcache = cache.KvCache('basic_test', 5)
     kvcache.set_time_extension(3)
     kvcache.set({'k0': 'v0'}, 1)
     kvcache.set({'k1': 'v1'}, 1)
