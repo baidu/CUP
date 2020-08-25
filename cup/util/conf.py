@@ -11,7 +11,9 @@ import os
 import time
 import copy
 import json
+import codecs
 import shutil
+import warnings
 import functools
 from xml.dom import minidom
 
@@ -23,6 +25,13 @@ __all__ = [
     'Configure2Dict', 'Dict2Configure',
     'HdfsXmlConf'
 ]
+
+
+# pylint: disable=R0913
+# to be compatible with py3 open
+def _open_codecs(filename, mode='r', encoding=None):
+    """open_codecs for py2 in order to support encoding"""
+    return codecs.open(filename=filename, mode=mode, encoding=encoding)
 
 
 class CConf(object):
@@ -658,15 +667,17 @@ class Configure2Dict(object):  # pylint: disable=R0903
 
 
     # pylint: disable=R0912, R0915
-    def get_dict(self, ignore_error=False):
+    def get_dict(self, ignore_error=False, encoding='utf8'):
         """
         get conf_dict which you can use to access conf info.
 
         :param ignore_error:
             True, CUP will parse the conf file without catching exceptions
+        :param encoding:
+            utf8 by default, you can change it to your encoding
         """
         comments = []
-        self._get_input_lines(ignore_error)
+        self._get_input_lines(ignore_error, encoding)
         conf_layer_stack = [self._dict]
         num = 0
         length = len(self._lines)
@@ -816,16 +827,21 @@ class Configure2Dict(object):  # pylint: disable=R0903
                 )
 
     # Read in the file content, with format check
-    def _get_input_lines(self, ignore_error):  # pylint: disable=R0912,R0915
+    # pylint: disable=R0912,R0915
+    def _get_input_lines(self, ignore_error, encoding):
         """
         read conf lines
         """
+        fhandle = None
         try:
-            fhanle = open(self._file, 'r')
+            if platforms.is_py2():
+                fhandle = _open_codecs(self._file, 'r', encoding=encoding)
+            else:
+                fhandle = open(self._file, 'r', encoding=encoding)
         except IOError as error:
             cup.log.error('open file failed:%s, err:%s' % (self._file, error))
-            raise IOError(str(error))
-        for line in fhanle.readlines():
+            raise IOError(error)
+        for line in fhandle.readlines():
             line = line.strip()
             # if it's a blank line or a line with comments only
             if line == '':
@@ -902,7 +918,7 @@ class Configure2Dict(object):  # pylint: disable=R0903
                     raise ValueFormatError(line)
                 value = tmp_value
             self._lines.append((key, value))
-        fhanle.close()
+        fhandle.close()
 
 
 class Dict2Configure(object):
@@ -919,6 +935,7 @@ class Dict2Configure(object):
         self._level = 0
         self._str = ''
         self._separator = separator
+        self._encoding = 'utf8'
 
     def _get_field_value_sep(self):
         return self._separator
@@ -948,12 +965,22 @@ class Dict2Configure(object):
         self._get_confstring(self._dict)
         return self._str
 
-    def write_conf(self, conf_file):
+    def write_conf(self, conf_file, encoding='utf8'):
         """
         write the conf into of the dict into a conf_file
+
+        :param conf_file:
+            the file which will be override
+        :param encoding:
+            'utf8' by default, specify yours if needed
         """
-        with open(conf_file, 'w') as fhandle:
-            fhandle.write(self._get_write_string())
+        fhandle = None
+        if platforms.is_py2():
+            fhandle = _open_codecs(conf_file, 'w', encoding=encoding)
+        else:
+            fhandle = open(conf_file, 'w', encoding=encoding)
+        fhandle.write(self._get_write_string())
+        fhandle.close()
 
     # pylint: disable=R0911
     @classmethod
@@ -1057,7 +1084,8 @@ class Dict2Configure(object):
                         for comment in item[1]:
                             self._str += self._get_indents() + comment
                         self._appendline(
-                            self._get_arrayflag() + str(key), item[0]
+                            '{0}{1}'.format(self._get_arrayflag(), key),
+                            item[0]
                         )
             elif isinstance(value, dict):
                 self._addlevel(key)
@@ -1071,22 +1099,22 @@ class Dict2Configure(object):
         pass
 
     def _appendline(self, key, value):
-        self._str += (
-            self._get_indents() + str(key) +
-            self._get_field_value_sep()+str(value)+self._get_linesep()
+        self._str = '{0}{1}{2}{3}{4}{5}'.format(
+            self._str, self._get_indents(), key, self._get_field_value_sep(),
+            self._encoding, self._get_linesep()
         )
 
     def _addlevel(self, key):
-        self._str += (
-            self._get_indents() + '[' + self._get_levelsep() + str(key) + ']'
-            + self._get_linesep()
+        self._str = '{0}{1}[{2}{3}]{4}'.format(
+            self._str, self._get_indents(), self._get_levelsep(), key,
+            self._get_linesep()
         )
         self._level += 1
 
     def _add_arraylevel(self, key):
-        self._str += (
-            self._get_indents() + '[' + self._get_arraylevel_sep() +
-            str(key) + ']' + self._get_linesep()
+        self._str = '{0}{1}[{2}{3}]{4}'.format(
+            self._str, self._get_indents(), self._get_arraylevel_sep(),
+            key, self._get_linesep()
         )
         self._level += 1
 
@@ -1252,7 +1280,7 @@ class HdfsXmlConf(object):
             configuration_node.appendChild(new_pro)
         return dom.toprettyxml(newl='\n')
 
-    def write_conf(self, kvs):
+    def write_conf(self, kvs, encoding='utf8'):
         """
         update config items with a dict kvs. Refer to the example above.
 
@@ -1264,10 +1292,16 @@ class HdfsXmlConf(object):
                     ......
                 }
         """
+        self._encoding = encoding
         self._load_items()
         str_xml = self._write_to_conf(kvs)
-        with open(self._xmlpath, 'w') as fhandle:
-            fhandle.write(str_xml)
+        fhandle = None
+        if platforms.is_py2():
+            fhandle = _open_codecs(self._xmlpath, 'w', encoding=encoding)
+        else:
+            fhandle = open(self._xmlpath, 'w', encoding=encoding)
+        fhandle.write(str_xml)
+        fhandle.close()
         self._confdict = kvs
 
 

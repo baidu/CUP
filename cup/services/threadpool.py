@@ -159,10 +159,10 @@ class ThreadPool(object):
         :param func:
             function that will be scheduled by the thread pool
 
-        :param \*args:
+        :param args:
             args that the [func] needs
 
-        :param \*\*kw:
+        :param kw:
             kwargs that [func] needs
         """
         self.add_1job_with_callback(None, func, *args, **kwargs)
@@ -185,10 +185,10 @@ class ThreadPool(object):
         :param func:
             same to func for add_1job
 
-        :param \*args:
+        :param args:
             args for [func]
 
-        :param \*\*kwargs:
+        :param kwargs:
             kwargs for [func]
         """
         if self._joined:
