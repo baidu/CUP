@@ -24,6 +24,7 @@ __all__ = [
 import os
 import re
 import sys
+import time
 import uuid
 import logging
 from logging import handlers
@@ -135,9 +136,12 @@ class LogInitializer(object):
                 )
         logger.setLevel(loglevel)
         # '%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(message)s'
+        tznum = time.strftime('%z')
+        tzkey = time.strftime('%Z')
         formatter = logging.Formatter(
-            '%(levelname)s:\t %(asctime)s * '
+            fmt='%(levelname)s:\t %(asctime)s {0}({1}) * '
             '[%(process)d:%(thread)x] [%(filename)s:%(lineno)s] %(message)s'
+            .format(tznum, tzkey)
         )
         if bprint_console:
             info('bprint_console enabled, will print to stdout')
@@ -471,7 +475,9 @@ def parse(logline):
            'pid': 8808,
            'tid': 1111111,
            'srcline': 'util.py:33',
-           'msg': 'this is the log content'
+           'msg': 'this is the log content',
+           'tznum': 8,
+           'tzstr': 'CST'
         }
 
     """
@@ -481,8 +487,9 @@ def parse(logline):
         content = content[(content.find(']') + 1):].strip()
         regex = re.compile('[ \t]+')
         items = regex.split(logline)
-        loglevel, date, time_, _, pid_tid, src = items[0:6]
+        loglevel, date, time_, timezone, _, pid_tid, src = items[0:6]
         pid, tid = pid_tid.strip('[]').split(':')
+        tznum, tzkey = timezone.strip('+)').split('(')
         return {
             'loglevel': loglevel.strip(':'),
             'date': date,
@@ -490,7 +497,9 @@ def parse(logline):
             'pid': pid,
             'tid': tid,
             'srcline': src.strip('[]'),
-            'msg': content
+            'msg': content,
+            'tznum': int(tznum),
+            'tzkey': tzkey
         }
     # pylint: disable = W0703
     except Exception:
