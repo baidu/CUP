@@ -399,7 +399,8 @@ def _test():
     localhost = LinuxHost(name='localhost', init_this_host=True)
     binary = localhost.serilize()
     print('binary:{0}'.format(binary))
-    print(pickle.loads(restricted_loads(binary)))
+    restricted_loads(binary)
+    print(pickle.loads(binary))
 
 
 if __name__ == '__main__':
