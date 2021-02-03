@@ -11,10 +11,35 @@ import time
 import pickle
 import platform
 import threading
+import io
+import builtins
 
 from cup import log
 from cup import net
 from cup.util import conf
+safe_builtins = {
+    'range',
+    'complex',
+    'set',
+    'frozenset',
+    'slice',
+}
+
+
+class RestrictedUnpickler(pickle.Unpickler):
+
+    def find_class(self, module, name):
+        """Only allow safe classes from builtins"""
+        if module == "builtins" and name in safe_builtins:
+            return getattr(builtins, name)
+        """Forbid everything else"""
+        raise pickle.UnpicklingError("global '%s.%s' is forbidden" %
+                                     (module, name))
+
+def restricted_loads(s):
+    """Helper function analogous to pickle.loads()"""
+    return RestrictedUnpickler(io.BytesIO(s)).load()
+
 if platform.system() == 'Linux':
     from cup.res import linux
 
@@ -63,7 +88,7 @@ class Device(object):
         deserilize it from binary
         """
         try:
-            self._dict_info = pickle.loads(binary)
+            self._dict_info = pickle.loads(pickle.loads(restricted_loads(binary))
             return True
         # pylint: disable=W0703
         except Exception as error:
@@ -374,6 +399,7 @@ def _test():
     localhost = LinuxHost(name='localhost', init_this_host=True)
     binary = localhost.serilize()
     print('binary:{0}'.format(binary))
+    restricted_loads(binary)
     print(pickle.loads(binary))
 
 
