@@ -11,11 +11,10 @@ import abc
 import time
 import socket
 import threading
-
+import traceback
 from cup import log
 from cup.net.asyn import conn
 from cup.net.asyn import msg as async_msg
-
 
 __all__ = ['IMessageCenter']
 
@@ -177,11 +176,11 @@ class IMessageCenter(object):
         stop the message center
         """
         log.info('To stop the msgcenter')
-        self._conn_mgr.stop(force_stop)
         self._stop = True
         self._stat_cond.acquire()
         self._stat_cond.notify()
         self._stat_cond.release()
+        self._conn_mgr.stop(force_stop)
         log.info('msgcenter stopped')
 
     def run(self):
@@ -189,6 +188,7 @@ class IMessageCenter(object):
         run the msgcenter
         """
         if not self.setup():
+            self._stop = True            
             return False
         thd_conn_man = threading.Thread(target=self._run_conn_manager, args=())
         thd_conn_man.start()
