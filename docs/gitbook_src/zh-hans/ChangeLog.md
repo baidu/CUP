@@ -1,6 +1,10 @@
 # 1. Versions Released
-## Version
-## Version 3.2.20 ~ 
+## Version 3.2.26
+* [Bug] Epoll Lost Events Bug fix
+* [Compatibility] Fix Py2 comatibility issue for cup.services.heartbeat
+
+
+## Version 3.2.20
 * [Compatibility] *cup.log* | Fix unicode bug for py3
 * [Enhancement] *cup.log* | Add xdebug/xinfo/xinit_comlog in order to support different loggers
 * [Removal] *cup.jenkinslib* | Recommand using python-jenkins to replace cup.jenkinslib
