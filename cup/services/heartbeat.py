@@ -12,11 +12,14 @@ import pickle
 import platform
 import threading
 import io
-import builtins
+
 
 from cup import log
 from cup import net
 from cup.util import conf
+
+
+# Only check when it's run under py3
 safe_builtins = {
     'range',
     'complex',
@@ -29,12 +32,20 @@ safe_builtins = {
 class RestrictedUnpickler(pickle.Unpickler):
 
     def find_class(self, module, name):
-        """Only allow safe classes from builtins"""
-        if module == "builtins" and name in safe_builtins:
-            return getattr(builtins, name)
-        """Forbid everything else"""
-        raise pickle.UnpicklingError("global '%s.%s' is forbidden" %
-                                     (module, name))
+        """
+        Only allow safe classes from builtins
+
+        Only check builtins when it's run under py 3
+        """
+        if (3, 0) <= sys.version_info <= (4, 0):
+            import builtins
+            if module == "builtins" and name in safe_builtins:
+                return getattr(builtins, name)
+            """Forbid everything else"""
+            raise pickle.UnpicklingError("global '%s.%s' is forbidden" %
+                                         (module, name))
+        else:
+            pass
 
 def restricted_loads(s):
     """Helper function analogous to pickle.loads()"""
@@ -88,7 +99,7 @@ class Device(object):
         deserilize it from binary
         """
         try:
-            self._dict_info = pickle.loads(pickle.loads(restricted_loads(binary))
+            self._dict_info = pickle.loads(pickle.loads(restricted_loads(binary)))
             return True
         # pylint: disable=W0703
         except Exception as error:
