@@ -10,6 +10,7 @@ import os
 
 import cup
 from cup import log
+from cup import platforms
 from cup.util import misc
 from cup.util import generator
 from cup.net.asyn import common
@@ -19,6 +20,8 @@ MSG_RESENDING_FLAG = 0
 MSG_RESEND_SUCCESS = 1
 MSG_TIMEOUT_TO_DELETE = 2
 MSG_DELETE_FLAG = 3
+
+PY3_DEFAULT_ENCODING = 'utf8'
 
 
 __all__ = ['CMsgType', 'CMsgFlag', 'CNetMsg', 'CAckMsg', 'netmsg_tostring']
@@ -195,7 +198,7 @@ class CNetMsg(object):
     @classmethod
     def _asign_uint2byte_bybits(cls, num, bits):
         asign_len = bits / 8
-        tmp = ''
+        tmp = b''
         i = 0
         while True:
             quotient = int(num / 256)
@@ -239,6 +242,10 @@ class CNetMsg(object):
                 'You just pushed into the msg with a zero-length data'
             )
             return 0
+        if platforms.is_py3():
+            if isinstance(data, str):
+                data = data.encode(PY3_DEFAULT_ENCODING)
+
         sign = True
         data_ind = 0
         data_max = len(data)
@@ -250,7 +257,7 @@ class CNetMsg(object):
             try:
                 self._data[data_key]
             except KeyError:
-                self._data[data_key] = ''
+                self._data[data_key] = b''
             loop_data_max = (
                 self._ORDER_BYTES[self._read_order] - len(self._data[data_key])
             )
@@ -261,7 +268,7 @@ class CNetMsg(object):
                 )
                 data_ind += loop_data_max
                 self._read_order += 1
-                data_key_info = ''
+                data_key_info = b''
                 if data_key == 'head':
                     data_key_info = self._data[data_key]
                     if self._data[data_key] != self.MSG_SIGN:
@@ -369,7 +376,7 @@ class CNetMsg(object):
         self._data['len'] = self._asign_uint2byte_bybits(
             self._msglen, 64
         )
-        tempstr = ''
+        tempstr = b''
         for i in range(0, self._ORDER_COUNTS - 1):
             if i == 0 and (not self._need_head):
                 continue
@@ -474,13 +481,22 @@ class CNetMsg(object):
             self._uniqid = self._convert_bytes2uint(self._data['uniq_id'])
         return self._uniqid
 
-    def get_body(self):
+    def get_body(self, return_unicode=False):
         """
         get msg body
+
+        :param return_unicode:
+            False by default, return str (in py2), bytes in py3.
+            Return unicode if return_unicode is True
+
         """
         if 'body' not in self._data:
             raise KeyError('Body not set yet')
-        return self._data['body']
+        if not return_unicode:
+            return self._data['body']
+        else:
+            return self._data['body'].decode(PY3_DEFAULT_ENCODING)
+
 
     def get_bodylen(self):
         """

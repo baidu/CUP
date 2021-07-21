@@ -121,17 +121,17 @@ def signal_handler(sig, _):
 
 def _main(argv):
     """main function"""
-    log.init_comlog('arrow_master', log.INFO,
+    log.init_comlog('arrow_agent', log.DEBUG,
         _TOP_PATH + '/log/arrow_agent.log',
         log.ROTATION,
         1024000000,
         False
     )
-    signal.signal(signal.SIGTERM, signal_handler)
     if len(argv) < 2:
         sys.stderr.write('should specify conf path')
         sys.exit(-1)
     agent = Agent(argv[1])
+    signal.signal(signal.SIGTERM, signal_handler)
     agent.loop()
 
 

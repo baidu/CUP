@@ -17,6 +17,7 @@ import io
 from cup import log
 from cup import net
 from cup.util import conf
+from cup import platforms as plat
 
 
 # Only check when it's run under py3
@@ -51,8 +52,10 @@ def restricted_loads(s):
     """Helper function analogous to pickle.loads()"""
     return RestrictedUnpickler(io.BytesIO(s)).load()
 
-if platform.system() == 'Linux':
+if plat.is_linux():
     from cup.res import linux
+elif plat.is_mac():
+    from cup.res import mac
 
 try:
     # pylint: disable=W0611
@@ -255,6 +258,54 @@ class LinuxHost(Device):
             (net_in, net_out)
         """
         return (self._dict_info['net_in'], self._dict_info['net_out'])
+
+
+class MacHost(Device):
+    """
+    a mac host
+    """
+    def __init__(self, name, init_this_host=False, iface='en01', port=0):
+        """
+        :param name:
+            name of the LinuxHost
+        :param init_this_host:
+            if init_this_host is True, will initialize the object by this linux
+            . Otherwise, you need to initialize it by yourself.
+        :exception socket.gaierror :
+            if we cannot get the ip of the host, the object construction
+            may raise socket.gaierror exception.
+            You have to code {try:  catch socket.gaierror as err:}
+        """
+        Device.__init__(self, name)
+        self._dict_info = {
+            'iface':   iface,
+            'ipaddr': '0.0.0.0',
+            'port': 0,
+            'hostname': net.get_local_hostname(),
+            'cpu_idle': -1,
+            'mem_inuse': -1,        # MB
+            'mem_total': -1,
+            'net_in': -1,        # kb
+            'net_out': -1      # kb
+        }
+        if init_this_host:
+            self._dict_info['ipaddr'] = net.get_hostip()
+            self._dict_info['port'] = port
+            cpuinfo = mac.get_cpu_usage(1)
+            meminfo = mac.get_meminfo()
+            self._dict_info['net_in'] = mac.get_net_recv_speed(
+                self._dict_info['iface'], 1
+            )
+            self._dict_info['net_out'] = mac.get_net_transmit_speed(
+                self._dict_info['iface'], 1
+            )
+            # pylint: disable=E1101
+            self._dict_info['cpu_idle'] = cpuinfo.idle
+            # pylint: disable=E1101
+            self._dict_info['mem_inuse'] = meminfo.total - meminfo.free
+            self._dict_info['mem_total'] = meminfo.total
+
+
 
 
 # class Process(LinuxHost):
