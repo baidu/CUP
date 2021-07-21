@@ -1,8 +1,12 @@
 # 1. Versions Released
+## Version 3.2.27
+* [New] cup.net.asyn | supports kqueue on mac 
+* [New] cup.res.mac | supports MacResource based on psutil
+* [New] cup.services.heartbeat supports MacHost
+
 ## Version 3.2.26
 * [Bug] Epoll Lost Events Bug fix
 * [Compatibility] Fix Py2 comatibility issue for cup.services.heartbeat
-
 
 ## Version 3.2.20
 * [Compatibility] *cup.log* | Fix unicode bug for py3

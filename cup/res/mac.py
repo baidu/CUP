@@ -9,7 +9,12 @@ query mac resource module
 """
 from __future__ import print_function
 import os
+import time
+import collections
 
+import psutil
+
+from cup import unittest
 from cup import decorators
 
 
@@ -17,6 +22,51 @@ __all__ = [
     'get_kernel_version', 'get_cpu_nums',
     'get_disk_usage_all', 'get_disk_info'
 ]
+
+_CPU_COLUMNS = [
+    'usr',
+    'nice',
+    'system',
+    'idle'
+]
+_MEM_COLUMNS = [
+    'total',
+    'avail',
+    'percent',
+    'used',
+    'free',
+    'active',
+    'inactive',
+    'wired'
+]
+
+
+class CPUInfo(collections.namedtuple('CPUInfo', _CPU_COLUMNS)):
+    """
+    CPUInfo is used for get_cpu_usage function. The following attr will be
+    in the namedtuple:
+    usr,
+    nice,
+    system,
+    idle
+
+    I.g.
+    ::
+
+        import cup
+        # count cpu usage
+        from cup.res import linux
+        cpuinfo = mac.get_cpu_usage(intvl_in_sec=60)
+        print cpuinfo.usr
+    """
+
+
+class MemInfo(collections.namedtuple('vmem', _MEM_COLUMNS)):
+    """
+    MemInfo
+    wired (BSD, macOS): memory that is marked to always stay in RAM.
+                It is never moved to disk.
+    """
 
 
 def get_kernel_version():
@@ -107,6 +157,80 @@ def get_disk_info():
             return all_diskinfo
         except:
             raise RuntimeError("couldn't find disk")
+
+
+
+def get_cpu_usage(intvl_in_sec=1):
+    """
+    get cpu usage statistics during a time period (intvl_in_sec), return a
+    namedtuple CPUInfo
+    """
+    unittest.assert_gt(intvl_in_sec, 0)
+    ret = []
+    for i in range(0, len(_CPU_COLUMNS)):
+        ret.append(0)
+    cpu_info0 = psutil.cpu_times()
+    time.sleep(intvl_in_sec)
+    cpu_info1 = psutil.cpu_times()
+    total = float(0.0)
+    for i in range(0, len(cpu_info1)):
+        minus = float(cpu_info1[i]) - float(cpu_info0[i])
+        total = total + minus
+        ret[i] = minus
+
+    for i in range(0, len(ret)):
+        ret[i] = ret[i] * 100 / total
+    return CPUInfo(*ret)
+
+
+def get_meminfo():
+    """get mem info of mac"""
+    meminfo = psutil.virtual_memory()
+    return MemInfo(
+        meminfo.total,
+        meminfo.available,
+        meminfo.percent,
+        meminfo.used,
+        meminfo.free,
+        meminfo.active,
+        meminfo.inactive,
+        meminfo.wired
+    )
+
+
+def get_net_through(str_interface):
+    """
+    get net through
+
+    Raise ValueError if interface does not exists
+    """
+    try:
+        net_trans = psutil.net_io_counters(True)[str_interface]
+    except KeyError:
+        raise ValueError('interface {0} not exist'.format(str_interface))
+    return (int(net_trans.bytes_recv), int(net_trans.bytes_sent))
+
+
+def get_net_transmit_speed(str_interface, intvl_in_sec=1):
+    """get network interface write/read speed"""
+    decorators.needmac(True)
+    unittest.assert_gt(intvl_in_sec, 0)
+    rx_bytes0 = get_net_through(str_interface)[0]
+    time.sleep(intvl_in_sec)
+    rx_bytes1 = get_net_through(str_interface)[0]
+    return (rx_bytes1 - rx_bytes0) / intvl_in_sec
+
+
+def get_net_recv_speed(str_interface, intvl_in_sec):
+    """
+    get average network recv-speed during a time period (intvl_in_sec)
+    """
+    decorators.needmac(True)
+    unittest.assert_gt(intvl_in_sec, 0)
+    tx_bytes0 = get_net_through(str_interface)[1]
+    time.sleep(intvl_in_sec)
+    tx_bytes1 = get_net_through(str_interface)[1]
+    return (tx_bytes1 - tx_bytes0) / intvl_in_sec
 
 
 if '__main__' == __name__:

@@ -12,12 +12,10 @@
         3. Heartbeat network msg
 
 """
+
 import os
 import sys
 import signal
-
-_NOW_PATH = os.path.dirname(os.path.abspath(__file__)) + '/'
-_TOP_PATH = os.path.abspath(_NOW_PATH + '/../../')
 
 from cup import decorators
 from cup import log
@@ -26,6 +24,10 @@ from cup.util import conf
 
 from arrow.master import control
 from arrow.common import settings
+
+
+_NOW_PATH = os.path.dirname(os.path.abspath(__file__)) + '/'
+_TOP_PATH = os.path.abspath(_NOW_PATH + '/../../')
 
 
 @decorators.Singleton

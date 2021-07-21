@@ -15,8 +15,8 @@
 from cup import log
 # from cup import net
 from cup.services import executor
-from cup.net.async import msgcenter
-from cup.net.async import msg
+from cup.net.asyn import msgcenter
+from cup.net.asyn import msg
 from cup.services import heartbeat as hb_service
 # from cup.util import conf
 
@@ -69,11 +69,11 @@ class ControlService(msgcenter.IMessageCenter):
         ack_msg.set_msg_type(self._type_man.getnumber_bytype('ACK_HEART_BEAT'))
         ack_msg.set_uniq_id(netmsg.get_uniq_id() + 1)
         ack_msg.set_body('ACK_HEART_BEAT')
-        resource = hb_service.LinuxHost(name=str(self._master_ipport))
-        resource.deserilize(netmsg.get_body())
-        self._heartbeat_service.refresh(
-            '%s:%s' % (ip_port[0], ip_port[1]), resource
-        )
+        # resource = hb_service.LinuxHost(name=str(self._master_ipport))
+        # resource.deserilize(netmsg.get_body())
+        # self._heartbeat_service.refresh(
+        #     '%s:%s' % (ip_port[0], ip_port[1]), resource
+        # )
         self.post_msg(ack_msg)
         return
 
