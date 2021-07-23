@@ -175,7 +175,9 @@ class CConnectionManager(object):
         """
         get neekack dict
         """
-        log.debug('push ack ok msg into needack_queue.')
+        log.debug('push ack ok msg {0} into needack_queue.'.format(
+            async_msg.netmsg_tostring(msg))
+        )
         self._needack_context_queue.put(msg)
 
     def bind(self):
@@ -185,17 +187,11 @@ class CConnectionManager(object):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._set_sock_params(sock)
         sock.bind((self._bind_ip, self._bind_port))
-
-        ##self._set_sock_nonblocking(sock)
         log.info(
             'bind port info:(ip:%s, port:%s)' % (
                 self._bind_ip, self._bind_port
             )
         )
-        #self._epoll.register(
-        #    sock.fileno(),
-        #    select.EPOLLIN | select.EPOLLET | select.EPOLLOUT | select.EPOLLERR
-        #)
         self._bind_sock = sock
 
     def push_msg2sendqueue(self, msg):
@@ -266,9 +262,6 @@ class CConnectionManager(object):
                     self._context2fileno_peer[context] = (fileno, peer)
                     ret = 0
                     try:
-                        # self._epoll.register(
-                        #     sock.fileno(), self._epoll_write_params()
-                        # )
                         self._poller.register(sock.fileno(), ioloop.WRITE | ioloop.READ)
                     except Exception as error:  # pylint: disable=W0703
                         log.warn(
@@ -276,9 +269,6 @@ class CConnectionManager(object):
                             'perinfo:%s:%s. To epoll modify it' %
                             (str(error), peer[0], peer[1])
                         )
-                        # self._epoll.modify(
-                        #     sock.fileno(), self._epoll_write_params()
-                        # )
                         self._poller.modify(sock.fileno(), ioloop.WRITE | ioloop.READ)
                     self._rwlock.release_writelock()
                 else:
@@ -341,7 +331,6 @@ class CConnectionManager(object):
         self._set_sock_params(newsock)
         self._set_sock_nonblocking(newsock)
         context = sockcontext.CConnContext(newsock)
-        # context.set_sock(newsock)
         context.set_conn_man(self)
         context.set_peerinfo(peer)
         self._rwlock.acquire_writelock()
@@ -352,10 +341,10 @@ class CConnectionManager(object):
         self._poller.register(
             newsock.fileno(), ioloop.WRITE | ioloop.READ
         )
-        # self._epoll.register(
-        #     newsock.fileno(), select.EPOLLIN | select.EPOLLET | select.EPOLLERR
-        # )
-        log.info('a new connection: {0}, register new fd:{1}'.format(peer, newsock.fileno()))
+        log.info(
+            'a new connection: {0}, register new fd:{1}'.format(
+                peer, newsock.fileno())
+        )
 
     def cleanup_error_context(self, context):
         """clean up error context"""
@@ -386,7 +375,6 @@ class CConnectionManager(object):
             if fileno_peer is None:
                 return
             try:
-                # self._epoll.unregister(fileno_peer[0])
                 self._poller.unregister(fileno_peer[0])
             except Exception as error:  # pylint: disable=W0703
                 log.warn(
@@ -480,24 +468,18 @@ class CConnectionManager(object):
                 raise err
             log.debug('poller events num {0}'.format(len(events)))
             for fileno, event in events:
-                # if it comes from the listen port, new conn
-                #if fileno == self._bind_sock.fileno():
-                #    newsock, addr = self._bind_sock.accept()
-                #    self._handle_new_conn(newsock, addr)
-                # if event & select.EPOLLIN:
                 if event & ioloop.READ:
                     try:
                         self._handle_new_recv(self._fileno2context[fileno])
                     except KeyError:
                         log.info('fd:{0} socket already closed'.format(fileno))
-                # elif event & select.EPOLLOUT:
                 elif event & ioloop.WRITE:
                     try:
                         self._handle_new_send(self._fileno2context[fileno])
                     except KeyError:
                         log.info('fd:%s, socket already closed' % fileno)
                 elif event & ioloop.ERROR:
-                    # FIXME: consider if we need to release net msg resources
+                    # TODO: consider if we need to release net msg resources
                     if event & ioloop.EPOLLHUP:
                         log.info('--EPOLLHUP--')
                     elif event & ioloop.EPOLLERR:
@@ -792,7 +774,6 @@ class CConnectionManager(object):
             )
             return
         try:
-            # log.debug('write in add_write_job')
             self._do_write(context)
             self._finish_write_callback(True, context)
         # pylint: disable=W0703
@@ -918,4 +899,3 @@ class CConnectionManager(object):
         )
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent
-
