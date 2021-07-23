@@ -216,8 +216,18 @@ class CConnectionManager(object):
         new_created = False
         context = None
         sock = None
+        log.info('CNeedAckMsg is to be sent. msg_type:%d,'
+                'msg_flag:%d, msg_dest:%s, uniqid:%d' %
+                (
+                    msg.get_msg_type(),
+                    msg.get_flag(),
+                    str(msg.get_to_addr()),
+                    msg.get_uniq_id()
+                )
+            )
+
         if isinstance(msg, async_msg.CNeedAckMsg):
-            log.debug('CNeedAckMsg is to be sent. msg_type:%d,'
+            log.info('CNeedAckMsg is to be sent. msg_type:%d,'
                 'msg_flag:%d, msg_dest:%s, uniqid:%d' %
                 (
                     msg.get_msg_type(),
@@ -235,6 +245,7 @@ class CConnectionManager(object):
                 self._needack_context_queue.put(msg)
         try:
             context = self._peer2context[peer]
+            log.debug('get already created context {0}, type({1})'.format(peer, type(peer)))
         except KeyError:
             log.info('To create a new context for the sock:{0}'.format(
                 peer)
@@ -242,18 +253,17 @@ class CConnectionManager(object):
             self._rwlock.acquire_readlock()
             if peer not in self._peer2context:
                 self._rwlock.release_readlock()
-                sock = self.connect(peer)
+                context = sockcontext.CConnContext()
+                context.set_peerinfo(peer)
+                sock = self.connect(context)
                 if sock is not None:
-                    context = sockcontext.CConnContext()
                     context.set_conn_man(self)
                     context.set_sock(sock)
-                    context.set_peerinfo(peer)
                     fileno = sock.fileno()
                     self._rwlock.acquire_writelock()
                     self._peer2context[peer] = context
                     self._fileno2context[fileno] = context
                     self._context2fileno_peer[context] = (fileno, peer)
-                    self._rwlock.release_writelock()
                     ret = 0
                     try:
                         # self._epoll.register(
@@ -270,6 +280,7 @@ class CConnectionManager(object):
                         #     sock.fileno(), self._epoll_write_params()
                         # )
                         self._poller.modify(sock.fileno(), ioloop.WRITE | ioloop.READ)
+                    self._rwlock.release_writelock()
                 else:
                     log.error(
                         'failed to post msg. Connect failed. peer info:{0}.'
@@ -295,13 +306,14 @@ class CConnectionManager(object):
             self._handle_new_send(context)
             return ret
 
-    def connect(self, peer):
+    def connect(self, context):
         """
         :param peer:
             ip:port
         """
+        peer = context.get_peerinfo()
         log.info('to connect to peer:{0}'.format(peer))
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock = context.get_sock()
         self._set_sock_params(sock)
         try:
             ret = sock.connect_ex(peer)
@@ -328,8 +340,8 @@ class CConnectionManager(object):
     def _handle_new_conn(self, newsock, peer):
         self._set_sock_params(newsock)
         self._set_sock_nonblocking(newsock)
-        context = sockcontext.CConnContext()
-        context.set_sock(newsock)
+        context = sockcontext.CConnContext(newsock)
+        # context.set_sock(newsock)
         context.set_conn_man(self)
         context.set_peerinfo(peer)
         self._rwlock.acquire_writelock()
@@ -474,24 +486,24 @@ class CConnectionManager(object):
                 #    self._handle_new_conn(newsock, addr)
                 # if event & select.EPOLLIN:
                 if event & ioloop.READ:
-                    log.info('ioloop.READ, fd {0}'.format(fileno))
                     try:
                         self._handle_new_recv(self._fileno2context[fileno])
                     except KeyError:
                         log.info('fd:{0} socket already closed'.format(fileno))
                 # elif event & select.EPOLLOUT:
                 elif event & ioloop.WRITE:
-                    log.info('ioloop.WRITE, fd {0}'.format(fileno))
                     try:
                         self._handle_new_send(self._fileno2context[fileno])
                     except KeyError:
                         log.info('fd:%s, socket already closed' % fileno)
                 elif event & ioloop.ERROR:
                     # FIXME: consider if we need to release net msg resources
-                    if event & select.EPOLLHUP:
+                    if event & ioloop.EPOLLHUP:
                         log.info('--EPOLLHUP--')
-                    else:
+                    elif event & ioloop.EPOLLERR:
                         log.info('--EPOLLERR--')
+                    else:
+                        log.warn('POLLER ERROR occured, but not catached.')
                     try:
                         self.cleanup_error_context(
                             self._fileno2context[fileno]
@@ -695,6 +707,7 @@ class CConnectionManager(object):
 
     def _do_write(self, context):
         """write into interface sending buffer"""
+        log.debug('context peer info: {0}'.format(context.get_peerinfo()))
         sock = context.get_sock()
         msg = context.try_move2next_sending_msg()
         if msg is None:
@@ -706,7 +719,6 @@ class CConnectionManager(object):
             data = msg.get_write_bytes(self.NET_RW_SIZE)
             log.debug('msg get_write_bytes_len to be sent: %d' % len(data))
             try:
-
                 succ_len = sock.send(data)
                 msg.seek_write(succ_len)
             except cuperr.AsyncMsgError as error:

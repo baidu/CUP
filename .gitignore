@@ -126,3 +126,6 @@ examples/arrow-runtime/log/agent.stdout.stderr
 examples/arrow-runtime/log/master.stdout.stderr
 .ycm_extra_conf.py
 examples/arrow-runtime/data/TOPDIR
+examples/arrow-runtime/arrow/master/master.pid
+examples/arrow-runtime/arrow/master/master.pid
+*.pid

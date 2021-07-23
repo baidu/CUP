@@ -74,7 +74,7 @@ class ControlService(msgcenter.IMessageCenter):
         self.post_msg(netmsg)
         log.info('finish queue sending heartbeat to {0}'.format(self._master_ipport))
         self._executor.delay_exec(
-            int(self._confdict['control']['heartbeat_interval']) - 3,
+            2,
             self._send_heartbeat_loop,
             urgency=executor.URGENCY_HIGH
         )
@@ -138,7 +138,11 @@ class ControlService(msgcenter.IMessageCenter):
         """run loop"""
         self._status.set_status(self._status.RUNNING)
         self._executor.run()
-        self._send_heartbeat_loop()
+        self._executor.delay_exec(
+            1,  # delay 3 seoncds to send msg
+            self._send_heartbeat_loop,
+            urgency=executor.URGENCY_HIGH
+        )
         if not msgcenter.IMessageCenter.run(self):
             log.error('message center error happened')
             self.stop()

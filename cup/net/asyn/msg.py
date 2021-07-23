@@ -7,6 +7,7 @@
     netmsg related module
 """
 import os
+import struct
 
 import cup
 from cup import log
@@ -20,8 +21,6 @@ MSG_RESENDING_FLAG = 0
 MSG_RESEND_SUCCESS = 1
 MSG_TIMEOUT_TO_DELETE = 2
 MSG_DELETE_FLAG = 3
-
-PY3_DEFAULT_ENCODING = 'utf8'
 
 
 __all__ = ['CMsgType', 'CMsgFlag', 'CNetMsg', 'CAckMsg', 'netmsg_tostring']
@@ -45,6 +44,10 @@ MSG_FLAG2NUM = {
     'FLAG_NEEDACK':0X00000004,
     'FLAG_ACK': 0X00000008,
 }
+
+
+PY3 = platforms.is_py3()
+PY2 = platforms.is_py2()
 
 
 @cup.decorators.Singleton
@@ -113,18 +116,18 @@ class CNetMsg(object):
         flag: System use only.
         type: System will use type > 65535. Users will use type <=65535
 
-        #head  CUP012-3 for building connection
-        #len - uint64
-        #fromip,port, stub -uint64
-        #toip,port, stub   -uint64
-        #msg_type          -uint32
-        #uniqid            -128bit [64bit ip, port, 64 bit, uniqid]
+        #head  CUP012-3 for building connection - 64bit
+        #len - 32bit
+        #fromip,port, stub -128bit
+        #toip,port, stub   -128bit
+        #msg_type          -32bit
+        #uniqid            -128bit
         #body           -no limit (length:uint64)
 
     """
 
     # length 8
-    MSG_SIGN = 'CUP012-3'
+    MSG_SIGN = b'CUP012-3'
 
     _ORDER = [
         'head', 'flag', 'len', 'from', 'to', 'type', 'uniq_id', 'body'
@@ -161,7 +164,7 @@ class CNetMsg(object):
         self._uniqid = None
         self._fromaddr = None
         self._toaddr = None
-        self._dumpdata = None
+        self._dumpdata = bytearray()
         self._flag = None
         # self._del_timeout = None
         self._resend_flag = None
@@ -197,15 +200,15 @@ class CNetMsg(object):
 
     @classmethod
     def _asign_uint2byte_bybits(cls, num, bits):
-        asign_len = bits / 8
-        tmp = b''
+        asign_len = bits // 8
+        tmp = bytearray()
         i = 0
         while True:
-            quotient = int(num / 256)
-            remainder = num % 256
-            tmp += chr(remainder)
+            quotient = num // 256
+            remainder = struct.pack('<B', (num % 256))
+            tmp += remainder
             if quotient < 256:
-                tmp += chr(quotient)
+                tmp += struct.pack('<B', (quotient))
                 break
             else:
                 num = quotient
@@ -213,15 +216,16 @@ class CNetMsg(object):
         length = len(tmp)
         if length < asign_len:
             for _ in range(0, asign_len - length):
-                tmp += chr(0)
+                tmp += struct.pack('<B', 0)
         return tmp
 
     @classmethod
-    def _convert_bytes2uint(cls, str_data):
+    def _convert_bytes2uint(cls, bytes_data):
+        bytes_data = bytearray(bytes_data)
         num = 0
         b_ind = 0
-        for i in str_data:
-            num += pow(256, b_ind) * ord(i)
+        for i in bytes_data:
+            num += pow(256, b_ind) * i
             b_ind += 1
         return num
 
@@ -242,10 +246,6 @@ class CNetMsg(object):
                 'You just pushed into the msg with a zero-length data'
             )
             return 0
-        if platforms.is_py3():
-            if isinstance(data, str):
-                data = data.encode(PY3_DEFAULT_ENCODING)
-
         sign = True
         data_ind = 0
         data_max = len(data)
@@ -376,12 +376,12 @@ class CNetMsg(object):
         self._data['len'] = self._asign_uint2byte_bybits(
             self._msglen, 64
         )
-        tempstr = b''
+        tempstr = bytearray()
         for i in range(0, self._ORDER_COUNTS - 1):
             if i == 0 and (not self._need_head):
                 continue
             tempstr += self._data[self._ORDER[i]]
-        self._dumpdata = '{0}{1}'.format(tempstr, self._data['body'])
+        self._dumpdata = tempstr + self._data['body']
 
     def set_from_addr(self, ip_port, stub_future):
         """
@@ -420,8 +420,16 @@ class CNetMsg(object):
     def set_body(self, body):
         """
         set msg body
+
+        In py2, body is a str.
+        In py3, body should be bytes!!
         """
-        misc.check_type(body, str)
+
+        if platforms.is_py2():
+            misc.check_type(body, str)
+        elif platforms.is_py3():
+            if type(body) != bytes or type(body) != bytearray:
+                raise ValueError('body should be bytes or bytearray')
         self._data['body'] = body
         self._bodylen = len(body)
 
@@ -492,11 +500,7 @@ class CNetMsg(object):
         """
         if 'body' not in self._data:
             raise KeyError('Body not set yet')
-        if not return_unicode:
-            return self._data['body']
-        else:
-            return self._data['body'].decode(PY3_DEFAULT_ENCODING)
-
+        return self._data['body']
 
     def get_bodylen(self):
         """

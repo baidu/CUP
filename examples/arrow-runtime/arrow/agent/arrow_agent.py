@@ -121,7 +121,7 @@ def signal_handler(sig, _):
 
 def _main(argv):
     """main function"""
-    log.init_comlog('arrow_agent', log.DEBUG,
+    log.init_comlog('arrow_agent', log.INFO,
         _TOP_PATH + '/log/arrow_agent.log',
         log.ROTATION,
         1024000000,

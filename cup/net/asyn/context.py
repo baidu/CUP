@@ -9,6 +9,7 @@
 """
 import copy
 import time
+import socket
 import threading
 import traceback
 try:
@@ -33,11 +34,13 @@ class CConnContext(object):  # pylint: disable=R0902
     connection context for each socket
     """
     CONTEXT_QUEUE_SIZE = 200
-    def __init__(self):
+    def __init__(self, sock=None):
         self._destroying = False
-        self._sock = None
+        if sock is None:
+            self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        else:
+            self._sock = sock
         self._peerinfo = None
-
         self._sending_msg = None
         self._send_queue = queue.PriorityQueue(self.CONTEXT_QUEUE_SIZE)
         self._recving_msg = None
@@ -98,7 +101,7 @@ class CConnContext(object):  # pylint: disable=R0902
         associate socket
         """
         self._lock.acquire()
-        self._sock = copy.copy(sock)
+        self.sock = sock
         self._lock.release()
 
     def get_sock(self):

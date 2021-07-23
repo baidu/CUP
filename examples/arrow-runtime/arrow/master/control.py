@@ -68,7 +68,7 @@ class ControlService(msgcenter.IMessageCenter):
         ack_msg.set_flag(netmsg.get_flag())
         ack_msg.set_msg_type(self._type_man.getnumber_bytype('ACK_HEART_BEAT'))
         ack_msg.set_uniq_id(netmsg.get_uniq_id() + 1)
-        ack_msg.set_body('ACK_HEART_BEAT')
+        ack_msg.set_body(b'ACK_HEART_BEAT')
         # resource = hb_service.LinuxHost(name=str(self._master_ipport))
         # resource.deserilize(netmsg.get_body())
         # self._heartbeat_service.refresh(
