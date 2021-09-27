@@ -1,8 +1,11 @@
 # 1. Versions Released
+
+## Version 3.2.27
+* [Dependence Change] Remove pymysql
+
 ## Version 3.2.26
 * [Bug] Epoll Lost Events Bug fix
 * [Compatibility] Fix Py2 comatibility issue for cup.services.heartbeat
-
 
 ## Version 3.2.20
 * [Compatibility] *cup.log* | Fix unicode bug for py3

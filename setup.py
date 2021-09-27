@@ -5,6 +5,7 @@
 """
 installation py
 """
+from __future__ import print_function
 import os
 import re
 import sys
@@ -20,7 +21,7 @@ try:
     __version__ = __import__(__name__).version.VERSION
 # pylint: disable=W0703
 except Exception:
-    print traceback.print_exc()
+    print(traceback.print_exc())
     exit(-1)
 
 setuptools.setup(
