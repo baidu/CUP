@@ -159,11 +159,11 @@ def get_disk_usage_all(raw=False):
     if not raw:
         if total > byte2gb:
             free, total = \
-                free / byte2gb, total / byte2gb
+                free // byte2gb, total // byte2gb
             unit = "GB"
         elif total > byte2mb:
             free, total = \
-                free / byte2mb, total / byte2mb
+                free // byte2mb, total // byte2mb
             unit = "MB"
     return {
         "totalSpace": total,
@@ -365,7 +365,7 @@ def get_cpu_usage(intvl_in_sec=1):
         ret[i] = minus
 
     for i in range(0, len(ret)):
-        ret[i] = ret[i] * 100 / total
+        ret[i] = ret[i] * 100 // total
     return CPUInfo(*ret)
 
 
@@ -388,7 +388,7 @@ def get_cpu_core_usage(coreindex, intvl_in_sec=1):
         ret[i] = minus
 
     for i in range(0, len(ret)):
-        ret[i] = ret[i] * 100 / total
+        ret[i] = ret[i] * 100 // total
     return CPUInfo(*ret)
 
 
@@ -428,7 +428,7 @@ def get_meminfo():
         fp.close()
     avail = free + buffers + cached
     used = total - free
-    percent = int((total - avail) * 100 / total)
+    percent = int((total - avail) * 100 // total)
     return MemInfo(
         total,
         avail,
@@ -600,7 +600,7 @@ def get_net_transmit_speed(str_interface, intvl_in_sec=1):
     rx_bytes0 = get_net_through(str_interface)[0]
     time.sleep(intvl_in_sec)
     rx_bytes1 = get_net_through(str_interface)[0]
-    return (rx_bytes1 - rx_bytes0) / intvl_in_sec
+    return (rx_bytes1 - rx_bytes0) // intvl_in_sec
 
 
 
@@ -613,7 +613,7 @@ def get_net_recv_speed(str_interface, intvl_in_sec):
     tx_bytes0 = get_net_through(str_interface)[1]
     time.sleep(intvl_in_sec)
     tx_bytes1 = get_net_through(str_interface)[1]
-    return (tx_bytes1 - tx_bytes0) / intvl_in_sec
+    return (tx_bytes1 - tx_bytes0) // intvl_in_sec
 
 
 def wrap_exceptions(fun):
@@ -916,8 +916,8 @@ class Process(object):
         # ignore the first two values ("pid (exe)")
         st = st[st.find(')') + 2:]
         values = st.split(' ')
-        utime = float(values[11]) / _CLOCK_TICKS
-        stime = float(values[12]) / _CLOCK_TICKS
+        utime = float(values[11]) // _CLOCK_TICKS
+        stime = float(values[12]) // _CLOCK_TICKS
         return self._nt_cputimes(utime, stime)
 
     @wrap_exceptions
