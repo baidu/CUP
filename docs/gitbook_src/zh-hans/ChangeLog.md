@@ -2,6 +2,9 @@
 
 ## Version 3.2.27
 * [Dependence Change] Remove pymysql
+* [New] cup.net.asyn | supports kqueue on mac 
+* [New] cup.res.mac | supports MacResource based on psutil
+* [New] cup.services.heartbeat supports MacHost
 
 ## Version 3.2.26
 * [Bug] Epoll Lost Events Bug fix

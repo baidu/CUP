@@ -38,6 +38,7 @@ tags
 *.un~
 *.tar
 */*.tar.gz
+nohup.out
 
 ### folders ###
 build
@@ -121,3 +122,7 @@ test.json
 百度开源社区专访稿（马冠南）.docx
 docs/_book.zip
 cup_bidu
+examples/arrow-runtime/log/agent.stdout.stderr
+examples/arrow-runtime/log/master.stdout.stderr
+.ycm_extra_conf.py
+examples/arrow-runtime/data/TOPDIR

@@ -14,11 +14,12 @@ import time
 # from pympler import muppy
 
 from cup import log
-from cup.services import heartbeat as cuphb
-from cup.services import executor
 from cup import net
-from cup.net.async import msgcenter
-from cup.net.async import msg
+from cup import platforms
+from cup.net.asyn import msg
+from cup.services import executor
+from cup.net.asyn import msgcenter
+from cup.services import heartbeat as cuphb
 
 from arrow.common import settings
 from arrow.common import service
@@ -51,10 +52,17 @@ class ControlService(msgcenter.IMessageCenter):
         if self._status.get_status() != self._status.RUNNING:
             log.warn('control service will stop. stop sending heartbeat')
             return
-        hostinfo = cuphb.LinuxHost(
-            str(self._agent_ipport), True,
-            self._confdict['control']['interface']
-        )
+        hostinfo = None
+        if platforms.is_linux():
+            hostinfo = cuphb.LinuxHost(
+                str(self._agent_ipport), True,
+                self._confdict['control']['interface']
+            )
+        elif platforms.is_mac():
+            hostinfo = cuphb.MacHost(
+                str(self._agent_ipport), True,
+                self._confdict['control']['interface']
+            )
         log.info('to create msg and send msg')
         netmsg = msg.CNetMsg(is_postmsg=True)
         netmsg.set_from_addr(self._agent_ipport, (1, 1))
