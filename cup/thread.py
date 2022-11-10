@@ -7,7 +7,7 @@
     cup thread module
 """
 
-__all__ = ['async_raise', 'CupThread', 'RWLock']
+__all__ = ['async_raise', 'CupThread', 'RWLock', 'thread_alive']
 
 
 import threading
@@ -33,6 +33,22 @@ def async_raise(tid, exctype):
     )
 
 
+def thread_alive(obj):
+    """
+    check if thread is alive. Py2 py3 compatible
+
+    :raise Exception:
+        if the obejct does not have attr obj.is_alive and obj.isAlive,
+        the lib will raise ValueError
+    """
+    if hasattr(obj, 'is_alive'):
+        return obj.is_alive()
+    elif hasattr(obj, 'isAlive'):
+        return obj.isAlive()
+    else:
+        raise ValueError('obj is not a object instance of threading.Thread')
+
+
 class CupThread(threading.Thread):
     """
     CupThread is a sub-class inherited from threading.Thread;
@@ -52,11 +68,12 @@ class CupThread(threading.Thread):
         response to the signals! In other words, it may not raise any
         exception/terminate even though cup has send a CupThread signal!
     """
+
     def get_my_tid(self):
         """
         return thread id
         """
-        if not self.isAlive():
+        if not thread_alive(self):
             cup.log.warn('the thread is not active')
             return None
         # do we have it cached?
@@ -94,7 +111,7 @@ class CupThread(threading.Thread):
             retry times until call for failure.
         """
         cnt = 0
-        while self.isAlive():
+        while thread_alive(self):
             self.raise_exc(cup.err.ThreadTermException)
             time.sleep(1)
             cnt += 1

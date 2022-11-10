@@ -304,7 +304,7 @@ class ThreadPool(object):
             times = 0
             while not retry and (times <= 100):
                 for thd in self._threads:
-                    if thd.isAlive():
+                    if thread.thread_alive(thd):
                         thd.terminate()
                         retry = True
                 time.sleep(0.1)
@@ -326,7 +326,7 @@ class ThreadPool(object):
             thd.join(check_interval)
 
         for thd in threads:
-            if thd.isAlive():
+            if thread.thread_alive(thd):
                 return False
 
         return True

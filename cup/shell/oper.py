@@ -26,6 +26,7 @@ import subprocess
 import cup
 from cup import err
 from cup import log
+from cup import thread
 from cup import platforms
 from cup import decorators
 
@@ -573,7 +574,7 @@ class ShellExec(object):  # pylint: disable=R0903
         )
         cmdthd.start()
         cmdthd.join(timeout)
-        if cmdthd.isAlive():
+        if thread.thread_alive(cmdthd):
             str_warn = (
                 'Shell "%s"execution timout:%d. Killed it' % (cmd, timeout)
             )
