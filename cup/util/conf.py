@@ -1101,7 +1101,7 @@ class Dict2Configure(object):
     def _appendline(self, key, value):
         self._str = '{0}{1}{2}{3}{4}{5}'.format(
             self._str, self._get_indents(), key, self._get_field_value_sep(),
-            self._encoding, self._get_linesep()
+            value, self._get_linesep()
         )
 
     def _addlevel(self, key):
