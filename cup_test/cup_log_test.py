@@ -56,22 +56,19 @@ def test_gen_wf():
 
 def test_log_parse():
     """cup.log.parse"""
-    logline = ('INFO: 2015-10-14 16:13:11,700  '
-        '* [18635:139901983938272] [util.py:167] '
-        'to compress folder into tarfile:'
+    logline = ('INFO:    2023-01-04 22:29:25,456 +0800(CST) '
+            '* [34666:115f70600] [log.py:327]'
+        ' to compress folder into tarfile:'
         '/home/disk2/szjjh-ccdb280.szjjh01.baidu.com.1444810391.7.tar.gz'
     )
     kvs = log.parse(logline)
     unittest.assert_eq(kvs['loglevel'], 'INFO')
-    unittest.assert_eq(kvs['date'], '2015-10-14')
-    unittest.assert_eq(kvs['time'], '16:13:11,700')
-    unittest.assert_eq(kvs['pid'], '18635')
-    unittest.assert_eq(kvs['tid'], '139901983938272')
-    unittest.assert_eq(kvs['srcline'], 'util.py:167')
+    unittest.assert_eq(kvs['date'], '2023-01-04')
+    unittest.assert_eq(kvs['time'], '22:29:25,456')
+    unittest.assert_eq(kvs['pid'], '34666')
+    unittest.assert_eq(kvs['tid'], '115f70600')
+    unittest.assert_eq(kvs['srcline'], 'log.py:327')
     unittest.assert_startswith(kvs['msg'], 'to compress')
-
-    newlog = 'xxxxxxxxsdfsdf  sdfsdf'
-    unittest.assert_none(log.parse(newlog))
 
 
 def test_log_reinitcomlog():

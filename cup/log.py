@@ -6,10 +6,11 @@
 :description:
     common log related module
 """
+# pylint: disable=unspecified-encoding,broad-except
 from __future__ import print_function
 
 __all__ = [
-    'debug', 'info', 'warn', 'critical',
+    'debug', 'info', 'warning', 'critical',
     'init_comlog', 'setloglevel', 'ROTATION', 'INFINITE',
     'reinit_comlog', 'parse',
     'backtrace_info', 'backtrace_debug', 'backtrace_error',
@@ -25,7 +26,6 @@ import os
 import re
 import sys
 import time
-import uuid
 import logging
 from logging import handlers
 import threading
@@ -48,13 +48,9 @@ CRITICAL = logging.CRITICAL
 G_INITED_LOGGER = []
 
 
-# pylint:disable=C0103
 info = logging.info
-warn = logging.warn
-try:
-    warn = logging.warning
-except Exception:
-    pass
+warn = logging.warning
+warning = logging.warning
 error = logging.error
 debug = logging.debug
 critical = logging.critical
@@ -70,7 +66,7 @@ LoggerParams = collections.namedtuple('LoggerParams', [
 ])
 
 
-class _Singleton(object):  # pylint: disable=R0903
+class _Singleton:  # pylint: disable=R0903
     """
     internal use for logging.  Plz use @Singoleton in cup.decorators
     """
@@ -81,6 +77,7 @@ class _Singleton(object):  # pylint: disable=R0903
         self.__cls = cls
 
     def __call__(self, *args, **kwargs):
+        # pylint: disable=consider-using-with
         self._LOCK.acquire()
         if self.__instance is None:
             self.__instance = self.__cls(*args, **kwargs)
@@ -88,22 +85,22 @@ class _Singleton(object):  # pylint: disable=R0903
         return self.__instance
 
 
-# pylint: disable=R0903
+# pylint: disable=too-few-public-methods
 class _MsgFilter(logging.Filter):
     """
     Msg filters by log levels
     """
+    # pylint: disable= super-init-not-called
     def __init__(self, msg_level=logging.WARNING):
         self.msg_level = msg_level
 
     def filter(self, record):
         if record.levelno >= self.msg_level:
             return False
-        else:
-            return True
+        return True
 
 
-class LogInitializer(object):
+class LogInitializer:
     """
     default log initalizer
     """
@@ -111,6 +108,7 @@ class LogInitializer(object):
     #     logger, loglevel, strlogfile, logtype,
     #     maxsize, bprint_console, gen_wf=False
     # ):  # too many arg pylint: disable=R0913
+    # pylint:disable=too-many-locals
     @classmethod
     def setup_filelogger(cls, logger, logparams):
         """
@@ -127,13 +125,15 @@ class LogInitializer(object):
                 if platforms.is_linux():
                     os.mknod(strlogfile)
                 else:
+                    # for py2 compatibility use
+
                     with open(strlogfile, 'w+') as fhandle:
                         fhandle.write('\n')
-            except IOError:
-                raise err.LoggerException(
+            except IOError as errinfo:
+                raise IOError(
                     'logfile does not exist. '
                     'try to create it. but file creation failed'
-                )
+                ) from errinfo
         logger.setLevel(loglevel)
         # '%(asctime)s - %(levelname)s - %(filename)s:%(lineno)s - %(message)s'
         tznum = time.strftime('%z')
@@ -200,6 +200,7 @@ class LogInitializer(object):
         )
         msg = '{0}{1}'.format(tempmsg, msg)
         if platforms.is_py2():
+            # pylint: disable=undefined-variable
             if isinstance(msg, unicode):
                 return msg
             return msg.decode('utf8')
@@ -208,7 +209,7 @@ class LogInitializer(object):
 
 # pylint: disable=R0903
 @_Singleton
-class _RootLogerMan(object):
+class _RootLogerMan:
     _instance = None
     _rootlogger = None
     _b_rotation = False
@@ -330,7 +331,6 @@ def init_comlog(loggername, loglevel=logging.INFO, logfile='cup.log',
         print('[{0}:{1}] init_comlog has been already initalized'.format(
             LogInitializer.get_codefile(1), LogInitializer.get_codeline(1)
         ))
-    return
 
 
 # too many arg pylint: disable=R0913
@@ -372,6 +372,7 @@ def reinit_comlog(loggername, loglevel=logging.INFO, logfile='cup.log',
 
 def _fail_handle(msg, e):
     if platforms.is_py2():
+        # pylint: disable=undefined-variable
         if not isinstance(msg, unicode):
             msg = msg.decode('utf8')
         print('{0}\nerror:{1}'.format(msg, e))
@@ -389,8 +390,8 @@ def backtrace_info(msg, back_trace_len=0):
         loggerman.get_rootlogger().info(msg)
     except err.LoggerException:
         return
-    except Exception as e:
-        _fail_handle(msg, e)
+    except Exception as errinfo:
+        _fail_handle(msg, errinfo)
 
 
 def backtrace_debug(msg, back_trace_len=0):
@@ -403,8 +404,8 @@ def backtrace_debug(msg, back_trace_len=0):
         loggerman.get_rootlogger().debug(msg)
     except err.LoggerException:
         return
-    except Exception as e:
-        _fail_handle(msg, e)
+    except Exception as errinfo:
+        _fail_handle(msg, errinfo)
 
 
 def backtrace_warn(msg, back_trace_len=0):
@@ -414,11 +415,12 @@ def backtrace_warn(msg, back_trace_len=0):
     try:
         msg = LogInitializer.log_file_func_info(msg, back_trace_len)
         loggerman = _RootLogerMan()
-        loggerman.get_rootlogger().warn(msg)
+        loggerman.get_rootlogger().warning(msg)
     except err.LoggerException:
         return
-    except Exception as e:
-        _fail_handle(msg, e)
+    # pylint: disable=broad-except
+    except Exception as errinfo:
+        _fail_handle(msg, errinfo)
 
 
 def backtrace_error(msg, back_trace_len=0):
@@ -431,8 +433,8 @@ def backtrace_error(msg, back_trace_len=0):
         loggerman.get_rootlogger().error(msg)
     except err.LoggerException:
         return
-    except Exception as error:
-        _fail_handle(msg, error)
+    except Exception as errinfo:
+        _fail_handle(msg, errinfo)
 
 
 def backtrace_critical(msg, back_trace_len=0):
@@ -445,8 +447,9 @@ def backtrace_critical(msg, back_trace_len=0):
         loggerman.get_rootlogger().critical(msg)
     except err.LoggerException:
         return
-    except Exception as error:
-        _fail_handle(msg, error)
+    # pylint:disable=broad-except
+    except Exception as errinfo:
+        _fail_handle(msg, errinfo)
 
 
 def setloglevel(logginglevel):
@@ -466,6 +469,9 @@ def parse(logline):
     return a dict if the line is valid.
     Otherwise, return None
 
+    :raise Exception:
+        ValueError if logline is invalid
+
     ::
 
         dict_info:= {
@@ -481,15 +487,15 @@ def parse(logline):
         }
 
     """
+    content = logline[logline.rfind(']') + 1:].strip()
+    # content = content[(content.find(']') + 1):]
+    # content = content[(content.find(']') + 1):].strip()
+    regex = re.compile('[ \t]+')
+    items = regex.split(logline)
+    loglevel, date, time_, timezone, _, pid_tid, src = items[0:7]
+    pid, tid = pid_tid.strip('[]').split(':')
+    tznum, tzkey = timezone.strip('+)').split('(')
     try:
-        content = logline[logline.find(']'):]
-        content = content[(content.find(']') + 1):]
-        content = content[(content.find(']') + 1):].strip()
-        regex = re.compile('[ \t]+')
-        items = regex.split(logline)
-        loglevel, date, time_, timezone, _, pid_tid, src = items[0:6]
-        pid, tid = pid_tid.strip('[]').split(':')
-        tznum, tzkey = timezone.strip('+)').split('(')
         return {
             'loglevel': loglevel.strip(':'),
             'date': date,
@@ -502,8 +508,8 @@ def parse(logline):
             'tzkey': tzkey
         }
     # pylint: disable = W0703
-    except Exception:
-        return None
+    except Exception as errinfo:
+        raise ValueError(errinfo) from errinfo
 
 
 def info_if(bol, msg, back_trace_len=1):
@@ -616,7 +622,7 @@ def xwarn(loggername, msg, back_trace_len=1):
 
     """
     logger = logging.getLogger(loggername)
-    logger.warn(LogInitializer.log_file_func_info(msg, back_trace_len))
+    logger.warning(LogInitializer.log_file_func_info(msg, back_trace_len))
 
 
 def xerror(loggername, msg, back_trace_len=1):
