@@ -469,6 +469,9 @@ def parse(logline):
     return a dict if the line is valid.
     Otherwise, return None
 
+    :raise Exception:
+        ValueError if logline is invalid
+
     ::
 
         dict_info:= {
@@ -484,15 +487,15 @@ def parse(logline):
         }
 
     """
+    content = logline[logline.rfind(']') + 1:].strip()
+    # content = content[(content.find(']') + 1):]
+    # content = content[(content.find(']') + 1):].strip()
+    regex = re.compile('[ \t]+')
+    items = regex.split(logline)
+    loglevel, date, time_, timezone, _, pid_tid, src = items[0:7]
+    pid, tid = pid_tid.strip('[]').split(':')
+    tznum, tzkey = timezone.strip('+)').split('(')
     try:
-        content = logline[logline.find(']'):]
-        content = content[(content.find(']') + 1):]
-        content = content[(content.find(']') + 1):].strip()
-        regex = re.compile('[ \t]+')
-        items = regex.split(logline)
-        loglevel, date, time_, timezone, _, pid_tid, src = items[0:6]
-        pid, tid = pid_tid.strip('[]').split(':')
-        tznum, tzkey = timezone.strip('+)').split('(')
         return {
             'loglevel': loglevel.strip(':'),
             'date': date,
@@ -505,8 +508,8 @@ def parse(logline):
             'tzkey': tzkey
         }
     # pylint: disable = W0703
-    except Exception:
-        return None
+    except Exception as errinfo:
+        raise ValueError(errinfo) from errinfo
 
 
 def info_if(bol, msg, back_trace_len=1):
