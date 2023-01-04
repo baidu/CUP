@@ -4,10 +4,11 @@
 
 - Visit http://cup.iobusy.com for more details
     - **访问 http://cup.iobusy.com 获取更多信息**
-- CUP is **very steady on python 2.7.x**. 
-- CUP for py3 beta has been released
-    - python3 -m pip install cup
-
+- **From Version 3.3.1, CUP will support Python3 only** 
+    - If you want use cup in Python2.7.x, plz install it with version < 3.3
+        - e.g.  # python -m pip install cup==3.2.31
+        - cup 3.2.X versions will only maintain bug fixes for Python2. Will not add any new features.
+        - If you want to try new features, pls use cup under Python3.
 
 ## Quick Start
 ### 1. Download
