@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "cup"
+version = "3.2.32"
+description = "A common useful python library"
+authors = ["CUP Dev Team lead by Guannan Ma <mythmgn@hotmail.com>"]
+maintainers = ["Guannan Ma <mythmgn@hotmail.com>"]
+license = "Apache License V2"
+readme = "README.md"
+classifiers = [                                                                                        
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]   
+homepage = "https://github.com/baidu/CUP"
+keywords = ["pylib", "lib", "common", "cup"]
+packages = [                                                                                           
+    { include = "cup", from = "./src" }
+]                                                                                                      
+
+[tool.poetry.dependencies]
+python = "^3.7"
+requests = "^2.28.2"
+pytz = "^2022.7.1"
+psutil = "^5.9.4"
+pexpect = "^4.8.0"
+paramiko = "^3.0.0"
+
+
+[[tool.poetry.source]]
+name = "tsinghua-mirror"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+default = true
+secondary = false
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+

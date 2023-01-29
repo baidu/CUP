@@ -1,151 +1,33 @@
 
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>cup.util.conf &mdash; Cup 3.2.19 documentation</title>
-  
 
-  
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cup.util.conf &#8212; cup 3.2.32 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
-
-  
-  <script src="../../../_static/js/modernizr.min.js"></script>
-
-</head>
-
-<body class="wy-body-for-nav">
-
+    <link rel="search" title="Search" href="../../../search.html" />
    
-  <div class="wy-grid-for-nav">
-
-    
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
-
-          
-            <a href="../../../index.html" class="icon icon-home"> Cup
-          
-
-          
-          </a>
-
-          
-            
-            
-              <div class="version">
-                3.2.0
-              </div>
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../cup.html">cup package</a></li>
-</ul>
-
-            
-          
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">Cup</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
-          <li><a href="../util.html">cup.util</a> &raquo;</li>
-        
-      <li>cup.util.conf</li>
-    
-    
-      <li class="wy-breadcrumbs-aside">
-        
-      </li>
-    
-  </ul>
-
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
             
   <h1>Source code for cup.util.conf</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python</span>
@@ -156,16 +38,19 @@
 <span class="sd">:description:</span>
 <span class="sd">    Complex and constructive conf support</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">codecs</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">functools</span>
-<span class="kn">from</span> <span class="nn">xml.dom</span> <span class="k">import</span> <span class="n">minidom</span>
+<span class="kn">from</span> <span class="nn">xml.dom</span> <span class="kn">import</span> <span class="n">minidom</span>
 
 <span class="kn">import</span> <span class="nn">cup</span>
+<span class="kn">from</span> <span class="nn">cup</span> <span class="kn">import</span> <span class="n">platforms</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -174,11 +59,18 @@
 <span class="p">]</span>
 
 
+<span class="c1"># pylint: disable=R0913</span>
+<span class="c1"># to be compatible with py3 open</span>
+<span class="k">def</span> <span class="nf">_open_codecs</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;open_codecs for py2 in order to support encoding&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span>
+
+
 <span class="k">class</span> <span class="nc">CConf</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Depreciated class. Please do not use it. Use python configparser instead.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">revert_version</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">revert_version</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_abspath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
@@ -186,14 +78,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;:&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bakfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.bak.&#39;</span> <span class="o">+</span> <span class="n">revert_version</span>
 
-    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bakfile</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bakfile</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_backup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_bakfile</span><span class="p">):</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_abspath</span><span class="p">,</span> <span class="n">new_bakfile</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_abspath</span><span class="p">)</span> <span class="k">as</span> <span class="n">src</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">src</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
@@ -204,14 +96,14 @@
                         <span class="n">value</span> <span class="o">=</span> <span class="n">spstrs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">value</span>
 
-    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            This function should not be used</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mi">0</span>
 
     <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kvs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        update conf with a dict.</span>
 
 <span class="sd">        dict = {&#39;key&#39; : &#39;value&#39;, &#39;key1&#39;: &#39;value&#39;}</span>
@@ -228,13 +120,13 @@
                     <span class="n">trg</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">revert</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        revert the conf</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bakfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_abspath</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">write_kv_into_conf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kvkvs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        将key-value写进conf</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_abspath</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fhandle</span><span class="p">:</span>
@@ -243,10 +135,10 @@
 
 
 <span class="k">class</span> <span class="nc">CConfModer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    deprecated. Recommand using Configure2Dict / Dict2Configure</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">toolpath</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">toolpath</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">toolpath</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
                 <span class="s1">&#39;File not found - The cfmod tool cannot be found: </span><span class="si">%s</span><span class="s1">&#39;</span>
@@ -255,7 +147,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_modtool</span> <span class="o">=</span> <span class="n">toolpath</span>
 
     <span class="k">def</span> <span class="nf">updatekv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">confpath</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        update key with value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> -c </span><span class="si">%s</span><span class="s2"> -u </span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_modtool</span><span class="p">,</span> <span class="n">confpath</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
@@ -277,7 +169,7 @@
                 <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">updatekvlist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">confpath</span><span class="p">,</span> <span class="n">kvlist</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        update a list of key/value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">strcmd</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -302,7 +194,7 @@
                 <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">addkv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">confpath</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        add key value into a conf</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> -c </span><span class="si">%s</span><span class="s2"> -i </span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2"> &amp;&gt;/dev/null&quot;</span> <span class="o">%</span> <span class="p">(</span>
@@ -333,7 +225,7 @@
                 <span class="n">try_times</span> <span class="o">+=</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="nf">delkv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">confpath</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        del a key from a conf file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> -c </span><span class="si">%s</span><span class="s2"> -d </span><span class="si">%s</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_modtool</span><span class="p">,</span> <span class="n">confpath</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
@@ -363,63 +255,63 @@
 
 
 <span class="k">class</span> <span class="nc">ArrayFormatError</span><span class="p">(</span><span class="n">cup</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">BaseCupException</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    array format error for Configure2Dict</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">LineFormatError</span><span class="p">(</span><span class="n">cup</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">BaseCupException</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Line error class</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">KeyFormatError</span><span class="p">(</span><span class="n">cup</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">BaseCupException</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Key error class</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">ValueFormatError</span><span class="p">(</span><span class="n">cup</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">BaseCupException</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    value error class</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">UnknowConfError</span><span class="p">(</span><span class="n">cup</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">BaseCupException</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    unkown error class</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">ConfDictSetItemError</span><span class="p">(</span><span class="n">cup</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">BaseCupException</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ConfDict Error</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">ConfListSetItemError</span><span class="p">(</span><span class="n">cup</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">BaseCupException</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ConfList Error</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">ConfList</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Conf list attributes.</span>
 
 <span class="sd">    e.g.</span>
@@ -427,13 +319,13 @@
 <span class="sd">    @disk: /home/disk1</span>
 <span class="sd">    @disk: /home/disk2</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ind</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_comments</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">append_ex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">comments</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        append a item with conf comments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">comments</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">,</span> <span class="s1">&#39;comments should be a list&#39;</span>
@@ -442,7 +334,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_comments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comments</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_ex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get conf list item with its comments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
@@ -450,48 +342,48 @@
         <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">ind</span><span class="p">),</span> <span class="p">[])</span>
 
-    <span class="k">def</span> <span class="nf">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="nb">list</span><span class="o">.</span><span class="fm">__delitem__</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comments</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;append item&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;append item&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">append_ex</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">[])</span>
 
     <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;plz do not use this function&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;plz do not use this function&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="n">ConfDictSetItemError</span><span class="p">(</span>
             <span class="s1">&#39;Do not support &quot;insert&quot;. Use &quot;append&quot; instead&#39;</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seqs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;plz do not use extend&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;plz do not use extend&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="n">ConfDictSetItemError</span><span class="p">(</span>
             <span class="s1">&#39;Do not support &quot;extend&quot;. Use &quot;append&quot; instead&#39;</span>
         <span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">ConfDict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ConfDict that Configure2Dict and Dict2Configure can use.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_extra_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tail</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reverse_ind</span> <span class="o">=</span> <span class="o">-</span><span class="mi">99999999</span>
 
-    <span class="k">def</span> <span class="nf">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="nb">dict</span><span class="o">.</span><span class="fm">__delitem__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ConfDict</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__delitem__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extra_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">set_ex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">comments</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        In addtion to dict[&#39;key&#39;] = value, set_ex also set comments along with</span>
 <span class="sd">        the key.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ConfDict</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extra_dict</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_extra_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">,</span> <span class="n">comments</span><span class="p">)</span>
@@ -501,7 +393,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_reverse_ind</span> <span class="o">+=</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="nf">get_ex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get (value, comments) with key, comments is a list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
@@ -510,7 +402,7 @@
             <span class="n">comments</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">comments</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extra_dict</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
@@ -521,7 +413,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_reverse_ind</span> <span class="o">+=</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="nf">_compare_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyx</span><span class="p">,</span> <span class="n">keyy</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;compare keys&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;compare keys&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extra_dict</span><span class="p">[</span><span class="n">keyx</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extra_dict</span><span class="p">[</span><span class="n">keyy</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extra_dict</span><span class="p">[</span><span class="n">keyx</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extra_dict</span><span class="p">[</span><span class="n">keyy</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
@@ -530,7 +422,7 @@
             <span class="k">return</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="nf">get_ordered_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get keys in order</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">functools</span><span class="o">.</span><span class="n">cmp_to_key</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_compare_keys</span><span class="p">))</span>
@@ -539,7 +431,7 @@
 
 <span class="c1">#  @brief translate configure(public/configure) conf to dict</span>
 <div class="viewcode-block" id="Configure2Dict"><a class="viewcode-back" href="../../../cup.util.html#cup.util.conf.Configure2Dict">[docs]</a><span class="k">class</span> <span class="nc">Configure2Dict</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=R0903</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Configure2Dict support conf features below:</span>
 
 <span class="sd">    1. comments</span>
@@ -678,8 +570,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configure_file</span><span class="p">,</span> <span class="n">remove_comments</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configure_file</span><span class="p">,</span> <span class="n">remove_comments</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param configure_file:</span>
 <span class="sd">            configure file path</span>
 <span class="sd">        :param remove_comments:</span>
@@ -705,7 +597,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_separator</span> <span class="o">=</span> <span class="n">separator</span>
 
     <span class="k">def</span> <span class="nf">_strip_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        strip the value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_comments</span><span class="p">:</span>
@@ -715,7 +607,7 @@
         <span class="k">return</span> <span class="n">rev</span>
 
     <span class="k">def</span> <span class="nf">_handle_key_value_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">linenum</span><span class="p">,</span> <span class="n">conf_dict_now</span><span class="p">,</span> <span class="n">comments</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        handle (key, value) tuple</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">num</span> <span class="o">=</span> <span class="n">linenum</span>
@@ -757,7 +649,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_handle_comments</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">comments</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        handle comments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;__comments__&#39;</span><span class="p">:</span>
@@ -807,15 +699,17 @@
 
 
     <span class="c1"># pylint: disable=R0912, R0915</span>
-<div class="viewcode-block" id="Configure2Dict.get_dict"><a class="viewcode-back" href="../../../cup.util.html#cup.util.conf.Configure2Dict.get_dict">[docs]</a>    <span class="k">def</span> <span class="nf">get_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore_error</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Configure2Dict.get_dict"><a class="viewcode-back" href="../../../cup.util.html#cup.util.conf.Configure2Dict.get_dict">[docs]</a>    <span class="k">def</span> <span class="nf">get_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf8&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get conf_dict which you can use to access conf info.</span>
 
 <span class="sd">        :param ignore_error:</span>
 <span class="sd">            True, CUP will parse the conf file without catching exceptions</span>
+<span class="sd">        :param encoding:</span>
+<span class="sd">            utf8 by default, you can change it to your encoding</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">comments</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_get_input_lines</span><span class="p">(</span><span class="n">ignore_error</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_input_lines</span><span class="p">(</span><span class="n">ignore_error</span><span class="p">,</span> <span class="n">encoding</span><span class="p">)</span>
         <span class="n">conf_layer_stack</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="p">]</span>
         <span class="n">num</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="p">)</span>
@@ -912,7 +806,7 @@
 
     <span class="c1"># Check the key id format</span>
     <span class="k">def</span> <span class="nf">_check_key_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>  <span class="c1"># pylint: disable=R0201</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        check if the key is valid</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;@&#39;</span><span class="p">:</span>
@@ -927,12 +821,12 @@
 
     <span class="c1"># Check the [GROUP] key format</span>
     <span class="k">def</span> <span class="nf">_check_groupkey_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;check if the group key is valid&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;check if the group key is valid&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">groupkey</span> <span class="ow">in</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_check_key_valid</span><span class="p">(</span><span class="n">groupkey</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_handle_include_syntx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">ignore_error</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;handle $include file.conf &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;handle $include file.conf &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ignore_error</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">include_file</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
@@ -965,16 +859,21 @@
                 <span class="p">)</span>
 
     <span class="c1"># Read in the file content, with format check</span>
-    <span class="k">def</span> <span class="nf">_get_input_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore_error</span><span class="p">):</span>  <span class="c1"># pylint: disable=R0912,R0915</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=R0912,R0915</span>
+    <span class="k">def</span> <span class="nf">_get_input_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore_error</span><span class="p">,</span> <span class="n">encoding</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        read conf lines</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fhandle</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">fhanle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">platforms</span><span class="o">.</span><span class="n">is_py2</span><span class="p">():</span>
+                <span class="n">fhandle</span> <span class="o">=</span> <span class="n">_open_codecs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fhandle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
             <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;open file failed:</span><span class="si">%s</span><span class="s1">, err:</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">,</span> <span class="n">error</span><span class="p">))</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fhanle</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fhandle</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
             <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="c1"># if it&#39;s a blank line or a line with comments only</span>
             <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
@@ -1051,23 +950,24 @@
                     <span class="k">raise</span> <span class="n">ValueFormatError</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">tmp_value</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
-        <span class="n">fhanle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+        <span class="n">fhandle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="Dict2Configure"><a class="viewcode-back" href="../../../cup.util.html#cup.util.conf.Dict2Configure">[docs]</a><span class="k">class</span> <span class="nc">Dict2Configure</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert Dict into Configure.</span>
 <span class="sd">    You can convert a ConfDict or python dict into a conf file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1">##</span>
     <span class="c1"># @param dict the conf dict, make sure the type format is right</span>
     <span class="c1">#</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf_dict</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf_dict</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_dict</span><span class="p">(</span><span class="n">conf_dict</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_level</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_separator</span> <span class="o">=</span> <span class="n">separator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_encoding</span> <span class="o">=</span> <span class="s1">&#39;utf8&#39;</span>
 
     <span class="k">def</span> <span class="nf">_get_field_value_sep</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_separator</span>
@@ -1097,17 +997,30 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_get_confstring</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_str</span>
 
-<div class="viewcode-block" id="Dict2Configure.write_conf"><a class="viewcode-back" href="../../../cup.util.html#cup.util.conf.Dict2Configure.write_conf">[docs]</a>    <span class="k">def</span> <span class="nf">write_conf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf_file</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Dict2Configure.write_conf"><a class="viewcode-back" href="../../../cup.util.html#cup.util.conf.Dict2Configure.write_conf">[docs]</a>    <span class="k">def</span> <span class="nf">write_conf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf_file</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf8&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        write the conf into of the dict into a conf_file</span>
+
+<span class="sd">        :param conf_file:</span>
+<span class="sd">            the file which will be override</span>
+<span class="sd">        :param encoding:</span>
+<span class="sd">            &#39;utf8&#39; by default, specify yours if needed</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">conf_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fhandle</span><span class="p">:</span>
-            <span class="n">fhandle</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_write_string</span><span class="p">())</span></div>
+        <span class="n">fhandle</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">platforms</span><span class="o">.</span><span class="n">is_py2</span><span class="p">():</span>
+            <span class="n">fhandle</span> <span class="o">=</span> <span class="n">_open_codecs</span><span class="p">(</span><span class="n">conf_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fhandle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">conf_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span>
+        <span class="n">fhandle</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_write_string</span><span class="p">())</span>
+        <span class="n">fhandle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
     <span class="c1"># pylint: disable=R0911</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_comp_write_keys</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">valuex</span><span class="p">,</span> <span class="n">valuey</span><span class="p">):</span>
-        <span class="n">_py_type</span> <span class="o">=</span> <span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unicode</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">platforms</span><span class="o">.</span><span class="n">is_py2</span><span class="p">():</span>
+            <span class="n">_py_type</span> <span class="o">=</span> <span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unicode</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_py_type</span> <span class="o">=</span> <span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">valuex</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">valuey</span><span class="p">):</span>
             <span class="k">return</span> <span class="mi">0</span>
@@ -1147,9 +1060,10 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">order_keys</span> <span class="o">=</span> <span class="n">_dict</span><span class="o">.</span><span class="n">get_ordered_keys</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">order_keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-                <span class="n">_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comp_write_keys</span><span class="p">(</span>
-                    <span class="n">_dict</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">_dict</span><span class="p">[</span><span class="n">y</span><span class="p">]</span>
+            <span class="n">order_keys</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+            <span class="n">order_keys</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span>
+                <span class="n">key</span><span class="o">=</span><span class="n">functools</span><span class="o">.</span><span class="n">cmp_to_key</span><span class="p">(</span>
+                    <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comp_write_keys</span><span class="p">(</span><span class="n">_dict</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">_dict</span><span class="p">[</span><span class="n">y</span><span class="p">])</span>
                 <span class="p">)</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="s1">&#39;$include&#39;</span> <span class="ow">in</span> <span class="n">order_keys</span><span class="p">:</span>
@@ -1202,7 +1116,8 @@
                         <span class="k">for</span> <span class="n">comment</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_str</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_indents</span><span class="p">()</span> <span class="o">+</span> <span class="n">comment</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_appendline</span><span class="p">(</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_get_arrayflag</span><span class="p">()</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="s1">&#39;</span><span class="si">{0}{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_arrayflag</span><span class="p">(),</span> <span class="n">key</span><span class="p">),</span>
+                            <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                         <span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_addlevel</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
@@ -1216,22 +1131,22 @@
         <span class="k">pass</span>
 
     <span class="k">def</span> <span class="nf">_appendline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_str</span> <span class="o">+=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_get_indents</span><span class="p">()</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">+</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_get_field_value_sep</span><span class="p">()</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_linesep</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}{1}{2}{3}{4}{5}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_str</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_indents</span><span class="p">(),</span> <span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_field_value_sep</span><span class="p">(),</span>
+            <span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_linesep</span><span class="p">()</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_addlevel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_str</span> <span class="o">+=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_get_indents</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;[&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_levelsep</span><span class="p">()</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;]&#39;</span>
-            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_linesep</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}{1}</span><span class="s1">[</span><span class="si">{2}{3}</span><span class="s1">]</span><span class="si">{4}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_str</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_indents</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_levelsep</span><span class="p">(),</span> <span class="n">key</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_linesep</span><span class="p">()</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_level</span> <span class="o">+=</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="nf">_add_arraylevel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_str</span> <span class="o">+=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_get_indents</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;[&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_arraylevel_sep</span><span class="p">()</span> <span class="o">+</span>
-            <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;]&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_linesep</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}{1}</span><span class="s1">[</span><span class="si">{2}{3}</span><span class="s1">]</span><span class="si">{4}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_str</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_indents</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_arraylevel_sep</span><span class="p">(),</span>
+            <span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_linesep</span><span class="p">()</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_level</span> <span class="o">+=</span> <span class="mi">1</span>
 
@@ -1240,7 +1155,7 @@
 
     <span class="c1"># Set the conf dict</span>
 <div class="viewcode-block" id="Dict2Configure.set_dict"><a class="viewcode-back" href="../../../cup.util.html#cup.util.conf.Dict2Configure.set_dict">[docs]</a>    <span class="k">def</span> <span class="nf">set_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf_dict</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        set a new conf_dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">conf_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
@@ -1270,7 +1185,7 @@
 
 
 <div class="viewcode-block" id="HdfsXmlConf"><a class="viewcode-back" href="../../../cup.util.html#cup.util.conf.HdfsXmlConf">[docs]</a><span class="k">class</span> <span class="nc">HdfsXmlConf</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    hdfs xmlconf modifier.</span>
 
 <span class="sd">    Example:</span>
@@ -1300,7 +1215,7 @@
 <span class="sd">        # write back conf items with new values</span>
 <span class="sd">        xmlobj.write_conf(key_values)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;file not found:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filepath</span><span class="p">))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
@@ -1333,7 +1248,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_confdict</span>
 
 <div class="viewcode-block" id="HdfsXmlConf.get_items"><a class="viewcode-back" href="../../../cup.util.html#cup.util.conf.HdfsXmlConf.get_items">[docs]</a>    <span class="k">def</span> <span class="nf">get_items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        return hadoop config items as a dict.</span>
 
 <span class="sd">        :return:</span>
@@ -1397,8 +1312,8 @@
             <span class="n">configuration_node</span><span class="o">.</span><span class="n">appendChild</span><span class="p">(</span><span class="n">new_pro</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">dom</span><span class="o">.</span><span class="n">toprettyxml</span><span class="p">(</span><span class="n">newl</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="HdfsXmlConf.write_conf"><a class="viewcode-back" href="../../../cup.util.html#cup.util.conf.HdfsXmlConf.write_conf">[docs]</a>    <span class="k">def</span> <span class="nf">write_conf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kvs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="HdfsXmlConf.write_conf"><a class="viewcode-back" href="../../../cup.util.html#cup.util.conf.HdfsXmlConf.write_conf">[docs]</a>    <span class="k">def</span> <span class="nf">write_conf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kvs</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf8&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        update config items with a dict kvs. Refer to the example above.</span>
 
 <span class="sd">        :param kvs:</span>
@@ -1409,10 +1324,16 @@
 <span class="sd">                    ......</span>
 <span class="sd">                }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_encoding</span> <span class="o">=</span> <span class="n">encoding</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_items</span><span class="p">()</span>
         <span class="n">str_xml</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_to_conf</span><span class="p">(</span><span class="n">kvs</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_xmlpath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fhandle</span><span class="p">:</span>
-            <span class="n">fhandle</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">str_xml</span><span class="p">)</span>
+        <span class="n">fhandle</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">platforms</span><span class="o">.</span><span class="n">is_py2</span><span class="p">():</span>
+            <span class="n">fhandle</span> <span class="o">=</span> <span class="n">_open_codecs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_xmlpath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fhandle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_xmlpath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span>
+        <span class="n">fhandle</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">str_xml</span><span class="p">)</span>
+        <span class="n">fhandle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_confdict</span> <span class="o">=</span> <span class="n">kvs</span></div></div>
 
 
@@ -1432,60 +1353,71 @@
 <span class="c1"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span>
 </pre></div>
 
-           </div>
-           
           </div>
-          <footer>
-  
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">cup</a></h1>
 
-  <hr/>
 
-  <div role="contentinfo">
-    <p>
-        &copy; Copyright 2020, CUP-DEV.
 
-    </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-</footer>
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../cup.html">cup package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../util.html">cup.util</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
 
         </div>
       </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, CUP-DEV Team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+    </div>
 
-    </section>
+    
 
-  </div>
-  
-
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../../',
-            VERSION:'3.2.19',
-            LANGUAGE:'en',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../../_static/language_data.js"></script>
-
-  
-
-  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+    
+  </body>
 </html>

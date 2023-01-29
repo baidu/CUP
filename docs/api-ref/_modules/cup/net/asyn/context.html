@@ -1,151 +1,33 @@
 
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>cup.net.asyn.context &mdash; Cup 3.2.19 documentation</title>
-  
 
-  
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cup.net.asyn.context &#8212; cup 3.2.32 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css" />
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../search.html" /> 
-
-  
-  <script src="../../../../_static/js/modernizr.min.js"></script>
-
-</head>
-
-<body class="wy-body-for-nav">
-
+    <link rel="search" title="Search" href="../../../../search.html" />
    
-  <div class="wy-grid-for-nav">
-
-    
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
-
-          
-            <a href="../../../../index.html" class="icon icon-home"> Cup
-          
-
-          
-          </a>
-
-          
-            
-            
-              <div class="version">
-                3.2.0
-              </div>
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../cup.html">cup package</a></li>
-</ul>
-
-            
-          
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../index.html">Cup</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="../../../index.html">Module code</a> &raquo;</li>
-        
-          <li><a href="../../net.html">cup.net</a> &raquo;</li>
-        
-      <li>cup.net.asyn.context</li>
-    
-    
-      <li class="wy-breadcrumbs-aside">
-        
-      </li>
-    
-  </ul>
-
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
   
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
             
   <h1>Source code for cup.net.asyn.context</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python</span>
@@ -167,9 +49,9 @@
     <span class="kn">import</span> <span class="nn">queue</span>   <span class="c1"># pylint: disable=F0401</span>
 
 <span class="kn">import</span> <span class="nn">cup</span>
-<span class="kn">from</span> <span class="nn">cup</span> <span class="k">import</span> <span class="n">log</span>
-<span class="kn">from</span> <span class="nn">cup.util</span> <span class="k">import</span> <span class="n">misc</span>
-<span class="kn">from</span> <span class="nn">cup.net.asyn</span> <span class="k">import</span> <span class="n">msg</span> <span class="k">as</span> <span class="n">async_msg</span>
+<span class="kn">from</span> <span class="nn">cup</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cup.util</span> <span class="kn">import</span> <span class="n">misc</span>
+<span class="kn">from</span> <span class="nn">cup.net.asyn</span> <span class="kn">import</span> <span class="n">msg</span> <span class="k">as</span> <span class="n">async_msg</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -179,11 +61,11 @@
 
 
 <div class="viewcode-block" id="CConnContext"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext">[docs]</a><span class="k">class</span> <span class="nc">CConnContext</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=R0902</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    connection context for each socket</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">CONTEXT_QUEUE_SIZE</span> <span class="o">=</span> <span class="mi">200</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_destroying</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sock</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_peerinfo</span> <span class="o">=</span> <span class="kc">None</span>
@@ -209,7 +91,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_listened_peer</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="CConnContext.to_destroy"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.to_destroy">[docs]</a>    <span class="k">def</span> <span class="nf">to_destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        destroy context</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
@@ -223,7 +105,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="CConnContext.is_detroying"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.is_detroying">[docs]</a>    <span class="k">def</span> <span class="nf">is_detroying</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        is context being destroyed</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
@@ -232,19 +114,19 @@
         <span class="k">return</span> <span class="n">is_destryoing</span></div>
 
 <div class="viewcode-block" id="CConnContext.set_destoryed"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.set_destoryed">[docs]</a>    <span class="k">def</span> <span class="nf">set_destoryed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;set context to destroyed status&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;set context to destroyed status&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_destroying</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="CConnContext.set_conn_man"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.set_conn_man">[docs]</a>    <span class="k">def</span> <span class="nf">set_conn_man</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        set conn for context</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span> <span class="o">=</span> <span class="n">conn</span></div>
 
 <div class="viewcode-block" id="CConnContext.set_sock"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.set_sock">[docs]</a>    <span class="k">def</span> <span class="nf">set_sock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sock</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        associate socket</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
@@ -252,7 +134,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="CConnContext.get_sock"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.get_sock">[docs]</a>    <span class="k">def</span> <span class="nf">get_sock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        return associated socket</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">misc</span><span class="o">.</span><span class="n">check_not_none</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sock</span><span class="p">)</span>
@@ -260,7 +142,7 @@
         <span class="k">return</span> <span class="n">sock</span></div>
 
 <div class="viewcode-block" id="CConnContext.do_recv_data"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.do_recv_data">[docs]</a>    <span class="k">def</span> <span class="nf">do_recv_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">data_len</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        push data into the recving_msg queue</span>
 <span class="sd">        network read should be in 1 thread only.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -311,7 +193,7 @@
         <span class="k">return</span></div>
 
 <div class="viewcode-block" id="CConnContext.move2recving_msg"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.move2recving_msg">[docs]</a>    <span class="k">def</span> <span class="nf">move2recving_msg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get the net msg being received</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">#  if no recving msg pending there, create one.</span>
@@ -324,7 +206,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_recving_msg</span><span class="o">.</span><span class="n">set_need_head</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CConnContext.try_move2next_sending_msg"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.try_move2next_sending_msg">[docs]</a>    <span class="k">def</span> <span class="nf">try_move2next_sending_msg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        move to next msg that will be sent</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sending_msg</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> \
@@ -352,7 +234,7 @@
         <span class="k">return</span> <span class="n">temp</span></div>
 
 <div class="viewcode-block" id="CConnContext.put_msg"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.put_msg">[docs]</a>    <span class="k">def</span> <span class="nf">put_msg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Put msg into the sending queue.</span>
 
 <span class="sd">        :param flag:</span>
@@ -398,7 +280,7 @@
         <span class="k">return</span> <span class="n">succ</span></div>
 
 <div class="viewcode-block" id="CConnContext.get_context_info"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.get_context_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get context info</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">peerinfo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_peerinfo</span><span class="p">()</span>
@@ -406,7 +288,7 @@
         <span class="k">return</span> <span class="n">msg</span></div>
 
 <div class="viewcode-block" id="CConnContext.set_reading"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.set_reading">[docs]</a>    <span class="k">def</span> <span class="nf">set_reading</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_reading</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        set reading status</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
@@ -414,7 +296,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="CConnContext.is_reading"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.is_reading">[docs]</a>    <span class="k">def</span> <span class="nf">is_reading</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get if it is reading</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
@@ -423,7 +305,7 @@
         <span class="k">return</span> <span class="n">is_reading</span></div>
 
 <div class="viewcode-block" id="CConnContext.try_readlock"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.try_readlock">[docs]</a>    <span class="k">def</span> <span class="nf">try_readlock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        try to acquire readlock</span>
 
 <span class="sd">        :return:</span>
@@ -432,26 +314,26 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_readlock</span><span class="o">.</span><span class="n">acquire</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CConnContext.release_readlock"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.release_readlock">[docs]</a>    <span class="k">def</span> <span class="nf">release_readlock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        release the readlock</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_readlock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="CConnContext.try_writelock"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.try_writelock">[docs]</a>    <span class="k">def</span> <span class="nf">try_writelock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :return:</span>
 <span class="sd">            True if succeed. False, otherwise</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writelock</span><span class="o">.</span><span class="n">acquire</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CConnContext.release_writelock"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.release_writelock">[docs]</a>    <span class="k">def</span> <span class="nf">release_writelock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        release the writelock</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_writelock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="CConnContext.set_peerinfo"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.set_peerinfo">[docs]</a>    <span class="k">def</span> <span class="nf">set_peerinfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">peer</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        set peerinfo</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">peer</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">tuple</span><span class="p">:</span>
@@ -459,84 +341,95 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_peerinfo</span> <span class="o">=</span> <span class="n">peer</span></div>
 
 <div class="viewcode-block" id="CConnContext.get_peerinfo"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.get_peerinfo">[docs]</a>    <span class="k">def</span> <span class="nf">get_peerinfo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get peerinfo</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_peerinfo</span></div>
 
 <div class="viewcode-block" id="CConnContext.get_listened_peer"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.get_listened_peer">[docs]</a>    <span class="k">def</span> <span class="nf">get_listened_peer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        return peer listened peer info</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_listened_peer</span></div>
 
 <div class="viewcode-block" id="CConnContext.set_listened_peer"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.set_listened_peer">[docs]</a>    <span class="k">def</span> <span class="nf">set_listened_peer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">peer</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        set peer listened peer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_listened_peer</span> <span class="o">=</span> <span class="n">peer</span></div>
 
 <div class="viewcode-block" id="CConnContext.get_sending_queue"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.context.CConnContext.get_sending_queue">[docs]</a>    <span class="k">def</span> <span class="nf">get_sending_queue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;return sending queue&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;return sending queue&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_send_queue</span></div></div>
 
 <span class="c1"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span>
 </pre></div>
 
-           </div>
-           
           </div>
-          <footer>
-  
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../index.html">cup</a></h1>
 
-  <hr/>
 
-  <div role="contentinfo">
-    <p>
-        &copy; Copyright 2020, CUP-DEV.
 
-    </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-</footer>
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cup.html">cup package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  <li><a href="../../net.html">cup.net</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
 
         </div>
       </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, CUP-DEV Team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+    </div>
 
-    </section>
+    
 
-  </div>
-  
-
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../../../',
-            VERSION:'3.2.19',
-            LANGUAGE:'en',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../../../_static/language_data.js"></script>
-
-  
-
-  <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+    
+  </body>
 </html>

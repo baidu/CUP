@@ -1,69 +1,39 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>cup.net package &mdash; Cup 3.2.19 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cup.net package &mdash; cup 3.2.32 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="cup.net.asyn package" href="cup.net.asyn.html" />
     <link rel="prev" title="cup package" href="cup.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
-
-          
-            <a href="index.html" class="icon icon-home"> Cup
-          
-
-          
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> cup
           </a>
-
-          
-            
-            
               <div class="version">
-                3.2.0
+                3.2.32
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -71,24 +41,25 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="cup.html">cup package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="cup.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">cup.net package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#cup.net.get_hostip"><code class="docutils literal notranslate"><span class="pre">get_hostip()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cup.net.get_interfaces"><code class="docutils literal notranslate"><span class="pre">get_interfaces()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cup.net.get_local_hostname"><code class="docutils literal notranslate"><span class="pre">get_local_hostname()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cup.net.getip_byinterface"><code class="docutils literal notranslate"><span class="pre">getip_byinterface()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cup.net.localport_free"><code class="docutils literal notranslate"><span class="pre">localport_free()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cup.net.port_listened"><code class="docutils literal notranslate"><span class="pre">port_listened()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cup.net.set_sock_keepalive_linux"><code class="docutils literal notranslate"><span class="pre">set_sock_keepalive_linux()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cup.net.set_sock_linger"><code class="docutils literal notranslate"><span class="pre">set_sock_linger()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cup.net.set_sock_quickack"><code class="docutils literal notranslate"><span class="pre">set_sock_quickack()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cup.net.set_sock_reusable"><code class="docutils literal notranslate"><span class="pre">set_sock_reusable()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.net.ipaddr">cup.net.ipaddr module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-cup.net.route">cup.net.route module</a></li>
 </ul>
 </li>
@@ -118,113 +89,75 @@
 </li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Cup</a>
-        
+          <a href="index.html">cup</a>
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="cup.html">cup package</a> &raquo;</li>
-        
-      <li>cup.net package</li>
-    
-    
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="cup.html">cup package</a></li>
+      <li class="breadcrumb-item active">cup.net package</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="_sources/cup.net.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="module-cup.net">
-<span id="cup-net-package"></span><h1>cup.net package<a class="headerlink" href="#module-cup.net" title="Permalink to this headline">¶</a></h1>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">description:</th><td class="field-body">network related module</td>
-</tr>
-</tbody>
-</table>
-<dl class="function">
-<dt id="cup.net.get_local_hostname">
-<code class="descclassname">cup.net.</code><code class="descname">get_local_hostname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net.html#get_local_hostname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.get_local_hostname" title="Permalink to this definition">¶</a></dt>
+             
+  <section id="module-cup.net">
+<span id="cup-net-package"></span><h1>cup.net package<a class="headerlink" href="#module-cup.net" title="Permalink to this heading"></a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">description</dt>
+<dd class="field-odd"><p>network related module</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.net.get_hostip">
+<span class="sig-prename descclassname"><span class="pre">cup.net.</span></span><span class="sig-name descname"><span class="pre">get_hostip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net.html#get_hostip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.get_hostip" title="Permalink to this definition"></a></dt>
+<dd><p>get ipaddr of a host</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>hostname</strong> – None, by default, will use udp to get ipaddr for ipv4
+if not None, will use hostname to convert to ipaddr</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.net.get_interfaces">
+<span class="sig-prename descclassname"><span class="pre">cup.net.</span></span><span class="sig-name descname"><span class="pre">get_interfaces</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net.html#get_interfaces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.get_interfaces" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a python list of network interfaces/adapters</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.net.get_local_hostname">
+<span class="sig-prename descclassname"><span class="pre">cup.net.</span></span><span class="sig-name descname"><span class="pre">get_local_hostname</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net.html#get_local_hostname"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.get_local_hostname" title="Permalink to this definition"></a></dt>
 <dd><p>get hostname of this machine</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="cup.net.get_hostip">
-<code class="descclassname">cup.net.</code><code class="descname">get_hostip</code><span class="sig-paren">(</span><em>hostname=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net.html#get_hostip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.get_hostip" title="Permalink to this definition">¶</a></dt>
-<dd><p>get ipaddr of a host</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hostname</strong> – None, by default, will use udp to get ipaddr for ipv4
-if not None, will use hostname to convert to ipaddr</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="cup.net.getip_byinterface">
-<code class="descclassname">cup.net.</code><code class="descname">getip_byinterface</code><span class="sig-paren">(</span><em>iface='eth0'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net.html#getip_byinterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.getip_byinterface" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.net.getip_byinterface">
+<span class="sig-prename descclassname"><span class="pre">cup.net.</span></span><span class="sig-name descname"><span class="pre">getip_byinterface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iface</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'eth0'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net.html#getip_byinterface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.getip_byinterface" title="Permalink to this definition"></a></dt>
 <dd><p>get ipaddr of a network adapter</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Platform:</th><td class="field-body">Linux/Unix</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Platform</dt>
+<dd class="field-odd"><p>Linux/Unix</p>
+</dd>
+</dl>
 <p>E.g.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cup</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">cup</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">getip_byinterface</span><span class="p">(</span><span class="s1">&#39;eth0&#39;</span><span class="p">))</span>
@@ -234,38 +167,40 @@ if not None, will use hostname to convert to ipaddr</td>
 </div>
 </dd></dl>
 
-<dl class="function">
-<dt id="cup.net.set_sock_keepalive_linux">
-<code class="descclassname">cup.net.</code><code class="descname">set_sock_keepalive_linux</code><span class="sig-paren">(</span><em>sock</em>, <em>after_idle_sec=1</em>, <em>interval_sec=3</em>, <em>max_fails=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net.html#set_sock_keepalive_linux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.set_sock_keepalive_linux" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.net.localport_free">
+<span class="sig-prename descclassname"><span class="pre">cup.net.</span></span><span class="sig-name descname"><span class="pre">localport_free</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_ipv6</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net.html#localport_free"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.localport_free" title="Permalink to this definition"></a></dt>
+<dd><p>judge if a port is used. IPV4, by default</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.net.port_listened">
+<span class="sig-prename descclassname"><span class="pre">cup.net.</span></span><span class="sig-name descname"><span class="pre">port_listened</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_ipv6</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net.html#port_listened"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.port_listened" title="Permalink to this definition"></a></dt>
+<dd><p>check if the port is being listened on the host</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.net.set_sock_keepalive_linux">
+<span class="sig-prename descclassname"><span class="pre">cup.net.</span></span><span class="sig-name descname"><span class="pre">set_sock_keepalive_linux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">after_idle_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_fails</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net.html#set_sock_keepalive_linux"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.set_sock_keepalive_linux" title="Permalink to this definition"></a></dt>
 <dd><p>Set TCP keepalive on an open socket.
 It activates after 1 second (after_idle_sec) of idleness,
 then sends a keepalive ping once every 3 seconds (interval_sec),
 and closes the connection after 5 failed ping (max_fails), or 15 seconds</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>sock</strong> – socket</li>
-<li><strong>after_idle_sec</strong> – for TCP_KEEPIDLE. May not work, depends on ur system</li>
-<li><strong>interval_sec</strong> – for TCP_KEEPINTVL</li>
-<li><strong>max_fails</strong> – for TCP_KEEPCNT</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sock</strong> – socket</p></li>
+<li><p><strong>after_idle_sec</strong> – for TCP_KEEPIDLE. May not work, depends on ur system</p></li>
+<li><p><strong>interval_sec</strong> – for TCP_KEEPINTVL</p></li>
+<li><p><strong>max_fails</strong> – for TCP_KEEPCNT</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="cup.net.set_sock_reusable">
-<code class="descclassname">cup.net.</code><code class="descname">set_sock_reusable</code><span class="sig-paren">(</span><em>sock</em>, <em>resuable=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net.html#set_sock_reusable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.set_sock_reusable" title="Permalink to this definition">¶</a></dt>
-<dd><p>set socket reusable</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="cup.net.set_sock_linger">
-<code class="descclassname">cup.net.</code><code class="descname">set_sock_linger</code><span class="sig-paren">(</span><em>sock</em>, <em>l_onoff=1</em>, <em>l_linger=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net.html#set_sock_linger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.set_sock_linger" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.net.set_sock_linger">
+<span class="sig-prename descclassname"><span class="pre">cup.net.</span></span><span class="sig-name descname"><span class="pre">set_sock_linger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_onoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_linger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net.html#set_sock_linger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.set_sock_linger" title="Permalink to this definition"></a></dt>
 <dd><p>set socket linger param (socket.SO_LINGER)</p>
 <p>I.g.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span>
@@ -276,9 +211,9 @@ and closes the connection after 5 failed ping (max_fails), or 15 seconds</p>
 </div>
 </dd></dl>
 
-<dl class="function">
-<dt id="cup.net.set_sock_quickack">
-<code class="descclassname">cup.net.</code><code class="descname">set_sock_quickack</code><span class="sig-paren">(</span><em>sock</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net.html#set_sock_quickack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.set_sock_quickack" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.net.set_sock_quickack">
+<span class="sig-prename descclassname"><span class="pre">cup.net.</span></span><span class="sig-name descname"><span class="pre">set_sock_quickack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sock</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net.html#set_sock_quickack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.set_sock_quickack" title="Permalink to this definition"></a></dt>
 <dd><p>open quickack for the socket</p>
 <p>I.g.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">TCP_NODELAY</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -287,67 +222,243 @@ and closes the connection after 5 failed ping (max_fails), or 15 seconds</p>
 </div>
 </dd></dl>
 
-<dl class="function">
-<dt id="cup.net.localport_free">
-<code class="descclassname">cup.net.</code><code class="descname">localport_free</code><span class="sig-paren">(</span><em>port</em>, <em>is_ipv6=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net.html#localport_free"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.localport_free" title="Permalink to this definition">¶</a></dt>
-<dd><p>judge if a port is used. IPV4, by default</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.net.set_sock_reusable">
+<span class="sig-prename descclassname"><span class="pre">cup.net.</span></span><span class="sig-name descname"><span class="pre">set_sock_reusable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resuable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net.html#set_sock_reusable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.set_sock_reusable" title="Permalink to this definition"></a></dt>
+<dd><p>set socket reusable</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="cup.net.port_listened">
-<code class="descclassname">cup.net.</code><code class="descname">port_listened</code><span class="sig-paren">(</span><em>host</em>, <em>port</em>, <em>is_ipv6=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net.html#port_listened"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.port_listened" title="Permalink to this definition">¶</a></dt>
-<dd><p>check if the port is being listened on the host</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="cup.net.get_interfaces">
-<code class="descclassname">cup.net.</code><code class="descname">get_interfaces</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net.html#get_interfaces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.get_interfaces" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a python list of network interfaces/adapters</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<div class="section" id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="cup.net.asyn.html">cup.net.asyn package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="cup.net.asyn.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.net.asyn.html#module-cup.net.asyn.common">cup.net.asyn.common module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.net.asyn.html#module-cup.net.asyn.conn">cup.net.asyn.conn module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.net.asyn.html#module-cup.net.asyn.context">cup.net.asyn.context module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.net.asyn.html#module-cup.net.asyn.msg">cup.net.asyn.msg module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.net.asyn.html#module-cup.net.asyn.msgcenter">cup.net.asyn.msgcenter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.net.asyn.html#module-cup.net.asyn.common">cup.net.asyn.common module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.common.add_future2connaddr"><code class="docutils literal notranslate"><span class="pre">add_future2connaddr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.common.add_stub2connaddr"><code class="docutils literal notranslate"><span class="pre">add_stub2connaddr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.common.get_ip_and_port_connaddr"><code class="docutils literal notranslate"><span class="pre">get_ip_and_port_connaddr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.common.getfuture_connaddr"><code class="docutils literal notranslate"><span class="pre">getfuture_connaddr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.common.getip_connaddr"><code class="docutils literal notranslate"><span class="pre">getip_connaddr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.common.getport_connaddr"><code class="docutils literal notranslate"><span class="pre">getport_connaddr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.common.getstub_connaddr"><code class="docutils literal notranslate"><span class="pre">getstub_connaddr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.common.ip_port2connaddr"><code class="docutils literal notranslate"><span class="pre">ip_port2connaddr()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cup.net.asyn.html#module-cup.net.asyn.conn">cup.net.asyn.conn module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager"><code class="docutils literal notranslate"><span class="pre">CConnectionManager</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.NET_RW_SIZE"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.NET_RW_SIZE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.QueueError"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.QueueError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.SOCK_ALIVE_PARAMS"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.SOCK_ALIVE_PARAMS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.add_write_job"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.add_write_job()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.bind"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.bind()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.cleanup_error_context"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.cleanup_error_context()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.close_socket"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.close_socket()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.connect"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.connect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.do_check_msg_ack_loop"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.do_check_msg_ack_loop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.dump_stats"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.dump_stats()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.get_needack_dict"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.get_needack_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.get_recv_msg"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.get_recv_msg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.get_recv_msg_ind"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.get_recv_msg_ind()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.get_recv_queue"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.get_recv_queue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.global_sock_keepalive"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.global_sock_keepalive()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.listen_new_connect"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.listen_new_connect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.poll"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.poll()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.push_msg2needack_queue"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.push_msg2needack_queue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.push_msg2sendqueue"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.push_msg2sendqueue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.read"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.read()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.conn.CConnectionManager.stop"><code class="docutils literal notranslate"><span class="pre">CConnectionManager.stop()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cup.net.asyn.html#module-cup.net.asyn.context">cup.net.asyn.context module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext"><code class="docutils literal notranslate"><span class="pre">CConnContext</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.CONTEXT_QUEUE_SIZE"><code class="docutils literal notranslate"><span class="pre">CConnContext.CONTEXT_QUEUE_SIZE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.do_recv_data"><code class="docutils literal notranslate"><span class="pre">CConnContext.do_recv_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.get_context_info"><code class="docutils literal notranslate"><span class="pre">CConnContext.get_context_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.get_listened_peer"><code class="docutils literal notranslate"><span class="pre">CConnContext.get_listened_peer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.get_peerinfo"><code class="docutils literal notranslate"><span class="pre">CConnContext.get_peerinfo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.get_sending_queue"><code class="docutils literal notranslate"><span class="pre">CConnContext.get_sending_queue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.get_sock"><code class="docutils literal notranslate"><span class="pre">CConnContext.get_sock()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.is_detroying"><code class="docutils literal notranslate"><span class="pre">CConnContext.is_detroying()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.is_reading"><code class="docutils literal notranslate"><span class="pre">CConnContext.is_reading()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.move2recving_msg"><code class="docutils literal notranslate"><span class="pre">CConnContext.move2recving_msg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.put_msg"><code class="docutils literal notranslate"><span class="pre">CConnContext.put_msg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.release_readlock"><code class="docutils literal notranslate"><span class="pre">CConnContext.release_readlock()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.release_writelock"><code class="docutils literal notranslate"><span class="pre">CConnContext.release_writelock()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.set_conn_man"><code class="docutils literal notranslate"><span class="pre">CConnContext.set_conn_man()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.set_destoryed"><code class="docutils literal notranslate"><span class="pre">CConnContext.set_destoryed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.set_listened_peer"><code class="docutils literal notranslate"><span class="pre">CConnContext.set_listened_peer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.set_peerinfo"><code class="docutils literal notranslate"><span class="pre">CConnContext.set_peerinfo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.set_reading"><code class="docutils literal notranslate"><span class="pre">CConnContext.set_reading()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.set_sock"><code class="docutils literal notranslate"><span class="pre">CConnContext.set_sock()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.to_destroy"><code class="docutils literal notranslate"><span class="pre">CConnContext.to_destroy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.try_move2next_sending_msg"><code class="docutils literal notranslate"><span class="pre">CConnContext.try_move2next_sending_msg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.try_readlock"><code class="docutils literal notranslate"><span class="pre">CConnContext.try_readlock()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.context.CConnContext.try_writelock"><code class="docutils literal notranslate"><span class="pre">CConnContext.try_writelock()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cup.net.asyn.html#module-cup.net.asyn.ioloop">cup.net.asyn.ioloop module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.BasePoller"><code class="docutils literal notranslate"><span class="pre">BasePoller</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.BasePoller.fileno"><code class="docutils literal notranslate"><span class="pre">BasePoller.fileno()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.BasePoller.modify"><code class="docutils literal notranslate"><span class="pre">BasePoller.modify()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.BasePoller.poll"><code class="docutils literal notranslate"><span class="pre">BasePoller.poll()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.BasePoller.register"><code class="docutils literal notranslate"><span class="pre">BasePoller.register()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.BasePoller.unregister"><code class="docutils literal notranslate"><span class="pre">BasePoller.unregister()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.Epoller"><code class="docutils literal notranslate"><span class="pre">Epoller</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.Epoller.fileno"><code class="docutils literal notranslate"><span class="pre">Epoller.fileno()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.Epoller.modify"><code class="docutils literal notranslate"><span class="pre">Epoller.modify()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.Epoller.poll"><code class="docutils literal notranslate"><span class="pre">Epoller.poll()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.Epoller.read_params"><code class="docutils literal notranslate"><span class="pre">Epoller.read_params()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.Epoller.register"><code class="docutils literal notranslate"><span class="pre">Epoller.register()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.Epoller.unregister"><code class="docutils literal notranslate"><span class="pre">Epoller.unregister()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.Epoller.write_params"><code class="docutils literal notranslate"><span class="pre">Epoller.write_params()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.KQueuePoller"><code class="docutils literal notranslate"><span class="pre">KQueuePoller</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.KQueuePoller.fileno"><code class="docutils literal notranslate"><span class="pre">KQueuePoller.fileno()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.KQueuePoller.kvent_control"><code class="docutils literal notranslate"><span class="pre">KQueuePoller.kvent_control()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.KQueuePoller.modify"><code class="docutils literal notranslate"><span class="pre">KQueuePoller.modify()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.KQueuePoller.poll"><code class="docutils literal notranslate"><span class="pre">KQueuePoller.poll()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.KQueuePoller.register"><code class="docutils literal notranslate"><span class="pre">KQueuePoller.register()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.KQueuePoller.unregister"><code class="docutils literal notranslate"><span class="pre">KQueuePoller.unregister()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.PollerFactory"><code class="docutils literal notranslate"><span class="pre">PollerFactory</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.PollerFactory.modify"><code class="docutils literal notranslate"><span class="pre">PollerFactory.modify()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.PollerFactory.poll"><code class="docutils literal notranslate"><span class="pre">PollerFactory.poll()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.PollerFactory.register"><code class="docutils literal notranslate"><span class="pre">PollerFactory.register()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.PollerFactory.stop"><code class="docutils literal notranslate"><span class="pre">PollerFactory.stop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.PollerFactory.unregister"><code class="docutils literal notranslate"><span class="pre">PollerFactory.unregister()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.SelectPoller"><code class="docutils literal notranslate"><span class="pre">SelectPoller</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.SelectPoller.modify"><code class="docutils literal notranslate"><span class="pre">SelectPoller.modify()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.SelectPoller.poll"><code class="docutils literal notranslate"><span class="pre">SelectPoller.poll()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.SelectPoller.register"><code class="docutils literal notranslate"><span class="pre">SelectPoller.register()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.ioloop.SelectPoller.unregister"><code class="docutils literal notranslate"><span class="pre">SelectPoller.unregister()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cup.net.asyn.html#module-cup.net.asyn.msg">cup.net.asyn.msg module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CAckMsg"><code class="docutils literal notranslate"><span class="pre">CAckMsg</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg"><code class="docutils literal notranslate"><span class="pre">CNetMsg</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.MSGTYPE"><code class="docutils literal notranslate"><span class="pre">CNetMsg.MSGTYPE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.MSG_FLAG_MAN"><code class="docutils literal notranslate"><span class="pre">CNetMsg.MSG_FLAG_MAN</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.MSG_SIGN"><code class="docutils literal notranslate"><span class="pre">CNetMsg.MSG_SIGN</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.add_flag"><code class="docutils literal notranslate"><span class="pre">CNetMsg.add_flag()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.add_retry_times"><code class="docutils literal notranslate"><span class="pre">CNetMsg.add_retry_times()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_body"><code class="docutils literal notranslate"><span class="pre">CNetMsg.get_body()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_bodylen"><code class="docutils literal notranslate"><span class="pre">CNetMsg.get_bodylen()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_callback_function"><code class="docutils literal notranslate"><span class="pre">CNetMsg.get_callback_function()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_errmsg"><code class="docutils literal notranslate"><span class="pre">CNetMsg.get_errmsg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_flag"><code class="docutils literal notranslate"><span class="pre">CNetMsg.get_flag()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_from_addr"><code class="docutils literal notranslate"><span class="pre">CNetMsg.get_from_addr()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_last_retry_time"><code class="docutils literal notranslate"><span class="pre">CNetMsg.get_last_retry_time()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_msg_context"><code class="docutils literal notranslate"><span class="pre">CNetMsg.get_msg_context()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_msg_len"><code class="docutils literal notranslate"><span class="pre">CNetMsg.get_msg_len()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_msg_type"><code class="docutils literal notranslate"><span class="pre">CNetMsg.get_msg_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_order_counts"><code class="docutils literal notranslate"><span class="pre">CNetMsg.get_order_counts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_resend_flag"><code class="docutils literal notranslate"><span class="pre">CNetMsg.get_resend_flag()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_retry_interval"><code class="docutils literal notranslate"><span class="pre">CNetMsg.get_retry_interval()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_retry_times"><code class="docutils literal notranslate"><span class="pre">CNetMsg.get_retry_times()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_to_addr"><code class="docutils literal notranslate"><span class="pre">CNetMsg.get_to_addr()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_total_timeout"><code class="docutils literal notranslate"><span class="pre">CNetMsg.get_total_timeout()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_uniq_id"><code class="docutils literal notranslate"><span class="pre">CNetMsg.get_uniq_id()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_write_bytes"><code class="docutils literal notranslate"><span class="pre">CNetMsg.get_write_bytes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.is_a_recvmsg"><code class="docutils literal notranslate"><span class="pre">CNetMsg.is_a_recvmsg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.is_a_sendmsg"><code class="docutils literal notranslate"><span class="pre">CNetMsg.is_a_sendmsg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.is_msg_already_sent"><code class="docutils literal notranslate"><span class="pre">CNetMsg.is_msg_already_sent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.is_recvmsg_complete"><code class="docutils literal notranslate"><span class="pre">CNetMsg.is_recvmsg_complete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.is_sendmsg_complete"><code class="docutils literal notranslate"><span class="pre">CNetMsg.is_sendmsg_complete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.is_valid4send"><code class="docutils literal notranslate"><span class="pre">CNetMsg.is_valid4send()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.pre_resend"><code class="docutils literal notranslate"><span class="pre">CNetMsg.pre_resend()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.push_data"><code class="docutils literal notranslate"><span class="pre">CNetMsg.push_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.seek_write"><code class="docutils literal notranslate"><span class="pre">CNetMsg.seek_write()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_body"><code class="docutils literal notranslate"><span class="pre">CNetMsg.set_body()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_callback_function"><code class="docutils literal notranslate"><span class="pre">CNetMsg.set_callback_function()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_errmsg"><code class="docutils literal notranslate"><span class="pre">CNetMsg.set_errmsg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_flag"><code class="docutils literal notranslate"><span class="pre">CNetMsg.set_flag()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_from_addr"><code class="docutils literal notranslate"><span class="pre">CNetMsg.set_from_addr()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_last_retry_time"><code class="docutils literal notranslate"><span class="pre">CNetMsg.set_last_retry_time()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_msg_context"><code class="docutils literal notranslate"><span class="pre">CNetMsg.set_msg_context()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_msg_type"><code class="docutils literal notranslate"><span class="pre">CNetMsg.set_msg_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_need_head"><code class="docutils literal notranslate"><span class="pre">CNetMsg.set_need_head()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_resend_flag"><code class="docutils literal notranslate"><span class="pre">CNetMsg.set_resend_flag()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_retry_interval"><code class="docutils literal notranslate"><span class="pre">CNetMsg.set_retry_interval()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_retry_times"><code class="docutils literal notranslate"><span class="pre">CNetMsg.set_retry_times()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_to_addr"><code class="docutils literal notranslate"><span class="pre">CNetMsg.set_to_addr()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_total_timeout"><code class="docutils literal notranslate"><span class="pre">CNetMsg.set_total_timeout()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_uniq_id"><code class="docutils literal notranslate"><span class="pre">CNetMsg.set_uniq_id()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msg.netmsg_tostring"><code class="docutils literal notranslate"><span class="pre">netmsg_tostring()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cup.net.asyn.html#module-cup.net.asyn.msgcenter">cup.net.asyn.msgcenter module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msgcenter.IMessageCenter"><code class="docutils literal notranslate"><span class="pre">IMessageCenter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msgcenter.IMessageCenter.close_socket"><code class="docutils literal notranslate"><span class="pre">IMessageCenter.close_socket()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msgcenter.IMessageCenter.default_handle"><code class="docutils literal notranslate"><span class="pre">IMessageCenter.default_handle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msgcenter.IMessageCenter.dump_stat"><code class="docutils literal notranslate"><span class="pre">IMessageCenter.dump_stat()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msgcenter.IMessageCenter.global_sock_keepalive"><code class="docutils literal notranslate"><span class="pre">IMessageCenter.global_sock_keepalive()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msgcenter.IMessageCenter.handle"><code class="docutils literal notranslate"><span class="pre">IMessageCenter.handle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msgcenter.IMessageCenter.is_stopping"><code class="docutils literal notranslate"><span class="pre">IMessageCenter.is_stopping()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msgcenter.IMessageCenter.post_msg"><code class="docutils literal notranslate"><span class="pre">IMessageCenter.post_msg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msgcenter.IMessageCenter.pre_handle"><code class="docutils literal notranslate"><span class="pre">IMessageCenter.pre_handle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msgcenter.IMessageCenter.run"><code class="docutils literal notranslate"><span class="pre">IMessageCenter.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msgcenter.IMessageCenter.setup"><code class="docutils literal notranslate"><span class="pre">IMessageCenter.setup()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.asyn.html#cup.net.asyn.msgcenter.IMessageCenter.stop"><code class="docutils literal notranslate"><span class="pre">IMessageCenter.stop()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </div>
-</div>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-cup.net.route">
-<span id="cup-net-route-module"></span><h2>cup.net.route module<a class="headerlink" href="#module-cup.net.route" title="Permalink to this headline">¶</a></h2>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">description:</th><td class="field-body">host route info related module</td>
-</tr>
-</tbody>
-</table>
-<dl class="class">
-<dt id="cup.net.route.RouteInfo">
-<em class="property">class </em><code class="descclassname">cup.net.route.</code><code class="descname">RouteInfo</code><a class="reference internal" href="_modules/cup/net/route.html#RouteInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.route.RouteInfo" title="Permalink to this definition">¶</a></dt>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-cup.net.ipaddr">
+<span id="cup-net-ipaddr-module"></span><h2>cup.net.ipaddr module<a class="headerlink" href="#module-cup.net.ipaddr" title="Permalink to this heading"></a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">description</dt>
+<dd class="field-odd"><p>host route info related module</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.net.ipaddr.realip_v4">
+<span class="sig-prename descclassname"><span class="pre">cup.net.ipaddr.</span></span><span class="sig-name descname"><span class="pre">realip_v4</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/ipaddr.html#realip_v4"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.ipaddr.realip_v4" title="Permalink to this definition"></a></dt>
+<dd><p>get real ip for the current device</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – if it cannot fetch the same real ip</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cup.net.route">
+<span id="cup-net-route-module"></span><h2>cup.net.route module<a class="headerlink" href="#module-cup.net.route" title="Permalink to this heading"></a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">description</dt>
+<dd class="field-odd"><p>host route info related module</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="cup.net.route.RouteInfo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.net.route.</span></span><span class="sig-name descname"><span class="pre">RouteInfo</span></span><a class="reference internal" href="_modules/cup/net/route.html#RouteInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.route.RouteInfo" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Handler of Route Info for Linux system, for ipv4 only.</p>
 <p><em>E.g.</em></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cup.net</span> <span class="k">import</span> <span class="n">route</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cup.net</span> <span class="kn">import</span> <span class="n">route</span>
 <span class="n">ri</span> <span class="o">=</span> <span class="n">route</span><span class="o">.</span><span class="n">RouteInfo</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">ri</span><span class="o">.</span><span class="n">get_route_by_ip</span><span class="p">(</span><span class="s1">&#39;10.32.19.92&#39;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">ri</span><span class="o">.</span><span class="n">get_routes</span><span class="p">(),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
@@ -436,129 +547,87 @@ and closes the connection after 5 failed ping (max_fails), or 15 seconds</p>
 <span class="p">]</span>
 </pre></div>
 </div>
-<dl class="attribute">
-<dt id="cup.net.route.RouteInfo.ROUTE_FILE">
-<code class="descname">ROUTE_FILE</code><em class="property"> = '/proc/net/route'</em><a class="headerlink" href="#cup.net.route.RouteInfo.ROUTE_FILE" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cup.net.route.RouteInfo.ROUTE_FILE">
+<span class="sig-name descname"><span class="pre">ROUTE_FILE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/proc/net/route'</span></em><a class="headerlink" href="#cup.net.route.RouteInfo.ROUTE_FILE" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="cup.net.route.RouteInfo.get_interface_by_ip">
-<code class="descname">get_interface_by_ip</code><span class="sig-paren">(</span><em>ip</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/route.html#RouteInfo.get_interface_by_ip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.route.RouteInfo.get_interface_by_ip" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.route.RouteInfo.get_interface_by_ip">
+<span class="sig-name descname"><span class="pre">get_interface_by_ip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/route.html#RouteInfo.get_interface_by_ip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.route.RouteInfo.get_interface_by_ip" title="Permalink to this definition"></a></dt>
 <dd><p>get the interface which can reach to the ip</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ip</strong> – destination ip</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">interface name which can reach to the ip.
-None if failed.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ip</strong> – destination ip</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>interface name which can reach to the ip.
+None if failed.</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.route.RouteInfo.get_interfaces">
-<code class="descname">get_interfaces</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/route.html#RouteInfo.get_interfaces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.route.RouteInfo.get_interfaces" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.route.RouteInfo.get_interfaces">
+<span class="sig-name descname"><span class="pre">get_interfaces</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/route.html#RouteInfo.get_interfaces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.route.RouteInfo.get_interfaces" title="Permalink to this definition"></a></dt>
 <dd><p>get all the interface of this host</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.route.RouteInfo.get_route_by_ip">
-<code class="descname">get_route_by_ip</code><span class="sig-paren">(</span><em>ip</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/route.html#RouteInfo.get_route_by_ip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.route.RouteInfo.get_route_by_ip" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.route.RouteInfo.get_route_by_ip">
+<span class="sig-name descname"><span class="pre">get_route_by_ip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/route.html#RouteInfo.get_route_by_ip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.route.RouteInfo.get_route_by_ip" title="Permalink to this definition"></a></dt>
 <dd><p>get the route_info which can reach to the ip address</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ip</strong> – destination ip address</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">route_info in type of dict</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ip</strong> – destination ip address</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>route_info in type of dict</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.route.RouteInfo.get_routes">
-<code class="descname">get_routes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/route.html#RouteInfo.get_routes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.route.RouteInfo.get_routes" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.route.RouteInfo.get_routes">
+<span class="sig-name descname"><span class="pre">get_routes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/route.html#RouteInfo.get_routes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.route.RouteInfo.get_routes" title="Permalink to this definition"></a></dt>
 <dd><p>get all the route_info of this host</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">all the readable route_info of this host</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>all the readable route_info of this host</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="cup.net.asyn.html" class="btn btn-neutral float-right" title="cup.net.asyn package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="cup.html" class="btn btn-neutral" title="cup package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cup.html" class="btn btn-neutral float-left" title="cup package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cup.net.asyn.html" class="btn btn-neutral float-right" title="cup.net.asyn package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2020, CUP-DEV.
-
-    </p>
+    <p>&#169; Copyright 2023, CUP-DEV Team.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'3.2.19',
-            LANGUAGE:'en',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="_static/language_data.js"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });

@@ -1,149 +1,33 @@
 
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>cup.services.autowait &mdash; Cup 3.2.19 documentation</title>
-  
 
-  
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cup.services.autowait &#8212; cup 3.2.32 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
-
-  
-  <script src="../../../_static/js/modernizr.min.js"></script>
-
-</head>
-
-<body class="wy-body-for-nav">
-
+    <link rel="search" title="Search" href="../../../search.html" />
    
-  <div class="wy-grid-for-nav">
-
-    
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
-
-          
-            <a href="../../../index.html" class="icon icon-home"> Cup
-          
-
-          
-          </a>
-
-          
-            
-            
-              <div class="version">
-                3.2.0
-              </div>
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../cup.html">cup package</a></li>
-</ul>
-
-            
-          
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">Cup</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
-      <li>cup.services.autowait</li>
-    
-    
-      <li class="wy-breadcrumbs-aside">
-        
-      </li>
-    
-  </ul>
-
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
             
   <h1>Source code for cup.services.autowait</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python</span>
@@ -167,13 +51,13 @@
 <span class="kn">import</span> <span class="nn">time</span>
 
 <span class="kn">import</span> <span class="nn">cup</span>
-<span class="kn">from</span> <span class="nn">cup.shell</span> <span class="k">import</span> <span class="n">oper</span>
+<span class="kn">from</span> <span class="nn">cup.shell</span> <span class="kn">import</span> <span class="n">oper</span>
 
 
 <div class="viewcode-block" id="wait_until_file_exist"><a class="viewcode-back" href="../../../cup.services.html#cup.services.autowait.wait_until_file_exist">[docs]</a><span class="k">def</span> <span class="nf">wait_until_file_exist</span><span class="p">(</span>
     <span class="n">dst_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">max_wait_sec</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">interval_sec</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    wait util the file exists or the function timeout</span>
 
 <span class="sd">    :param dst_path:</span>
@@ -202,7 +86,7 @@
 <div class="viewcode-block" id="wait_until_reg_str_exist"><a class="viewcode-back" href="../../../cup.services.html#cup.services.autowait.wait_until_reg_str_exist">[docs]</a><span class="k">def</span> <span class="nf">wait_until_reg_str_exist</span><span class="p">(</span>
     <span class="n">dst_file_path</span><span class="p">,</span> <span class="n">reg_str</span><span class="p">,</span> <span class="n">max_wait_sec</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">interval_sec</span><span class="o">=</span><span class="mf">0.5</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    wait until any line in the file matches the \</span>
 <span class="sd">    reg_str(regular expression string)</span>
 
@@ -230,7 +114,7 @@
 <div class="viewcode-block" id="wait_until_process_not_exist"><a class="viewcode-back" href="../../../cup.services.html#cup.services.autowait.wait_until_process_not_exist">[docs]</a><span class="k">def</span> <span class="nf">wait_until_process_not_exist</span><span class="p">(</span>
     <span class="n">process_path</span><span class="p">,</span> <span class="n">max_wait_sec</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">interval_sec</span><span class="o">=</span><span class="mf">0.5</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    wait until the process does not exist anymore or the function timeouts</span>
 
 <span class="sd">    :param process_path:</span>
@@ -257,7 +141,7 @@
 <div class="viewcode-block" id="wait_until_process_exist"><a class="viewcode-back" href="../../../cup.services.html#cup.services.autowait.wait_until_process_exist">[docs]</a><span class="k">def</span> <span class="nf">wait_until_process_exist</span><span class="p">(</span>
     <span class="n">process_path</span><span class="p">,</span> <span class="n">max_wait_sec</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">interval_sec</span><span class="o">=</span><span class="mf">0.5</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    wait until the process exists</span>
 
 <span class="sd">    :param process_path:</span>
@@ -284,7 +168,7 @@
 <div class="viewcode-block" id="wait_until_port_used"><a class="viewcode-back" href="../../../cup.services.html#cup.services.autowait.wait_until_port_used">[docs]</a><span class="k">def</span> <span class="nf">wait_until_port_used</span><span class="p">(</span>
     <span class="n">port</span><span class="p">,</span> <span class="n">max_wait_sec</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">interval_sec</span><span class="o">=</span><span class="mf">0.5</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    wait until the port is used.  *Notice this function will invoke\</span>
 <span class="sd">    a bash shell to execute command [netstat]!*</span>
 
@@ -304,7 +188,7 @@
 <div class="viewcode-block" id="wait_until_port_not_used"><a class="viewcode-back" href="../../../cup.services.html#cup.services.autowait.wait_until_port_not_used">[docs]</a><span class="k">def</span> <span class="nf">wait_until_port_not_used</span><span class="p">(</span>
     <span class="n">port</span><span class="p">,</span> <span class="n">max_wait_sec</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">interval_sec</span><span class="o">=</span><span class="mf">0.5</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    wait until the port is free</span>
 
 <span class="sd">    :return:</span>
@@ -323,7 +207,7 @@
 <div class="viewcode-block" id="wait_until_process_used_ports"><a class="viewcode-back" href="../../../cup.services.html#cup.services.autowait.wait_until_process_used_ports">[docs]</a><span class="k">def</span> <span class="nf">wait_until_process_used_ports</span><span class="p">(</span>
     <span class="n">process_path</span><span class="p">,</span> <span class="n">ports</span><span class="p">,</span> <span class="n">max_wait_sec</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">interval_sec</span><span class="o">=</span><span class="mf">0.5</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    wait until the process has taken the ports before timeouts</span>
 
 <span class="sd">    :return:</span>
@@ -350,7 +234,7 @@
 <div class="viewcode-block" id="wait_until_process_killed"><a class="viewcode-back" href="../../../cup.services.html#cup.services.autowait.wait_until_process_killed">[docs]</a><span class="k">def</span> <span class="nf">wait_until_process_killed</span><span class="p">(</span>
     <span class="n">process_path</span><span class="p">,</span> <span class="n">ports</span><span class="p">,</span> <span class="n">max_wait_sec</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">interval_sec</span><span class="o">=</span><span class="mf">0.5</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    wait until the [process] does not exists and all [ports] are free</span>
 
 <span class="sd">    :param process_path:</span>
@@ -389,7 +273,7 @@
 <span class="k">def</span> <span class="nf">_wait_until_return</span><span class="p">(</span><span class="n">func</span><span class="p">,</span>
         <span class="n">boolean</span><span class="p">,</span> <span class="n">max_wait_sec</span><span class="p">,</span> <span class="n">interval_sec</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    wait until function return [boolean]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">curr_wait_sec</span> <span class="o">=</span> <span class="mi">0</span>
@@ -404,7 +288,7 @@
 
 
 <span class="k">def</span> <span class="nf">wait_return_true</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">max_wait_sec</span><span class="p">,</span> <span class="n">interval_sec</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    wait until func return true or max_wait_sec passes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_wait_until_return</span><span class="p">(</span>
@@ -413,7 +297,7 @@
 
 
 <span class="k">def</span> <span class="nf">wait_return_false</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">max_wait_sec</span><span class="p">,</span> <span class="n">interval_sec</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    wait until func return False or max_wait_sec passes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_wait_until_return</span><span class="p">(</span>
@@ -422,7 +306,7 @@
 
 
 <span class="k">def</span> <span class="nf">__check_reg_str_contain</span><span class="p">(</span><span class="n">file_reader</span><span class="p">,</span> <span class="n">reg_str</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    check if any line matches the reg_str</span>
 
 <span class="sd">    :param file_reader:</span>
@@ -439,15 +323,15 @@
 
 
 <span class="k">class</span> <span class="nc">FileReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    this class is used to read file incremental</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">file_path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_read_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        read from last position</span>
 
 <span class="sd">        :param max_read_size:</span>
@@ -477,60 +361,69 @@
         <span class="k">return</span> <span class="n">ret</span>
 </pre></div>
 
-           </div>
-           
           </div>
-          <footer>
-  
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">cup</a></h1>
 
-  <hr/>
 
-  <div role="contentinfo">
-    <p>
-        &copy; Copyright 2020, CUP-DEV.
 
-    </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-</footer>
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../cup.html">cup package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
 
         </div>
       </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, CUP-DEV Team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+    </div>
 
-    </section>
+    
 
-  </div>
-  
-
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../../',
-            VERSION:'3.2.19',
-            LANGUAGE:'en',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../../_static/language_data.js"></script>
-
-  
-
-  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+    
+  </body>
 </html>
