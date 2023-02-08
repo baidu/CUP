@@ -9,6 +9,7 @@
 #     Copyright (c) 2009, Giampaolo Rodola'. All rights reserved.
 #     Use of this source code is governed by a BSD-style license
 #     that can be found in the LICENSE file.
+# pylint: disable=unspecified-encoding, consider-using-f-string
 """
 Provie Linux Resource/State Info Query
 """
@@ -74,158 +75,20 @@ _TCP_STATUSES = {
 }
 
 
-# # # # begin system infos # # # #
-def get_boottime_since_epoch():
-    """
-    :return:
-        return boot time (seconds) since epoch
-    """
-    decorators.needlinux(True)
-    fp = open('/proc/stat', 'r')
-    try:
-        for line in fp:
-            if line.startswith('btime'):
-                return float(line.strip().split()[1])
-        raise RuntimeError("line 'btime' not found")
-    finally:
-        fp.close()
+CLOCK_TICKS = os.sysconf("SC_CLK_TCK")
 
 
-def get_kernel_version():
-    """
-    get linux kernel verions, e.g.('2', '6', '32'):
+def boot_time():
+    """Return the system boot time expressed in seconds since the epoch.
     """
     decorators.needlinux(True)
-    versions = os.uname()[2]
-    # version = versions[0: versions.find('_')]
-    return tuple([info for info in versions.split('.')])
+    with open('/proc/stat', 'rb') as fhandle:
+        for line in fhandle:
+            if line.startswith(b'btime'):
+                ret = float(line.strip().split()[1])
+                return ret
+        raise RuntimeError("line 'btime' not found in /proc/stat")
 
-
-def get_cpu_nums():
-    """
-    get cpu nums
-    """
-    decorators.needlinux(True)
-    try:
-        return os.sysconf("SC_NPROCESSORS_ONLN")
-    except ValueError:
-        # as a second fallback we try to parse /proc/cpuinfo
-        num = 0
-        fp = open('/proc/cpuinfo', 'r')
-        try:
-            lines = fp.readlines()
-        finally:
-            fp.close()
-        for line in lines:
-            if line.lower().startswith('processor'):
-                num += 1
-
-    # unknown format (e.g. amrel/sparc architectures), see:
-    # http://code.google.com/p/psutil/issues/detail?id=200
-    # try to parse /proc/stat as a last resort
-    if num == 0:
-        fp = open('/proc/stat', 'r')
-        try:
-            lines = fp.readlines()
-        finally:
-            fp.close()
-        search = re.compile(r'cpu\d')
-        for line in lines:
-            line = line.split(' ')[0]
-            if search.match(line):
-                num += 1
-
-    if num == 0:
-        raise RuntimeError("couldn't determine platform's NUM_CPUS")
-    return num
-
-
-def get_disk_usage_all(raw=False):
-    """
-    :param raw:
-        if raw is True, will use Byte as the measure. Automatically use
-        MB/GB otherwise.
-
-    :return:
-        return a dict of disk usage
-    """
-    decorators.needlinux(True)
-    byte2gb = 1024 * 1024 * 1024
-    byte2mb = 1024 * 1024
-    st = os.statvfs("/")
-    free = st.f_bavail * st.f_frsize
-    total = st.f_blocks * st.f_frsize
-    unit = "Byte"
-    if not raw:
-        if total > byte2gb:
-            free, total = \
-                free / byte2gb, total / byte2gb
-            unit = "GB"
-        elif total > byte2mb:
-            free, total = \
-                free / byte2mb, total / byte2mb
-            unit = "MB"
-    return {
-        "totalSpace": total,
-        "usedSpace": total - free,
-        "freeSpace": free,
-        "unit":unit
-    }
-
-
-def get_disk_info():
-    """
-    :return:
-        get disk info of the system
-    """
-    decorators.needlinux(True)
-    info = os.popen("df -lh")
-    allDiskInfo = []
-    for line in enumerate(info.readlines()):
-        if line[0] != 0:
-            blockInfo = []
-            for block in line[1].split(" "):
-                if len(block) != 0:
-                    blockInfo.append(block)
-            allDiskInfo.append({
-                "FileSystem":  blockInfo[0],
-                "Size":        blockInfo[1],
-                "Used":        blockInfo[2],
-                "Available":   blockInfo[3],
-                "Percentage":  blockInfo[4],
-                })
-        else:
-            continue
-    try:
-        return allDiskInfo
-    except:
-        raise RuntimeError("couldn't find disk")
-
-
-class MemInfo(collections.namedtuple('vmem', ' '.join([
-        # all platforms
-        'total', 'available', 'percent', 'used', 'free',
-        # linux specific
-        'active',
-        'inactive',
-        'buffers',
-        'cached']))):
-    """
-    get_meminfo will get memory info (a namedtuple returned:
-        total, available, percent, used, free,
-        active,
-        inactive,
-        buffers,
-        cached)
-
-    E.g.:
-    ::
-
-        from cup.res import linux
-        meminfo = linux.get_meminfo()
-        print(meminfo.total)
-        print(meminfo.available)
-    """
 
 #    user
 #       (1) Time spent in user mode.
@@ -268,16 +131,6 @@ _CPU_COLUMNS = [
 ]
 
 
-_COLUMN_LOCK = threading.Lock()
-
-_COLUMN_LOCK.acquire()
-if sys.platform.startswith('linux'):
-    if get_kernel_version() >= ('2', '6', '33') and \
-            _CPU_COLUMNS.count('guest_nice') <= 0:
-        _CPU_COLUMNS.append('guest_nice')
-_COLUMN_LOCK.release()
-
-
 class CPUInfo(collections.namedtuple('CPUInfo', _CPU_COLUMNS)):
     """
     CPUInfo is used for get_cpu_usage function. The following attr will be
@@ -303,9 +156,171 @@ class CPUInfo(collections.namedtuple('CPUInfo', _CPU_COLUMNS)):
     """
 
 
-def _get_cput_by_stat(coreindex=None):
+def get_kernel_version():
+    """
+    get linux kernel verions, e.g.('2', '6', '32'):
+    """
+    decorators.needlinux(True)
+    versions = os.uname()[2]
+    # version = versions[0: versions.find('_')]
+    return tuple([info for info in versions.split('.')])
+
+
+_COLUMN_LOCK = threading.Lock()
+_COLUMN_LOCK.acquire()
+if sys.platform.startswith('linux'):
+    if get_kernel_version() >= ('2', '6', '33') and \
+            _CPU_COLUMNS.count('guest_nice') <= 0:
+        _CPU_COLUMNS.append('guest_nice')
+_COLUMN_LOCK.release()
+
+
+# # # # begin system infos # # # #
+def get_boottime_since_epoch():
+    """
+    :return:
+        return boot time (seconds) since epoch
+    """
+    decorators.needlinux(True)
+    fhandle = open('/proc/stat', 'r')
+    try:
+        for line in fhandle:
+            if line.startswith('btime'):
+                return float(line.strip().split()[1])
+        raise RuntimeError("line 'btime' not found")
+    finally:
+        fhandle.close()
+
+
+def get_cpu_nums():
+    """
+    get cpu nums
+    """
+    decorators.needlinux(True)
+    try:
+        return os.sysconf("SC_NPROCESSORS_ONLN")
+    except ValueError:
+        # as a second fallback we try to parse /proc/cpuinfo
+        num = 0
+        fhandle = open('/proc/cpuinfo', 'r')
+        try:
+            lines = fhandle.readlines()
+        finally:
+            fhandle.close()
+        for line in lines:
+            if line.lower().startswith('processor'):
+                num += 1
+
+    # unknown format (e.g. amrel/sparc architectures), see:
+    # http://code.google.com/p/psutil/issues/detail?id=200
+    # try to parse /proc/stat as a last resort
+    if num == 0:
+        fhandle = open('/proc/stat', 'r')
+        try:
+            lines = fhandle.readlines()
+        finally:
+            fhandle.close()
+        search = re.compile(r'cpu\d')
+        for line in lines:
+            line = line.split(' ')[0]
+            if search.match(line):
+                num += 1
+
+    if num == 0:
+        raise RuntimeError("couldn't determine platform's NUM_CPUS")
+    return num
+
+
+def get_disk_usage_all(raw=False):
+    """
+    :param raw:
+        if raw is True, will use Byte as the measure. Automatically use
+        MB/GB otherwise.
+
+    :return:
+        return a dict of disk usage
+    """
+    decorators.needlinux(True)
+    byte2gb = 1024 * 1024 * 1024
+    byte2mb = 1024 * 1024
+    st = os.statvfs("/")
+    free = st.f_bavail * st.f_frsize
+    total = st.f_blocks * st.f_frsize
+    unit = "Byte"
+    if not raw:
+        if total > byte2gb:
+            free, total = \
+                free / byte2gb, total / byte2gb
+            unit = "GB"
+        elif total > byte2mb:
+            free, total = \
+                free / byte2mb, total / byte2mb
+            unit = "MB"
+    return {
+        "totalSpace": total,
+        "usedSpace": total - free,
+        "freeSpace": free,
+        "unit": unit
+    }
+
+
+def get_disk_info():
+    """
+    :return:
+        get disk info of the system
+    """
+    decorators.needlinux(True)
+    info = os.popen("df -lh")
+    all_diskinfo = []
+    for line in enumerate(info.readlines()):
+        if line[0] != 0:
+            blockinfo = []
+            for block in line[1].split(" "):
+                if len(block) != 0:
+                    blockinfo.append(block)
+            all_diskinfo.append({
+                "FileSystem":  blockinfo[0],
+                "Size":        blockinfo[1],
+                "Used":        blockinfo[2],
+                "Available":   blockinfo[3],
+                "Percentage":  blockinfo[4],
+                })
+        else:
+            continue
+    try:
+        return all_diskinfo
+    except Exception as exc:
+        raise RuntimeError("couldn't find disk") from exc
+
+
+class MemInfo(collections.namedtuple('vmem', ' '.join([
+        # all platforms
+        'total', 'available', 'percent', 'used', 'free',
+        # linux specific
+        'active',
+        'inactive',
+        'buffers',
+        'cached']))):
+    """
+    get_meminfo will get memory info (a namedtuple returned:
+        total, available, percent, used, free,
+        active,
+        inactive,
+        buffers,
+        cached)
+
+    E.g.:
+    ::
+
+        from cup.res import linux
+        meminfo = linux.get_meminfo()
+        print(meminfo.total)
+        print(meminfo.available)
     """
 
+
+def _get_cput_by_stat(coreindex=None):
+    """
     :param coreindex:
         None for all cpu cores
     """
@@ -524,7 +539,7 @@ def net_io_counters():
             {
                 'lo':
                  (
-                     235805206817, 235805206817, 315060887, 315060887, 0, 0, 0, 0
+                   235805206817, 235805206817, 315060887, 315060887, 0, 0, 0, 0
                  ),
                  'eth1':
                  (
@@ -603,7 +618,6 @@ def get_net_transmit_speed(str_interface, intvl_in_sec=1):
     return (rx_bytes1 - rx_bytes0) / intvl_in_sec
 
 
-
 def get_net_recv_speed(str_interface, intvl_in_sec):
     """
     get average network recv-speed during a time period (intvl_in_sec)
@@ -632,33 +646,21 @@ def wrap_exceptions(fun):
             # ENOENT (no such file or directory) gets raised on open().
             # ESRCH (no such process) can get raised on read() if
             # process is gone in meantime.
-            err = sys.exc_info()[1]
-            if err.errno in (errno.ENOENT, errno.ESRCH):
+            errinfo = sys.exc_info()[1]
+            if errinfo.errno in (errno.ENOENT, errno.ESRCH):
                 # pylint: disable=W0212
-                raise err.NoSuchProcess(self._pid, self._process_name)
-            if err.errno in (errno.EPERM, errno.EACCES):
-                raise err.ResException('EPERM or EACCES')
+                raise errinfo.NoSuchProcess(self._pid, self._process_name)
+            if errinfo.errno in (errno.EPERM, errno.EACCES):
+                raise err.ResException('Permission denied') from error
             raise error
     return wrapper
-
-
-CLOCK_TICKS = os.sysconf("SC_CLK_TCK")
-def boot_time():
-    """Return the system boot time expressed in seconds since the epoch.
-    """
-    decorators.needlinux(True)
-    with open('/proc/stat', 'rb') as f:
-        for line in f:
-            if line.startswith(b'btime'):
-                ret = float(line.strip().split()[1])
-                return ret
-        raise RuntimeError("line 'btime' not found in /proc/stat")
 
 
 def pids():
     """Returns a list of PIDs currently running on the system."""
     decorators.needlinux(True)
     return [int(x) for x in os.listdir(b'/proc') if x.isdigit()]
+
 
 _pmap = {}
 
@@ -684,9 +686,11 @@ def process_iter():
         pid is set
 
         2. the origion use a sorted list(_pmap.items()) +
-        list(dict.fromkeys(new_pids).items()
-        to get pid and proc to make res.proc is only a instance of a pid Process
-        hint(bugs):i did not use fromkeys(new_pids) because i did not get the meanning
+        list(dict.fromkeys(new_pids).items() to get pid and proc to make
+        res.proc is only a instance of a pid Process
+
+        hint(bugs):i did not use fromkeys(new_pids) because
+         i did not get the meanning
         of using proc
     """
     decorators.needlinux(True)
@@ -694,7 +698,7 @@ def process_iter():
     for pid in pid_set:
         try:
             check_process = Process(pid)
-            res = check_process.get_process_name()
+            _ = check_process.get_process_name()  # have a try getting the name
         except err.NoSuchProcess:
             pass
         else:
@@ -707,33 +711,33 @@ class Process(object):
     Process info query (given a pid)
     """
 
-    __slots__ = ["_pid", "_process_name", "_create_time"]
+    __slots__ = ["pid", "_process_name", "_create_time"]
 
     def __init__(self, pid):
         decorators.needlinux(True)
-        self._pid = pid
+        self.pid = pid
         self._process_name = None
         self._create_time = None
-        if not os.path.lexists("/proc/%s/exe" % self._pid):
-            raise err.NoSuchProcess(self._pid, self._process_name)
+        if not os.path.lexists("/proc/%s/exe" % self.pid):
+            raise err.NoSuchProcess(self.pid, self._process_name)
         else:
             self._create_time = self.create_time()
 
     def create_time(self):
         """return -1 represent the process does not exists
         """
-        #if not os.path.lexists("/proc/%s/exe" % self._pid):
-        #    raise err.NoSuchProcess(self._pid, self._process_name)
-        #else:
+        # if not os.path.lexists("/proc/%s/exe" % self._pid):
+        #     raise err.NoSuchProcess(self._pid, self._process_name)
+        # else:
         try:
-            with open("/proc/%s/stat" % self._pid, 'rb') as f:
-                st = f.read().strip()
+            with open("/proc/%s/stat" % self.pid, 'rb') as f:
+                stripped = f.read().strip()
         except IOError:
             return -1
         else:
-            st = st[st.rfind(b')') + 2:]
-            st = st[st.rfind(b')') + 2:]
-            values = st.split(b' ')
+            stripped = stripped[stripped.rfind(b')') + 2:]
+            stripped = stripped[stripped.rfind(b')') + 2:]
+            values = stripped.split(b' ')
             bt = boot_time()
             return (float(values[19]) / CLOCK_TICKS) + bt
 
@@ -753,19 +757,16 @@ class Process(object):
                 ├─ C (child)
                 └─ D (child)
         """
-        ppid_map = None
+        # ppid_map = None
         ret = []
         if not recursive:
             # 'slow' version, common to all platforms except Windows
             for p in process_iter():
-                #try:
-                if p.get_process_ppid() == self._pid:
+                if p.get_process_ppid() == self.pid:
                     # if child happens to be older than its parent
                     # (self) it means child's PID has been reused
                     if self.create_time() <= p.create_time():
-                        ret.append(p._pid)
-                #except (err.NoSuchProcess):
-                #    pass
+                        ret.append(p.pid)
         else:
             # construct a dict where 'values' are all the processes
             # having 'key' as their parent
@@ -779,7 +780,7 @@ class Process(object):
             # are the current process' children.
             # Below, we look for all descendants recursively, similarly
             # to a recursive function call.
-            checkpids = [self._pid]
+            checkpids = [self.pid]
             for pid in checkpids:
                 for child in table[pid]:
                     try:
@@ -790,9 +791,9 @@ class Process(object):
                         pass
                     else:
                         if intime:
-                            ret.append(child._pid)
-                            if child._pid not in checkpids:
-                                checkpids.append(child._pid)
+                            ret.append(child.pid)
+                            if child.pid not in checkpids:
+                                checkpids.append(child.pid)
         return ret
 
     @wrap_exceptions
@@ -800,7 +801,7 @@ class Process(object):
         """
         get process name of the process (for daemon process only)
         """
-        fhandle = open("/proc/%s/stat" % self._pid)
+        fhandle = open("/proc/%s/stat" % self.pid)
         try:
             name = fhandle.read().split(' ')[1].replace('(', '').replace(
                 ')', ''
@@ -815,20 +816,20 @@ class Process(object):
         get_process_name instead!
         """
         try:
-            exe = os.readlink("/proc/%s/exe" % self._pid)
+            exe = os.readlink("/proc/%s/exe" % self.pid)
         except (OSError, IOError) as error:
-            err = sys.exc_info()[1]
-            if err.errno == errno.ENOENT:
+            errinfo = sys.exc_info()[1]
+            if errinfo.errno == errno.ENOENT:
                 # no such file error; might be raised also if the
                 # path actually exists for system processes with
                 # low pids (about 0-20)
-                if os.path.lexists("/proc/%s/exe" % self._pid):
+                if os.path.lexists("/proc/%s/exe" % self.pid):
                     return ""
                 else:
                     # ok, it is a process which has gone away
-                    raise err.NoSuchProcess(self._pid, self._process_name)
-            if err.errno in (errno.EPERM, errno.EACCES):
-                raise err.AccessDenied(self._pid, self._process_name)
+                    raise err.NoSuchProcess(self.pid, self._process_name)
+            if errinfo.errno in (errno.EPERM, errno.EACCES):
+                raise err.AccessDenied(self._process_name)
             raise error
 
         # readlink() might return paths containing null bytes causing
@@ -848,7 +849,7 @@ class Process(object):
         """
         get cmdline
         """
-        fhandle = open("/proc/%s/cmdline" % self._pid)
+        fhandle = open("/proc/%s/cmdline" % self.pid)
         try:
             # return the args as a list
             return [x for x in fhandle.read().split('\x00') if x]
@@ -871,9 +872,10 @@ class Process(object):
         get io statistics info of network adapters.
         """
         if not os.path.exists('/proc/%s/io' % os.getpid()):
-            raise NotImplementedError("couldn't find /proc/%s/io (kernel "
-                                      "too old?)" % self._pid)
-        fname = "/proc/%s/io" % self._pid
+            raise err.NotSupportedError(
+                "couldn't find /proc/%s/io (kernel too old?)" % self.pid
+            )
+        fname = "/proc/%s/io" % self.pid
         # pylint: disable=c0103
         f = open(fname)
         try:
@@ -889,7 +891,7 @@ class Process(object):
                     wbytes = int(line.split()[1])
             for _ in (rcount, wcount, rbytes, wbytes):
                 if _ is None:
-                    raise NotImplementedError(
+                    raise err.NotSupportedError(
                         "couldn't read all necessary info from %r" % fname)
             return self.__nt_io(rcount, wcount, rbytes, wbytes)
         finally:
@@ -908,14 +910,14 @@ class Process(object):
         """
         get cpu times, return with a namedtuple (utime, stime)
         """
-        f = open("/proc/%s/stat" % self._pid)
+        fdhandle = open("/proc/%s/stat" % self.pid)
         try:
-            st = f.read().strip()
+            stripped = fdhandle.read().strip()
         finally:
-            f.close()
+            fdhandle.close()
         # ignore the first two values ("pid (exe)")
-        st = st[st.find(')') + 2:]
-        values = st.split(' ')
+        stripped = stripped[stripped.find(')') + 2:]
+        values = stripped.split(' ')
         utime = float(values[11]) / _CLOCK_TICKS
         stime = float(values[12]) / _CLOCK_TICKS
         return self._nt_cputimes(utime, stime)
@@ -935,14 +937,14 @@ class Process(object):
         """
         get process create time
         """
-        f = open("/proc/%s/stat" % self._pid)
+        f = open("/proc/%s/stat" % self.pid)
         try:
-            st = f.read().strip()
+            stripped = f.read().strip()
         finally:
             f.close()
         # ignore the first two values ("pid (exe)")
-        st = st[st.rfind(')') + 2:]
-        values = st.split(' ')
+        stripped = stripped[stripped.rfind(')') + 2:]
+        values = stripped.split(' ')
         # According to documentation, starttime is in field 21 and the
         # unit is jiffies (clock ticks).
         # We first divide it for clock ticks and then add uptime returning
@@ -965,7 +967,7 @@ class Process(object):
         get memory info, return with a namedtuple (
         rss vms shared text lib data dirty)
         """
-        f = open("/proc/%s/statm" % self._pid)
+        f = open("/proc/%s/statm" % self.pid)
         try:
             vms, rss = f.readline().split()[:2]
             return self._nt_meminfo(
@@ -1009,7 +1011,7 @@ class Process(object):
         | dirty  | dirty pages (unused in Linux 2.6)   | dt   |   /  |
         +--------+-------------------------------------+------+------+
         """
-        f = open("/proc/%s/statm" % self._pid)
+        f = open("/proc/%s/statm" % self.pid)
         try:
             vms, rss, shared, text, lib, data, dirty = \
                 [int(x) * _PAGESIZE for x in f.readline().split()[:7]]
@@ -1036,14 +1038,15 @@ class Process(object):
         # version: http://goo.gl/fmebo
 
         if not os.path.exists('/proc/%s/smaps' % os.getpid()):
-            msg = "couldn't find /proc/%s/smaps; kernel < 2.6.14 or CONFIG_MMU " \
-                  "kernel configuration option is not enabled" % self._pid
-            raise NotImplementedError(msg)
+            msg = """
+            couldn't find /proc/%s/smaps; kernel < 2.6.14 or CONFIG_MMU
+            ernel configuration option is not enabled""" % self.pid
+            raise err.NotSupportedError(msg)
 
-        f = None
+        fhandle = None
         try:
-            f = open("/proc/%s/smaps" % self._pid)
-            first_line = f.readline()
+            fhandle = open("/proc/%s/smaps" % self.pid)
+            first_line = fhandle.readline()
             current_block = [first_line]
 
             def get_blocks():
@@ -1051,7 +1054,7 @@ class Process(object):
                 internal get blocks  for get_memory_maps
                 """
                 data = {}
-                for line in f:
+                for line in fhandle:
                     fields = line.split(None, 5)
                     if not fields[0].endswith(':'):
                         # new block section
@@ -1060,13 +1063,13 @@ class Process(object):
                     else:
                         try:
                             data[fields[0]] = int(fields[1]) * 1024
-                        except ValueError:
+                        except ValueError as exc:
                             if fields[0].startswith('VmFlags:'):
                                 # see issue # 369
                                 continue
                             else:
                                 raise ValueError("don't know how to interpret"
-                                                 " line %r" % line)
+                                                 " line %r" % line) from exc
                 yield (current_block.pop(), data)
 
             if first_line:  # smaps file can be empty
@@ -1091,31 +1094,31 @@ class Process(object):
                            data.get('Referenced:', 0),
                            data.get('Anonymous:', 0),
                            data.get('Swap:', 0))
-            f.close()
+            fhandle.close()
         except EnvironmentError as error:
             # XXX - Can't use wrap_exceptions decorator as we're
             # returning a generator;  this probably needs some
             # refactoring in order to avoid this code duplication.
-            if f is not None:
-                f.close()
-            err = sys.exc_info()[1]
-            if err.errno in (errno.ENOENT, errno.ESRCH):
-                raise err.NoSuchProcess(self._pid, self._process_name)
-            if err.errno in (errno.EPERM, errno.EACCES):
-                raise err.AccessDenied(self._pid, self._process_name)
+            if fhandle is not None:
+                fhandle.close()
+            errinfo = sys.exc_info()[1]
+            if errinfo.errno in (errno.ENOENT, errno.ESRCH):
+                raise err.NoSuchProcess(self.pid, self._process_name)
+            if errinfo.errno in (errno.EPERM, errno.EACCES):
+                raise err.AccessDenied(self._process_name)
             raise error
         except Exception as error:
-            if f is not None:
-                f.close()
+            if fhandle is not None:
+                fhandle.close()
             raise error
-        f.close()
+        fhandle.close()
 
     @wrap_exceptions
     def get_process_cwd(self):
         """
         get process current working direcotry
         """
-        path = os.readlink("/proc/%s/cwd" % self._pid)
+        path = os.readlink("/proc/%s/cwd" % self.pid)
         return path.replace('\x00', '')
 
     _nt_ctxsw = collections.namedtuple(
@@ -1125,6 +1128,7 @@ class Process(object):
             'unvol'
         ]
     )
+
     @wrap_exceptions
     def get_num_ctx_switches(self):
         """
@@ -1132,7 +1136,7 @@ class Process(object):
         with a namedtuple (vol, unvol)
         """
         vol = unvol = None
-        f = open("/proc/%s/status" % self._pid)
+        f = open("/proc/%s/status" % self.pid)
         try:
             for line in f:
                 if line.startswith("voluntary_ctxt_switches"):
@@ -1141,10 +1145,10 @@ class Process(object):
                     unvol = int(line.split()[1])
                 if vol is not None and unvol is not None:
                     return self._nt_ctxsw(vol, unvol)
-            raise NotImplementedError(
+            raise err.NotSupportedError(
                 "'voluntary_ctxt_switches' and 'nonvoluntary_ctxt_switches'"
                 "fields were not found in /proc/%s/status; the kernel is "
-                "probably older than 2.6.23" % self._pid)
+                "probably older than 2.6.23" % self.pid)
         finally:
             f.close()
 
@@ -1153,12 +1157,12 @@ class Process(object):
         """
         get threads num of this process
         """
-        f = open("/proc/%s/status" % self._pid)
+        f = open("/proc/%s/status" % self.pid)
         try:
             for line in f:
                 if line.startswith("Threads:"):
                     return int(line.split()[1])
-            raise NotImplementedError("line not found")
+            raise err.NotSupportedError("line not found")
         finally:
             f.close()
 
@@ -1177,13 +1181,13 @@ class Process(object):
         get threads that is current using, return with a namedtuple (
         thread_id, utime, stime)
         """
-        thread_ids = os.listdir("/proc/%s/task" % self._pid)
+        thread_ids = os.listdir("/proc/%s/task" % self.pid)
         thread_ids.sort()
         retlist = []
         hit_enoent = False
         for thread_id in thread_ids:
             try:
-                f = open("/proc/%s/task/%s/stat" % (self._pid, thread_id))
+                f = open("/proc/%s/task/%s/stat" % (self.pid, thread_id))
             except EnvironmentError as error:
                 err = sys.exc_info()[1]
                 if err.errno == errno.ENOENT:
@@ -1205,7 +1209,7 @@ class Process(object):
             retlist.append(ntuple)
         if hit_enoent:
             # raise NSP if the process disappeared on us
-            os.stat('/proc/%s' % self._pid)
+            os.stat('/proc/%s' % self.pid)
         return retlist
 
     @wrap_exceptions
@@ -1213,7 +1217,7 @@ class Process(object):
         """
         get process nice
         """
-        f = open('/proc/%s/stat' % self._pid, 'r')
+        f = open('/proc/%s/stat' % self.pid, 'r')
         try:
             data = f.read()
             return int(data.split()[18])
@@ -1225,12 +1229,12 @@ class Process(object):
         """
         get status of the current process (info from /proc/xxx/status)
         """
-        f = open("/proc/%s/status" % self._pid)
+        f = open("/proc/%s/status" % self.pid)
         try:
             for line in f:
                 if line.startswith("State:"):
                     letter = line.split()[1]
-                    # XXX is '?' legit? (we're not supposed to return
+                    # FIXME: xxx is '?' legit? (we're not supposed to return
                     # it anyway)
                     return _PROC_STATUSES.get(letter, '?')
         finally:
@@ -1250,17 +1254,17 @@ class Process(object):
         get opened file info
         """
         retlist = []
-        files = os.listdir("/proc/%s/fd" % self._pid)
+        files = os.listdir("/proc/%s/fd" % self.pid)
         hit_enoent = False
-        for fd in files:
-            file = "/proc/%s/fd/%s" % (self._pid, fd)
+        for fhandle in files:
+            file = "/proc/%s/fd/%s" % (self.pid, fhandle)
             if os.path.islink(file):
                 try:
                     file = os.readlink(file)
                 except OSError as error:
                     # ENOENT == file which is gone in the meantime
-                    err = sys.exc_info()[1]
-                    if err.errno == errno.ENOENT:
+                    errinfo = sys.exc_info()[1]
+                    if errinfo.errno == errno.ENOENT:
                         hit_enoent = True
                         continue
                     raise error
@@ -1270,11 +1274,11 @@ class Process(object):
                     # so we skip it. A regular file is always supposed
                     # to be absolutized though.
                     if file.startswith('/') and os.path.isfile(file):
-                        ntuple = self._nt_openfile(file, int(fd))
+                        ntuple = self._nt_openfile(file, int(fhandle))
                         retlist.append(ntuple)
         if hit_enoent:
             # raise NSP if the process disappeared on us
-            os.stat('/proc/%s' % self._pid)
+            os.stat('/proc/%s' % self.pid)
         return retlist
 
     _nt_connection = collections.namedtuple(
@@ -1292,17 +1296,17 @@ class Process(object):
     def _process_for_connections(self, inodes, file, family, type_):
         retlist = []
         try:
-            f = open(file, 'r')
+            fpointer = open(file, 'r')
         except IOError as error:
             # IPv6 not supported on this platform
-            err = sys.exc_info()[1]
-            if err.errno == errno.ENOENT and file.endswith('6'):
+            errinfo = sys.exc_info()[1]
+            if errinfo.errno == errno.ENOENT and file.endswith('6'):
                 return []
             else:
                 raise error
         try:
-            f.readline()  # skip the first line
-            for line in f:
+            fpointer.readline()  # skip the first line
+            for line in fpointer:
                 # IPv4 / IPv6
                 if family in (socket.AF_INET, socket.AF_INET6):
                     _, laddr, raddr, status, _, _, _, _, _, inode = \
@@ -1314,9 +1318,9 @@ class Process(object):
                             status = _TCP_STATUSES[status]
                         else:
                             status = _CONN_NONE
-                        fd = int(inodes[inode])
+                        filed = int(inodes[inode])
                         conn = self._nt_connection(
-                            fd, family, type_, laddr,
+                            filed, family, type_, laddr,
                             raddr, status
                         )
                         retlist.append(conn)
@@ -1329,10 +1333,10 @@ class Process(object):
                             path = tokens[-1]
                         else:
                             path = ""
-                        fd = int(inodes[inode])
+                        filed = int(inodes[inode])
                         type_ = int(type_)
                         conn = self._nt_connection(
-                            fd, family, type_, path,
+                            filed, family, type_, path,
                             None, _CONN_NONE
                         )
                         retlist.append(conn)
@@ -1340,7 +1344,7 @@ class Process(object):
                     raise ValueError(family)
             return retlist
         finally:
-            f.close()
+            fpointer.close()
 
     @wrap_exceptions
     def get_connections(self, kind='inet'):
@@ -1376,15 +1380,15 @@ class Process(object):
         # os.listdir() is gonna raise a lot of access denied
         # exceptions in case of unprivileged user; that's fine:
         # lsof does the same so it's unlikely that we can to better.
-        for fd in os.listdir("/proc/%s/fd" % self._pid):
+        for fdhandle in os.listdir("/proc/%s/fd" % self.pid):
             try:
-                inode = os.readlink("/proc/%s/fd/%s" % (self._pid, fd))
+                inode = os.readlink("/proc/%s/fd/%s" % (self.pid, fdhandle))
             except OSError:
                 continue
             if inode.startswith('socket:['):
                 # the process is using a socket
                 inode = inode[8:][:-1]
-                inodes[inode] = fd
+                inodes[inode] = fdhandle
 
         if not inodes:
             # no connections for this process
@@ -1413,12 +1417,11 @@ class Process(object):
             raise ValueError("invalid %r kind argument; choose between %s"
                              % (kind, ', '.join([repr(x) for x in tmap])))
         ret = []
-        for f, family, type_ in tmap[kind]:
+        for filed, family, type_ in tmap[kind]:
             ret += self._process_for_connections(
-                inodes, "/proc/net/%s" % f, family, type_
-            )
+                inodes, "/proc/net/{}".format(filed), family, type_)
         # raise NSP if the process disappeared on us
-        os.stat('/proc/%s' % self._pid)
+        os.stat('/proc/%s' % self.pid)
         return ret
 
     @wrap_exceptions
@@ -1426,20 +1429,20 @@ class Process(object):
         """
         get opened file descriptor num
         """
-        return len(os.listdir("/proc/%s/fd" % self._pid))
+        return len(os.listdir("/proc/%s/fd" % self.pid))
 
     @wrap_exceptions
     def get_process_ppid(self):
         """
         get parent process id
         """
-        f = open("/proc/%s/status" % self._pid)
+        f = open("/proc/%s/status" % self.pid)
         try:
             for line in f:
                 if line.startswith("PPid:"):
                     # PPid: nnnn
                     return int(line.split()[1])
-            raise NotImplementedError("line not found")
+            raise err.NotSupportedError('line not found')
         finally:
             f.close()
 
@@ -1457,15 +1460,15 @@ class Process(object):
         """
         get uid info of the process, will return a namedtuple
         """
-        f = open("/proc/%s/status" % self._pid)
+        fdhandle = open("/proc/%s/status" % self.pid)
         try:
-            for line in f:
+            for line in fdhandle:
                 if line.startswith('Uid:'):
                     _, real, effective, saved, fs = line.split()
                     return self._nt_uids(int(real), int(effective), int(saved))
-            raise NotImplementedError("line not found")
+            raise err.NotSupportedError("line not found")
         finally:
-            f.close()
+            fdhandle.close()
 
     _nt_gids = collections.namedtuple(
         'nt_gids',
@@ -1482,13 +1485,13 @@ class Process(object):
         get process gid, namedtuple will be returned
         (with attrs .real .effective .saved)
         """
-        f = open("/proc/%s/status" % self._pid)
+        f = open("/proc/%s/status" % self.pid)
         try:
             for line in f:
                 if line.startswith('Gid:'):
                     _, real, effective, saved, fs = line.split()
                     return self._nt_gids(int(real), int(effective), int(saved))
-            raise NotImplementedError("line not found")
+            raise err.NotSupportedError("line not found")
         finally:
             f.close()
 
@@ -1509,10 +1512,10 @@ class Process(object):
         Reference:
         http://linuxdevcenter.com/pub/a/linux/2000/11/16/LinuxAdmin.html
         """
-        ip, port = addr.split(':')
+        ipadr, port = addr.split(':')
         port = int(port, 16)
         if sys.version_info >= (3, 0):
-            ip = ip.encode('ascii')
+            ipadr = ipadr.encode('ascii')
         # this usually refers to a local socket in listen mode with
         # no end-points connected
         if not port:
@@ -1520,31 +1523,31 @@ class Process(object):
         if family == socket.AF_INET:
             # see: http://code.google.com/p/psutil/issues/detail?id=201
             if sys.byteorder == 'little':
-                ip = socket.inet_ntop(family, base64.b16decode(ip)[::-1])
+                ipadr = socket.inet_ntop(family, base64.b16decode(ipadr)[::-1])
             else:
-                ip = socket.inet_ntop(family, base64.b16decode(ip))
+                ipadr = socket.inet_ntop(family, base64.b16decode(ipadr))
         else:  # IPv6
             # old version - let's keep it, just in case...
             # ip = ip.decode('hex')
             # return socket.inet_ntop(socket.AF_INET6,
             #          ''.join(ip[i:i+4][::-1] for i in range(0, 16, 4)))
-            ip = base64.b16decode(ip)
+            ipadr = base64.b16decode(ipadr)
             # see: http://code.google.com/p/psutil/issues/detail?id=201
             if sys.byteorder == 'little':
-                ip = socket.inet_ntop(
+                ipadr = socket.inet_ntop(
                     socket.AF_INET6,
-                    struct.pack('>4I', *struct.unpack('<4I', ip)))
+                    struct.pack('>4I', *struct.unpack('<4I', ipadr)))
             else:
-                ip = socket.inet_ntop(
+                ipadr = socket.inet_ntop(
                     socket.AF_INET6,
-                    struct.pack('<4I', *struct.unpack('<4I', ip)))
-        return (ip, port)
+                    struct.pack('<4I', *struct.unpack('<4I', ipadr)))
+        return (ipadr, port)
 
     def getpgid(self):
         """
         return process group id (not pid, not gid either)
         """
-        return os.getpgid(self._pid)
+        return os.getpgid(self.pid)
 
 
 if '__main__' == __name__:

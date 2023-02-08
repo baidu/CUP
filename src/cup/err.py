@@ -6,12 +6,13 @@
 :description:
     error related module
 """
+# pylint: disable=consider-using-f-string
 
 __all__ = [
     'BaseCupException', 'DecoratorException', 'LoggerException',
     'ResException', 'NoSuchProcess', 'AccessDenied', 'NetException',
     'AsyncMsgError', 'ThreadTermException', 'LockFileError',
-    'NotImplementedYet', 'ConfigError'
+    'NotImplementedYet', 'ConfigError', 'NotSupportedError'
 ]
 
 
@@ -26,13 +27,32 @@ class BaseCupException(Exception):
         return repr(self._msg)
 
 
+class ConfigError(BaseCupException):
+    """
+    ConfigError
+    """
+    def __init__(self, msg=''):
+        msg = 'Configuration Error: {0}'.format(msg)
+        BaseCupException.__init__(self, msg)
+
+
 # ## Decorator Exceptions ####
 class DecoratorException(BaseCupException):
     """
     DecoratorException
     """
     def __init__(self, msg):
-        super(self.__class__, self).__init__(msg)
+        msg = 'Decoration Error:{}'.format(msg)
+        BaseCupException.__init__(self, msg)
+
+
+class ExpectFailure(BaseCupException):
+    """
+    Expect failure for cup.unittest
+    """
+    def __init__(self, expect, got):
+        msg = 'expect failure, expect {0}, got {1}'.format(expect, got)
+        BaseCupException.__init__(self, msg)
 
 
 # ## Log related exceptions ####
@@ -41,7 +61,8 @@ class LoggerException(BaseCupException):
     Exception for logging, especially for cup.log
     """
     def __init__(self, msg):
-        super(self.__class__, self).__init__(msg)
+        msg = 'LoggerException Error: {0}'.format(msg)
+        BaseCupException.__init__(self, msg)
 
 
 # ## Resouce related exceptions ####
@@ -53,24 +74,33 @@ class ResException(BaseCupException):
         BaseCupException.__init__(self, msg)
 
 
-class NoSuchProcess(ResException):
-    """
-    No such Process Exception
-    """
-    def __init__(self, pid, str_process_name):
-        ResException.__init__(self,
-            'NoSuchProcess, pid %d, proc_name:%s' % (pid, str_process_name)
-        )
-
-
 class AccessDenied(ResException):
     """
     Access Denied
     """
     def __init__(self, str_resouce):
-        ResException.__init__(self,
-            'Resouce access denied: %s' % str_resouce
+        ResException.__init__(
+            self, 'access denied: {}'.format(str_resouce)
         )
+
+
+class NoSuchProcess(ResException):
+    """
+    No such Process Exception
+    """
+    def __init__(self, pid, str_process_name):
+        ResException.__init__(
+            self, 'pid %d, proc_name:%s' % (pid, str_process_name)
+        )
+
+
+class NotSupportedError(BaseCupException):
+    """
+    NotSupportedError (feature/functionality not implemented by code yet)
+    """
+    def __init__(self, msg=''):
+        msg = 'NotSupportedError: {0}'.format(msg)
+        BaseCupException.__init__(self, msg)
 
 
 # ## Net related exceptions ####
@@ -141,30 +171,12 @@ class LockFileError(BaseCupException):
         BaseCupException.__init__(self, msg)
 
 
-class ExpectFailure(BaseCupException):
-    """
-    Expect failure for cup.unittest
-    """
-    def __init__(self, expect, got):
-        msg = 'expect failure, expect {0}, got {1}'.format(expect, got)
-        BaseCupException.__init__(self, msg)
-
-
 class NotImplementedYet(BaseCupException):
     """
     Not implemented yet
     """
     def __init__(self, msg=''):
         msg = 'The functionality is not implemented yet, {0}'.format(msg)
-        BaseCupException.__init__(self, msg)
-
-
-class ConfigError(BaseCupException):
-    """
-    ConfigError
-    """
-    def __init__(self, msg=''):
-        msg = 'Configuration Error: {0}'.format(msg)
         BaseCupException.__init__(self, msg)
 
 

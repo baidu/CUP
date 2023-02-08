@@ -69,7 +69,7 @@ def getip_byinterface(iface='eth0'):
         ipaddr = struct.unpack('16sH2x4s8x', res)[2]
         return socket.inet_ntoa(ipaddr)
     else:
-        raise NotImplementedError('Not implemented on this platform')
+        raise NameError('Not supported on this platform')
 
 
 def get_local_hostname():
@@ -216,7 +216,7 @@ def localport_free(port, is_ipv6=False):
 def port_listened(host, port, is_ipv6=False):
     """check if the port is being listened on the host"""
     if is_ipv6:
-        raise NotImplementedError('ipv6 not supported yet')
+        raise NameError('ipv6 not supported yet')
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(1)
     set_sock_reusable(sock)
@@ -250,6 +250,6 @@ def get_interfaces():
             eths.append(inter)
         return eths
     else:
-        raise NotImplementedError('not supported other than linux')
+        raise NameError('not supported other than linux')
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

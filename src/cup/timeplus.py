@@ -95,5 +95,16 @@ class TimePlus(object):
         return dateobj.astimezone(self._timezone)
 
 
+def sleep(seconds):
+    """sleep xx seconds; more accurate than time.sleep"""
+    start = time.time()
+    left = seconds
+    while True:
+        time.sleep(left)
+        left = seconds - (time.time() - start)
+        if left <= 0:
+            break
+
+
 if __name__ == '__main__':
     print(get_str_now())
