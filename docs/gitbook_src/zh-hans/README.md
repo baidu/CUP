@@ -19,7 +19,7 @@
     - [7.1 典型用户案例](#71-典型用户案例)
 
 **1分钟了解Python-Cup基础库**
-<iframe src="http://player.bilibili.com/player.html?aid=41856081" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" width="900px" height="900px"> </iframe>
+<iframe src="//player.bilibili.com/player.html?aid=41856081&amp;bvid=BV1pt411t7Lq&amp;cid=73491550&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" height="800px" width="800px"> </iframe>
 
 ----------
 
