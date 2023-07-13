@@ -21,13 +21,14 @@ only 1 instance per process.
         Process-level auto incremental uint. Thread-safe
     **reset_uniqid_start(num=0)**
         Reset next uniqid to which genman starts from
-    **get_random_str()**
+    **get_random_str(length)**
         Get random string by length
     **get_uuid()**
         Get uuid
 
 """
 import os
+import sys
 import time
 import uuid
 import random
@@ -44,6 +45,8 @@ except ImportError:
 import cup
 from cup import log
 from cup import decorators
+if sys.version_info[0] >= 3:
+    unicode = str
 
 
 __all__ = [

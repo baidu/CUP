@@ -17,6 +17,7 @@ from cup.services import generator
 
 
 def test_generator():
+    """ generate general data"""
     a_gen = generator.CGeneratorMan()
     b_gen = generator.CGeneratorMan()
     print(a_gen)
@@ -24,4 +25,8 @@ def test_generator():
     assert a_gen == b_gen
 
 
+def test_uuid_py3_compatibility():
+    """generate uuid"""
+    uuidgen = generator.CachedUUID()
+    print(uuidgen.get_uuid()[0])
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

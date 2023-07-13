@@ -1,3 +1,9 @@
+# 0. Version Under Development
+
+## Version 3.2.28
+* [Compatibility] cup.servcies.generator / unicode<>str in py3/py2
+
+
 # 1. Versions Released
 
 ## Version 3.2.27
