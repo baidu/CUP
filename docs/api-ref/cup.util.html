@@ -1,145 +1,68 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cup.util package &mdash; cup 3.2.32 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/js/theme.js"></script>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>cup.util package &#8212; cup 3.2.33 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="cup.web package" href="cup.web.html" />
-    <link rel="prev" title="cup.storage package" href="cup.storage.html" /> 
-</head>
+    <link rel="prev" title="cup.storage package" href="cup.storage.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> cup
-          </a>
-              <div class="version">
-                3.2.32
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="cup.html">cup package</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="cup.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="cup.net.html">cup.net package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cup.res.html">cup.res package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cup.services.html">cup.services package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cup.shell.html">cup.shell package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cup.storage.html">cup.storage package</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">cup.util package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#cup.util.check_not_none"><code class="docutils literal notranslate"><span class="pre">check_not_none()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#cup.util.check_type"><code class="docutils literal notranslate"><span class="pre">check_type()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-cup.util.conf">cup.util.conf module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-cup.util.constants">cup.util.constants module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-cup.util.context">cup.util.context module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-cup.util.misc">cup.util.misc module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-cup.util.typechecker">cup.util.typechecker module</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="cup.web.html">cup.web package</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.cache">cup.cache module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.const">cup.const module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.decorators">cup.decorators module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.err">cup.err module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.exfile">cup.exfile module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.flag">cup.flag module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.log">cup.log module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.mail">cup.mail module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.platforms">cup.platforms module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.thread">cup.thread module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.timeplus">cup.timeplus module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.unittest">cup.unittest module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.version">cup.version module</a></li>
-</ul>
-</li>
-</ul>
+  </head><body>
+  
 
-        </div>
-      </div>
-    </nav>
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">cup</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="cup.html">cup package</a></li>
-      <li class="breadcrumb-item active">cup.util package</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/cup.util.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+          <div class="body" role="main">
+            
   <section id="module-cup.util">
-<span id="cup-util-package"></span><h1>cup.util package<a class="headerlink" href="#module-cup.util" title="Permalink to this heading"></a></h1>
+<span id="cup-util-package"></span><h1>cup.util package<a class="headerlink" href="#module-cup.util" title="Permalink to this heading">¶</a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">description</dt>
+<dt class="field-odd">description<span class="colon">:</span></dt>
 <dd class="field-odd"><p>utilization related module</p>
 </dd>
 </dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.util.check_not_none">
-<span class="sig-prename descclassname"><span class="pre">cup.util.</span></span><span class="sig-name descname"><span class="pre">check_not_none</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util.html#check_not_none"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.check_not_none" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.util.</span></span><span class="sig-name descname"><span class="pre">check_not_none</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util.html#check_not_none"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.check_not_none" title="Permalink to this definition">¶</a></dt>
 <dd><p>deprecated. Recommand using misc.check_not_none</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.util.check_type">
-<span class="sig-prename descclassname"><span class="pre">cup.util.</span></span><span class="sig-name descname"><span class="pre">check_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expect</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util.html#check_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.check_type" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.util.</span></span><span class="sig-name descname"><span class="pre">check_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expect</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util.html#check_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.check_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>deprecated. Recommand using misc.check_type in cup.util</p>
 </dd></dl>
 
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
 </section>
 <section id="module-cup.util.conf">
-<span id="cup-util-conf-module"></span><h2>cup.util.conf module<a class="headerlink" href="#module-cup.util.conf" title="Permalink to this heading"></a></h2>
+<span id="cup-util-conf-module"></span><h2>cup.util.conf module<a class="headerlink" href="#module-cup.util.conf" title="Permalink to this heading">¶</a></h2>
 <dl class="field-list simple">
-<dt class="field-odd">description</dt>
+<dt class="field-odd">description<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Complex and constructive conf support</p>
 </dd>
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="cup.util.conf.Configure2Dict">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.conf.</span></span><span class="sig-name descname"><span class="pre">Configure2Dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configure_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">':'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/conf.html#Configure2Dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.conf.Configure2Dict" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.conf.</span></span><span class="sig-name descname"><span class="pre">Configure2Dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configure_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">':'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/conf.html#Configure2Dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.conf.Configure2Dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Configure2Dict support conf features below:</p>
 <ol class="arabic">
@@ -281,10 +204,10 @@ You will get a ConfList derived from python list.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.util.conf.Configure2Dict.get_dict">
-<span class="sig-name descname"><span class="pre">get_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ignore_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf8'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/conf.html#Configure2Dict.get_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.conf.Configure2Dict.get_dict" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ignore_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf8'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/conf.html#Configure2Dict.get_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.conf.Configure2Dict.get_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>get conf_dict which you can use to access conf info.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ignore_error</strong> – True, CUP will parse the conf file without catching exceptions</p></li>
 <li><p><strong>encoding</strong> – utf8 by default, you can change it to your encoding</p></li>
@@ -297,22 +220,22 @@ You will get a ConfList derived from python list.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="cup.util.conf.Dict2Configure">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.conf.</span></span><span class="sig-name descname"><span class="pre">Dict2Configure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conf_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">':'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/conf.html#Dict2Configure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.conf.Dict2Configure" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.conf.</span></span><span class="sig-name descname"><span class="pre">Dict2Configure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conf_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">':'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/conf.html#Dict2Configure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.conf.Dict2Configure" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Convert Dict into Configure.
 You can convert a ConfDict or python dict into a conf file.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.util.conf.Dict2Configure.set_dict">
-<span class="sig-name descname"><span class="pre">set_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conf_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/conf.html#Dict2Configure.set_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.conf.Dict2Configure.set_dict" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conf_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/conf.html#Dict2Configure.set_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.conf.Dict2Configure.set_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>set a new conf_dict</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.util.conf.Dict2Configure.write_conf">
-<span class="sig-name descname"><span class="pre">write_conf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conf_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf8'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/conf.html#Dict2Configure.write_conf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.conf.Dict2Configure.write_conf" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">write_conf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conf_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf8'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/conf.html#Dict2Configure.write_conf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.conf.Dict2Configure.write_conf" title="Permalink to this definition">¶</a></dt>
 <dd><p>write the conf into of the dict into a conf_file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>conf_file</strong> – the file which will be override</p></li>
 <li><p><strong>encoding</strong> – ‘utf8’ by default, specify yours if needed</p></li>
@@ -325,7 +248,7 @@ You can convert a ConfDict or python dict into a conf file.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="cup.util.conf.HdfsXmlConf">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.conf.</span></span><span class="sig-name descname"><span class="pre">HdfsXmlConf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/conf.html#HdfsXmlConf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.conf.HdfsXmlConf" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.conf.</span></span><span class="sig-name descname"><span class="pre">HdfsXmlConf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/conf.html#HdfsXmlConf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.conf.HdfsXmlConf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>hdfs xmlconf modifier.</p>
 <p>Example:</p>
@@ -355,10 +278,10 @@ You can convert a ConfDict or python dict into a conf file.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.util.conf.HdfsXmlConf.get_items">
-<span class="sig-name descname"><span class="pre">get_items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/conf.html#HdfsXmlConf.get_items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.conf.HdfsXmlConf.get_items" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/conf.html#HdfsXmlConf.get_items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.conf.HdfsXmlConf.get_items" title="Permalink to this definition">¶</a></dt>
 <dd><p>return hadoop config items as a dict.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s1">&#39;dfs.datanode.max.xcievers&#39;</span><span class="p">:</span>  <span class="p">{</span>
         <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;xxxxxxxxxx&#39;</span>
@@ -374,10 +297,10 @@ You can convert a ConfDict or python dict into a conf file.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.util.conf.HdfsXmlConf.write_conf">
-<span class="sig-name descname"><span class="pre">write_conf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kvs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf8'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/conf.html#HdfsXmlConf.write_conf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.conf.HdfsXmlConf.write_conf" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">write_conf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kvs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf8'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/conf.html#HdfsXmlConf.write_conf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.conf.HdfsXmlConf.write_conf" title="Permalink to this definition">¶</a></dt>
 <dd><p>update config items with a dict kvs. Refer to the example above.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>kvs</strong> – <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="n">key</span> <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;description&#39;</span><span class="p">},</span>
     <span class="o">......</span>
@@ -393,15 +316,15 @@ You can convert a ConfDict or python dict into a conf file.</p>
 
 </section>
 <section id="module-cup.util.constants">
-<span id="cup-util-constants-module"></span><h2>cup.util.constants module<a class="headerlink" href="#module-cup.util.constants" title="Permalink to this heading"></a></h2>
+<span id="cup-util-constants-module"></span><h2>cup.util.constants module<a class="headerlink" href="#module-cup.util.constants" title="Permalink to this heading">¶</a></h2>
 <dl class="field-list">
-<dt class="field-odd">description</dt>
+<dt class="field-odd">description<span class="colon">:</span></dt>
 <dd class="field-odd"><p>constant related module
 <em>test-case-name: twisted.python.test.test_constants</em>
 Copyright (c) Twisted Matrix Laboratories.
 See LICENSE for details.</p>
 </dd>
-<dt class="field-even">license</dt>
+<dt class="field-even">license<span class="colon">:</span></dt>
 <dd class="field-even"><p>CUP dev team modified and redistrbuted this module,
 according to MIT license
 (<a class="reference external" href="http://opensource.org/licenses/mit-license.php">http://opensource.org/licenses/mit-license.php</a>)
@@ -432,7 +355,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="cup.util.constants.FlagConstant">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.constants.</span></span><span class="sig-name descname"><span class="pre">FlagConstant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/constants.html#FlagConstant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.constants.FlagConstant" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.constants.</span></span><span class="sig-name descname"><span class="pre">FlagConstant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/constants.html#FlagConstant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.constants.FlagConstant" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_Constant</span></code></p>
 <p>L{FlagConstant} defines an attribute to be a flag constant within a
 collection defined by a L{Flags} subclass.</p>
@@ -442,7 +365,7 @@ Do not instantiate L{FlagConstant} elsewhere and do not subclass it.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="cup.util.constants.Flags">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.constants.</span></span><span class="sig-name descname"><span class="pre">Flags</span></span><a class="reference internal" href="_modules/cup/util/constants.html#Flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.constants.Flags" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.constants.</span></span><span class="sig-name descname"><span class="pre">Flags</span></span><a class="reference internal" href="_modules/cup/util/constants.html#Flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.constants.Flags" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#cup.util.constants.Values" title="cup.util.constants.Values"><code class="xref py py-class docutils literal notranslate"><span class="pre">Values</span></code></a></p>
 <p>A L{Flags} subclass contains constants which can be combined using the
 common bitwise operators (C{|}, C{&amp;}, etc) similar to a I{bitvector} from a
@@ -451,7 +374,7 @@ language like C.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="cup.util.constants.NamedConstant">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.constants.</span></span><span class="sig-name descname"><span class="pre">NamedConstant</span></span><a class="reference internal" href="_modules/cup/util/constants.html#NamedConstant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.constants.NamedConstant" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.constants.</span></span><span class="sig-name descname"><span class="pre">NamedConstant</span></span><a class="reference internal" href="_modules/cup/util/constants.html#NamedConstant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.constants.NamedConstant" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_Constant</span></code></p>
 <p>L{NamedConstant} defines an attribute to be a named constant within a
 collection defined by a L{Names} subclass.</p>
@@ -462,7 +385,7 @@ subclass it.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="cup.util.constants.Names">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.constants.</span></span><span class="sig-name descname"><span class="pre">Names</span></span><a class="reference internal" href="_modules/cup/util/constants.html#Names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.constants.Names" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.constants.</span></span><span class="sig-name descname"><span class="pre">Names</span></span><a class="reference internal" href="_modules/cup/util/constants.html#Names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.constants.Names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_ConstantsContainer</span></code></p>
 <p>A L{Names} subclass contains constants which differ only in their names and
 identities.</p>
@@ -470,7 +393,7 @@ identities.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="cup.util.constants.ValueConstant">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.constants.</span></span><span class="sig-name descname"><span class="pre">ValueConstant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/constants.html#ValueConstant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.constants.ValueConstant" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.constants.</span></span><span class="sig-name descname"><span class="pre">ValueConstant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/constants.html#ValueConstant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.constants.ValueConstant" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_Constant</span></code></p>
 <p>L{ValueConstant} defines an attribute to be a named constant within a
 collection defined by a L{Values} subclass.</p>
@@ -480,24 +403,24 @@ Do not instantiate L{ValueConstant} elsewhere and do not subclass it.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="cup.util.constants.Values">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.constants.</span></span><span class="sig-name descname"><span class="pre">Values</span></span><a class="reference internal" href="_modules/cup/util/constants.html#Values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.constants.Values" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.constants.</span></span><span class="sig-name descname"><span class="pre">Values</span></span><a class="reference internal" href="_modules/cup/util/constants.html#Values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.constants.Values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_ConstantsContainer</span></code></p>
 <p>A L{Values} subclass contains constants which are associated with arbitrary
 values.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.util.constants.Values.lookupByValue">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lookupByValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/constants.html#Values.lookupByValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.constants.Values.lookupByValue" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lookupByValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/constants.html#Values.lookupByValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.constants.Values.lookupByValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve a constant by its value or raise a C{ValueError} if there is
 no constant associated with that value.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>value</strong> – The value of one of the constants defined by C{cls}.</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ValueError</strong> – If C{value} is not the value of one of the constants
 defined by C{cls}.</p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The L{ValueConstant} associated with C{value}.</p>
 </dd>
 </dl>
@@ -507,26 +430,26 @@ defined by C{cls}.</p>
 
 </section>
 <section id="module-cup.util.context">
-<span id="cup-util-context-module"></span><h2>cup.util.context module<a class="headerlink" href="#module-cup.util.context" title="Permalink to this heading"></a></h2>
+<span id="cup-util-context-module"></span><h2>cup.util.context module<a class="headerlink" href="#module-cup.util.context" title="Permalink to this heading">¶</a></h2>
 <dl class="field-list simple">
-<dt class="field-odd">description</dt>
+<dt class="field-odd">description<span class="colon">:</span></dt>
 <dd class="field-odd"><p>context for threadpool</p>
 </dd>
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="cup.util.context.ContextManager">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.context.</span></span><span class="sig-name descname"><span class="pre">ContextManager</span></span><a class="reference internal" href="_modules/cup/util/context.html#ContextManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.context.ContextManager" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.context.</span></span><span class="sig-name descname"><span class="pre">ContextManager</span></span><a class="reference internal" href="_modules/cup/util/context.html#ContextManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.context.ContextManager" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>context for function call stack</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.util.context.ContextManager.call_with_context">
-<span class="sig-name descname"><span class="pre">call_with_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/context.html#ContextManager.call_with_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.context.ContextManager.call_with_context" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">call_with_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/context.html#ContextManager.call_with_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.context.ContextManager.call_with_context" title="Permalink to this definition">¶</a></dt>
 <dd><p>context is a {}</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.util.context.ContextManager.get_context">
-<span class="sig-name descname"><span class="pre">get_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/context.html#ContextManager.get_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.context.ContextManager.get_context" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/context.html#ContextManager.get_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.context.ContextManager.get_context" title="Permalink to this definition">¶</a></dt>
 <dd><p>get the context that has the key</p>
 </dd></dl>
 
@@ -534,24 +457,24 @@ defined by C{cls}.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="cup.util.context.ContextTracker4Thread">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.context.</span></span><span class="sig-name descname"><span class="pre">ContextTracker4Thread</span></span><a class="reference internal" href="_modules/cup/util/context.html#ContextTracker4Thread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.context.ContextTracker4Thread" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.context.</span></span><span class="sig-name descname"><span class="pre">ContextTracker4Thread</span></span><a class="reference internal" href="_modules/cup/util/context.html#ContextTracker4Thread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.context.ContextTracker4Thread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>thread switch tracker</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.util.context.ContextTracker4Thread.call_with_context">
-<span class="sig-name descname"><span class="pre">call_with_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/context.html#ContextTracker4Thread.call_with_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.context.ContextTracker4Thread.call_with_context" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">call_with_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/context.html#ContextTracker4Thread.call_with_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.context.ContextTracker4Thread.call_with_context" title="Permalink to this definition">¶</a></dt>
 <dd><p>call [func] and set up a context with it</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.util.context.ContextTracker4Thread.current_context">
-<span class="sig-name descname"><span class="pre">current_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/context.html#ContextTracker4Thread.current_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.context.ContextTracker4Thread.current_context" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">current_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/context.html#ContextTracker4Thread.current_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.context.ContextTracker4Thread.current_context" title="Permalink to this definition">¶</a></dt>
 <dd><p>get current context</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.util.context.ContextTracker4Thread.get_context">
-<span class="sig-name descname"><span class="pre">get_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/context.html#ContextTracker4Thread.get_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.context.ContextTracker4Thread.get_context" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/context.html#ContextTracker4Thread.get_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.context.ContextTracker4Thread.get_context" title="Permalink to this definition">¶</a></dt>
 <dd><p>get the context by key</p>
 </dd></dl>
 
@@ -559,22 +482,22 @@ defined by C{cls}.</p>
 
 </section>
 <section id="module-cup.util.misc">
-<span id="cup-util-misc-module"></span><h2>cup.util.misc module<a class="headerlink" href="#module-cup.util.misc" title="Permalink to this heading"></a></h2>
+<span id="cup-util-misc-module"></span><h2>cup.util.misc module<a class="headerlink" href="#module-cup.util.misc" title="Permalink to this heading">¶</a></h2>
 <p>misc classes for internal use</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="cup.util.misc.CAck">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.misc.</span></span><span class="sig-name descname"><span class="pre">CAck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/misc.html#CAck"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.misc.CAck" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.util.misc.</span></span><span class="sig-name descname"><span class="pre">CAck</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/misc.html#CAck"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.misc.CAck" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>ack class</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.util.misc.CAck.getack_infobool">
-<span class="sig-name descname"><span class="pre">getack_infobool</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/misc.html#CAck.getack_infobool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.misc.CAck.getack_infobool" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">getack_infobool</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/misc.html#CAck.getack_infobool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.misc.CAck.getack_infobool" title="Permalink to this definition">¶</a></dt>
 <dd><p>get bool info</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.util.misc.CAck.setack_infobool">
-<span class="sig-name descname"><span class="pre">setack_infobool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/misc.html#CAck.setack_infobool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.misc.CAck.setack_infobool" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">setack_infobool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/misc.html#CAck.setack_infobool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.misc.CAck.setack_infobool" title="Permalink to this definition">¶</a></dt>
 <dd><p>set bool info</p>
 </dd></dl>
 
@@ -582,10 +505,10 @@ defined by C{cls}.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.util.misc.check_not_none">
-<span class="sig-prename descclassname"><span class="pre">cup.util.misc.</span></span><span class="sig-name descname"><span class="pre">check_not_none</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/misc.html#check_not_none"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.misc.check_not_none" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.util.misc.</span></span><span class="sig-name descname"><span class="pre">check_not_none</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/misc.html#check_not_none"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.misc.check_not_none" title="Permalink to this definition">¶</a></dt>
 <dd><p>check param is not None</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raise</dt>
+<dt class="field-odd">Raise<span class="colon">:</span></dt>
 <dd class="field-odd"><p>NameError if param is None</p>
 </dd>
 </dl>
@@ -593,10 +516,10 @@ defined by C{cls}.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.util.misc.check_type">
-<span class="sig-prename descclassname"><span class="pre">cup.util.misc.</span></span><span class="sig-name descname"><span class="pre">check_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expect</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/misc.html#check_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.misc.check_type" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.util.misc.</span></span><span class="sig-name descname"><span class="pre">check_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expect</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/misc.html#check_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.misc.check_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>check type of the param is as the same as expect’s</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raise</dt>
+<dt class="field-odd">Raise<span class="colon">:</span></dt>
 <dd class="field-odd"><p>raise TypeError if it’s not the same</p>
 </dd>
 </dl>
@@ -604,10 +527,10 @@ defined by C{cls}.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.util.misc.get_filename">
-<span class="sig-prename descclassname"><span class="pre">cup.util.misc.</span></span><span class="sig-name descname"><span class="pre">get_filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backstep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/misc.html#get_filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.misc.get_filename" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.util.misc.</span></span><span class="sig-name descname"><span class="pre">get_filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backstep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/misc.html#get_filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.misc.get_filename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the file name of the current code line.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>backstep</strong> – will go backward (one layer) from the current function call stack</p>
 </dd>
 </dl>
@@ -615,10 +538,10 @@ defined by C{cls}.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.util.misc.get_funcname">
-<span class="sig-prename descclassname"><span class="pre">cup.util.misc.</span></span><span class="sig-name descname"><span class="pre">get_funcname</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backstep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/misc.html#get_funcname"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.misc.get_funcname" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.util.misc.</span></span><span class="sig-name descname"><span class="pre">get_funcname</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backstep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/misc.html#get_funcname"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.misc.get_funcname" title="Permalink to this definition">¶</a></dt>
 <dd><p>get funcname of the current code line</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>backstep</strong> – will go backward (one layer) from the current function call stack</p>
 </dd>
 </dl>
@@ -626,10 +549,10 @@ defined by C{cls}.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.util.misc.get_lineno">
-<span class="sig-prename descclassname"><span class="pre">cup.util.misc.</span></span><span class="sig-name descname"><span class="pre">get_lineno</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backstep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/misc.html#get_lineno"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.misc.get_lineno" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.util.misc.</span></span><span class="sig-name descname"><span class="pre">get_lineno</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backstep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/misc.html#get_lineno"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.misc.get_lineno" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the line number of the current code line</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>backstep</strong> – will go backward (one layer) from the current function call stack</p>
 </dd>
 </dl>
@@ -637,18 +560,18 @@ defined by C{cls}.</p>
 
 </section>
 <section id="module-cup.util.typechecker">
-<span id="cup-util-typechecker-module"></span><h2>cup.util.typechecker module<a class="headerlink" href="#module-cup.util.typechecker" title="Permalink to this heading"></a></h2>
+<span id="cup-util-typechecker-module"></span><h2>cup.util.typechecker module<a class="headerlink" href="#module-cup.util.typechecker" title="Permalink to this heading">¶</a></h2>
 <dl class="field-list simple">
-<dt class="field-odd">description</dt>
+<dt class="field-odd">description<span class="colon">:</span></dt>
 <dd class="field-odd"><p>check type and return True or False</p>
 </dd>
 </dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.util.typechecker.check_not_none">
-<span class="sig-prename descclassname"><span class="pre">cup.util.typechecker.</span></span><span class="sig-name descname"><span class="pre">check_not_none</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/typechecker.html#check_not_none"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.typechecker.check_not_none" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.util.typechecker.</span></span><span class="sig-name descname"><span class="pre">check_not_none</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/typechecker.html#check_not_none"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.typechecker.check_not_none" title="Permalink to this definition">¶</a></dt>
 <dd><p>check param is not None</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raise</dt>
+<dt class="field-odd">Raise<span class="colon">:</span></dt>
 <dd class="field-odd"><p>NameError if param is None</p>
 </dd>
 </dl>
@@ -656,10 +579,10 @@ defined by C{cls}.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.util.typechecker.check_type">
-<span class="sig-prename descclassname"><span class="pre">cup.util.typechecker.</span></span><span class="sig-name descname"><span class="pre">check_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expect</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/typechecker.html#check_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.typechecker.check_type" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.util.typechecker.</span></span><span class="sig-name descname"><span class="pre">check_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expect</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/typechecker.html#check_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.typechecker.check_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>check type of the param is as the same as expect’s</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raise</dt>
+<dt class="field-odd">Raise<span class="colon">:</span></dt>
 <dd class="field-odd"><p>raise TypeError if it’s not the same</p>
 </dd>
 </dl>
@@ -667,10 +590,10 @@ defined by C{cls}.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.util.typechecker.raise_error">
-<span class="sig-prename descclassname"><span class="pre">cup.util.typechecker.</span></span><span class="sig-name descname"><span class="pre">raise_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expect_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/typechecker.html#raise_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.typechecker.raise_error" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.util.typechecker.</span></span><span class="sig-name descname"><span class="pre">raise_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expect_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/typechecker.html#raise_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.typechecker.raise_error" title="Permalink to this definition">¶</a></dt>
 <dd><p>raise type error if the type(param) != expect_type</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raise</dt>
+<dt class="field-odd">Raise<span class="colon">:</span></dt>
 <dd class="field-odd"><p>TypeError</p>
 </dd>
 </dl>
@@ -678,7 +601,7 @@ defined by C{cls}.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.util.typechecker.raise_ifnone">
-<span class="sig-prename descclassname"><span class="pre">cup.util.typechecker.</span></span><span class="sig-name descname"><span class="pre">raise_ifnone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/typechecker.html#raise_ifnone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.typechecker.raise_ifnone" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.util.typechecker.</span></span><span class="sig-name descname"><span class="pre">raise_ifnone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/util/typechecker.html#raise_ifnone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.util.typechecker.raise_ifnone" title="Permalink to this definition">¶</a></dt>
 <dd><p>raise NameError if param is None</p>
 </dd></dl>
 
@@ -686,34 +609,110 @@ defined by C{cls}.</p>
 </section>
 
 
-           </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="cup.storage.html" class="btn btn-neutral float-left" title="cup.storage package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="cup.web.html" class="btn btn-neutral float-right" title="cup.web package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2023, CUP-DEV Team.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
+          
         </div>
       </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">cup</a></h1>
 
-</body>
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="cup.html">cup package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="cup.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="cup.net.html">cup.net package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cup.res.html">cup.res package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cup.services.html">cup.services package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cup.shell.html">cup.shell package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cup.storage.html">cup.storage package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">cup.util package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#cup.util.check_not_none"><code class="docutils literal notranslate"><span class="pre">check_not_none()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cup.util.check_type"><code class="docutils literal notranslate"><span class="pre">check_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.util.conf">cup.util.conf module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.util.constants">cup.util.constants module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.util.context">cup.util.context module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.util.misc">cup.util.misc module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.util.typechecker">cup.util.typechecker module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cup.web.html">cup.web package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.cache">cup.cache module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.const">cup.const module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.decorators">cup.decorators module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.err">cup.err module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.exfile">cup.exfile module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.flag">cup.flag module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.log">cup.log module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.mail">cup.mail module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.platforms">cup.platforms module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.thread">cup.thread module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.timeplus">cup.timeplus module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.unittest">cup.unittest module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.version">cup.version module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="cup.html">cup package</a><ul>
+      <li>Previous: <a href="cup.storage.html" title="previous chapter">cup.storage package</a></li>
+      <li>Next: <a href="cup.web.html" title="next chapter">cup.web package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, CUP-DEV Team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/cup.util.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
 </html>

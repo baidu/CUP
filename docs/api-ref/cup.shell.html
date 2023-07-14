@@ -1,48 +1,166 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cup.shell package &mdash; cup 3.2.32 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/js/theme.js"></script>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>cup.shell package &#8212; cup 3.2.33 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="cup.storage package" href="cup.storage.html" />
-    <link rel="prev" title="cup.services package" href="cup.services.html" /> 
-</head>
+    <link rel="prev" title="cup.services package" href="cup.services.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> cup
-          </a>
-              <div class="version">
-                3.2.32
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-cup.shell">
+<span id="cup-shell-package"></span><h1>cup.shell package<a class="headerlink" href="#module-cup.shell" title="Permalink to this heading">¶</a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>shell related module</p>
+</dd>
+</dl>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="module-cup.shell.expect">
+<span id="cup-shell-expect-module"></span><h2>cup.shell.expect module<a class="headerlink" href="#module-cup.shell.expect" title="Permalink to this heading">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>made a wraper out of paramiko.**
+The original copyright belongs to the author of paramiko module.
+See it at <a class="reference external" href="http://docs.paramiko.org/en/stable/">http://docs.paramiko.org/en/stable/</a></p>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.shell.expect.checkssh">
+<span class="sig-prename descclassname"><span class="pre">cup.shell.expect.</span></span><span class="sig-name descname"><span class="pre">checkssh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passwd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/expect.html#checkssh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.expect.checkssh" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if we can ssh to hostname.
+:return:a dict with keys (‘exitstatus’, ‘result’) exitstatus 0 success -1 others</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.shell.expect.dscp">
+<span class="sig-prename descclassname"><span class="pre">cup.shell.expect.</span></span><span class="sig-name descname"><span class="pre">dscp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passwd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/expect.html#dscp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.expect.dscp" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy [hostname]:[src] to [localhost]:[dst].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a dict with keys (‘exitstatus’, ‘result’) exitstatus 0 success -1 others</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.shell.expect.go_ex">
+<span class="sig-prename descclassname"><span class="pre">cup.shell.expect.</span></span><span class="sig-name descname"><span class="pre">go_ex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passwd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">600</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b_print_stdout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/expect.html#go_ex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.expect.go_ex" title="Permalink to this definition">¶</a></dt>
+<dd><p>execute command at remote.
+:return:a dict with keys (‘exitstatus’, ‘result’) exitstatus 0 success -1 others</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.shell.expect.go_with_scp">
+<span class="sig-prename descclassname"><span class="pre">cup.shell.expect.</span></span><span class="sig-name descname"><span class="pre">go_with_scp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passwd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host_tmp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/tmp/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remote_tmp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/tmp/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">800</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/expect.html#go_with_scp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.expect.go_with_scp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recommand using this function to remotely execute cmds.</p>
+<p>go_witch_scp will write a temp script file and scp to hostname:[host_tmp].
+Then execute it and get the result back.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>host_tmp</strong> – temp folder for keeping the temporary script file (contains the cmd)</p></li>
+<li><p><strong>remote_tmp</strong> – remote temp folder for keeping the temporary script file</p></li>
+<li><p><strong>timeout</strong> – timeout</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a dict with keys (‘exitstatus’, ‘result’)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.shell.expect.lscp">
+<span class="sig-prename descclassname"><span class="pre">cup.shell.expect.</span></span><span class="sig-name descname"><span class="pre">lscp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hostname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passwd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">800</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/expect.html#lscp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.expect.lscp" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy [localhost]:src to [hostname]:[dst]</p>
+<p>:return:a dict with keys (‘exitstatus’, ‘result’) exitstatus 0 success -1 others</p>
+</dd></dl>
+
+</section>
+<section id="module-cup.shell.oper">
+<span id="cup-shell-oper-module"></span><h2>cup.shell.oper module<a class="headerlink" href="#module-cup.shell.oper" title="Permalink to this heading">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>shell operations related module</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.shell.oper.backup_file">
+<span class="sig-prename descclassname"><span class="pre">cup.shell.oper.</span></span><span class="sig-name descname"><span class="pre">backup_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">srcpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dstpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/oper.html#backup_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.oper.backup_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Backup srcpath/filename to dstpath/filenamne.label.
+If label is None, cup will use time.strftime(‘%H:%M:S’)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Dstpath<span class="colon">:</span></dt>
+<dd class="field-odd"><p>will create the folder if no existence</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.shell.oper.contains_file">
+<span class="sig-prename descclassname"><span class="pre">cup.shell.oper.</span></span><span class="sig-name descname"><span class="pre">contains_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dstpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">follow_link</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/oper.html#contains_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.oper.contains_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>judge if the dstfile is in dstpath</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dstpath</strong> – search path</p></li>
+<li><p><strong>dstfile</strong> – file</p></li>
+<li><p><strong>recursive</strong> – search recursively or not. False by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>return True on success, False otherwise</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">cup</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="cup.html">cup package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="cup.html#subpackages">Subpackages</a><ul class="current">
@@ -78,375 +196,53 @@
 </li>
 </ul>
 
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="cup.html">cup package</a><ul>
+      <li>Previous: <a href="cup.services.html" title="previous chapter">cup.services package</a></li>
+      <li>Next: <a href="cup.storage.html" title="next chapter">cup.storage package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">cup</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="cup.html">cup package</a></li>
-      <li class="breadcrumb-item active">cup.shell package</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/cup.shell.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="module-cup.shell">
-<span id="cup-shell-package"></span><h1>cup.shell package<a class="headerlink" href="#module-cup.shell" title="Permalink to this heading"></a></h1>
-<dl class="field-list simple">
-<dt class="field-odd">description</dt>
-<dd class="field-odd"><p>shell related module</p>
-</dd>
-</dl>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
-</section>
-<section id="module-cup.shell.expect">
-<span id="cup-shell-expect-module"></span><h2>cup.shell.expect module<a class="headerlink" href="#module-cup.shell.expect" title="Permalink to this heading"></a></h2>
-<dl class="field-list simple">
-<dt class="field-odd">description</dt>
-<dd class="field-odd"><p>made a wraper out of paramiko.**
-The original copyright belongs to the author of paramiko module.
-See it at <a class="reference external" href="http://docs.paramiko.org/en/stable/">http://docs.paramiko.org/en/stable/</a></p>
-</dd>
-</dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="cup.shell.expect.checkssh">
-<span class="sig-prename descclassname"><span class="pre">cup.shell.expect.</span></span><span class="sig-name descname"><span class="pre">checkssh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passwd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/expect.html#checkssh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.expect.checkssh" title="Permalink to this definition"></a></dt>
-<dd><p>check if we can ssh to hostname.
-:return:a dict with keys (‘exitstatus’, ‘result’) exitstatus 0 success -1 others</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cup.shell.expect.dscp">
-<span class="sig-prename descclassname"><span class="pre">cup.shell.expect.</span></span><span class="sig-name descname"><span class="pre">dscp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passwd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/expect.html#dscp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.expect.dscp" title="Permalink to this definition"></a></dt>
-<dd><p>copy [hostname]:[src] to [localhost]:[dst].</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a dict with keys (‘exitstatus’, ‘result’) exitstatus 0 success -1 others</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cup.shell.expect.go_ex">
-<span class="sig-prename descclassname"><span class="pre">cup.shell.expect.</span></span><span class="sig-name descname"><span class="pre">go_ex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passwd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">600</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b_print_stdout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/expect.html#go_ex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.expect.go_ex" title="Permalink to this definition"></a></dt>
-<dd><p>execute command at remote.
-:return:a dict with keys (‘exitstatus’, ‘result’) exitstatus 0 success -1 others</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cup.shell.expect.go_with_scp">
-<span class="sig-prename descclassname"><span class="pre">cup.shell.expect.</span></span><span class="sig-name descname"><span class="pre">go_with_scp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passwd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host_tmp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/tmp/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remote_tmp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/tmp/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">800</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/expect.html#go_with_scp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.expect.go_with_scp" title="Permalink to this definition"></a></dt>
-<dd><p>Recommand using this function to remotely execute cmds.</p>
-<p>go_witch_scp will write a temp script file and scp to hostname:[host_tmp].
-Then execute it and get the result back.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>host_tmp</strong> – temp folder for keeping the temporary script file (contains the cmd)</p></li>
-<li><p><strong>remote_tmp</strong> – remote temp folder for keeping the temporary script file</p></li>
-<li><p><strong>timeout</strong> – timeout</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a dict with keys (‘exitstatus’, ‘result’)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cup.shell.expect.lscp">
-<span class="sig-prename descclassname"><span class="pre">cup.shell.expect.</span></span><span class="sig-name descname"><span class="pre">lscp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hostname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passwd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">800</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/expect.html#lscp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.expect.lscp" title="Permalink to this definition"></a></dt>
-<dd><p>copy [localhost]:src to [hostname]:[dst]</p>
-<p>:return:a dict with keys (‘exitstatus’, ‘result’) exitstatus 0 success -1 others</p>
-</dd></dl>
-
-</section>
-<section id="module-cup.shell.oper">
-<span id="cup-shell-oper-module"></span><h2>cup.shell.oper module<a class="headerlink" href="#module-cup.shell.oper" title="Permalink to this heading"></a></h2>
-<dl class="field-list simple">
-<dt class="field-odd">description</dt>
-<dd class="field-odd"><p>shell operations related module</p>
-</dd>
-</dl>
-<dl class="py class">
-<dt class="sig sig-object py" id="cup.shell.oper.ShellExec">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.shell.oper.</span></span><span class="sig-name descname"><span class="pre">ShellExec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmpdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/tmp/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/oper.html#ShellExec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.oper.ShellExec" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>For shell command execution.</p>
-<dl class="simple">
-<dt>::</dt><dd><p>from cup import shell
-shellexec = shell.ShellExec()
-# timeout=None will block the execution until it finishes
-shellexec.run(‘/bin/ls’, timeout=None)
-# timeout&gt;=0 will open non-blocking mode
-# The process will be killed if the cmd timeouts
-shellexec.run(cmd=’/bin/ls’, timeout=100)</p>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.shell.oper.ShellExec.async_run">
-<span class="sig-name descname"><span class="pre">async_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/oper.html#ShellExec.async_run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.oper.ShellExec.async_run" title="Permalink to this definition"></a></dt>
-<dd><p>return a dict {<a class="reference external" href="uuid:pid">uuid:pid</a>}
-self.argcontent{cmd,timeout,ret,cmdthd,montor}
-timeout:returncode:999
-cmd is running returncode:-999</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.shell.oper.ShellExec.get_async_run_res">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_async_run_res</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_content</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/oper.html#ShellExec.get_async_run_res"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.oper.ShellExec.get_async_run_res" title="Permalink to this definition"></a></dt>
-<dd><p>if the process is still running the res shoule be None,None,0</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.shell.oper.ShellExec.get_async_run_status">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_async_run_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_content</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/oper.html#ShellExec.get_async_run_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.oper.ShellExec.get_async_run_status" title="Permalink to this definition"></a></dt>
-<dd><p>get the process status of executing async cmd</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>None if the process has finished.
-Otherwise, return a object of linux.Process(async_pid)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.shell.oper.ShellExec.kill_all_process">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kill_all_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_content</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/oper.html#ShellExec.kill_all_process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.oper.ShellExec.kill_all_process" title="Permalink to this definition"></a></dt>
-<dd><p>to kill all process</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.shell.oper.ShellExec.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/oper.html#ShellExec.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.oper.ShellExec.run" title="Permalink to this definition"></a></dt>
-<dd><p>refer to the class description</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>timeout</strong> – If the cmd is not returned after [timeout] seconds, the cmd process
-will be killed. If timeout is None, will block there until the cmd
-execution returns</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>{</dt><dd><p>‘stdout’ : ‘Success’,
-‘stderr’ : None,
-‘returncode’ : 0</p>
-</dd>
-</dl>
-<p>}
-returncode == 0 means success, while 999 means timeout</p>
-</p>
-</dd>
-</dl>
-<p>E.g.</p>
-<dl class="simple">
-<dt>::</dt><dd><p>import cup
-shelltool = cup.shell.ShellExec()
-print shelltool.run(‘/bin/ls’, timeout=1)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.shell.oper.ShellExec.which">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">which</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pgm</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/oper.html#ShellExec.which"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.oper.ShellExec.which" title="Permalink to this definition"></a></dt>
-<dd><p>get executable</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cup.shell.oper.backup_file">
-<span class="sig-prename descclassname"><span class="pre">cup.shell.oper.</span></span><span class="sig-name descname"><span class="pre">backup_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">srcpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dstpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/oper.html#backup_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.oper.backup_file" title="Permalink to this definition"></a></dt>
-<dd><p>Backup srcpath/filename to dstpath/filenamne.label.
-If label is None, cup will use time.strftime(‘%H:%M:S’)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Dstpath</dt>
-<dd class="field-odd"><p>will create the folder if no existence</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cup.shell.oper.contains_file">
-<span class="sig-prename descclassname"><span class="pre">cup.shell.oper.</span></span><span class="sig-name descname"><span class="pre">contains_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dstpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">follow_link</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/oper.html#contains_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.oper.contains_file" title="Permalink to this definition"></a></dt>
-<dd><p>judge if the dstfile is in dstpath</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dstpath</strong> – search path</p></li>
-<li><p><strong>dstfile</strong> – file</p></li>
-<li><p><strong>recursive</strong> – search recursively or not. False by default.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>return True on success, False otherwise</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cup.shell.oper.is_port_used">
-<span class="sig-prename descclassname"><span class="pre">cup.shell.oper.</span></span><span class="sig-name descname"><span class="pre">is_port_used</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/oper.html#is_port_used"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.oper.is_port_used" title="Permalink to this definition"></a></dt>
-<dd><p>judge if the port is used or not (It’s not 100% sure as next second, some
-other process may steal the port as soon after this function returns)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Platform</dt>
-<dd class="field-odd"><p>linux only (netstat command used inside)</p>
-</dd>
-<dt class="field-even">Parameters</dt>
-<dd class="field-even"><p><strong>port</strong> – expected port</p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>return True if the port is used, False otherwise</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cup.shell.oper.is_proc_exist">
-<span class="sig-prename descclassname"><span class="pre">cup.shell.oper.</span></span><span class="sig-name descname"><span class="pre">is_proc_exist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cup.shell.oper.is_proc_exist" title="Permalink to this definition"></a></dt>
-<dd><p>Judge if the executable is running by comparing /proc files.
-:platforms:</p>
-<blockquote>
-<div><p>linux only. Will raise exception if running on other platforms</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> – executable current working direcotry</p></li>
-<li><p><strong>name</strong> – executable name</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>return True if the process is running. Return False otherwise.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cup.shell.oper.is_process_running">
-<span class="sig-prename descclassname"><span class="pre">cup.shell.oper.</span></span><span class="sig-name descname"><span class="pre">is_process_running</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/oper.html#is_process_running"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.oper.is_process_running" title="Permalink to this definition"></a></dt>
-<dd><p>Judge if the executable is running by comparing /proc files.
-:platforms:</p>
-<blockquote>
-<div><p>linux only. Will raise exception if running on other platforms</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> – executable current working direcotry</p></li>
-<li><p><strong>name</strong> – executable name</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>return True if the process is running. Return False otherwise.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cup.shell.oper.is_process_used_port">
-<span class="sig-prename descclassname"><span class="pre">cup.shell.oper.</span></span><span class="sig-name descname"><span class="pre">is_process_used_port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">process_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/oper.html#is_process_used_port"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.oper.is_process_used_port" title="Permalink to this definition"></a></dt>
-<dd><p>judge if a process is using the port</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>process_path</strong> – process current working direcotry (cwd)</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Return True if process matches</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cup.shell.oper.kill">
-<span class="sig-prename descclassname"><span class="pre">cup.shell.oper.</span></span><span class="sig-name descname"><span class="pre">kill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sign</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b_kill_child</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/oper.html#kill"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.oper.kill" title="Permalink to this definition"></a></dt>
-<dd><p>will judge if the process is running by calling function
-(is_process_running), then send kill signal to this process
-:param path:</p>
-<blockquote>
-<div><p>executable current working direcotry (cwd)</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> – executable name</p></li>
-<li><p><strong>sign</strong> – kill sign, e.g. 9 for SIGKILL, 15 for SIGTERM</p></li>
-</ul>
-</dd>
-<dt class="field-even">B_kill_child</dt>
-<dd class="field-even"><p>kill child processes or not. False by default.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cup.shell.oper.rm">
-<span class="sig-prename descclassname"><span class="pre">cup.shell.oper.</span></span><span class="sig-name descname"><span class="pre">rm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/oper.html#rm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.oper.rm" title="Permalink to this definition"></a></dt>
-<dd><p>rm the file if no exception happens.
-Will not raise exception if it fails</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cup.shell.oper.rmrf">
-<span class="sig-prename descclassname"><span class="pre">cup.shell.oper.</span></span><span class="sig-name descname"><span class="pre">rmrf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">safemode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/shell/oper.html#rmrf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.shell.oper.rmrf" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fpath</strong> – files/direcotry to be deleted.</p></li>
-<li><p><strong>safemode</strong> – True by default. You cannot delete root / when safemode is True</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-</section>
-
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="cup.services.html" class="btn btn-neutral float-left" title="cup.services package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="cup.storage.html" class="btn btn-neutral float-right" title="cup.storage package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, CUP-DEV Team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/cup.shell.rst.txt"
+          rel="nofollow">Page source</a>
     </div>
 
-  <hr/>
+    
 
-  <div role="contentinfo">
-    <p>&#169; Copyright 2023, CUP-DEV Team.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
-      </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+    
+  </body>
 </html>
