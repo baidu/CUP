@@ -36,7 +36,7 @@ python setup.py install
 
 Visit Wiki to see more details: https://github.com/Baidu/CUP/wiki
 
-Visit Doc site to see py-docs: http://cupdoc.iobusy.com/
+Visit Doc site to see py-docs: [http://cup.iobusy.com/api-ref/](https://cup.iobusy.com/api-ref/)
 
 ```python
 # Examples:
@@ -110,7 +110,7 @@ cup
 
 ### 3. 使用说明
 - Visit Wiki to see more details: https://github.com/Baidu/CUP/wiki
-- Visit Doc site to see py-docs: http://cupdoc.iobusy.com/
+- Visit Doc site to see py-docs: http://cup.iobusy.com/api-ref
 
 举例说明：
 
