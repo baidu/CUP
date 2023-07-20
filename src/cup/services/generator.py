@@ -123,12 +123,16 @@ class CGeneratorMan(object):
     @classmethod
     def get_random_str(cls, length):
         """get random str by length"""
-        return ''.join(random.choice(string.lowercase) for i in range(length))
+        if hasattr(string, 'lowercase'):
+            return ''.join(
+                random.choice(string.lowercase) for i in range(length))
+        else:
+            return ''.join(
+                random.choice(string.ascii_lowercase) for i in range(length))
 
     @classmethod
     def get_uuid(cls):
         """get random uuid"""
-        import uuid
         uuid.uuid4()
 
 
@@ -138,11 +142,11 @@ class CycleIDGenerator(object):
 
     128 bit contains: a. 64bit [ip, port, etc]  b. 64bit[auto increment id]
     """
-    def __init__(self, ip, port):
+    def __init__(self, ipaddr, port):
         """
         ip, port will be encoded into the ID
         """
-        self._ip = ip
+        self._ip = ipaddr
         self._port = port
         self._lock = threading.Lock()
         packed = socket.inet_aton(self._ip)
