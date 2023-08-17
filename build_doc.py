@@ -40,7 +40,7 @@ class DocGenerator(object):
         cmd = 'sphinx-apidoc {0}'
         for key in self._kv_opts:
             cmd = '{0} {1} {2}'.format(cmd, key, self._kv_opts[key])
-        print cmd
+        print(cmd)
         shell = oper.ShellExec()
         shell.run(cmd, timeout=600)
 

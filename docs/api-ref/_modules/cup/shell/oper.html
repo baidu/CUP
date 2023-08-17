@@ -1,149 +1,33 @@
 
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>cup.shell.oper &mdash; Cup 3.2.19 documentation</title>
-  
 
-  
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cup.shell.oper &#8212; cup 3.2.32 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
-
-  
-  <script src="../../../_static/js/modernizr.min.js"></script>
-
-</head>
-
-<body class="wy-body-for-nav">
-
+    <link rel="search" title="Search" href="../../../search.html" />
    
-  <div class="wy-grid-for-nav">
-
-    
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
-
-          
-            <a href="../../../index.html" class="icon icon-home"> Cup
-          
-
-          
-          </a>
-
-          
-            
-            
-              <div class="version">
-                3.2.0
-              </div>
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../cup.html">cup package</a></li>
-</ul>
-
-            
-          
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">Cup</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
-      <li>cup.shell.oper</li>
-    
-    
-      <li class="wy-breadcrumbs-aside">
-        
-      </li>
-    
-  </ul>
-
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
             
   <h1>Source code for cup.shell.oper</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/python</span>
@@ -154,7 +38,7 @@
 <span class="sd">:description:</span>
 <span class="sd">    shell operations related module</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -172,15 +56,16 @@
 <span class="kn">import</span> <span class="nn">subprocess</span>
 
 <span class="kn">import</span> <span class="nn">cup</span>
-<span class="kn">from</span> <span class="nn">cup</span> <span class="k">import</span> <span class="n">err</span>
-<span class="kn">from</span> <span class="nn">cup</span> <span class="k">import</span> <span class="n">log</span>
-<span class="kn">from</span> <span class="nn">cup</span> <span class="k">import</span> <span class="n">platforms</span>
-<span class="kn">from</span> <span class="nn">cup</span> <span class="k">import</span> <span class="n">decorators</span>
+<span class="kn">from</span> <span class="nn">cup</span> <span class="kn">import</span> <span class="n">err</span>
+<span class="kn">from</span> <span class="nn">cup</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cup</span> <span class="kn">import</span> <span class="n">thread</span>
+<span class="kn">from</span> <span class="nn">cup</span> <span class="kn">import</span> <span class="n">platforms</span>
+<span class="kn">from</span> <span class="nn">cup</span> <span class="kn">import</span> <span class="n">decorators</span>
 
 
 <span class="c1"># linux only import</span>
 <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Linux&#39;</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">cup.res</span> <span class="k">import</span> <span class="n">linux</span>
+    <span class="kn">from</span> <span class="nn">cup.res</span> <span class="kn">import</span> <span class="n">linux</span>
     <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s1">&#39;rm&#39;</span><span class="p">,</span> <span class="s1">&#39;rmrf&#39;</span><span class="p">,</span> <span class="s1">&#39;kill&#39;</span><span class="p">,</span>
         <span class="s1">&#39;is_process_used_port&#39;</span><span class="p">,</span> <span class="s1">&#39;is_port_used&#39;</span><span class="p">,</span> <span class="s1">&#39;is_proc_exist&#39;</span><span class="p">,</span>
@@ -198,19 +83,19 @@
 <span class="c1"># linux functionalities {{</span>
 
 <span class="c1"># pylint: disable=C0103</span>
-<span class="k">def</span> <span class="nf">rm</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="rm"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.oper.rm">[docs]</a><span class="k">def</span> <span class="nf">rm</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    rm the file if no exception happens.</span>
 <span class="sd">    Will not raise exception if it fails</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;rm oserror: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">error</span><span class="p">)</span>
+        <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;rm oserror: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">error</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">rmrf</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">safemode</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="rmrf"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.oper.rmrf">[docs]</a><span class="k">def</span> <span class="nf">rmrf</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">safemode</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    :param fpath:</span>
 <span class="sd">        files/direcotry to be deleted.</span>
 <span class="sd">    :param safemode:</span>
@@ -218,7 +103,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@decorators</span><span class="o">.</span><span class="n">needlinux</span>
     <span class="k">def</span> <span class="nf">_real_rmrf</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">safemode</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        real rmrf</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">safemode</span><span class="p">:</span>
@@ -228,11 +113,11 @@
             <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">_real_rmrf</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">safemode</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_real_rmrf</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">safemode</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">is_process_running</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="is_process_running"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.oper.is_process_running">[docs]</a><span class="k">def</span> <span class="nf">is_process_running</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Judge if the executable is running by comparing /proc files.</span>
 <span class="sd">    :platforms:</span>
 <span class="sd">        linux only. Will raise exception if running on other platforms</span>
@@ -245,7 +130,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@decorators</span><span class="o">.</span><span class="n">needlinux</span>
     <span class="k">def</span> <span class="nf">_real_is_proc_exist</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        _real_is_proc_exist</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
@@ -265,7 +150,7 @@
                     <span class="c1"># print(&#39;%s is exist: %s&#39; % (name, path))</span>
                     <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">return</span> <span class="n">_real_is_proc_exist</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_real_is_proc_exist</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
 
 
 <span class="c1"># for compatibility. Do not delete this line:</span>
@@ -295,8 +180,8 @@
                 <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;sign error&#39;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sign</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">b_kill_child</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="kill"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.oper.kill">[docs]</a><span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sign</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">b_kill_child</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    will judge if the process is running by calling function</span>
 <span class="sd">    (is_process_running), then send kill signal to this process</span>
 <span class="sd">    :param path:</span>
@@ -332,11 +217,11 @@
                 <span class="n">cup</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">execshell</span><span class="p">(</span><span class="s1">&#39;kill -18 </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">pid</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">cup</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;sign error&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="backup_file"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.oper.backup_file">[docs]</a><span class="k">def</span> <span class="nf">backup_file</span><span class="p">(</span><span class="n">srcpath</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dstpath</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Backup srcpath/filename to dstpath/filenamne.label.</span>
 <span class="sd">    If label is None, cup will use time.strftime(&#39;%H:%M:S&#39;)</span>
 
@@ -354,7 +239,7 @@
 
 <span class="k">def</span> <span class="nf">backup_folder</span><span class="p">(</span><span class="n">srcpath</span><span class="p">,</span> <span class="n">foldername</span><span class="p">,</span> <span class="n">dstpath</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    same to backup_file except it&#39;s a FOLDER not a FILE.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -368,7 +253,7 @@
 
 
 <span class="k">def</span> <span class="nf">is_path_contain_file</span><span class="p">(</span><span class="n">dstpath</span><span class="p">,</span> <span class="n">dstfile</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">follow_link</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    use contains_file instead. Kept still for compatibility purpose</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -376,7 +261,7 @@
 
 
 <div class="viewcode-block" id="contains_file"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.oper.contains_file">[docs]</a><span class="k">def</span> <span class="nf">contains_file</span><span class="p">(</span><span class="n">dstpath</span><span class="p">,</span> <span class="n">expected_name</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">follow_link</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    judge if the dstfile is in dstpath</span>
 
 <span class="sd">    :param dstpath:</span>
@@ -405,8 +290,8 @@
             <span class="k">return</span> <span class="kc">False</span></div>
 
 
-<span class="k">def</span> <span class="nf">is_port_used</span><span class="p">(</span><span class="n">port</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="is_port_used"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.oper.is_port_used">[docs]</a><span class="k">def</span> <span class="nf">is_port_used</span><span class="p">(</span><span class="n">port</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    judge if the port is used or not (It&#39;s not 100% sure as next second, some</span>
 <span class="sd">    other process may steal the port as soon after this function returns)</span>
 
@@ -419,7 +304,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@decorators</span><span class="o">.</span><span class="n">needlinux</span>
     <span class="k">def</span> <span class="nf">__is_port_used</span><span class="p">(</span><span class="n">port</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;internal func&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;internal func&quot;&quot;&quot;</span>
         <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;netstat -nl | grep &#39;:</span><span class="si">%s</span><span class="s2"> &#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">port</span><span class="p">)</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">cup</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">ShellExec</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
         <span class="k">if</span> <span class="mi">0</span> <span class="o">!=</span> <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;returncode&#39;</span><span class="p">]:</span>
@@ -429,11 +314,11 @@
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">return</span> <span class="n">__is_port_used</span><span class="p">(</span><span class="n">port</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">__is_port_used</span><span class="p">(</span><span class="n">port</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">is_process_used_port</span><span class="p">(</span><span class="n">process_path</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="is_process_used_port"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.oper.is_process_used_port">[docs]</a><span class="k">def</span> <span class="nf">is_process_used_port</span><span class="p">(</span><span class="n">process_path</span><span class="p">,</span> <span class="n">port</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    judge if a process is using the port</span>
 
 <span class="sd">    :param process_path:</span>
@@ -459,14 +344,14 @@
         <span class="n">pid_path</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="k">if</span> <span class="mi">0</span> <span class="o">==</span> <span class="n">pid_path</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
 
 
 <span class="k">class</span> <span class="nc">Asynccontent</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    make a Argcontent to async_run u have to del it after using it</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cmd</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">=</span> <span class="kc">None</span>
@@ -482,8 +367,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">tempscript</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<span class="k">class</span> <span class="nc">ShellExec</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=R0903</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ShellExec"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.oper.ShellExec">[docs]</a><span class="k">class</span> <span class="nc">ShellExec</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pylint: disable=R0903</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    For shell command execution.</span>
 
 <span class="sd">    ::</span>
@@ -496,8 +381,8 @@
 <span class="sd">        shellexec.run(cmd=&#39;/bin/ls&#39;, timeout=100)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmpdir</span><span class="o">=</span><span class="s1">&#39;/tmp/&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmpdir</span><span class="o">=</span><span class="s1">&#39;/tmp/&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param tmpdir:</span>
 <span class="sd">            shellexec will use tmpdir to handle temp files</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -506,28 +391,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_tmpdir</span> <span class="o">=</span> <span class="n">tmpdir</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tmpprefix</span> <span class="o">=</span> <span class="s1">&#39;cup.shell.</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
 
-    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ShellExec.kill_all_process"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.oper.ShellExec.kill_all_process">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">kill_all_process</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">async_content</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        to kill all process</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">async_content</span><span class="o">.</span><span class="n">child_list</span><span class="p">:</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGKILL</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGKILL</span><span class="p">)</span></div>
 
-    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ShellExec.which"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.oper.ShellExec.which">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">which</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pgm</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;get executable&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;get executable&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pgm</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">pgm</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">X_OK</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">pgm</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;PATH&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">fpath</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">pathsep</span><span class="p">):</span>
             <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">pgm</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">X_OK</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">fpath</span>
+                <span class="k">return</span> <span class="n">fpath</span></div>
 
-    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ShellExec.get_async_run_status"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.oper.ShellExec.get_async_run_status">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_async_run_status</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">async_content</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get the process status of executing async cmd</span>
 
 <span class="sd">        :return:</span>
@@ -539,17 +424,17 @@
             <span class="n">res</span> <span class="o">=</span> <span class="n">async_process</span><span class="o">.</span><span class="n">get_process_status</span><span class="p">()</span>
         <span class="k">except</span> <span class="n">err</span><span class="o">.</span><span class="n">NoSuchProcess</span><span class="p">:</span>
             <span class="n">res</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="n">res</span>
+        <span class="k">return</span> <span class="n">res</span></div>
 
-    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ShellExec.get_async_run_res"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.oper.ShellExec.get_async_run_res">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_async_run_res</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">async_content</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        if the process is still running the res shoule be None,None,0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">async_content</span><span class="o">.</span><span class="n">ret</span>
+        <span class="k">return</span> <span class="n">async_content</span><span class="o">.</span><span class="n">ret</span></div>
 
-    <span class="k">def</span> <span class="nf">async_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ShellExec.async_run"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.oper.ShellExec.async_run">[docs]</a>    <span class="k">def</span> <span class="nf">async_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        async_run</span>
 <span class="sd">        return a dict {uuid:pid}</span>
 <span class="sd">        self.argcontent{cmd,timeout,ret,cmdthd,montor}</span>
@@ -558,7 +443,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">_signal_handle</span><span class="p">():</span>
-            <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            signal setup</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGPIPE</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIG_DFL</span><span class="p">)</span>
@@ -644,10 +529,10 @@
             <span class="n">argcontent</span><span class="o">.</span><span class="n">monitorthd</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
             <span class="c1">#this join should be del if i can make if quicker in Process.children</span>
             <span class="n">argcontent</span><span class="o">.</span><span class="n">cmdthd</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">argcontent</span>
+        <span class="k">return</span> <span class="n">argcontent</span></div>
 
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ShellExec.run"><a class="viewcode-back" href="../../../cup.shell.html#cup.shell.oper.ShellExec.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        refer to the class description</span>
 
 <span class="sd">        :param timeout:</span>
@@ -672,13 +557,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">_signal_handle</span><span class="p">():</span>
-            <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            signal setup</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGPIPE</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIG_DFL</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">_trans_bytes</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;trans bytes into unicode for python3&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;trans bytes into unicode for python3&quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="n">platforms</span><span class="o">.</span><span class="n">is_py2</span><span class="p">():</span>
                 <span class="k">return</span> <span class="n">data</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
@@ -689,7 +574,7 @@
             <span class="k">return</span> <span class="n">data</span>
 
         <span class="k">def</span> <span class="nf">_pipe_asshell</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            run shell with subprocess.Popen</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">tempscript</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span>
@@ -721,7 +606,7 @@
         <span class="p">)</span>
         <span class="n">cmdthd</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="n">cmdthd</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">cmdthd</span><span class="o">.</span><span class="n">isAlive</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">thread</span><span class="o">.</span><span class="n">thread_alive</span><span class="p">(</span><span class="n">cmdthd</span><span class="p">):</span>
             <span class="n">str_warn</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="s1">&#39;Shell &quot;</span><span class="si">%s</span><span class="s1">&quot;execution timout:</span><span class="si">%d</span><span class="s1">. Killed it&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
             <span class="p">)</span>
@@ -743,11 +628,11 @@
                 <span class="s1">&#39;self._subpro_data should be a tuple&#39;</span>
             <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_trans_bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subpro_data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;stderr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_trans_bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subpro_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">ret</span>
+        <span class="k">return</span> <span class="n">ret</span></div></div>
 
 
 <span class="k">def</span> <span class="nf">_do_execshell</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">b_printcmd</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    do execshell</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">timeout</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -761,7 +646,7 @@
 
 
 <span class="k">def</span> <span class="nf">execshell</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">b_printcmd</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    执行shell命令，返回returncode</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_do_execshell</span><span class="p">(</span>
@@ -769,7 +654,7 @@
 
 
 <span class="k">def</span> <span class="nf">execshell_withpipe</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Deprecated. Use ShellExec instead</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">res</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
@@ -777,7 +662,7 @@
 
 
 <span class="k">def</span> <span class="nf">execshell_withpipe_ex</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">b_printcmd</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Deprecated. Recommand using ShellExec.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">strfile</span> <span class="o">=</span> <span class="s1">&#39;/tmp/</span><span class="si">%s</span><span class="s1">.</span><span class="si">%d</span><span class="s1">.</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
@@ -796,14 +681,14 @@
 
 
 <span class="k">def</span> <span class="nf">execshell_withpipe_str</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">b_printcmd</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Deprecated. Recommand using ShellExec.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">execshell_withpipe_ex</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">b_printcmd</span><span class="p">))</span>
 
 
 <span class="k">def</span> <span class="nf">execshell_withpipe_exwitherr</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">b_printcmd</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Deprecated. Recommand using ShellExec.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">strfile</span> <span class="o">=</span> <span class="s1">&#39;/tmp/</span><span class="si">%s</span><span class="s1">.</span><span class="si">%d</span><span class="s1">.</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
@@ -822,7 +707,7 @@
 
 
 <span class="k">def</span> <span class="nf">is_proc_alive</span><span class="p">(</span><span class="n">procname</span><span class="p">,</span> <span class="n">is_whole_word</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">is_server_tag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Deprecated. Recommand using cup.oper.is_proc_exist</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># print procName</span>
@@ -848,7 +733,7 @@
 
 
 <span class="k">def</span> <span class="nf">forkexe_shell</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    fork a new process to execute cmd (os.system(cmd))</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
@@ -870,7 +755,7 @@
 
 
 <span class="k">def</span> <span class="nf">md5file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    compute md5 hex value of a file, return with a string (hex-value)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
@@ -889,7 +774,7 @@
 
 
 <span class="k">def</span> <span class="nf">kill9_byname</span><span class="p">(</span><span class="n">strname</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kill -9 process by name</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fd_pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="s2">&quot;ps -ef | grep -v grep |grep </span><span class="si">%s</span><span class="s2"> </span><span class="se">\</span>
@@ -901,7 +786,7 @@
 
 
 <span class="k">def</span> <span class="nf">kill_byname</span><span class="p">(</span><span class="n">strname</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    kill process by name</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fd_pid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="s2">&quot;ps -ef | grep -v grep |grep </span><span class="si">%s</span><span class="s2"> </span><span class="se">\</span>
@@ -913,7 +798,7 @@
 
 
 <span class="k">def</span> <span class="nf">del_if_exist</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">safemode</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    delete the path if it exists, cannot delete root / under safemode</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">safemode</span> <span class="ow">and</span> <span class="n">path</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span><span class="p">:</span>
@@ -929,7 +814,7 @@
 
 
 <span class="k">def</span> <span class="nf">rmtree</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">onerror</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">safemode</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    safe rmtree.</span>
 
 <span class="sd">    safemode, by default is True, which forbids:</span>
@@ -947,7 +832,7 @@
 
 
 <span class="k">def</span> <span class="nf">shell_diff</span><span class="p">(</span><span class="n">srcfile</span><span class="p">,</span> <span class="n">dstfile</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    shell diff two files, return 0 if it&#39;s the same.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">cmd</span> <span class="o">=</span> <span class="s1">&#39;diff </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">srcfile</span><span class="p">,</span> <span class="n">dstfile</span><span class="p">)</span>
@@ -955,7 +840,7 @@
 
 
 <span class="k">def</span> <span class="nf">get_pid</span><span class="p">(</span><span class="n">process_path</span><span class="p">,</span> <span class="n">grep_string</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    will return immediately after find the pid which matches</span>
 
 <span class="sd">    1. ps -ef|grep %s|grep -v grep|grep -vE &quot;^[vim|less|vi|tail|cat|more] &quot;</span>
@@ -992,60 +877,69 @@
 <span class="c1"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span>
 </pre></div>
 
-           </div>
-           
           </div>
-          <footer>
-  
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">cup</a></h1>
 
-  <hr/>
 
-  <div role="contentinfo">
-    <p>
-        &copy; Copyright 2020, CUP-DEV.
 
-    </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-</footer>
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../cup.html">cup package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
 
         </div>
       </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, CUP-DEV Team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+    </div>
 
-    </section>
+    
 
-  </div>
-  
-
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../../',
-            VERSION:'3.2.19',
-            LANGUAGE:'en',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../../_static/language_data.js"></script>
-
-  
-
-  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+    
+  </body>
 </html>

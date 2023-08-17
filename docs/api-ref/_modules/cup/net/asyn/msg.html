@@ -1,151 +1,33 @@
 
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>cup.net.asyn.msg &mdash; Cup 3.2.19 documentation</title>
-  
 
-  
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cup.net.asyn.msg &#8212; cup 3.2.32 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css" />
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../../search.html" /> 
-
-  
-  <script src="../../../../_static/js/modernizr.min.js"></script>
-
-</head>
-
-<body class="wy-body-for-nav">
-
+    <link rel="search" title="Search" href="../../../../search.html" />
    
-  <div class="wy-grid-for-nav">
-
-    
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
-
-          
-            <a href="../../../../index.html" class="icon icon-home"> Cup
-          
-
-          
-          </a>
-
-          
-            
-            
-              <div class="version">
-                3.2.0
-              </div>
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../cup.html">cup package</a></li>
-</ul>
-
-            
-          
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../index.html">Cup</a>
-        
-      </nav>
-
-
-      <div class="wy-nav-content">
-        
-        <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="../../../index.html">Module code</a> &raquo;</li>
-        
-          <li><a href="../../net.html">cup.net</a> &raquo;</li>
-        
-      <li>cup.net.asyn.msg</li>
-    
-    
-      <li class="wy-breadcrumbs-aside">
-        
-      </li>
-    
-  </ul>
-
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
   
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
             
   <h1>Source code for cup.net.asyn.msg</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python</span>
@@ -159,16 +41,19 @@
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">import</span> <span class="nn">cup</span>
-<span class="kn">from</span> <span class="nn">cup</span> <span class="k">import</span> <span class="n">log</span>
-<span class="kn">from</span> <span class="nn">cup.util</span> <span class="k">import</span> <span class="n">misc</span>
-<span class="kn">from</span> <span class="nn">cup.util</span> <span class="k">import</span> <span class="n">generator</span>
-<span class="kn">from</span> <span class="nn">cup.net.asyn</span> <span class="k">import</span> <span class="n">common</span>
+<span class="kn">from</span> <span class="nn">cup</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">cup</span> <span class="kn">import</span> <span class="n">platforms</span>
+<span class="kn">from</span> <span class="nn">cup.util</span> <span class="kn">import</span> <span class="n">misc</span>
+<span class="kn">from</span> <span class="nn">cup.util</span> <span class="kn">import</span> <span class="n">generator</span>
+<span class="kn">from</span> <span class="nn">cup.net.asyn</span> <span class="kn">import</span> <span class="n">common</span>
 
 
 <span class="n">MSG_RESENDING_FLAG</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">MSG_RESEND_SUCCESS</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">MSG_TIMEOUT_TO_DELETE</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">MSG_DELETE_FLAG</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="n">PY3_DEFAULT_ENCODING</span> <span class="o">=</span> <span class="s1">&#39;utf8&#39;</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CMsgType&#39;</span><span class="p">,</span> <span class="s1">&#39;CMsgFlag&#39;</span><span class="p">,</span> <span class="s1">&#39;CNetMsg&#39;</span><span class="p">,</span> <span class="s1">&#39;CAckMsg&#39;</span><span class="p">,</span> <span class="s1">&#39;netmsg_tostring&#39;</span><span class="p">]</span>
@@ -196,15 +81,15 @@
 
 <span class="nd">@cup</span><span class="o">.</span><span class="n">decorators</span><span class="o">.</span><span class="n">Singleton</span>
 <span class="k">class</span> <span class="nc">CMsgType</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    for netmsg types</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_type2number</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_number2type</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">register_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kvs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        register types</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">key_value</span> <span class="ow">in</span> <span class="n">kvs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -212,13 +97,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_number2type</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">key_value</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">=</span> <span class="n">key_value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">gettype_bynumber</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get type by number</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_number2type</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">number</span><span class="p">)]</span>
 
     <span class="k">def</span> <span class="nf">getnumber_bytype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">str_type</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get number by type</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type2number</span><span class="p">[</span><span class="n">str_type</span><span class="p">]</span>
@@ -226,15 +111,15 @@
 
 <span class="nd">@cup</span><span class="o">.</span><span class="n">decorators</span><span class="o">.</span><span class="n">Singleton</span>
 <span class="k">class</span> <span class="nc">CMsgFlag</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    msg flag class</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_flag2number</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_number2flag</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">register_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kvs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        register flags</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">key_value</span> <span class="ow">in</span> <span class="n">kvs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -242,20 +127,20 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_number2flag</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">key_value</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">=</span> <span class="n">key_value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">getflag_bynumber</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get flag by number</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_number2flag</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">number</span><span class="p">)]</span>
 
     <span class="k">def</span> <span class="nf">getnumber_byflag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">str_flag</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get number by flag</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag2number</span><span class="p">[</span><span class="n">str_flag</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="CNetMsg"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg">[docs]</a><span class="k">class</span> <span class="nc">CNetMsg</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    CNetMsg</span>
 <span class="sd">        flag: System use only.</span>
 <span class="sd">        type: System will use type &gt; 65535. Users will use type &lt;=65535</span>
@@ -292,7 +177,7 @@
     <span class="p">}</span>
     <span class="n">MSGTYPE</span><span class="o">.</span><span class="n">register_types</span><span class="p">(</span><span class="n">_SYS_MSG_TYPES</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_postmsg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_postmsg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="c1">#super(self.__class__, self).__init__()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ORDER_BYTES</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_postmsg</span> <span class="o">=</span> <span class="n">is_postmsg</span>
@@ -327,8 +212,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_resend_flag</span> <span class="o">=</span> <span class="n">MSG_RESENDING_FLAG</span>
 
 
-    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;del the msg&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;del the msg&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s1">&#39;body&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -337,7 +222,7 @@
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dumpdata</span>
 
 <div class="viewcode-block" id="CNetMsg.get_order_counts"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_order_counts">[docs]</a>    <span class="k">def</span> <span class="nf">get_order_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get order counts</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ORDER_COUNTS</span></div>
@@ -345,7 +230,7 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_asign_uint2byte_bybits</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">bits</span><span class="p">):</span>
         <span class="n">asign_len</span> <span class="o">=</span> <span class="n">bits</span> <span class="o">/</span> <span class="mi">8</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
         <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">quotient</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num</span> <span class="o">/</span> <span class="mi">256</span><span class="p">)</span>
@@ -373,7 +258,7 @@
         <span class="k">return</span> <span class="n">num</span>
 
 <div class="viewcode-block" id="CNetMsg.push_data"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.push_data">[docs]</a>    <span class="k">def</span> <span class="nf">push_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        push data into the msg. Return pushed length.</span>
 
 <span class="sd">        Return -1 if we should shutdown the socket channel.</span>
@@ -389,6 +274,10 @@
                 <span class="s1">&#39;You just pushed into the msg with a zero-length data&#39;</span>
             <span class="p">)</span>
             <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">platforms</span><span class="o">.</span><span class="n">is_py3</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">PY3_DEFAULT_ENCODING</span><span class="p">)</span>
+
         <span class="n">sign</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">data_ind</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">data_max</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -400,7 +289,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">data_key</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">data_key</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">data_key</span><span class="p">]</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
             <span class="n">loop_data_max</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_ORDER_BYTES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_read_order</span><span class="p">]</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">data_key</span><span class="p">])</span>
             <span class="p">)</span>
@@ -411,7 +300,7 @@
                 <span class="p">)</span>
                 <span class="n">data_ind</span> <span class="o">+=</span> <span class="n">loop_data_max</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_read_order</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">data_key_info</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="n">data_key_info</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
                 <span class="k">if</span> <span class="n">data_key</span> <span class="o">==</span> <span class="s1">&#39;head&#39;</span><span class="p">:</span>
                     <span class="n">data_key_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">data_key</span><span class="p">]</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">data_key</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSG_SIGN</span><span class="p">:</span>
@@ -464,7 +353,7 @@
         <span class="k">return</span> <span class="n">pack</span>
 
 <div class="viewcode-block" id="CNetMsg.set_flag"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_flag">[docs]</a>    <span class="k">def</span> <span class="nf">set_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        set flag for the msg</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># misc.check_type(flag, int)</span>
@@ -472,24 +361,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asign_uint2byte_bybits</span><span class="p">(</span><span class="n">flag</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CNetMsg.set_resend_flag"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_resend_flag">[docs]</a>    <span class="k">def</span> <span class="nf">set_resend_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handle_flag</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        set msg handle flag</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_resend_flag</span> <span class="o">=</span> <span class="n">handle_flag</span></div>
 
 <div class="viewcode-block" id="CNetMsg.get_resend_flag"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_resend_flag">[docs]</a>    <span class="k">def</span> <span class="nf">get_resend_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get msg handle flag</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resend_flag</span></div>
 
 <div class="viewcode-block" id="CNetMsg.add_flag"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.add_flag">[docs]</a>    <span class="k">def</span> <span class="nf">add_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;add flag into the msg&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;add flag into the msg&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag</span> <span class="o">|</span> <span class="n">flag</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asign_uint2byte_bybits</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_flag</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CNetMsg.set_need_head"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_need_head">[docs]</a>    <span class="k">def</span> <span class="nf">set_need_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b_need</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :note:</span>
 <span class="sd">            By default, the msg does not need to have a head unless</span>
 <span class="sd">            it&#39;s the first msg that posted/received.</span>
@@ -519,7 +408,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;len&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asign_uint2byte_bybits</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_msglen</span><span class="p">,</span> <span class="mi">64</span>
         <span class="p">)</span>
-        <span class="n">tempstr</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">tempstr</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ORDER_COUNTS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_need_head</span><span class="p">):</span>
                 <span class="k">continue</span>
@@ -527,7 +416,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_dumpdata</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tempstr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">])</span>
 
 <div class="viewcode-block" id="CNetMsg.set_from_addr"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_from_addr">[docs]</a>    <span class="k">def</span> <span class="nf">set_from_addr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip_port</span><span class="p">,</span> <span class="n">stub_future</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        set msg from addr</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_addr</span><span class="p">(</span><span class="n">ip_port</span><span class="p">,</span> <span class="n">stub_future</span><span class="p">)</span>
@@ -536,7 +425,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_fromaddr</span> <span class="o">=</span> <span class="p">(</span><span class="n">ip_port</span><span class="p">,</span> <span class="n">stub_future</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CNetMsg.set_to_addr"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_to_addr">[docs]</a>    <span class="k">def</span> <span class="nf">set_to_addr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip_port</span><span class="p">,</span> <span class="n">stub_future</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        set msg to addr</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_addr</span><span class="p">(</span><span class="n">ip_port</span><span class="p">,</span> <span class="n">stub_future</span><span class="p">)</span>
@@ -545,7 +434,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_toaddr</span> <span class="o">=</span> <span class="p">(</span><span class="n">ip_port</span><span class="p">,</span> <span class="n">stub_future</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CNetMsg.set_msg_type"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_msg_type">[docs]</a>    <span class="k">def</span> <span class="nf">set_msg_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg_type</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        set msg type</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">misc</span><span class="o">.</span><span class="n">check_type</span><span class="p">(</span><span class="n">msg_type</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
@@ -553,7 +442,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="n">msg_type</span></div>
 
 <div class="viewcode-block" id="CNetMsg.set_uniq_id"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_uniq_id">[docs]</a>    <span class="k">def</span> <span class="nf">set_uniq_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uniq_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        set msg unique id</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># misc.check_type(uniq_id, int)</span>
@@ -561,7 +450,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_uniqid</span> <span class="o">=</span> <span class="n">uniq_id</span></div>
 
 <div class="viewcode-block" id="CNetMsg.set_body"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_body">[docs]</a>    <span class="k">def</span> <span class="nf">set_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        set msg body</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">misc</span><span class="o">.</span><span class="n">check_type</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
@@ -575,7 +464,7 @@
         <span class="k">return</span> <span class="p">((</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">),</span> <span class="p">(</span><span class="n">stub</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
 
 <div class="viewcode-block" id="CNetMsg.get_flag"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_flag">[docs]</a>    <span class="k">def</span> <span class="nf">get_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get msg flag</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -583,7 +472,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag</span></div>
 
 <div class="viewcode-block" id="CNetMsg.get_to_addr"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_to_addr">[docs]</a>    <span class="k">def</span> <span class="nf">get_to_addr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get to addr</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toaddr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -592,7 +481,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toaddr</span></div>
 
 <div class="viewcode-block" id="CNetMsg.get_from_addr"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_from_addr">[docs]</a>    <span class="k">def</span> <span class="nf">get_from_addr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get from addr. ((ip, port), (stub, future))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fromaddr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -601,7 +490,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fromaddr</span></div>
 
 <div class="viewcode-block" id="CNetMsg.get_msg_type"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_msg_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_msg_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get msg type</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -609,7 +498,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span></div>
 
 <div class="viewcode-block" id="CNetMsg.get_msg_len"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_msg_len">[docs]</a>    <span class="k">def</span> <span class="nf">get_msg_len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get msg len</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_msglen</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -617,41 +506,50 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_msglen</span></div>
 
 <div class="viewcode-block" id="CNetMsg.get_uniq_id"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_uniq_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_uniq_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get unique msg id</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uniqid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_uniqid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_bytes2uint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;uniq_id&#39;</span><span class="p">])</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uniqid</span></div>
 
-<div class="viewcode-block" id="CNetMsg.get_body"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_body">[docs]</a>    <span class="k">def</span> <span class="nf">get_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CNetMsg.get_body"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_body">[docs]</a>    <span class="k">def</span> <span class="nf">get_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_unicode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get msg body</span>
+
+<span class="sd">        :param return_unicode:</span>
+<span class="sd">            False by default, return str (in py2), bytes in py3.</span>
+<span class="sd">            Return unicode if return_unicode is True</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s1">&#39;body&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;Body not set yet&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">]</span></div>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">return_unicode</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">PY3_DEFAULT_ENCODING</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="CNetMsg.get_bodylen"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_bodylen">[docs]</a>    <span class="k">def</span> <span class="nf">get_bodylen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get body length</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bodylen</span></div>
 
 <div class="viewcode-block" id="CNetMsg.is_a_sendmsg"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.is_a_sendmsg">[docs]</a>    <span class="k">def</span> <span class="nf">is_a_sendmsg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        is a msg being sent</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_postmsg</span></div>
 
 <div class="viewcode-block" id="CNetMsg.is_a_recvmsg"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.is_a_recvmsg">[docs]</a>    <span class="k">def</span> <span class="nf">is_a_recvmsg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        is a msg being received</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_postmsg</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CNetMsg.is_recvmsg_complete"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.is_recvmsg_complete">[docs]</a>    <span class="k">def</span> <span class="nf">is_recvmsg_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        is msg received already</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_postmsg</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_msg_finish</span><span class="p">:</span>
@@ -663,7 +561,7 @@
     <span class="c1"># Thus, the self._data.keys will be 1 less than</span>
     <span class="c1"># self.get_order_counts()</span>
 <div class="viewcode-block" id="CNetMsg.is_sendmsg_complete"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.is_sendmsg_complete">[docs]</a>    <span class="k">def</span> <span class="nf">is_sendmsg_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        is msg sent complete</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_need_head</span><span class="p">:</span>
@@ -676,7 +574,7 @@
             <span class="k">return</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="CNetMsg.get_write_bytes"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_write_bytes">[docs]</a>    <span class="k">def</span> <span class="nf">get_write_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get write bytes from the msg</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">length</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
@@ -690,7 +588,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dumpdata</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_writeindex</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writeindex</span> <span class="o">+</span> <span class="n">length</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="CNetMsg.seek_write"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.seek_write">[docs]</a>    <span class="k">def</span> <span class="nf">seek_write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length_ahead</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        seek foreward by length</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># log.debug(</span>
@@ -703,7 +601,7 @@
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="CNetMsg.is_msg_already_sent"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.is_msg_already_sent">[docs]</a>    <span class="k">def</span> <span class="nf">is_msg_already_sent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        is msg already sent</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writeindex</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_msg_len</span><span class="p">():</span>
@@ -714,94 +612,94 @@
     <span class="c1">#this function is only used by msg which need to be ack</span>
     <span class="c1">#need ack msg</span>
 <div class="viewcode-block" id="CNetMsg.pre_resend"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.pre_resend">[docs]</a>    <span class="k">def</span> <span class="nf">pre_resend</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        set writeindex</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_writeindex</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_msg_finish</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="CNetMsg.set_errmsg"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_errmsg">[docs]</a>    <span class="k">def</span> <span class="nf">set_errmsg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errmsg</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;set errmsg when we encounter errors sending it out&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;set errmsg when we encounter errors sending it out&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_errmsg</span> <span class="o">=</span> <span class="n">errmsg</span></div>
 
 <div class="viewcode-block" id="CNetMsg.get_errmsg"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_errmsg">[docs]</a>    <span class="k">def</span> <span class="nf">get_errmsg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;get errmsg if we encounter errors sending it out&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;get errmsg if we encounter errors sending it out&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errmsg</span></div>
 
 <div class="viewcode-block" id="CNetMsg.set_total_timeout"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_total_timeout">[docs]</a>    <span class="k">def</span> <span class="nf">set_total_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">total_timeout</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        set total_timeout</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_total_timeout</span> <span class="o">=</span> <span class="n">total_timeout</span></div>
 
 <div class="viewcode-block" id="CNetMsg.set_retry_interval"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_retry_interval">[docs]</a>    <span class="k">def</span> <span class="nf">set_retry_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">retry_interval</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        set retry_interval</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_retry_interval</span> <span class="o">=</span> <span class="n">retry_interval</span></div>
 
 <div class="viewcode-block" id="CNetMsg.set_callback_function"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_callback_function">[docs]</a>    <span class="k">def</span> <span class="nf">set_callback_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        set function</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_callback_func</span> <span class="o">=</span> <span class="n">function</span></div>
 
 <div class="viewcode-block" id="CNetMsg.set_last_retry_time"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_last_retry_time">[docs]</a>    <span class="k">def</span> <span class="nf">set_last_retry_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last_retry_time</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        set last_retry_time</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_last_retry_time</span> <span class="o">=</span> <span class="n">last_retry_time</span></div>
 
 <div class="viewcode-block" id="CNetMsg.get_total_timeout"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_total_timeout">[docs]</a>    <span class="k">def</span> <span class="nf">get_total_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get total_timeout</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total_timeout</span></div>
 
 <div class="viewcode-block" id="CNetMsg.get_retry_interval"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_retry_interval">[docs]</a>    <span class="k">def</span> <span class="nf">get_retry_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get retry_interval</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_retry_interval</span></div>
 
 <div class="viewcode-block" id="CNetMsg.get_callback_function"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_callback_function">[docs]</a>    <span class="k">def</span> <span class="nf">get_callback_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get callback function</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callback_func</span></div>
 
 <div class="viewcode-block" id="CNetMsg.get_last_retry_time"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_last_retry_time">[docs]</a>    <span class="k">def</span> <span class="nf">get_last_retry_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get last_retry_time</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_retry_time</span></div>
 
 <div class="viewcode-block" id="CNetMsg.set_retry_times"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_retry_times">[docs]</a>    <span class="k">def</span> <span class="nf">set_retry_times</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;set msg retry times&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;set msg retry times&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_resend_times</span> <span class="o">=</span> <span class="n">num</span></div>
 
 <div class="viewcode-block" id="CNetMsg.add_retry_times"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.add_retry_times">[docs]</a>    <span class="k">def</span> <span class="nf">add_retry_times</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;add retry times&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;add retry times&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_resend_times</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
 <div class="viewcode-block" id="CNetMsg.get_retry_times"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_retry_times">[docs]</a>    <span class="k">def</span> <span class="nf">get_retry_times</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;get retry times&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;get retry times&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resend_times</span></div>
 
 <div class="viewcode-block" id="CNetMsg.set_msg_context"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.set_msg_context">[docs]</a>    <span class="k">def</span> <span class="nf">set_msg_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        set up context for this netmsg</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="n">context</span></div>
 
 <div class="viewcode-block" id="CNetMsg.get_msg_context"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.get_msg_context">[docs]</a>    <span class="k">def</span> <span class="nf">get_msg_context</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get msg context</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span></div>
 
 <div class="viewcode-block" id="CNetMsg.is_valid4send"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CNetMsg.is_valid4send">[docs]</a>    <span class="k">def</span> <span class="nf">is_valid4send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">netmsg</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        for future use</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div></div>
@@ -809,11 +707,11 @@
 
 <span class="c1"># pylint: disable=R0904</span>
 <span class="k">class</span> <span class="nc">CNeedAckMsg</span><span class="p">(</span><span class="n">CNetMsg</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class need ack msg</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">retry_interval</span><span class="p">,</span> <span class="n">total_timeout</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">retry_interval</span><span class="p">,</span> <span class="n">total_timeout</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param function:</span>
 <span class="sd">            Whether succeed or not, the framework will invoke the function</span>
 <span class="sd">            passed in.</span>
@@ -829,16 +727,16 @@
 
 <span class="c1"># pylint: disable=R0904</span>
 <div class="viewcode-block" id="CAckMsg"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.CAckMsg">[docs]</a><span class="k">class</span> <span class="nc">CAckMsg</span><span class="p">(</span><span class="n">CNetMsg</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ack msg example</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_postmsg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_postmsg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="n">CNetMsg</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_postmsg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_flag</span><span class="p">(</span><span class="n">MSG_FLAG2NUM</span><span class="p">[</span><span class="s1">&#39;FLAG_ACK&#39;</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="netmsg_tostring"><a class="viewcode-back" href="../../../../cup.net.asyn.html#cup.net.asyn.msg.netmsg_tostring">[docs]</a><span class="k">def</span> <span class="nf">netmsg_tostring</span><span class="p">(</span><span class="n">netmsg</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    get printable netmsg</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
@@ -861,60 +759,71 @@
 <span class="c1"># vi:set tw=0 ts=4 sw=4 nowrap fdm=indent</span>
 </pre></div>
 
-           </div>
-           
           </div>
-          <footer>
-  
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../index.html">cup</a></h1>
 
-  <hr/>
 
-  <div role="contentinfo">
-    <p>
-        &copy; Copyright 2020, CUP-DEV.
 
-    </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-</footer>
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cup.html">cup package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  <li><a href="../../net.html">cup.net</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
 
         </div>
       </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, CUP-DEV Team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+    </div>
 
-    </section>
+    
 
-  </div>
-  
-
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../../../',
-            VERSION:'3.2.19',
-            LANGUAGE:'en',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../../../_static/language_data.js"></script>
-
-  
-
-  <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
-
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+    
+  </body>
 </html>

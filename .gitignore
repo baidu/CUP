@@ -39,6 +39,7 @@ tags
 *.tar
 */*.tar.gz
 nohup.out
+poetry.lock
 
 ### folders ###
 build

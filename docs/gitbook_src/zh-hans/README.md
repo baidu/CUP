@@ -19,7 +19,7 @@
     - [7.1 典型用户案例](#71-典型用户案例)
 
 **1分钟了解Python-Cup基础库**
-<iframe src="http://player.bilibili.com/player.html?aid=41856081" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" width="900px" height="900px"> </iframe>
+<iframe src="//player.bilibili.com/player.html?aid=41856081&amp;bvid=BV1pt411t7Lq&amp;cid=73491550&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" height="800px" width="800px"> </iframe>
 
 ----------
 
@@ -123,7 +123,7 @@ CUP初衷并不复杂， 就是朴素的目标： `降低人力`。
 - 快速使用cup开开发python程序，可查看三类文档
   - [常用lib库支持场景](./senarios/CommonUserSenario.md)
   - [常用lib库服务场景](./senarios/CommonService.md)
-  - [官方API文档](http://cupdoc.iobusy.com)
+  - [官方API文档](/api-ref/)
 
 - 使用CUP如何构建一个Service， 欢迎查看
   - [Cup Service篇](senarios/GeneralService.md).

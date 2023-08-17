@@ -218,7 +218,7 @@
     
         <li class="chapter " data-level="1.3" >
             
-                <a target="_blank" href="http://cupdoc.iobusy.com">
+                <a target="_blank" href="https://cup.iobusy.com/api-ref/">
             
                     
                     官方文档
@@ -346,10 +346,25 @@
                                 <section class="normal markdown-section">
                                 
                                 <h1 id="1-versions-released"><a name="1-versions-released" class="plugin-anchor" href="#1-versions-released"><i class="fa fa-link" aria-hidden="true"></i></a>1. Versions Released</h1>
+<h2 id="version-3227"><a name="version-3227" class="plugin-anchor" href="#version-3227"><i class="fa fa-link" aria-hidden="true"></i></a>Version 3.2.27</h2>
+<ul>
+<li>[Dependence Change] Remove pymysql</li>
+<li>[New] cup.net.asyn | supports kqueue on mac </li>
+<li>[New] cup.res.mac | supports MacResource based on psutil</li>
+<li>[New] cup.services.heartbeat supports MacHost</li>
+</ul>
+<h2 id="version-3226"><a name="version-3226" class="plugin-anchor" href="#version-3226"><i class="fa fa-link" aria-hidden="true"></i></a>Version 3.2.26</h2>
+<ul>
+<li>[Bug] Epoll Lost Events Bug fix</li>
+<li>[Compatibility] Fix Py2 comatibility issue for cup.services.heartbeat</li>
+</ul>
 <h2 id="version-3220"><a name="version-3220" class="plugin-anchor" href="#version-3220"><i class="fa fa-link" aria-hidden="true"></i></a>Version 3.2.20</h2>
 <ul>
+<li>[Compatibility] <em>cup.log</em> | Fix unicode bug for py3</li>
 <li>[Enhancement] <em>cup.log</em> | Add xdebug/xinfo/xinit_comlog in order to support different loggers</li>
 <li>[Removal] <em>cup.jenkinslib</em> | Recommand using python-jenkins to replace cup.jenkinslib</li>
+<li>[Enhancement] <em>cup.cache</em>| Enhance KVCache, add pop_expired. Support setting up &quot;maxsize&quot; for the cache pool</li>
+<li>[Enhancement] <em>cup.services.buffer</em>| Fix encode/decode bug for py3</li>
 </ul>
 <h2 id="version-3219"><a name="version-3219" class="plugin-anchor" href="#version-3219"><i class="fa fa-link" aria-hidden="true"></i></a>Version 3.2.19</h2>
 <ul>
@@ -564,7 +579,7 @@ ValueError
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"ReleaseNote","level":"1.6.2","depth":2,"previous":{"title":"RoadMap","level":"1.6.1","depth":2,"path":"RoadMap.md","ref":"RoadMap.md","articles":[]},"dir":"ltr"},"config":{"plugins":["-sharing","splitter","anchors","sharing-plus","favicon","insert-logo","chinese-video","github-buttons"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"splitter":{},"search":{},"sharing-plus":{"qq":false,"all":["facebook","google","twitter","instapaper","linkedin","pocket","stumbleupon"],"douban":false,"facebook":true,"weibo":false,"instapaper":false,"whatsapp":false,"hatenaBookmark":false,"twitter":true,"messenger":false,"line":false,"vk":false,"pocket":true,"google":false,"viber":false,"stumbleupon":false,"qzone":false,"linkedin":false},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"anchor-navigation-ex":{"showLevel":false,"mode":"float","pageTop":{"showLevelIcon":true,"level1Icon":"fa fa-hand-o-right","level2Icon":"fa fa-hand-o-right","level3Icon":"fa fa-hand-o-right"}},"favicon":{"shortcut":"./images/cup.logo.jpg","bookmark":"./images/cup.logo.jpg","appleTouch":"./images/cup.logo.jpg"},"github-buttons":{"repo":"baidu/CUP","types":["star","watch","fork"],"size":"large"},"chinese-video":{},"sharing":{"qq":false,"all":["google","facebook","weibo","twitter","qq","qzone","linkedin","pocket"],"douban":false,"facebook":false,"weibo":false,"instapaper":false,"whatsapp":false,"hatenaBookmark":false,"twitter":false,"messenger":false,"line":false,"vk":false,"pocket":false,"google":false,"viber":false,"stumbleupon":false,"qzone":false,"linkedin":false},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{},"insert-logo":{"style":"background: none;","url":"http://cup.iobusy.com/cup.logo.png"}},"theme":"default","author":"Guannan Ma","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Cup Documentation","language":"zh-hans","links":{"sidebar":{"Github Website":"https://github.com/baidu/CUP"}},"gitbook":"*","description":"Cup Documentation which you may refer to"},"file":{"path":"ChangeLog.md","mtime":"2020-07-09T08:47:33.907Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-14T09:31:09.653Z"},"basePath":".","book":{"language":"zh-hans"}});
+            gitbook.page.hasChanged({"page":{"title":"ReleaseNote","level":"1.6.2","depth":2,"previous":{"title":"RoadMap","level":"1.6.1","depth":2,"path":"RoadMap.md","ref":"RoadMap.md","articles":[]},"dir":"ltr"},"config":{"plugins":["-sharing","splitter","anchors","sharing-plus","favicon","insert-logo","chinese-video","github-buttons"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"splitter":{},"search":{},"sharing-plus":{"qq":false,"all":["facebook","google","twitter","instapaper","linkedin","pocket","stumbleupon"],"douban":false,"facebook":true,"weibo":false,"instapaper":false,"whatsapp":false,"hatenaBookmark":false,"twitter":true,"messenger":false,"line":false,"vk":false,"pocket":true,"google":false,"viber":false,"stumbleupon":false,"qzone":false,"linkedin":false},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"anchor-navigation-ex":{"showLevel":false,"mode":"float","pageTop":{"showLevelIcon":true,"level1Icon":"fa fa-hand-o-right","level2Icon":"fa fa-hand-o-right","level3Icon":"fa fa-hand-o-right"}},"favicon":{"shortcut":"./images/cup.logo.jpg","bookmark":"./images/cup.logo.jpg","appleTouch":"./images/cup.logo.jpg"},"github-buttons":{"repo":"baidu/CUP","types":["star","watch","fork"],"size":"large"},"chinese-video":{},"sharing":{"qq":false,"all":["google","facebook","weibo","twitter","qq","qzone","linkedin","pocket"],"douban":false,"facebook":false,"weibo":false,"instapaper":false,"whatsapp":false,"hatenaBookmark":false,"twitter":false,"messenger":false,"line":false,"vk":false,"pocket":false,"google":false,"viber":false,"stumbleupon":false,"qzone":false,"linkedin":false},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{},"insert-logo":{"style":"background: none;","url":"http://cup.iobusy.com/cup.logo.png"}},"theme":"default","author":"Guannan Ma","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Cup Documentation","language":"zh-hans","links":{"sidebar":{"Github Website":"https://github.com/baidu/CUP"}},"gitbook":"*","description":"Cup Documentation which you may refer to"},"file":{"path":"ChangeLog.md","mtime":"2023-01-21T08:53:42.441Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2023-01-30T11:36:43.723Z"},"basePath":".","book":{"language":"zh-hans"}});
         });
     </script>
 </div>

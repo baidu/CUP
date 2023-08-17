@@ -1,69 +1,39 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>cup.net.asyn package &mdash; Cup 3.2.19 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cup.net.asyn package &mdash; cup 3.2.32 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="cup.res package" href="cup.res.html" />
     <link rel="prev" title="cup.net package" href="cup.net.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
-
-          
-            <a href="index.html" class="icon icon-home"> Cup
-          
-
-          
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> cup
           </a>
-
-          
-            
-            
               <div class="version">
-                3.2.0
+                3.2.32
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -71,24 +41,25 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="cup.html">cup package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="cup.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="cup.net.html">cup.net package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="cup.net.html#cup.net.get_hostip"><code class="docutils literal notranslate"><span class="pre">get_hostip()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.html#cup.net.get_interfaces"><code class="docutils literal notranslate"><span class="pre">get_interfaces()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.html#cup.net.get_local_hostname"><code class="docutils literal notranslate"><span class="pre">get_local_hostname()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.html#cup.net.getip_byinterface"><code class="docutils literal notranslate"><span class="pre">getip_byinterface()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.html#cup.net.localport_free"><code class="docutils literal notranslate"><span class="pre">localport_free()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.html#cup.net.port_listened"><code class="docutils literal notranslate"><span class="pre">port_listened()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.html#cup.net.set_sock_keepalive_linux"><code class="docutils literal notranslate"><span class="pre">set_sock_keepalive_linux()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.html#cup.net.set_sock_linger"><code class="docutils literal notranslate"><span class="pre">set_sock_linger()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.html#cup.net.set_sock_quickack"><code class="docutils literal notranslate"><span class="pre">set_sock_quickack()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.html#cup.net.set_sock_reusable"><code class="docutils literal notranslate"><span class="pre">set_sock_reusable()</span></code></a></li>
 <li class="toctree-l4 current"><a class="reference internal" href="cup.net.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="cup.net.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cup.net.html#module-cup.net.ipaddr">cup.net.ipaddr module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="cup.net.html#module-cup.net.route">cup.net.route module</a></li>
 </ul>
 </li>
@@ -118,525 +89,685 @@
 </li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Cup</a>
-        
+          <a href="index.html">cup</a>
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="cup.html">cup package</a> &raquo;</li>
-        
-          <li><a href="cup.net.html">cup.net package</a> &raquo;</li>
-        
-      <li>cup.net.asyn package</li>
-    
-    
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="cup.html">cup package</a></li>
+          <li class="breadcrumb-item"><a href="cup.net.html">cup.net package</a></li>
+      <li class="breadcrumb-item active">cup.net.asyn package</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="_sources/cup.net.asyn.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="module-cup.net.asyn">
-<span id="cup-net-asyn-package"></span><h1>cup.net.asyn package<a class="headerlink" href="#module-cup.net.asyn" title="Permalink to this headline">¶</a></h1>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">description:</th><td class="field-body"><strong>Async Module is a tcp framework for asynchrous network msg tranfering</strong></td>
-</tr>
-</tbody>
-</table>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-cup.net.asyn.common">
-<span id="cup-net-asyn-common-module"></span><h2>cup.net.asyn.common module<a class="headerlink" href="#module-cup.net.asyn.common" title="Permalink to this headline">¶</a></h2>
-<p>common function module for cup.net.asyn</p>
-<dl class="function">
-<dt id="cup.net.asyn.common.ip_port2connaddr">
-<code class="descclassname">cup.net.asyn.common.</code><code class="descname">ip_port2connaddr</code><span class="sig-paren">(</span><em>peer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/common.html#ip_port2connaddr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.common.ip_port2connaddr" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>connaddr is a 64bit int</dt>
-<dd>32 -  16    - 16   - 32
-ip - port   - stub - future</dd>
+             
+  <section id="module-cup.net.asyn">
+<span id="cup-net-asyn-package"></span><h1>cup.net.asyn package<a class="headerlink" href="#module-cup.net.asyn" title="Permalink to this heading"></a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">description</dt>
+<dd class="field-odd"><p><strong>Async Module is a tcp framework for asynchrous network msg tranfering</strong></p>
+</dd>
 </dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>peer</strong> – (ipaddr, port)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">return a connaddr</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="cup.net.asyn.common.add_stub2connaddr">
-<code class="descclassname">cup.net.asyn.common.</code><code class="descname">add_stub2connaddr</code><span class="sig-paren">(</span><em>pack</em>, <em>stub</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/common.html#add_stub2connaddr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.common.add_stub2connaddr" title="Permalink to this definition">¶</a></dt>
-<dd><p>add stub into connaddr</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="cup.net.asyn.common.add_future2connaddr">
-<code class="descclassname">cup.net.asyn.common.</code><code class="descname">add_future2connaddr</code><span class="sig-paren">(</span><em>pack</em>, <em>future</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/common.html#add_future2connaddr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.common.add_future2connaddr" title="Permalink to this definition">¶</a></dt>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-cup.net.asyn.common">
+<span id="cup-net-asyn-common-module"></span><h2>cup.net.asyn.common module<a class="headerlink" href="#module-cup.net.asyn.common" title="Permalink to this heading"></a></h2>
+<p>common function module for cup.net.asyn</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.net.asyn.common.add_future2connaddr">
+<span class="sig-prename descclassname"><span class="pre">cup.net.asyn.common.</span></span><span class="sig-name descname"><span class="pre">add_future2connaddr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pack</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">future</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/common.html#add_future2connaddr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.common.add_future2connaddr" title="Permalink to this definition"></a></dt>
 <dd><p>add future into connaddr</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="cup.net.asyn.common.get_ip_and_port_connaddr">
-<code class="descclassname">cup.net.asyn.common.</code><code class="descname">get_ip_and_port_connaddr</code><span class="sig-paren">(</span><em>pack</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/common.html#get_ip_and_port_connaddr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.common.get_ip_and_port_connaddr" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.net.asyn.common.add_stub2connaddr">
+<span class="sig-prename descclassname"><span class="pre">cup.net.asyn.common.</span></span><span class="sig-name descname"><span class="pre">add_stub2connaddr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pack</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stub</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/common.html#add_stub2connaddr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.common.add_stub2connaddr" title="Permalink to this definition"></a></dt>
+<dd><p>add stub into connaddr</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.net.asyn.common.get_ip_and_port_connaddr">
+<span class="sig-prename descclassname"><span class="pre">cup.net.asyn.common.</span></span><span class="sig-name descname"><span class="pre">get_ip_and_port_connaddr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pack</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/common.html#get_ip_and_port_connaddr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.common.get_ip_and_port_connaddr" title="Permalink to this definition"></a></dt>
 <dd><p>get (ip, port) from connaddr</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="cup.net.asyn.common.getip_connaddr">
-<code class="descclassname">cup.net.asyn.common.</code><code class="descname">getip_connaddr</code><span class="sig-paren">(</span><em>pack</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/common.html#getip_connaddr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.common.getip_connaddr" title="Permalink to this definition">¶</a></dt>
-<dd><p>get ip from connaddr</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="cup.net.asyn.common.getport_connaddr">
-<code class="descclassname">cup.net.asyn.common.</code><code class="descname">getport_connaddr</code><span class="sig-paren">(</span><em>pack</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/common.html#getport_connaddr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.common.getport_connaddr" title="Permalink to this definition">¶</a></dt>
-<dd><p>get port from connaddr</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="cup.net.asyn.common.getstub_connaddr">
-<code class="descclassname">cup.net.asyn.common.</code><code class="descname">getstub_connaddr</code><span class="sig-paren">(</span><em>pack</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/common.html#getstub_connaddr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.common.getstub_connaddr" title="Permalink to this definition">¶</a></dt>
-<dd><p>get stub from connaddr</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="cup.net.asyn.common.getfuture_connaddr">
-<code class="descclassname">cup.net.asyn.common.</code><code class="descname">getfuture_connaddr</code><span class="sig-paren">(</span><em>pack</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/common.html#getfuture_connaddr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.common.getfuture_connaddr" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.net.asyn.common.getfuture_connaddr">
+<span class="sig-prename descclassname"><span class="pre">cup.net.asyn.common.</span></span><span class="sig-name descname"><span class="pre">getfuture_connaddr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pack</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/common.html#getfuture_connaddr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.common.getfuture_connaddr" title="Permalink to this definition"></a></dt>
 <dd><p>get future from conaddr</p>
 </dd></dl>
 
-</div>
-<div class="section" id="module-cup.net.asyn.conn">
-<span id="cup-net-asyn-conn-module"></span><h2>cup.net.asyn.conn module<a class="headerlink" href="#module-cup.net.asyn.conn" title="Permalink to this headline">¶</a></h2>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">descrition:</th><td class="field-body"><p class="first">connection related module</p>
-<ol class="arabic simple">
-<li>There’s only 1 thread reading/receiving data from the interface.</li>
-<li>There might have more than 1 thred writing data into the network
-queue. 1 thread per context(ip, port).</li>
-</ol>
-<p class="last">Notice that _do_write will only TRY to send out some data. It might
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.net.asyn.common.getip_connaddr">
+<span class="sig-prename descclassname"><span class="pre">cup.net.asyn.common.</span></span><span class="sig-name descname"><span class="pre">getip_connaddr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pack</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/common.html#getip_connaddr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.common.getip_connaddr" title="Permalink to this definition"></a></dt>
+<dd><p>get ip from connaddr</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.net.asyn.common.getport_connaddr">
+<span class="sig-prename descclassname"><span class="pre">cup.net.asyn.common.</span></span><span class="sig-name descname"><span class="pre">getport_connaddr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pack</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/common.html#getport_connaddr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.common.getport_connaddr" title="Permalink to this definition"></a></dt>
+<dd><p>get port from connaddr</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.net.asyn.common.getstub_connaddr">
+<span class="sig-prename descclassname"><span class="pre">cup.net.asyn.common.</span></span><span class="sig-name descname"><span class="pre">getstub_connaddr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pack</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/common.html#getstub_connaddr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.common.getstub_connaddr" title="Permalink to this definition"></a></dt>
+<dd><p>get stub from connaddr</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.net.asyn.common.ip_port2connaddr">
+<span class="sig-prename descclassname"><span class="pre">cup.net.asyn.common.</span></span><span class="sig-name descname"><span class="pre">ip_port2connaddr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/common.html#ip_port2connaddr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.common.ip_port2connaddr" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>connaddr is a 64bit int</dt><dd><p>32 -  16    - 16   - 32
+ip - port   - stub - future</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>peer</strong> – (ipaddr, port)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>return a connaddr</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-cup.net.asyn.conn">
+<span id="cup-net-asyn-conn-module"></span><h2>cup.net.asyn.conn module<a class="headerlink" href="#module-cup.net.asyn.conn" title="Permalink to this heading"></a></h2>
+<dl class="field-list">
+<dt class="field-odd">description</dt>
+<dd class="field-odd"><p>connection related module
+1. There’s only 1 thread reading/receiving data from the interface.
+2. There might have more than 1 thred writing data into the network</p>
+<blockquote>
+<div><p>queue. 1 thread per context(ip, port).</p>
+</div></blockquote>
+<p>Notice that _do_write will only TRY to send out some data. It might
 encounter TCP/IP stack full of data in the SEND buffer-queue of
 the network interface</p>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="class">
-<dt id="cup.net.asyn.conn.CConnectionManager">
-<em class="property">class </em><code class="descclassname">cup.net.asyn.conn.</code><code class="descname">CConnectionManager</code><span class="sig-paren">(</span><em>ip</em>, <em>bindport</em>, <em>thdpool_param</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager" title="Permalink to this definition">¶</a></dt>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.net.asyn.conn.</span></span><span class="sig-name descname"><span class="pre">CConnectionManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bindport</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thdpool_param</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>connaddr. Convert ip:port  into a 64-bit hex.</p>
-<dl class="attribute">
-<dt id="cup.net.asyn.conn.CConnectionManager.NET_RW_SIZE">
-<code class="descname">NET_RW_SIZE</code><em class="property"> = 131072</em><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.NET_RW_SIZE" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.NET_RW_SIZE">
+<span class="sig-name descname"><span class="pre">NET_RW_SIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">131072</span></em><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.NET_RW_SIZE" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="exception">
-<dt id="cup.net.asyn.conn.CConnectionManager.QueueError">
-<em class="property">exception </em><code class="descname">QueueError</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.QueueError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.QueueError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">exceptions.Exception</span></code></p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.QueueError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">QueueError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.QueueError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.QueueError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>internal queue error for CConnectionManager class</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="cup.net.asyn.conn.CConnectionManager.SOCK_ALIVE_PARAMS">
-<code class="descname">SOCK_ALIVE_PARAMS</code><em class="property"> = {'after_idle_sec': 1, 'interval_sec': 3, 'max_fails': 5}</em><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.SOCK_ALIVE_PARAMS" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.SOCK_ALIVE_PARAMS">
+<span class="sig-name descname"><span class="pre">SOCK_ALIVE_PARAMS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'after_idle_sec':</span> <span class="pre">1,</span> <span class="pre">'interval_sec':</span> <span class="pre">3,</span> <span class="pre">'max_fails':</span> <span class="pre">5}</span></em><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.SOCK_ALIVE_PARAMS" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.conn.CConnectionManager.add_write_job">
-<code class="descname">add_write_job</code><span class="sig-paren">(</span><em>context</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.add_write_job"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.add_write_job" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.add_write_job">
+<span class="sig-name descname"><span class="pre">add_write_job</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.add_write_job"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.add_write_job" title="Permalink to this definition"></a></dt>
 <dd><p>add network write into queue</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.conn.CConnectionManager.bind">
-<code class="descname">bind</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.bind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.bind" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.bind">
+<span class="sig-name descname"><span class="pre">bind</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.bind"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.bind" title="Permalink to this definition"></a></dt>
 <dd><p>bind the ip:port</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.conn.CConnectionManager.cleanup_error_context">
-<code class="descname">cleanup_error_context</code><span class="sig-paren">(</span><em>context</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.cleanup_error_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.cleanup_error_context" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.cleanup_error_context">
+<span class="sig-name descname"><span class="pre">cleanup_error_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.cleanup_error_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.cleanup_error_context" title="Permalink to this definition"></a></dt>
 <dd><p>clean up error context</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.conn.CConnectionManager.close_socket">
-<code class="descname">close_socket</code><span class="sig-paren">(</span><em>msg</em>, <em>recv_socket</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.close_socket"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.close_socket" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.close_socket">
+<span class="sig-name descname"><span class="pre">close_socket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recv_socket</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.close_socket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.close_socket" title="Permalink to this definition"></a></dt>
 <dd><p>close socket by msg</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.conn.CConnectionManager.connect">
-<code class="descname">connect</code><span class="sig-paren">(</span><em>peer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.connect" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>peer</strong> – ip:port</td>
-</tr>
-</tbody>
-</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.connect" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>peer</strong> – ip:port</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.conn.CConnectionManager.do_check_msg_ack_loop">
-<code class="descname">do_check_msg_ack_loop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.do_check_msg_ack_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.do_check_msg_ack_loop" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.do_check_msg_ack_loop">
+<span class="sig-name descname"><span class="pre">do_check_msg_ack_loop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.do_check_msg_ack_loop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.do_check_msg_ack_loop" title="Permalink to this definition"></a></dt>
 <dd><p>check msg ack loop</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.conn.CConnectionManager.dump_stats">
-<code class="descname">dump_stats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.dump_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.dump_stats" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.dump_stats">
+<span class="sig-name descname"><span class="pre">dump_stats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.dump_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.dump_stats" title="Permalink to this definition"></a></dt>
 <dd><p>dump stats</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.conn.CConnectionManager.get_needack_dict">
-<code class="descname">get_needack_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.get_needack_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.get_needack_dict" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.get_needack_dict">
+<span class="sig-name descname"><span class="pre">get_needack_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.get_needack_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.get_needack_dict" title="Permalink to this definition"></a></dt>
 <dd><p>get neekack dict</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.conn.CConnectionManager.get_recv_msg">
-<code class="descname">get_recv_msg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.get_recv_msg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.get_recv_msg" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.get_recv_msg">
+<span class="sig-name descname"><span class="pre">get_recv_msg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.get_recv_msg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.get_recv_msg" title="Permalink to this definition"></a></dt>
 <dd><p>get recv msg from queue</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.conn.CConnectionManager.get_recv_msg_ind">
-<code class="descname">get_recv_msg_ind</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.get_recv_msg_ind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.get_recv_msg_ind" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.get_recv_msg_ind">
+<span class="sig-name descname"><span class="pre">get_recv_msg_ind</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.get_recv_msg_ind"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.get_recv_msg_ind" title="Permalink to this definition"></a></dt>
 <dd><p>get recv msg ind</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.conn.CConnectionManager.get_recv_queue">
-<code class="descname">get_recv_queue</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.get_recv_queue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.get_recv_queue" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.get_recv_queue">
+<span class="sig-name descname"><span class="pre">get_recv_queue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.get_recv_queue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.get_recv_queue" title="Permalink to this definition"></a></dt>
 <dd><p>get recving_msg queue</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.conn.CConnectionManager.global_sock_keepalive">
-<code class="descname">global_sock_keepalive</code><span class="sig-paren">(</span><em>after_idle_sec=1</em>, <em>interval_sec=3</em>, <em>max_fails=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.global_sock_keepalive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.global_sock_keepalive" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.global_sock_keepalive">
+<span class="sig-name descname"><span class="pre">global_sock_keepalive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">after_idle_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_fails</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.global_sock_keepalive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.global_sock_keepalive" title="Permalink to this definition"></a></dt>
 <dd><p>Set TCP keepalive on an open socket.
 It activates after 1 second (after_idle_sec) of idleness,
 then sends a keepalive ping once every 3 seconds (interval_sec),
-and closes the connection after 5 failed ping (max_fails), or 15 sec</p>
-<p>Notice, this will set all sockets this way.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>sock</strong> – socket</li>
-<li><strong>after_idle_sec</strong> – for TCP_KEEPIDLE. May not work, depends on ur system</li>
-<li><strong>interval_sec</strong> – for TCP_KEEPINTVL</li>
-<li><strong>max_fails</strong> – for TCP_KEEPCNT</li>
+and closes the connection after 5 failed ping (max_fails), or 15 sec
+Notice, this will set all sockets this way.
+:param sock:</p>
+<blockquote>
+<div><p>socket</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>after_idle_sec</strong> – for TCP_KEEPIDLE. May not work, depends on ur system</p></li>
+<li><p><strong>interval_sec</strong> – for TCP_KEEPINTVL</p></li>
+<li><p><strong>max_fails</strong> – for TCP_KEEPCNT</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.conn.CConnectionManager.poll">
-<code class="descname">poll</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.poll"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.poll" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.listen_new_connect">
+<span class="sig-name descname"><span class="pre">listen_new_connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.listen_new_connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.listen_new_connect" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.poll">
+<span class="sig-name descname"><span class="pre">poll</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.poll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.poll" title="Permalink to this definition"></a></dt>
 <dd><p>start to poll</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.conn.CConnectionManager.push_msg2needack_queue">
-<code class="descname">push_msg2needack_queue</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.push_msg2needack_queue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.push_msg2needack_queue" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.push_msg2needack_queue">
+<span class="sig-name descname"><span class="pre">push_msg2needack_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.push_msg2needack_queue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.push_msg2needack_queue" title="Permalink to this definition"></a></dt>
 <dd><p>get neekack dict</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.conn.CConnectionManager.push_msg2sendqueue">
-<code class="descname">push_msg2sendqueue</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.push_msg2sendqueue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.push_msg2sendqueue" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.push_msg2sendqueue">
+<span class="sig-name descname"><span class="pre">push_msg2sendqueue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.push_msg2sendqueue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.push_msg2sendqueue" title="Permalink to this definition"></a></dt>
 <dd><p>push msg into the send queue</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.conn.CConnectionManager.read">
-<code class="descname">read</code><span class="sig-paren">(</span><em>context</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.read" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.read" title="Permalink to this definition"></a></dt>
 <dd><p>read with conn context</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.conn.CConnectionManager.stop">
-<code class="descname">stop</code><span class="sig-paren">(</span><em>force_stop=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.stop" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.conn.CConnectionManager.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force_stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/conn.html#CConnectionManager.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.conn.CConnectionManager.stop" title="Permalink to this definition"></a></dt>
 <dd><p>stop the connection manager</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-cup.net.asyn.context">
-<span id="cup-net-asyn-context-module"></span><h2>cup.net.asyn.context module<a class="headerlink" href="#module-cup.net.asyn.context" title="Permalink to this headline">¶</a></h2>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">description:</th><td class="field-body">Connection Context for each socket</td>
-</tr>
-</tbody>
-</table>
-<dl class="class">
-<dt id="cup.net.asyn.context.CConnContext">
-<em class="property">class </em><code class="descclassname">cup.net.asyn.context.</code><code class="descname">CConnContext</code><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext" title="Permalink to this definition">¶</a></dt>
+</section>
+<section id="module-cup.net.asyn.context">
+<span id="cup-net-asyn-context-module"></span><h2>cup.net.asyn.context module<a class="headerlink" href="#module-cup.net.asyn.context" title="Permalink to this heading"></a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">description</dt>
+<dd class="field-odd"><p>Connection Context for each socket</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.net.asyn.context.</span></span><span class="sig-name descname"><span class="pre">CConnContext</span></span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>connection context for each socket</p>
-<dl class="attribute">
-<dt id="cup.net.asyn.context.CConnContext.CONTEXT_QUEUE_SIZE">
-<code class="descname">CONTEXT_QUEUE_SIZE</code><em class="property"> = 200</em><a class="headerlink" href="#cup.net.asyn.context.CConnContext.CONTEXT_QUEUE_SIZE" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.CONTEXT_QUEUE_SIZE">
+<span class="sig-name descname"><span class="pre">CONTEXT_QUEUE_SIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">200</span></em><a class="headerlink" href="#cup.net.asyn.context.CConnContext.CONTEXT_QUEUE_SIZE" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.do_recv_data">
-<code class="descname">do_recv_data</code><span class="sig-paren">(</span><em>data</em>, <em>data_len</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.do_recv_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.do_recv_data" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.do_recv_data">
+<span class="sig-name descname"><span class="pre">do_recv_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_len</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.do_recv_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.do_recv_data" title="Permalink to this definition"></a></dt>
 <dd><p>push data into the recving_msg queue
 network read should be in 1 thread only.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.get_context_info">
-<code class="descname">get_context_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.get_context_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.get_context_info" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.get_context_info">
+<span class="sig-name descname"><span class="pre">get_context_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.get_context_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.get_context_info" title="Permalink to this definition"></a></dt>
 <dd><p>get context info</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.get_listened_peer">
-<code class="descname">get_listened_peer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.get_listened_peer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.get_listened_peer" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.get_listened_peer">
+<span class="sig-name descname"><span class="pre">get_listened_peer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.get_listened_peer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.get_listened_peer" title="Permalink to this definition"></a></dt>
 <dd><p>return peer listened peer info</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.get_peerinfo">
-<code class="descname">get_peerinfo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.get_peerinfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.get_peerinfo" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.get_peerinfo">
+<span class="sig-name descname"><span class="pre">get_peerinfo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.get_peerinfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.get_peerinfo" title="Permalink to this definition"></a></dt>
 <dd><p>get peerinfo</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.get_sending_queue">
-<code class="descname">get_sending_queue</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.get_sending_queue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.get_sending_queue" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.get_sending_queue">
+<span class="sig-name descname"><span class="pre">get_sending_queue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.get_sending_queue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.get_sending_queue" title="Permalink to this definition"></a></dt>
 <dd><p>return sending queue</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.get_sock">
-<code class="descname">get_sock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.get_sock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.get_sock" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.get_sock">
+<span class="sig-name descname"><span class="pre">get_sock</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.get_sock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.get_sock" title="Permalink to this definition"></a></dt>
 <dd><p>return associated socket</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.is_detroying">
-<code class="descname">is_detroying</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.is_detroying"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.is_detroying" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.is_detroying">
+<span class="sig-name descname"><span class="pre">is_detroying</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.is_detroying"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.is_detroying" title="Permalink to this definition"></a></dt>
 <dd><p>is context being destroyed</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.is_reading">
-<code class="descname">is_reading</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.is_reading"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.is_reading" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.is_reading">
+<span class="sig-name descname"><span class="pre">is_reading</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.is_reading"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.is_reading" title="Permalink to this definition"></a></dt>
 <dd><p>get if it is reading</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.move2recving_msg">
-<code class="descname">move2recving_msg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.move2recving_msg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.move2recving_msg" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.move2recving_msg">
+<span class="sig-name descname"><span class="pre">move2recving_msg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.move2recving_msg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.move2recving_msg" title="Permalink to this definition"></a></dt>
 <dd><p>get the net msg being received</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.put_msg">
-<code class="descname">put_msg</code><span class="sig-paren">(</span><em>flag</em>, <em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.put_msg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.put_msg" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.put_msg">
+<span class="sig-name descname"><span class="pre">put_msg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.put_msg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.put_msg" title="Permalink to this definition"></a></dt>
 <dd><p>Put msg into the sending queue.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>flag</strong> – <p>flag determines the priority of the msg.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flag</strong> – <p>flag determines the priority of the msg.</p>
 <p>Msg with higher priority will have bigger chance to be</p>
 <p>sent out soon.</p>
-</li>
-<li><strong>return</strong> – return 0 on success
-return 1 on TRY_AGAIN —- queue is full. network is too busy.</li>
+</p></li>
+<li><p><strong>return</strong> – return 0 on success
+return 1 on TRY_AGAIN —- queue is full. network is too busy.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">TODO:</th><td class="field-body"><p class="first last">If the msg queue is too big, consider close the network link</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">TODO</dt>
+<dd class="field-even"><p>If the msg queue is too big, consider close the network link</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.release_readlock">
-<code class="descname">release_readlock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.release_readlock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.release_readlock" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.release_readlock">
+<span class="sig-name descname"><span class="pre">release_readlock</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.release_readlock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.release_readlock" title="Permalink to this definition"></a></dt>
 <dd><p>release the readlock</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.release_writelock">
-<code class="descname">release_writelock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.release_writelock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.release_writelock" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.release_writelock">
+<span class="sig-name descname"><span class="pre">release_writelock</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.release_writelock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.release_writelock" title="Permalink to this definition"></a></dt>
 <dd><p>release the writelock</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.set_conn_man">
-<code class="descname">set_conn_man</code><span class="sig-paren">(</span><em>conn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.set_conn_man"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.set_conn_man" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.set_conn_man">
+<span class="sig-name descname"><span class="pre">set_conn_man</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.set_conn_man"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.set_conn_man" title="Permalink to this definition"></a></dt>
 <dd><p>set conn for context</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.set_destoryed">
-<code class="descname">set_destoryed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.set_destoryed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.set_destoryed" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.set_destoryed">
+<span class="sig-name descname"><span class="pre">set_destoryed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.set_destoryed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.set_destoryed" title="Permalink to this definition"></a></dt>
 <dd><p>set context to destroyed status</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.set_listened_peer">
-<code class="descname">set_listened_peer</code><span class="sig-paren">(</span><em>peer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.set_listened_peer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.set_listened_peer" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.set_listened_peer">
+<span class="sig-name descname"><span class="pre">set_listened_peer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.set_listened_peer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.set_listened_peer" title="Permalink to this definition"></a></dt>
 <dd><p>set peer listened peer</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.set_peerinfo">
-<code class="descname">set_peerinfo</code><span class="sig-paren">(</span><em>peer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.set_peerinfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.set_peerinfo" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.set_peerinfo">
+<span class="sig-name descname"><span class="pre">set_peerinfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.set_peerinfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.set_peerinfo" title="Permalink to this definition"></a></dt>
 <dd><p>set peerinfo</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.set_reading">
-<code class="descname">set_reading</code><span class="sig-paren">(</span><em>is_reading</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.set_reading"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.set_reading" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.set_reading">
+<span class="sig-name descname"><span class="pre">set_reading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_reading</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.set_reading"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.set_reading" title="Permalink to this definition"></a></dt>
 <dd><p>set reading status</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.set_sock">
-<code class="descname">set_sock</code><span class="sig-paren">(</span><em>sock</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.set_sock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.set_sock" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.set_sock">
+<span class="sig-name descname"><span class="pre">set_sock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sock</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.set_sock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.set_sock" title="Permalink to this definition"></a></dt>
 <dd><p>associate socket</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.to_destroy">
-<code class="descname">to_destroy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.to_destroy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.to_destroy" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.to_destroy">
+<span class="sig-name descname"><span class="pre">to_destroy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.to_destroy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.to_destroy" title="Permalink to this definition"></a></dt>
 <dd><p>destroy context</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.try_move2next_sending_msg">
-<code class="descname">try_move2next_sending_msg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.try_move2next_sending_msg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.try_move2next_sending_msg" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.try_move2next_sending_msg">
+<span class="sig-name descname"><span class="pre">try_move2next_sending_msg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.try_move2next_sending_msg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.try_move2next_sending_msg" title="Permalink to this definition"></a></dt>
 <dd><p>move to next msg that will be sent</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.try_readlock">
-<code class="descname">try_readlock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.try_readlock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.try_readlock" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.try_readlock">
+<span class="sig-name descname"><span class="pre">try_readlock</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.try_readlock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.try_readlock" title="Permalink to this definition"></a></dt>
 <dd><p>try to acquire readlock</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if succeed. False, otherwise</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if succeed. False, otherwise</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.context.CConnContext.try_writelock">
-<code class="descname">try_writelock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.try_writelock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.try_writelock" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if succeed. False, otherwise</td>
-</tr>
-</tbody>
-</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.context.CConnContext.try_writelock">
+<span class="sig-name descname"><span class="pre">try_writelock</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/context.html#CConnContext.try_writelock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.context.CConnContext.try_writelock" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if succeed. False, otherwise</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-cup.net.asyn.msg">
-<span id="cup-net-asyn-msg-module"></span><h2>cup.net.asyn.msg module<a class="headerlink" href="#module-cup.net.asyn.msg" title="Permalink to this headline">¶</a></h2>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">description:</th><td class="field-body">netmsg related module</td>
-</tr>
-</tbody>
-</table>
-<dl class="class">
-<dt id="cup.net.asyn.msg.CNetMsg">
-<em class="property">class </em><code class="descclassname">cup.net.asyn.msg.</code><code class="descname">CNetMsg</code><span class="sig-paren">(</span><em>is_postmsg=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg" title="Permalink to this definition">¶</a></dt>
+</section>
+<section id="module-cup.net.asyn.ioloop">
+<span id="cup-net-asyn-ioloop-module"></span><h2>cup.net.asyn.ioloop module<a class="headerlink" href="#module-cup.net.asyn.ioloop" title="Permalink to this heading"></a></h2>
+<dl class="field-list">
+<dt class="field-odd">description</dt>
+<dd class="field-odd"><p>pollers for epoll and kqueue and others.
+Refer IOLoop from tornado:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://www.tornadoweb.org/en/branch2.0/_modules/tornado/ioloop.html">https://www.tornadoweb.org/en/branch2.0/_modules/tornado/ioloop.html</a></p>
+</div></blockquote>
+<p>Respect to the tornado team:</p>
+</dd>
+</dl>
+<p>Tornado is based on Apache V2.0 License. Here it goes:</p>
+<p>Licensed under the Apache License, Version 2.0 (the “License”); you may
+not use this file except in compliance with the License. You may obtain
+a copy of the License at</p>
+<blockquote>
+<div><p><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+</div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an “AS IS” BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations
+under the License.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.BasePoller">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.net.asyn.ioloop.</span></span><span class="sig-name descname"><span class="pre">BasePoller</span></span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#BasePoller"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.BasePoller" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.BasePoller.fileno">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fileno</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#BasePoller.fileno"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.BasePoller.fileno" title="Permalink to this definition"></a></dt>
+<dd><p>return fileno of the poller</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.BasePoller.modify">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">modify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">events</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#BasePoller.modify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.BasePoller.modify" title="Permalink to this definition"></a></dt>
+<dd><p>modify fd to newmode</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.BasePoller.poll">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">poll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wait_time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#BasePoller.poll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.BasePoller.poll" title="Permalink to this definition"></a></dt>
+<dd><p>poll until wait_times passes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.BasePoller.register">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">events</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#BasePoller.register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.BasePoller.register" title="Permalink to this definition"></a></dt>
+<dd><p>register fd</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.BasePoller.unregister">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unregister</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#BasePoller.unregister"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.BasePoller.unregister" title="Permalink to this definition"></a></dt>
+<dd><p>unregister fd</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.Epoller">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.net.asyn.ioloop.</span></span><span class="sig-name descname"><span class="pre">Epoller</span></span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#Epoller"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.Epoller" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.net.asyn.ioloop.BasePoller" title="cup.net.asyn.ioloop.BasePoller"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePoller</span></code></a></p>
+<p>epoll for linux and others</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.Epoller.fileno">
+<span class="sig-name descname"><span class="pre">fileno</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#Epoller.fileno"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.Epoller.fileno" title="Permalink to this definition"></a></dt>
+<dd><p>return fileno of epoll object</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.Epoller.modify">
+<span class="sig-name descname"><span class="pre">modify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">events</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#Epoller.modify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.Epoller.modify" title="Permalink to this definition"></a></dt>
+<dd><p>modify kqueue events</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.Epoller.poll">
+<span class="sig-name descname"><span class="pre">poll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wait_time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#Epoller.poll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.Epoller.poll" title="Permalink to this definition"></a></dt>
+<dd><p>start to poll</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.Epoller.read_params">
+<span class="sig-name descname"><span class="pre">read_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#Epoller.read_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.Epoller.read_params" title="Permalink to this definition"></a></dt>
+<dd><p>epoll read params</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.Epoller.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">events</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#Epoller.register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.Epoller.register" title="Permalink to this definition"></a></dt>
+<dd><p>register events for a fd</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.Epoller.unregister">
+<span class="sig-name descname"><span class="pre">unregister</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#Epoller.unregister"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.Epoller.unregister" title="Permalink to this definition"></a></dt>
+<dd><p>unregister for epoll</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.Epoller.write_params">
+<span class="sig-name descname"><span class="pre">write_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#Epoller.write_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.Epoller.write_params" title="Permalink to this definition"></a></dt>
+<dd><p>epoll write params</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.KQueuePoller">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.net.asyn.ioloop.</span></span><span class="sig-name descname"><span class="pre">KQueuePoller</span></span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#KQueuePoller"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.KQueuePoller" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.net.asyn.ioloop.BasePoller" title="cup.net.asyn.ioloop.BasePoller"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePoller</span></code></a></p>
+<p>kqueue for macos</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.KQueuePoller.fileno">
+<span class="sig-name descname"><span class="pre">fileno</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#KQueuePoller.fileno"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.KQueuePoller.fileno" title="Permalink to this definition"></a></dt>
+<dd><p>return fileno of kqueue object</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.KQueuePoller.kvent_control">
+<span class="sig-name descname"><span class="pre">kvent_control</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">events</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#KQueuePoller.kvent_control"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.KQueuePoller.kvent_control" title="Permalink to this definition"></a></dt>
+<dd><p>kevent control</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.KQueuePoller.modify">
+<span class="sig-name descname"><span class="pre">modify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">events</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#KQueuePoller.modify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.KQueuePoller.modify" title="Permalink to this definition"></a></dt>
+<dd><p>modify kqueue events</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.KQueuePoller.poll">
+<span class="sig-name descname"><span class="pre">poll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wait_time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#KQueuePoller.poll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.KQueuePoller.poll" title="Permalink to this definition"></a></dt>
+<dd><p>kqueue poll</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.KQueuePoller.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">events</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#KQueuePoller.register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.KQueuePoller.register" title="Permalink to this definition"></a></dt>
+<dd><p>register events for a fd</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.KQueuePoller.unregister">
+<span class="sig-name descname"><span class="pre">unregister</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#KQueuePoller.unregister"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.KQueuePoller.unregister" title="Permalink to this definition"></a></dt>
+<dd><p>unregister for kevents</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.PollerFactory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.net.asyn.ioloop.</span></span><span class="sig-name descname"><span class="pre">PollerFactory</span></span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#PollerFactory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.PollerFactory" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Poller Factory</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.PollerFactory.modify">
+<span class="sig-name descname"><span class="pre">modify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">events</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#PollerFactory.modify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.PollerFactory.modify" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.PollerFactory.poll">
+<span class="sig-name descname"><span class="pre">poll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wait_time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#PollerFactory.poll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.PollerFactory.poll" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.PollerFactory.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">events</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#PollerFactory.register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.PollerFactory.register" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.PollerFactory.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#PollerFactory.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.PollerFactory.stop" title="Permalink to this definition"></a></dt>
+<dd><p>stop the poller factory</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.PollerFactory.unregister">
+<span class="sig-name descname"><span class="pre">unregister</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#PollerFactory.unregister"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.PollerFactory.unregister" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.SelectPoller">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.net.asyn.ioloop.</span></span><span class="sig-name descname"><span class="pre">SelectPoller</span></span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#SelectPoller"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.SelectPoller" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.net.asyn.ioloop.BasePoller" title="cup.net.asyn.ioloop.BasePoller"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePoller</span></code></a></p>
+<p>downgraded to select.select()</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.SelectPoller.modify">
+<span class="sig-name descname"><span class="pre">modify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">events</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#SelectPoller.modify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.SelectPoller.modify" title="Permalink to this definition"></a></dt>
+<dd><p>modify fd to newmode</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.SelectPoller.poll">
+<span class="sig-name descname"><span class="pre">poll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#SelectPoller.poll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.SelectPoller.poll" title="Permalink to this definition"></a></dt>
+<dd><p>poll until wait_times passes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.SelectPoller.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">events</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#SelectPoller.register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.SelectPoller.register" title="Permalink to this definition"></a></dt>
+<dd><p>register fd</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.ioloop.SelectPoller.unregister">
+<span class="sig-name descname"><span class="pre">unregister</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/ioloop.html#SelectPoller.unregister"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.ioloop.SelectPoller.unregister" title="Permalink to this definition"></a></dt>
+<dd><p>unregister fd</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-cup.net.asyn.msg">
+<span id="cup-net-asyn-msg-module"></span><h2>cup.net.asyn.msg module<a class="headerlink" href="#module-cup.net.asyn.msg" title="Permalink to this heading"></a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">description</dt>
+<dd class="field-odd"><p>netmsg related module</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CAckMsg">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.net.asyn.msg.</span></span><span class="sig-name descname"><span class="pre">CAckMsg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_postmsg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CAckMsg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CAckMsg" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cup.net.asyn.msg.CNetMsg" title="cup.net.asyn.msg.CNetMsg"><code class="xref py py-class docutils literal notranslate"><span class="pre">CNetMsg</span></code></a></p>
+<p>ack msg example</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.net.asyn.msg.</span></span><span class="sig-name descname"><span class="pre">CNetMsg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_postmsg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>flag: System use only.
 type: System will use type &gt; 65535. Users will use type &lt;=65535</p>
@@ -647,483 +778,434 @@ type: System will use type &gt; 65535. Users will use type &lt;=65535</p>
 #msg_type          -uint32
 #uniqid            -128bit [64bit ip, port, 64 bit, uniqid]
 #body           -no limit (length:uint64)</p>
-<dl class="attribute">
-<dt id="cup.net.asyn.msg.CNetMsg.MSGTYPE">
-<code class="descname">MSGTYPE</code><em class="property"> = &lt;cup.net.asyn.msg.CMsgType object&gt;</em><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.MSGTYPE" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.MSGTYPE">
+<span class="sig-name descname"><span class="pre">MSGTYPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;cup.net.asyn.msg.CMsgType</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.MSGTYPE" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="cup.net.asyn.msg.CNetMsg.MSG_FLAG_MAN">
-<code class="descname">MSG_FLAG_MAN</code><em class="property"> = &lt;cup.net.asyn.msg.CMsgFlag object&gt;</em><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.MSG_FLAG_MAN" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.MSG_FLAG_MAN">
+<span class="sig-name descname"><span class="pre">MSG_FLAG_MAN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;cup.net.asyn.msg.CMsgFlag</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.MSG_FLAG_MAN" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="cup.net.asyn.msg.CNetMsg.MSG_SIGN">
-<code class="descname">MSG_SIGN</code><em class="property"> = 'CUP012-3'</em><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.MSG_SIGN" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.MSG_SIGN">
+<span class="sig-name descname"><span class="pre">MSG_SIGN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CUP012-3'</span></em><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.MSG_SIGN" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.add_flag">
-<code class="descname">add_flag</code><span class="sig-paren">(</span><em>flag</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.add_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.add_flag" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.add_flag">
+<span class="sig-name descname"><span class="pre">add_flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.add_flag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.add_flag" title="Permalink to this definition"></a></dt>
 <dd><p>add flag into the msg</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.add_retry_times">
-<code class="descname">add_retry_times</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.add_retry_times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.add_retry_times" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.add_retry_times">
+<span class="sig-name descname"><span class="pre">add_retry_times</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.add_retry_times"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.add_retry_times" title="Permalink to this definition"></a></dt>
 <dd><p>add retry times</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.get_body">
-<code class="descname">get_body</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_body"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_body" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.get_body">
+<span class="sig-name descname"><span class="pre">get_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">return_unicode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_body"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_body" title="Permalink to this definition"></a></dt>
 <dd><p>get msg body</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>return_unicode</strong> – False by default, return str (in py2), bytes in py3.
+Return unicode if return_unicode is True</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.get_bodylen">
-<code class="descname">get_bodylen</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_bodylen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_bodylen" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.get_bodylen">
+<span class="sig-name descname"><span class="pre">get_bodylen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_bodylen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_bodylen" title="Permalink to this definition"></a></dt>
 <dd><p>get body length</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.get_callback_function">
-<code class="descname">get_callback_function</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_callback_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_callback_function" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.get_callback_function">
+<span class="sig-name descname"><span class="pre">get_callback_function</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_callback_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_callback_function" title="Permalink to this definition"></a></dt>
 <dd><p>get callback function</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.get_errmsg">
-<code class="descname">get_errmsg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_errmsg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_errmsg" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.get_errmsg">
+<span class="sig-name descname"><span class="pre">get_errmsg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_errmsg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_errmsg" title="Permalink to this definition"></a></dt>
 <dd><p>get errmsg if we encounter errors sending it out</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.get_flag">
-<code class="descname">get_flag</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_flag" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.get_flag">
+<span class="sig-name descname"><span class="pre">get_flag</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_flag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_flag" title="Permalink to this definition"></a></dt>
 <dd><p>get msg flag</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.get_from_addr">
-<code class="descname">get_from_addr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_from_addr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_from_addr" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.get_from_addr">
+<span class="sig-name descname"><span class="pre">get_from_addr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_from_addr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_from_addr" title="Permalink to this definition"></a></dt>
 <dd><p>get from addr. ((ip, port), (stub, future))</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.get_last_retry_time">
-<code class="descname">get_last_retry_time</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_last_retry_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_last_retry_time" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.get_last_retry_time">
+<span class="sig-name descname"><span class="pre">get_last_retry_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_last_retry_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_last_retry_time" title="Permalink to this definition"></a></dt>
 <dd><p>get last_retry_time</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.get_msg_context">
-<code class="descname">get_msg_context</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_msg_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_msg_context" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.get_msg_context">
+<span class="sig-name descname"><span class="pre">get_msg_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_msg_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_msg_context" title="Permalink to this definition"></a></dt>
 <dd><p>get msg context</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.get_msg_len">
-<code class="descname">get_msg_len</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_msg_len"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_msg_len" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.get_msg_len">
+<span class="sig-name descname"><span class="pre">get_msg_len</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_msg_len"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_msg_len" title="Permalink to this definition"></a></dt>
 <dd><p>get msg len</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.get_msg_type">
-<code class="descname">get_msg_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_msg_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_msg_type" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.get_msg_type">
+<span class="sig-name descname"><span class="pre">get_msg_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_msg_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_msg_type" title="Permalink to this definition"></a></dt>
 <dd><p>get msg type</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.get_order_counts">
-<code class="descname">get_order_counts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_order_counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_order_counts" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.get_order_counts">
+<span class="sig-name descname"><span class="pre">get_order_counts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_order_counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_order_counts" title="Permalink to this definition"></a></dt>
 <dd><p>get order counts</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.get_resend_flag">
-<code class="descname">get_resend_flag</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_resend_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_resend_flag" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.get_resend_flag">
+<span class="sig-name descname"><span class="pre">get_resend_flag</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_resend_flag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_resend_flag" title="Permalink to this definition"></a></dt>
 <dd><p>get msg handle flag</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.get_retry_interval">
-<code class="descname">get_retry_interval</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_retry_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_retry_interval" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.get_retry_interval">
+<span class="sig-name descname"><span class="pre">get_retry_interval</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_retry_interval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_retry_interval" title="Permalink to this definition"></a></dt>
 <dd><p>get retry_interval</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.get_retry_times">
-<code class="descname">get_retry_times</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_retry_times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_retry_times" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.get_retry_times">
+<span class="sig-name descname"><span class="pre">get_retry_times</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_retry_times"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_retry_times" title="Permalink to this definition"></a></dt>
 <dd><p>get retry times</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.get_to_addr">
-<code class="descname">get_to_addr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_to_addr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_to_addr" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.get_to_addr">
+<span class="sig-name descname"><span class="pre">get_to_addr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_to_addr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_to_addr" title="Permalink to this definition"></a></dt>
 <dd><p>get to addr</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.get_total_timeout">
-<code class="descname">get_total_timeout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_total_timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_total_timeout" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.get_total_timeout">
+<span class="sig-name descname"><span class="pre">get_total_timeout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_total_timeout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_total_timeout" title="Permalink to this definition"></a></dt>
 <dd><p>get total_timeout</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.get_uniq_id">
-<code class="descname">get_uniq_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_uniq_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_uniq_id" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.get_uniq_id">
+<span class="sig-name descname"><span class="pre">get_uniq_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_uniq_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_uniq_id" title="Permalink to this definition"></a></dt>
 <dd><p>get unique msg id</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.get_write_bytes">
-<code class="descname">get_write_bytes</code><span class="sig-paren">(</span><em>length</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_write_bytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_write_bytes" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.get_write_bytes">
+<span class="sig-name descname"><span class="pre">get_write_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.get_write_bytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.get_write_bytes" title="Permalink to this definition"></a></dt>
 <dd><p>get write bytes from the msg</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.is_a_recvmsg">
-<code class="descname">is_a_recvmsg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.is_a_recvmsg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.is_a_recvmsg" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.is_a_recvmsg">
+<span class="sig-name descname"><span class="pre">is_a_recvmsg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.is_a_recvmsg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.is_a_recvmsg" title="Permalink to this definition"></a></dt>
 <dd><p>is a msg being received</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.is_a_sendmsg">
-<code class="descname">is_a_sendmsg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.is_a_sendmsg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.is_a_sendmsg" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.is_a_sendmsg">
+<span class="sig-name descname"><span class="pre">is_a_sendmsg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.is_a_sendmsg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.is_a_sendmsg" title="Permalink to this definition"></a></dt>
 <dd><p>is a msg being sent</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.is_msg_already_sent">
-<code class="descname">is_msg_already_sent</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.is_msg_already_sent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.is_msg_already_sent" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.is_msg_already_sent">
+<span class="sig-name descname"><span class="pre">is_msg_already_sent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.is_msg_already_sent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.is_msg_already_sent" title="Permalink to this definition"></a></dt>
 <dd><p>is msg already sent</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.is_recvmsg_complete">
-<code class="descname">is_recvmsg_complete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.is_recvmsg_complete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.is_recvmsg_complete" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.is_recvmsg_complete">
+<span class="sig-name descname"><span class="pre">is_recvmsg_complete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.is_recvmsg_complete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.is_recvmsg_complete" title="Permalink to this definition"></a></dt>
 <dd><p>is msg received already</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.is_sendmsg_complete">
-<code class="descname">is_sendmsg_complete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.is_sendmsg_complete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.is_sendmsg_complete" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.is_sendmsg_complete">
+<span class="sig-name descname"><span class="pre">is_sendmsg_complete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.is_sendmsg_complete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.is_sendmsg_complete" title="Permalink to this definition"></a></dt>
 <dd><p>is msg sent complete</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.is_valid4send">
-<code class="descname">is_valid4send</code><span class="sig-paren">(</span><em>netmsg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.is_valid4send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.is_valid4send" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.is_valid4send">
+<span class="sig-name descname"><span class="pre">is_valid4send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">netmsg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.is_valid4send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.is_valid4send" title="Permalink to this definition"></a></dt>
 <dd><p>for future use</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.pre_resend">
-<code class="descname">pre_resend</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.pre_resend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.pre_resend" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.pre_resend">
+<span class="sig-name descname"><span class="pre">pre_resend</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.pre_resend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.pre_resend" title="Permalink to this definition"></a></dt>
 <dd><p>set writeindex</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.push_data">
-<code class="descname">push_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.push_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.push_data" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.push_data">
+<span class="sig-name descname"><span class="pre">push_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.push_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.push_data" title="Permalink to this definition"></a></dt>
 <dd><p>push data into the msg. Return pushed length.</p>
 <p>Return -1 if we should shutdown the socket channel.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>exception</strong> – may raise IndexError when coming msg has problems.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>exception</strong> – may raise IndexError when coming msg has problems.</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.seek_write">
-<code class="descname">seek_write</code><span class="sig-paren">(</span><em>length_ahead</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.seek_write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.seek_write" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.seek_write">
+<span class="sig-name descname"><span class="pre">seek_write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length_ahead</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.seek_write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.seek_write" title="Permalink to this definition"></a></dt>
 <dd><p>seek foreward by length</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.set_body">
-<code class="descname">set_body</code><span class="sig-paren">(</span><em>body</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_body"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_body" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.set_body">
+<span class="sig-name descname"><span class="pre">set_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_body"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_body" title="Permalink to this definition"></a></dt>
 <dd><p>set msg body</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.set_callback_function">
-<code class="descname">set_callback_function</code><span class="sig-paren">(</span><em>function</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_callback_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_callback_function" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.set_callback_function">
+<span class="sig-name descname"><span class="pre">set_callback_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_callback_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_callback_function" title="Permalink to this definition"></a></dt>
 <dd><p>set function</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.set_errmsg">
-<code class="descname">set_errmsg</code><span class="sig-paren">(</span><em>errmsg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_errmsg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_errmsg" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.set_errmsg">
+<span class="sig-name descname"><span class="pre">set_errmsg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">errmsg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_errmsg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_errmsg" title="Permalink to this definition"></a></dt>
 <dd><p>set errmsg when we encounter errors sending it out</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.set_flag">
-<code class="descname">set_flag</code><span class="sig-paren">(</span><em>flag</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_flag" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.set_flag">
+<span class="sig-name descname"><span class="pre">set_flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_flag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_flag" title="Permalink to this definition"></a></dt>
 <dd><p>set flag for the msg</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.set_from_addr">
-<code class="descname">set_from_addr</code><span class="sig-paren">(</span><em>ip_port</em>, <em>stub_future</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_from_addr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_from_addr" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.set_from_addr">
+<span class="sig-name descname"><span class="pre">set_from_addr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stub_future</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_from_addr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_from_addr" title="Permalink to this definition"></a></dt>
 <dd><p>set msg from addr</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.set_last_retry_time">
-<code class="descname">set_last_retry_time</code><span class="sig-paren">(</span><em>last_retry_time</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_last_retry_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_last_retry_time" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.set_last_retry_time">
+<span class="sig-name descname"><span class="pre">set_last_retry_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">last_retry_time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_last_retry_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_last_retry_time" title="Permalink to this definition"></a></dt>
 <dd><p>set last_retry_time</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.set_msg_context">
-<code class="descname">set_msg_context</code><span class="sig-paren">(</span><em>context</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_msg_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_msg_context" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.set_msg_context">
+<span class="sig-name descname"><span class="pre">set_msg_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_msg_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_msg_context" title="Permalink to this definition"></a></dt>
 <dd><p>set up context for this netmsg</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.set_msg_type">
-<code class="descname">set_msg_type</code><span class="sig-paren">(</span><em>msg_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_msg_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_msg_type" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.set_msg_type">
+<span class="sig-name descname"><span class="pre">set_msg_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_msg_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_msg_type" title="Permalink to this definition"></a></dt>
 <dd><p>set msg type</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.set_need_head">
-<code class="descname">set_need_head</code><span class="sig-paren">(</span><em>b_need=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_need_head"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_need_head" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Note:</th><td class="field-body">By default, the msg does not need to have a head unless
-it’s the first msg that posted/received.</td>
-</tr>
-</tbody>
-</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.set_need_head">
+<span class="sig-name descname"><span class="pre">set_need_head</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b_need</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_need_head"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_need_head" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Note</dt>
+<dd class="field-odd"><p>By default, the msg does not need to have a head unless
+it’s the first msg that posted/received.</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.set_resend_flag">
-<code class="descname">set_resend_flag</code><span class="sig-paren">(</span><em>handle_flag</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_resend_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_resend_flag" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.set_resend_flag">
+<span class="sig-name descname"><span class="pre">set_resend_flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">handle_flag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_resend_flag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_resend_flag" title="Permalink to this definition"></a></dt>
 <dd><p>set msg handle flag</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.set_retry_interval">
-<code class="descname">set_retry_interval</code><span class="sig-paren">(</span><em>retry_interval</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_retry_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_retry_interval" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.set_retry_interval">
+<span class="sig-name descname"><span class="pre">set_retry_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retry_interval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_retry_interval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_retry_interval" title="Permalink to this definition"></a></dt>
 <dd><p>set retry_interval</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.set_retry_times">
-<code class="descname">set_retry_times</code><span class="sig-paren">(</span><em>num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_retry_times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_retry_times" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.set_retry_times">
+<span class="sig-name descname"><span class="pre">set_retry_times</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_retry_times"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_retry_times" title="Permalink to this definition"></a></dt>
 <dd><p>set msg retry times</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.set_to_addr">
-<code class="descname">set_to_addr</code><span class="sig-paren">(</span><em>ip_port</em>, <em>stub_future</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_to_addr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_to_addr" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.set_to_addr">
+<span class="sig-name descname"><span class="pre">set_to_addr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip_port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stub_future</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_to_addr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_to_addr" title="Permalink to this definition"></a></dt>
 <dd><p>set msg to addr</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.set_total_timeout">
-<code class="descname">set_total_timeout</code><span class="sig-paren">(</span><em>total_timeout</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_total_timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_total_timeout" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.set_total_timeout">
+<span class="sig-name descname"><span class="pre">set_total_timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">total_timeout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_total_timeout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_total_timeout" title="Permalink to this definition"></a></dt>
 <dd><p>set total_timeout</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msg.CNetMsg.set_uniq_id">
-<code class="descname">set_uniq_id</code><span class="sig-paren">(</span><em>uniq_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_uniq_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_uniq_id" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.CNetMsg.set_uniq_id">
+<span class="sig-name descname"><span class="pre">set_uniq_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uniq_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CNetMsg.set_uniq_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.CNetMsg.set_uniq_id" title="Permalink to this definition"></a></dt>
 <dd><p>set msg unique id</p>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="cup.net.asyn.msg.CAckMsg">
-<em class="property">class </em><code class="descclassname">cup.net.asyn.msg.</code><code class="descname">CAckMsg</code><span class="sig-paren">(</span><em>is_postmsg=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#CAckMsg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.CAckMsg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#cup.net.asyn.msg.CNetMsg" title="cup.net.asyn.msg.CNetMsg"><code class="xref py py-class docutils literal notranslate"><span class="pre">cup.net.asyn.msg.CNetMsg</span></code></a></p>
-<p>ack msg example</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="cup.net.asyn.msg.netmsg_tostring">
-<code class="descclassname">cup.net.asyn.msg.</code><code class="descname">netmsg_tostring</code><span class="sig-paren">(</span><em>netmsg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#netmsg_tostring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msg.netmsg_tostring" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="cup.net.asyn.msg.netmsg_tostring">
+<span class="sig-prename descclassname"><span class="pre">cup.net.asyn.msg.</span></span><span class="sig-name descname"><span class="pre">netmsg_tostring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">netmsg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msg.html#netmsg_tostring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msg.netmsg_tostring" title="Permalink to this definition"></a></dt>
 <dd><p>get printable netmsg</p>
 </dd></dl>
 
-</div>
-<div class="section" id="module-cup.net.asyn.msgcenter">
-<span id="cup-net-asyn-msgcenter-module"></span><h2>cup.net.asyn.msgcenter module<a class="headerlink" href="#module-cup.net.asyn.msgcenter" title="Permalink to this headline">¶</a></h2>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">descrition:</th><td class="field-body">msg center related module</td>
-</tr>
-</tbody>
-</table>
-<dl class="class">
-<dt id="cup.net.asyn.msgcenter.IMessageCenter">
-<em class="property">class </em><code class="descclassname">cup.net.asyn.msgcenter.</code><code class="descname">IMessageCenter</code><span class="sig-paren">(</span><em>ip</em>, <em>port</em>, <em>thdpool_param=None</em>, <em>stat_intvl=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter" title="Permalink to this definition">¶</a></dt>
+</section>
+<section id="module-cup.net.asyn.msgcenter">
+<span id="cup-net-asyn-msgcenter-module"></span><h2>cup.net.asyn.msgcenter module<a class="headerlink" href="#module-cup.net.asyn.msgcenter" title="Permalink to this heading"></a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">descrition</dt>
+<dd class="field-odd"><p>msg center related module</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="cup.net.asyn.msgcenter.IMessageCenter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.net.asyn.msgcenter.</span></span><span class="sig-name descname"><span class="pre">IMessageCenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thdpool_param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stat_intvl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Message center class</p>
-<dl class="method">
-<dt id="cup.net.asyn.msgcenter.IMessageCenter.close_socket">
-<code class="descname">close_socket</code><span class="sig-paren">(</span><em>msg</em>, <em>recv_socket=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.close_socket"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.close_socket" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msgcenter.IMessageCenter.close_socket">
+<span class="sig-name descname"><span class="pre">close_socket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recv_socket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.close_socket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.close_socket" title="Permalink to this definition"></a></dt>
 <dd><p>close the socket by msg</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msgcenter.IMessageCenter.default_handle">
-<code class="descname">default_handle</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.default_handle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.default_handle" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msgcenter.IMessageCenter.default_handle">
+<span class="sig-name descname"><span class="pre">default_handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.default_handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.default_handle" title="Permalink to this definition"></a></dt>
 <dd><p>default handle for msgcenter</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msgcenter.IMessageCenter.dump_stat">
-<code class="descname">dump_stat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.dump_stat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.dump_stat" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msgcenter.IMessageCenter.dump_stat">
+<span class="sig-name descname"><span class="pre">dump_stat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.dump_stat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.dump_stat" title="Permalink to this definition"></a></dt>
 <dd><p>dump message center class</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msgcenter.IMessageCenter.global_sock_keepalive">
-<code class="descname">global_sock_keepalive</code><span class="sig-paren">(</span><em>after_idle_sec=1</em>, <em>interval_sec=3</em>, <em>max_fails=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.global_sock_keepalive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.global_sock_keepalive" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msgcenter.IMessageCenter.global_sock_keepalive">
+<span class="sig-name descname"><span class="pre">global_sock_keepalive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">after_idle_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_fails</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.global_sock_keepalive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.global_sock_keepalive" title="Permalink to this definition"></a></dt>
 <dd><p>Set TCP keepalive on an open socket.
 It activates after 1 second (after_idle_sec) of idleness,
 then sends a keepalive ping once every 3 seconds (interval_sec),
 and closes the connection after 5 failed ping (max_fails), or 15 sec</p>
 <p>Notice, this will set all sockets this way.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>sock</strong> – socket</li>
-<li><strong>after_idle_sec</strong> – for TCP_KEEPIDLE. May not work, depends on ur system</li>
-<li><strong>interval_sec</strong> – for TCP_KEEPINTVL</li>
-<li><strong>max_fails</strong> – for TCP_KEEPCNT</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sock</strong> – socket</p></li>
+<li><p><strong>after_idle_sec</strong> – for TCP_KEEPIDLE. May not work, depends on ur system</p></li>
+<li><p><strong>interval_sec</strong> – for TCP_KEEPINTVL</p></li>
+<li><p><strong>max_fails</strong> – for TCP_KEEPCNT</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msgcenter.IMessageCenter.handle">
-<code class="descname">handle</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.handle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.handle" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msgcenter.IMessageCenter.handle">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.handle" title="Permalink to this definition"></a></dt>
 <dd><p>handle function which should be implemented by
 sub-class.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msgcenter.IMessageCenter.is_stopping">
-<code class="descname">is_stopping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.is_stopping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.is_stopping" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msgcenter.IMessageCenter.is_stopping">
+<span class="sig-name descname"><span class="pre">is_stopping</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.is_stopping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.is_stopping" title="Permalink to this definition"></a></dt>
 <dd><p>is msg center being stopped</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msgcenter.IMessageCenter.post_msg">
-<code class="descname">post_msg</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.post_msg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.post_msg" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msgcenter.IMessageCenter.post_msg">
+<span class="sig-name descname"><span class="pre">post_msg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.post_msg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.post_msg" title="Permalink to this definition"></a></dt>
 <dd><p>post a net msg</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msgcenter.IMessageCenter.pre_handle">
-<code class="descname">pre_handle</code><span class="sig-paren">(</span><em>msg</em>, <em>function</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.pre_handle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.pre_handle" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msgcenter.IMessageCenter.pre_handle">
+<span class="sig-name descname"><span class="pre">pre_handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.pre_handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.pre_handle" title="Permalink to this definition"></a></dt>
 <dd><p>pre_handle. Internal use ONLY. Do NOT call it directly.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msgcenter.IMessageCenter.run">
-<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.run" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msgcenter.IMessageCenter.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.run" title="Permalink to this definition"></a></dt>
 <dd><p>run the msgcenter</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msgcenter.IMessageCenter.setup">
-<code class="descname">setup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.setup" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msgcenter.IMessageCenter.setup">
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.setup" title="Permalink to this definition"></a></dt>
 <dd><p>setup the message center</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="cup.net.asyn.msgcenter.IMessageCenter.stop">
-<code class="descname">stop</code><span class="sig-paren">(</span><em>force_stop=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.stop" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.net.asyn.msgcenter.IMessageCenter.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force_stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/net/asyn/msgcenter.html#IMessageCenter.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.net.asyn.msgcenter.IMessageCenter.stop" title="Permalink to this definition"></a></dt>
 <dd><p>stop the message center</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="cup.res.html" class="btn btn-neutral float-right" title="cup.res package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="cup.net.html" class="btn btn-neutral" title="cup.net package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cup.net.html" class="btn btn-neutral float-left" title="cup.net package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cup.res.html" class="btn btn-neutral float-right" title="cup.res package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2020, CUP-DEV.
-
-    </p>
+    <p>&#169; Copyright 2023, CUP-DEV Team.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'3.2.19',
-            LANGUAGE:'en',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="_static/language_data.js"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
