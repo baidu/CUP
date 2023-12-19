@@ -39,24 +39,27 @@ if platforms.is_linux() or platforms.is_mac():
     FILELOCK_UNLOCK = fcntl.LOCK_UN
 elif platforms.is_windows():
     import msvcrt
-
+    FILELOCK_EXCLUSIVE = msvcrt.LK_RLCK
+    FILELOCK_NONBLOCKING = msvcrt.LK_RLCK
+    FILELOCK_UNLOCK = msvcrt.LK_UNLCK
     def file_size(fobj):
         """win file size"""
         return os.path.getsize(os.path.realpath(fobj.name) )
 
     def win_lockfile(fobj, blocking=True):
         """win lock file"""
-        flags = msvcrt.LK_RLCK
+        # flags = msvcrt.LK_RLCK
+        flags = FILELOCK_EXCLUSIVE
         if not blocking:
-            flags = msvcrt.LK_NBRLCK
+            flags = FILELOCK_NONBLOCKING
         msvcrt.locking(fobj.fileno(), flags, file_size(fobj))
 
     def win_unlockfile(fobj):
         """win unlock file"""
-        msvcrt.locking(fobj.fileno(), msvcrt.LK_UNLCK, file_size(fobj))
+        msvcrt.locking(fobj.fileno(), FILELOCK_UNLOCK, file_size(fobj))
 
 
-class LockFile(object):
+class LockFile:
     """
     Lock file in order to prevent others from trying to lock it again
 
