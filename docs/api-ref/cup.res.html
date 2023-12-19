@@ -1,124 +1,52 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cup.res package &mdash; cup 3.2.32 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/js/theme.js"></script>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>cup.res package &#8212; cup 3.2.33 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="cup.services package" href="cup.services.html" />
-    <link rel="prev" title="cup.net.asyn package" href="cup.net.asyn.html" /> 
-</head>
+    <link rel="prev" title="cup.net.asyn package" href="cup.net.asyn.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> cup
-          </a>
-              <div class="version">
-                3.2.32
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="cup.html">cup package</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="cup.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="cup.net.html">cup.net package</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">cup.res package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-cup.res.linux">cup.res.linux module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-cup.res.mac">cup.res.mac module</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="cup.services.html">cup.services package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cup.shell.html">cup.shell package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cup.storage.html">cup.storage package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cup.util.html">cup.util package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cup.web.html">cup.web package</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.cache">cup.cache module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.const">cup.const module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.decorators">cup.decorators module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.err">cup.err module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.exfile">cup.exfile module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.flag">cup.flag module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.log">cup.log module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.mail">cup.mail module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.platforms">cup.platforms module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.thread">cup.thread module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.timeplus">cup.timeplus module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.unittest">cup.unittest module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.version">cup.version module</a></li>
-</ul>
-</li>
-</ul>
+  </head><body>
+  
 
-        </div>
-      </div>
-    </nav>
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">cup</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="cup.html">cup package</a></li>
-      <li class="breadcrumb-item active">cup.res package</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/cup.res.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+          <div class="body" role="main">
+            
   <section id="module-cup.res">
-<span id="cup-res-package"></span><h1>cup.res package<a class="headerlink" href="#module-cup.res" title="Permalink to this heading"></a></h1>
+<span id="cup-res-package"></span><h1>cup.res package<a class="headerlink" href="#module-cup.res" title="Permalink to this heading">¶</a></h1>
 <dl class="field-list simple">
-<dt class="field-odd">description</dt>
+<dt class="field-odd">description<span class="colon">:</span></dt>
 <dd class="field-odd"><p>resource related module</p>
 </dd>
 </dl>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
 </section>
 <section id="module-cup.res.linux">
-<span id="cup-res-linux-module"></span><h2>cup.res.linux module<a class="headerlink" href="#module-cup.res.linux" title="Permalink to this heading"></a></h2>
+<span id="cup-res-linux-module"></span><h2>cup.res.linux module<a class="headerlink" href="#module-cup.res.linux" title="Permalink to this heading">¶</a></h2>
 <p>Provie Linux Resource/State Info Query</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="cup.res.linux.CPUInfo">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">CPUInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">usr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iowait</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">irq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">softirq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guest_nice</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#CPUInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.CPUInfo" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">CPUInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">usr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iowait</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">irq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">softirq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guest</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#CPUInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.CPUInfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#cup.res.linux.CPUInfo" title="cup.res.linux.CPUInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">CPUInfo</span></code></a></p>
 <p>CPUInfo is used for get_cpu_usage function. The following attr will be
 in the namedtuple:
@@ -143,7 +71,7 @@ guest</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="cup.res.linux.MemInfo">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">MemInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">total</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">available</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">used</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">active</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inactive</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cached</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#MemInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.MemInfo" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">MemInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">total</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">available</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">used</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">active</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inactive</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cached</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#MemInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.MemInfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">vmem</span></code></p>
 <dl class="simple">
 <dt>get_meminfo will get memory info (a namedtuple returned:</dt><dd><p>total, available, percent, used, free,
@@ -164,12 +92,12 @@ cached)</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="cup.res.linux.Process">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">Process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">Process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Process info query (given a pid)</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.children">
-<span class="sig-name descname"><span class="pre">children</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.children"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.children" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">children</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.children"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.children" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the children of this process as a list of Process
 instances, pre-emptively checking whether PID has been reused.
 If recursive is True return all the parent descendants.</p>
@@ -187,20 +115,20 @@ If recursive is True return all the parent descendants.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.create_time">
-<span class="sig-name descname"><span class="pre">create_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.create_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.create_time" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">create_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.create_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.create_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>return -1 represent the process does not exists</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_connections">
-<span class="sig-name descname"><span class="pre">get_connections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'inet'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_connections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_connections" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_connections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'inet'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_connections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_connections" title="Permalink to this definition">¶</a></dt>
 <dd><p>get network connection info, each item contains a namedtuple
 (fd family type laddr raddr status)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>kind</strong> – kind=’inet’ by default</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a list of network connection info</p>
 </dd>
 </dl>
@@ -208,19 +136,19 @@ If recursive is True return all the parent descendants.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_cpu_times">
-<span class="sig-name descname"><span class="pre">get_cpu_times</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_cpu_times"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_cpu_times" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_cpu_times</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_cpu_times"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_cpu_times" title="Permalink to this definition">¶</a></dt>
 <dd><p>get cpu times, return with a namedtuple (utime, stime)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_cpu_usage">
-<span class="sig-name descname"><span class="pre">get_cpu_usage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_cpu_usage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_cpu_usage" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_cpu_usage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_cpu_usage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_cpu_usage" title="Permalink to this definition">¶</a></dt>
 <dd><p>get cpu usage</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_ext_memory_info">
-<span class="sig-name descname"><span class="pre">get_ext_memory_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_ext_memory_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_ext_memory_info" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_ext_memory_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_ext_memory_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_ext_memory_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>return namedtuple with FIELDs below:</p>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cup.res</span> <span class="kn">import</span> <span class="n">linux</span>
@@ -229,12 +157,6 @@ If recursive is True return all the parent descendants.</p>
 </pre></div>
 </div>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 14%" />
-<col style="width: 65%" />
-<col style="width: 11%" />
-<col style="width: 11%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>FIELD</p></th>
 <th class="head"><p>DESCRIPTION</p></th>
@@ -284,155 +206,160 @@ If recursive is True return all the parent descendants.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_memory_info">
-<span class="sig-name descname"><span class="pre">get_memory_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_memory_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_memory_info" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_memory_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_memory_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_memory_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>get memory info, return with a namedtuple (
 rss vms shared text lib data dirty)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_memory_maps">
-<span class="sig-name descname"><span class="pre">get_memory_maps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_memory_maps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_memory_maps" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_memory_maps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_memory_maps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_memory_maps" title="Permalink to this definition">¶</a></dt>
 <dd><p>get memory map (from /proc smaps file)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_num_ctx_switches">
-<span class="sig-name descname"><span class="pre">get_num_ctx_switches</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_num_ctx_switches"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_num_ctx_switches" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_num_ctx_switches</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_num_ctx_switches"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_num_ctx_switches" title="Permalink to this definition">¶</a></dt>
 <dd><p>get process context switch info (from /proc status file), return
 with a namedtuple (vol, unvol)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_num_fds">
-<span class="sig-name descname"><span class="pre">get_num_fds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_num_fds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_num_fds" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_num_fds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_num_fds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_num_fds" title="Permalink to this definition">¶</a></dt>
 <dd><p>get opened file descriptor num</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_open_files">
-<span class="sig-name descname"><span class="pre">get_open_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_open_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_open_files" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_open_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_open_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_open_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>get opened file info</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_process_cmdline">
-<span class="sig-name descname"><span class="pre">get_process_cmdline</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_cmdline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_cmdline" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_process_cmdline</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_cmdline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_cmdline" title="Permalink to this definition">¶</a></dt>
 <dd><p>get cmdline</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_process_create_time">
-<span class="sig-name descname"><span class="pre">get_process_create_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_create_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_create_time" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_process_create_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_create_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_create_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>get process create time</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_process_cwd">
-<span class="sig-name descname"><span class="pre">get_process_cwd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_cwd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_cwd" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_process_cwd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_cwd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_cwd" title="Permalink to this definition">¶</a></dt>
 <dd><p>get process current working direcotry</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_process_exe">
-<span class="sig-name descname"><span class="pre">get_process_exe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_exe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_exe" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_process_exe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_exe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_exe" title="Permalink to this definition">¶</a></dt>
 <dd><p>get executable info of the process. If the process is a daemon, use
 get_process_name instead!</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_process_gids">
-<span class="sig-name descname"><span class="pre">get_process_gids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_gids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_gids" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_process_gids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_gids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_gids" title="Permalink to this definition">¶</a></dt>
 <dd><p>get process gid, namedtuple will be returned
 (with attrs .real .effective .saved)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_process_io_counters">
-<span class="sig-name descname"><span class="pre">get_process_io_counters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_io_counters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_io_counters" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_process_io_counters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_io_counters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_io_counters" title="Permalink to this definition">¶</a></dt>
 <dd><p>get io statistics info of network adapters.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_process_name">
-<span class="sig-name descname"><span class="pre">get_process_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_name" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_process_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>get process name of the process (for daemon process only)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_process_nice">
-<span class="sig-name descname"><span class="pre">get_process_nice</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_nice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_nice" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_process_nice</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_nice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_nice" title="Permalink to this definition">¶</a></dt>
 <dd><p>get process nice</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_process_num_threads">
-<span class="sig-name descname"><span class="pre">get_process_num_threads</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_num_threads"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_num_threads" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_process_num_threads</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_num_threads"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_num_threads" title="Permalink to this definition">¶</a></dt>
 <dd><p>get threads num of this process</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_process_ppid">
-<span class="sig-name descname"><span class="pre">get_process_ppid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_ppid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_ppid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_process_ppid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_ppid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_ppid" title="Permalink to this definition">¶</a></dt>
 <dd><p>get parent process id</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_process_status">
-<span class="sig-name descname"><span class="pre">get_process_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_status" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_process_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_status" title="Permalink to this definition">¶</a></dt>
 <dd><p>get status of the current process (info from /proc/xxx/status)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_process_threads">
-<span class="sig-name descname"><span class="pre">get_process_threads</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_threads"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_threads" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_process_threads</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_threads"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_threads" title="Permalink to this definition">¶</a></dt>
 <dd><p>get threads that is current using, return with a namedtuple (
 thread_id, utime, stime)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.get_process_uids">
-<span class="sig-name descname"><span class="pre">get_process_uids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_uids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_uids" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_process_uids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.get_process_uids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.get_process_uids" title="Permalink to this definition">¶</a></dt>
 <dd><p>get uid info of the process, will return a namedtuple</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cup.res.linux.Process.getpgid">
-<span class="sig-name descname"><span class="pre">getpgid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.getpgid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.getpgid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">getpgid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#Process.getpgid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.Process.getpgid" title="Permalink to this definition">¶</a></dt>
 <dd><p>return process group id (not pid, not gid either)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="cup.res.linux.Process.nt_mmap_ext">
-<span class="sig-name descname"><span class="pre">nt_mmap_ext</span></span><a class="headerlink" href="#cup.res.linux.Process.nt_mmap_ext" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">nt_mmap_ext</span></span><a class="headerlink" href="#cup.res.linux.Process.nt_mmap_ext" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">mmap</span></code></p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="cup.res.linux.Process.nt_mmap_grouped">
-<span class="sig-name descname"><span class="pre">nt_mmap_grouped</span></span><a class="headerlink" href="#cup.res.linux.Process.nt_mmap_grouped" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">nt_mmap_grouped</span></span><a class="headerlink" href="#cup.res.linux.Process.nt_mmap_grouped" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">mmap</span></code></p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="cup.res.linux.Process.pid">
+<span class="sig-name descname"><span class="pre">pid</span></span><a class="headerlink" href="#cup.res.linux.Process.pid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="cup.res.linux.SWAPINFO">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">SWAPINFO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">total</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">used</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#SWAPINFO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.SWAPINFO" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">SWAPINFO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">total</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">free</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">used</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#SWAPINFO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.SWAPINFO" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">SwapInfo</span></code></p>
 <p>get_swapinfo will return a SWAPINFO</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.res.linux.boot_time">
-<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">boot_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#boot_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.boot_time" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">boot_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#boot_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.boot_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the system boot time expressed in seconds since the epoch.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.res.linux.get_boottime_since_epoch">
-<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_boottime_since_epoch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_boottime_since_epoch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_boottime_since_epoch" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_boottime_since_epoch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_boottime_since_epoch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_boottime_since_epoch" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>return boot time (seconds) since epoch</p>
 </dd>
 </dl>
@@ -440,9 +367,9 @@ thread_id, utime, stime)</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.res.linux.get_cpu_core_usage">
-<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_cpu_core_usage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coreindex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intvl_in_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_cpu_core_usage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_cpu_core_usage" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_cpu_core_usage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coreindex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intvl_in_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_cpu_core_usage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_cpu_core_usage" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>index</strong> – cpu core index</p>
 </dd>
 </dl>
@@ -450,22 +377,22 @@ thread_id, utime, stime)</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.res.linux.get_cpu_nums">
-<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_cpu_nums</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_cpu_nums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_cpu_nums" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_cpu_nums</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_cpu_nums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_cpu_nums" title="Permalink to this definition">¶</a></dt>
 <dd><p>get cpu nums</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.res.linux.get_cpu_usage">
-<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_cpu_usage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intvl_in_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_cpu_usage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_cpu_usage" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_cpu_usage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intvl_in_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_cpu_usage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_cpu_usage" title="Permalink to this definition">¶</a></dt>
 <dd><p>get cpu usage statistics during a time period (intvl_in_sec), return a
 namedtuple CPUInfo</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.res.linux.get_disk_info">
-<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_disk_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_disk_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_disk_info" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_disk_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_disk_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_disk_info" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>get disk info of the system</p>
 </dd>
 </dl>
@@ -473,13 +400,13 @@ namedtuple CPUInfo</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.res.linux.get_disk_usage_all">
-<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_disk_usage_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_disk_usage_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_disk_usage_all" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_disk_usage_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_disk_usage_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_disk_usage_all" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>raw</strong> – if raw is True, will use Byte as the measure. Automatically use
 MB/GB otherwise.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>return a dict of disk usage</p>
 </dd>
 </dl>
@@ -487,25 +414,25 @@ MB/GB otherwise.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.res.linux.get_kernel_version">
-<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_kernel_version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_kernel_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_kernel_version" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_kernel_version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_kernel_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_kernel_version" title="Permalink to this definition">¶</a></dt>
 <dd><p>get linux kernel verions, e.g.(‘2’, ‘6’, ‘32’):</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.res.linux.get_meminfo">
-<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_meminfo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_meminfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_meminfo" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_meminfo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_meminfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_meminfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>get system memory info</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.res.linux.get_net_through">
-<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_net_through</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">str_interface</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_net_through"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_net_through" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_net_through</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">str_interface</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_net_through"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_net_through" title="Permalink to this definition">¶</a></dt>
 <dd><p>get network interface statistics by a interface (eth0, e,g,)</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.res.linux.get_net_transmit_speed">
-<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_net_transmit_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">str_interface</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intvl_in_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_net_transmit_speed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_net_transmit_speed" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_net_transmit_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">str_interface</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intvl_in_sec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_net_transmit_speed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_net_transmit_speed" title="Permalink to this definition">¶</a></dt>
 <dd><p>get network interface write/read speed</p>
 <p>E.g.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cup.res</span> <span class="kn">import</span> <span class="n">linux</span>
@@ -516,23 +443,23 @@ MB/GB otherwise.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.res.linux.get_swapinfo">
-<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_swapinfo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_swapinfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_swapinfo" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">get_swapinfo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#get_swapinfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.get_swapinfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>get swamp info of the system</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.res.linux.net_io_counters">
-<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">net_io_counters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#net_io_counters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.net_io_counters" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">net_io_counters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#net_io_counters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.net_io_counters" title="Permalink to this definition">¶</a></dt>
 <dd><p>get network statistics with a list of namedtuple
 (bytes_sent, bytes_recv, packets_sent, packets_recv,
 errin, errout, dropin, dropout)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># return a dict like below:</span>
 <span class="p">{</span>
     <span class="s1">&#39;lo&#39;</span><span class="p">:</span>
      <span class="p">(</span>
-         <span class="mi">235805206817</span><span class="p">,</span> <span class="mi">235805206817</span><span class="p">,</span> <span class="mi">315060887</span><span class="p">,</span> <span class="mi">315060887</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+       <span class="mi">235805206817</span><span class="p">,</span> <span class="mi">235805206817</span><span class="p">,</span> <span class="mi">315060887</span><span class="p">,</span> <span class="mi">315060887</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
      <span class="p">),</span>
      <span class="s1">&#39;eth1&#39;</span><span class="p">:</span>
      <span class="p">(</span>
@@ -553,13 +480,13 @@ errin, errout, dropin, dropout)</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.res.linux.pids">
-<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">pids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#pids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.pids" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">pids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#pids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.pids" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of PIDs currently running on the system.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.res.linux.process_iter">
-<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">process_iter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#process_iter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.process_iter" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.res.linux.</span></span><span class="sig-name descname"><span class="pre">process_iter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/linux.html#process_iter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.linux.process_iter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a generator yielding a Process instance for all
 running processes.</p>
 <p>Every new Process instance is only created once and then cached
@@ -575,31 +502,34 @@ Process instance
 hint:i did not use check_running function because the container of
 pid is set</p>
 <p>2. the origion use a sorted list(_pmap.items()) +
-list(dict.fromkeys(new_pids).items()
-to get pid and proc to make res.proc is only a instance of a pid Process
-hint(bugs):i did not use fromkeys(new_pids) because i did not get the meanning
-of using proc</p>
+list(dict.fromkeys(new_pids).items() to get pid and proc to make
+res.proc is only a instance of a pid Process</p>
+<dl class="simple">
+<dt>hint(bugs):i did not use fromkeys(new_pids) because</dt><dd><p>i did not get the meanning</p>
+</dd>
+</dl>
+<p>of using proc</p>
 </div></blockquote>
 </dd></dl>
 
 </section>
 <section id="module-cup.res.mac">
-<span id="cup-res-mac-module"></span><h2>cup.res.mac module<a class="headerlink" href="#module-cup.res.mac" title="Permalink to this heading"></a></h2>
+<span id="cup-res-mac-module"></span><h2>cup.res.mac module<a class="headerlink" href="#module-cup.res.mac" title="Permalink to this heading">¶</a></h2>
 <p>query mac resource module</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.res.mac.get_cpu_nums">
-<span class="sig-prename descclassname"><span class="pre">cup.res.mac.</span></span><span class="sig-name descname"><span class="pre">get_cpu_nums</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/mac.html#get_cpu_nums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.mac.get_cpu_nums" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.res.mac.</span></span><span class="sig-name descname"><span class="pre">get_cpu_nums</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/mac.html#get_cpu_nums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.mac.get_cpu_nums" title="Permalink to this definition">¶</a></dt>
 <dd><p>return cpu num</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.res.mac.get_disk_info">
-<span class="sig-prename descclassname"><span class="pre">cup.res.mac.</span></span><span class="sig-name descname"><span class="pre">get_disk_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/mac.html#get_disk_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.mac.get_disk_info" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.res.mac.</span></span><span class="sig-name descname"><span class="pre">get_disk_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/mac.html#get_disk_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.mac.get_disk_info" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>get disk info from the current macOS</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>Exception</strong> – RuntimeError, if got no disk at all</p>
 </dd>
 </dl>
@@ -607,12 +537,12 @@ of using proc</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.res.mac.get_disk_usage_all">
-<span class="sig-prename descclassname"><span class="pre">cup.res.mac.</span></span><span class="sig-name descname"><span class="pre">get_disk_usage_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/mac.html#get_disk_usage_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.mac.get_disk_usage_all" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.res.mac.</span></span><span class="sig-name descname"><span class="pre">get_disk_usage_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/mac.html#get_disk_usage_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.mac.get_disk_usage_all" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>raw</strong> – measure set to Byte if Raw is True</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a py dict: { ‘totalSpace’: xxx, ‘usedSpace’: xxx, ‘freeSpace’: xxx,
 ‘unit’: xxx
 }</p>
@@ -622,7 +552,7 @@ of using proc</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="cup.res.mac.get_kernel_version">
-<span class="sig-prename descclassname"><span class="pre">cup.res.mac.</span></span><span class="sig-name descname"><span class="pre">get_kernel_version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/mac.html#get_kernel_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.mac.get_kernel_version" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">cup.res.mac.</span></span><span class="sig-name descname"><span class="pre">get_kernel_version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/res/mac.html#get_kernel_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.res.mac.get_kernel_version" title="Permalink to this definition">¶</a></dt>
 <dd><p>get kernel info of mac.
 e.g.(‘16’, ‘7’, ‘0’):</p>
 </dd></dl>
@@ -631,34 +561,105 @@ e.g.(‘16’, ‘7’, ‘0’):</p>
 </section>
 
 
-           </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="cup.net.asyn.html" class="btn btn-neutral float-left" title="cup.net.asyn package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="cup.services.html" class="btn btn-neutral float-right" title="cup.services package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2023, CUP-DEV Team.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
+          
         </div>
       </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">cup</a></h1>
 
-</body>
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="cup.html">cup package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="cup.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="cup.net.html">cup.net package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">cup.res package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.res.linux">cup.res.linux module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cup.res.mac">cup.res.mac module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="cup.services.html">cup.services package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cup.shell.html">cup.shell package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cup.storage.html">cup.storage package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cup.util.html">cup.util package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cup.web.html">cup.web package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.cache">cup.cache module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.const">cup.const module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.decorators">cup.decorators module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.err">cup.err module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.exfile">cup.exfile module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.flag">cup.flag module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.log">cup.log module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.mail">cup.mail module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.platforms">cup.platforms module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.thread">cup.thread module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.timeplus">cup.timeplus module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.unittest">cup.unittest module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cup.html#module-cup.version">cup.version module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="cup.html">cup package</a><ul>
+      <li>Previous: <a href="cup.net.asyn.html" title="previous chapter">cup.net.asyn package</a></li>
+      <li>Next: <a href="cup.services.html" title="next chapter">cup.services package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, CUP-DEV Team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/cup.res.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
 </html>

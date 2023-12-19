@@ -10,7 +10,7 @@
 from __future__ import print_function
 
 __all__ = [
-    'debug', 'info', 'warning', 'critical',
+    'debug', 'info', 'warning', 'critical', 'fatal',
     'init_comlog', 'setloglevel', 'ROTATION', 'INFINITE',
     'reinit_comlog', 'parse',
     'backtrace_info', 'backtrace_debug', 'backtrace_error',
@@ -45,6 +45,7 @@ INFO = logging.INFO
 WARNING = logging.WARNING
 ERROR = logging.ERROR
 CRITICAL = logging.CRITICAL
+FATAL = logging.FATAL
 G_INITED_LOGGER = []
 
 
@@ -54,6 +55,7 @@ warning = logging.warning
 error = logging.error
 debug = logging.debug
 critical = logging.critical
+fatal = logging.fatal
 
 
 LoggerParams = collections.namedtuple('LoggerParams', [
@@ -201,9 +203,10 @@ class LogInitializer:
         msg = '{0}{1}'.format(tempmsg, msg)
         if platforms.is_py2():
             # pylint: disable=undefined-variable
-            if isinstance(msg, unicode):
+            # Pyright: disable=reportUndefinedVariable
+            if isinstance(msg, unicode): # type: ignore
                 return msg
-            return msg.decode('utf8')
+            return msg.decode('utf8') # type: ignore
         return msg
 
 
@@ -246,8 +249,8 @@ class _RootLogerMan:
         """reset root logger"""
         global G_INITED_LOGGER
         tmplogger = self._rootlogger
-        while len(tmplogger.handlers) > 0:
-            tmplogger.removeHandler(tmplogger.handlers[0])
+        while len(tmplogger.handlers) > 0: # type: ignore
+            tmplogger.removeHandler(tmplogger.handlers[0]) # type: ignore
         del tmplogger
         self._rootlogger = logger
         logging.root = logger
@@ -372,8 +375,8 @@ def reinit_comlog(loggername, loglevel=logging.INFO, logfile='cup.log',
 
 def _fail_handle(msg, e):
     if platforms.is_py2():
-        # pylint: disable=undefined-variable
-        if not isinstance(msg, unicode):
+        # pylint: disable=undefined-variable 
+        if not isinstance(msg, unicode): # type:ignore[reportUndefinedVariable]
             msg = msg.decode('utf8')
         print('{0}\nerror:{1}'.format(msg, e))
     elif platforms.is_py3():
@@ -542,6 +545,12 @@ def debug_if(bol, msg, back_trace_len=1):
         debug(msg, back_trace_len)
 
 
+def faltal_if(bol, msg, back_trace_len=1):
+    """log msg with info loglevel if bol is true"""
+    if bol:
+        fatal(msg, back_trace_len)
+
+
 def xinit_comlog(loggername, logger_params):
     """
     xinit_comlog along with xdebug xinfo xwarn xerror are functions for
@@ -657,6 +666,22 @@ def xcritical(loggername, msg, back_trace_len=1):
     logger.critical(LogInitializer.log_file_func_info(msg, back_trace_len))
 
 
+def xfatal(loggername, msg, back_trace_len=1):
+    """
+    :param loggername:
+        shoule be xinit_comlog before calling xdebug/xinfo/xerror/xcritical
+    :param msg:
+        log msg
+    :back_trace_len:
+        default 1, just ignore this param if you don't know what it is.
+        This param will trace back 1 layer and get the
+        [code_filename:code_lines]
+
+    """
+    logger = logging.getLogger(loggername)
+    logger.fatal(LogInitializer.log_file_func_info(msg, back_trace_len))
+
+
 if __name__ == '__main__':
     cup.log.debug('中文')
     cup.log.init_comlog(
@@ -669,7 +694,6 @@ if __name__ == '__main__':
     )
     cup.log.info('test info')
     cup.log.debug('test debug')
-    cup.log.info('中文'.decode('utf8'))
     cup.log.reinit_comlog(
         're-test', cup.log.DEBUG, './re.test.log',
         cup.log.ROTATION, 102400000, False

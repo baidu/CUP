@@ -9,9 +9,9 @@
 import time
 import uuid
 try:
-    import Queue as queue
-except ImportError:
     import queue
+except ImportError:
+    import Queue as queue # type: ignore
 import collections
 import contextlib
 
@@ -29,11 +29,12 @@ class CacheFull(err.BaseCupException):
     CacheFull for cache.KvCache
 
     """
-    def __init__(self, msg):
+    def __init__(self, msg) -> None:
         err.BaseCupException.__init__(self, msg)
 
 
-class KVCache(object):
+TIME_EXTENSION_DEFAULT = 5 * 60
+class KVCache:
     """
     Key-Value Cache object.
 
@@ -48,7 +49,9 @@ class KVCache(object):
     INFINITE_TIME = 10000 * 365 * 24 * 60 * 60 # 10000 years, enough for cache
     TIME_EXTENSION = 5 * 60   # 5 mins
 
-    def __init__(self, name=None, maxsize=0, time_extension=None):
+    def __init__(self, 
+        name: str='', maxsize=0, time_extension: int=TIME_EXTENSION_DEFAULT,
+    ) -> None:
         """
         :param maxsize:
             0 by default which means store as more cache k/v as the system can
@@ -57,7 +60,7 @@ class KVCache(object):
             to the greater one, either (TIME_EXTENSION + time.time() or
               (TIME_EXTENSION + expire_sec)
         """
-        if name is not None:
+        if name is not '':
             self._name = name
         else:
             self._name = 'cache.noname.{0}'.format(uuid.uuid4())
@@ -70,11 +73,11 @@ class KVCache(object):
         self._kv_data = {}
         self._lock = thread.RWLock()
         if time_extension is None:
-            self._time_extension = self.TIME_EXTENSION
+            self._time_extension: int = self.TIME_EXTENSION
         else:
-            self._time_extension = time_extension
+            self._time_extension: int = time_extension
 
-    def set_time_extension(self, time_extension):
+    def set_time_extension(self, time_extension: int) -> None:
         """set time extension"""
         if time_extension <= 0:
             raise ValueError('time extension should > 0')
@@ -162,7 +165,8 @@ class KVCache(object):
                     pop_value = self._sorted_keys.get_nowait()
                 except queue.Full:
                     return False
-                real_value = self._kv_data.get(pop_value[1], None)
+                real_value = self._kv_data.get(
+                        pop_value[1], None)
                 # key exipred, key deleted in self._kv_data
                 if real_value is None:
                     self._kv_data[key] = (expire_value, value)
@@ -271,6 +275,10 @@ class KVCache(object):
             self._kv_data = {}
             del self._sorted_keys
             self._sorted_keys = queue.PriorityQueue(self._maxsize)
+
+
+class KVMemCache(KVCache):
+    """KVMem Cache"""
 
 
 # for compatibility

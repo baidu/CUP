@@ -8,49 +8,14 @@
 """
 from __future__ import print_function
 import time
-import pickle
-import platform
+import json
 import threading
-import io
-
 
 from cup import log
 from cup import net
 from cup.util import conf
 from cup import platforms as plat
 
-
-# Only check when it's run under py3
-safe_builtins = {
-    'range',
-    'complex',
-    'set',
-    'frozenset',
-    'slice',
-}
-
-
-class RestrictedUnpickler(pickle.Unpickler):
-
-    def find_class(self, module, name):
-        """
-        Only allow safe classes from builtins
-
-        Only check builtins when it's run under py 3
-        """
-        if (3, 0) <= sys.version_info <= (4, 0):
-            import builtins
-            if module == "builtins" and name in safe_builtins:
-                return getattr(builtins, name)
-            """Forbid everything else"""
-            raise pickle.UnpicklingError("global '%s.%s' is forbidden" %
-                                         (module, name))
-        else:
-            pass
-
-def restricted_loads(s):
-    """Helper function analogous to pickle.loads()"""
-    return RestrictedUnpickler(io.BytesIO(s)).load()
 
 if plat.is_linux():
     from cup.res import linux
@@ -95,14 +60,14 @@ class Device(object):
         """
         serilize device info
         """
-        return pickle.dumps(self._dict_info)
+        return json.dumps(self._dict_info)
 
     def deserilize(self, binary):
         """
         deserilize it from binary
         """
         try:
-            self._dict_info = pickle.loads(pickle.loads(restricted_loads(binary)))
+            self._dict_info = json.loads(binary)
             return True
         # pylint: disable=W0703
         except Exception as error:
@@ -461,8 +426,6 @@ def _test():
     localhost = LinuxHost(name='localhost', init_this_host=True)
     binary = localhost.serilize()
     print('binary:{0}'.format(binary))
-    restricted_loads(binary)
-    print(pickle.loads(binary))
 
 
 if __name__ == '__main__':

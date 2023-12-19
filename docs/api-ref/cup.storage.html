@@ -1,48 +1,458 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>cup.storage package &mdash; cup 3.2.32 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/js/theme.js"></script>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>cup.storage package &#8212; cup 3.2.33 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="cup.util package" href="cup.util.html" />
-    <link rel="prev" title="cup.shell package" href="cup.shell.html" /> 
-</head>
+    <link rel="prev" title="cup.shell package" href="cup.shell.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> cup
-          </a>
-              <div class="version">
-                3.2.32
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-cup.storage">
+<span id="cup-storage-package"></span><h1>cup.storage package<a class="headerlink" href="#module-cup.storage" title="Permalink to this heading">¶</a></h1>
+<p>init for cup.storage</p>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="module-cup.storage.obj">
+<span id="cup-storage-obj-module"></span><h2>cup.storage.obj module<a class="headerlink" href="#module-cup.storage.obj" title="Permalink to this heading">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Object related storage</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="cup.storage.obj.AFSObjectSystem">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.storage.obj.</span></span><span class="sig-name descname"><span class="pre">AFSObjectSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#AFSObjectSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.AFSObjectSystem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectInterface</span></code></p>
+<p>AFSObjectSystem implemented interface.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.AFSObjectSystem.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#AFSObjectSystem.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.AFSObjectSystem.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete a file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> – object path</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">success</span><span class="p">,</span> <span class="n">others</span> <span class="k">for</span> <span class="n">failure</span><span class="p">,</span>
+    <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;if any&#39;</span>
+<span class="p">}</span>
+</pre></div>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.AFSObjectSystem.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localpath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#AFSObjectSystem.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.AFSObjectSystem.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the object into localpath</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">success</span><span class="p">,</span> <span class="n">others</span> <span class="k">for</span> <span class="n">failure</span><span class="p">,</span>
+    <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;if any&#39;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.AFSObjectSystem.head">
+<span class="sig-name descname"><span class="pre">head</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#AFSObjectSystem.head"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.AFSObjectSystem.head" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the object info</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">success</span><span class="p">,</span> <span class="n">others</span> <span class="k">for</span> <span class="n">failure</span><span class="p">,</span>
+    <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;if any&#39;</span>
+    <span class="s1">&#39;objectinfo&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="n">size</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
+    <span class="o">.......</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.AFSObjectSystem.mkdir">
+<span class="sig-name descname"><span class="pre">mkdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#AFSObjectSystem.mkdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.AFSObjectSystem.mkdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>mkdir dir of a path</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">success</span><span class="p">,</span> <span class="n">others</span> <span class="k">for</span> <span class="n">failure</span><span class="p">,</span>
+    <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;if any&#39;</span>
+    <span class="s1">&#39;objectinfo&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="n">size</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
+    <span class="o">.......</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.AFSObjectSystem.put">
+<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#AFSObjectSystem.put"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.AFSObjectSystem.put" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dest</strong> – system path</p></li>
+<li><p><strong>localfile</strong> – localfile</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>{</dt><dd><p>‘returncode’: 0 for success, others for failure,
+‘msg’: ‘if any’</p>
+</dd>
+</dl>
+<p>}</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.AFSObjectSystem.rename">
+<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frompath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#AFSObjectSystem.rename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.AFSObjectSystem.rename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.AFSObjectSystem.rmdir">
+<span class="sig-name descname"><span class="pre">rmdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#AFSObjectSystem.rmdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.AFSObjectSystem.rmdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>rmdir of a path</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cup.storage.obj.FTPObjectSystem">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.storage.obj.</span></span><span class="sig-name descname"><span class="pre">FTPObjectSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#FTPObjectSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.FTPObjectSystem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectInterface</span></code></p>
+<p>ftp object system, Plz notice all methods of FTPObjectSystem is NOT
+thread-safe! Be careful when you use it in a service of concurrency.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.FTPObjectSystem.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#FTPObjectSystem.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.FTPObjectSystem.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.FTPObjectSystem.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localpath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#FTPObjectSystem.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.FTPObjectSystem.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a file into localpath</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.FTPObjectSystem.head">
+<span class="sig-name descname"><span class="pre">head</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#FTPObjectSystem.head"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.FTPObjectSystem.head" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the file info</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">success</span><span class="p">,</span> <span class="n">others</span> <span class="k">for</span> <span class="n">failure</span><span class="p">,</span>
+    <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;if any&#39;</span>
+    <span class="s1">&#39;fileinfo&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;-rw-rw-r-- 1 work work   201 Nov  9 17:03 __init__.py&quot;</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.FTPObjectSystem.is_file">
+<span class="sig-name descname"><span class="pre">is_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#FTPObjectSystem.is_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.FTPObjectSystem.is_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>path is file or not</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.FTPObjectSystem.mkdir">
+<span class="sig-name descname"><span class="pre">mkdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#FTPObjectSystem.mkdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.FTPObjectSystem.mkdir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.FTPObjectSystem.put">
+<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#FTPObjectSystem.put"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.FTPObjectSystem.put" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>destfile</strong> – ftp path for the localfile</p></li>
+<li><p><strong>localfile</strong> – localfile</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.FTPObjectSystem.rename">
+<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frompath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#FTPObjectSystem.rename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.FTPObjectSystem.rename" title="Permalink to this definition">¶</a></dt>
+<dd><p>rename frompath to path</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.FTPObjectSystem.rmdir">
+<span class="sig-name descname"><span class="pre">rmdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#FTPObjectSystem.rmdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.FTPObjectSystem.rmdir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cup.storage.obj.LocalObjectSystem">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.storage.obj.</span></span><span class="sig-name descname"><span class="pre">LocalObjectSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kvconfig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#LocalObjectSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.LocalObjectSystem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectInterface</span></code></p>
+<p>local object system</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.LocalObjectSystem.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#LocalObjectSystem.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.LocalObjectSystem.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete a file in local</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.LocalObjectSystem.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localpath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#LocalObjectSystem.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.LocalObjectSystem.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a file into localpath</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.LocalObjectSystem.head">
+<span class="sig-name descname"><span class="pre">head</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#LocalObjectSystem.head"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.LocalObjectSystem.head" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the object info</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.LocalObjectSystem.mkdir">
+<span class="sig-name descname"><span class="pre">mkdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#LocalObjectSystem.mkdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.LocalObjectSystem.mkdir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.LocalObjectSystem.put">
+<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#LocalObjectSystem.put"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.LocalObjectSystem.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>local object put == copy</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.LocalObjectSystem.rename">
+<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frompath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#LocalObjectSystem.rename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.LocalObjectSystem.rename" title="Permalink to this definition">¶</a></dt>
+<dd><p>rename from path to path</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.LocalObjectSystem.rmdir">
+<span class="sig-name descname"><span class="pre">rmdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#LocalObjectSystem.rmdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.LocalObjectSystem.rmdir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.storage.obj.</span></span><span class="sig-name descname"><span class="pre">S3ObjectSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectInterface</span></code></p>
+<p>s3 object system</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem.create_bucket">
+<span class="sig-name descname"><span class="pre">create_bucket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem.create_bucket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem.create_bucket" title="Permalink to this definition">¶</a></dt>
+<dd><p>create bucket</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete a file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> – object path</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>{</dt><dd><p>‘returncode’: 0 for success, others for failure,
+‘msg’: ‘if any’</p>
+</dd>
+</dl>
+<p>}</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem.delete_bucket">
+<span class="sig-name descname"><span class="pre">delete_bucket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forcely</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem.delete_bucket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem.delete_bucket" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete bucket</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>forcely</strong> – <dl class="simple">
+<dt>if forcely is True, the bucket will be delete no matter it has</dt><dd><p>objects inside. Otherwise, you have to delete items inside,
+then delete the bucket</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localpath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the object into localpath</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>{</dt><dd><p>‘returncode’: 0 for success, others for failure,
+‘msg’: ‘if any’</p>
+</dd>
+</dl>
+<p>}</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem.head">
+<span class="sig-name descname"><span class="pre">head</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem.head"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem.head" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the object info</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">success</span><span class="p">,</span> <span class="n">others</span> <span class="k">for</span> <span class="n">failure</span><span class="p">,</span>
+    <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;if any&#39;</span>
+    <span class="s1">&#39;objectinfo&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">size</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
+        <span class="o">.......</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem.head_bucket">
+<span class="sig-name descname"><span class="pre">head_bucket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem.head_bucket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem.head_bucket" title="Permalink to this definition">¶</a></dt>
+<dd><p>create bucket</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem.mkdir">
+<span class="sig-name descname"><span class="pre">mkdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem.mkdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem.mkdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>mkdir dir of a path</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">success</span><span class="p">,</span> <span class="n">others</span> <span class="k">for</span> <span class="n">failure</span><span class="p">,</span>
+    <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;if any&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;objectinfo&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">size</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
+        <span class="o">..</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem.put">
+<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem.put"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem.put" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dest</strong> – system path</p></li>
+<li><p><strong>localfile</strong> – localfile</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">success</span><span class="p">,</span> <span class="n">others</span> <span class="k">for</span> <span class="n">failure</span><span class="p">,</span>
+    <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;if any&#39;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem.rename">
+<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frompath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem.rename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem.rename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem.rmdir">
+<span class="sig-name descname"><span class="pre">rmdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem.rmdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem.rmdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>rmdir of a path</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">cup</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="cup.html">cup package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="cup.html#subpackages">Subpackages</a><ul class="current">
@@ -77,464 +487,53 @@
 </li>
 </ul>
 
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="cup.html">cup package</a><ul>
+      <li>Previous: <a href="cup.shell.html" title="previous chapter">cup.shell package</a></li>
+      <li>Next: <a href="cup.util.html" title="next chapter">cup.util package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">cup</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="cup.html">cup package</a></li>
-      <li class="breadcrumb-item active">cup.storage package</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/cup.storage.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="module-cup.storage">
-<span id="cup-storage-package"></span><h1>cup.storage package<a class="headerlink" href="#module-cup.storage" title="Permalink to this heading"></a></h1>
-<p>init for cup.storage</p>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
-</section>
-<section id="module-cup.storage.obj">
-<span id="cup-storage-obj-module"></span><h2>cup.storage.obj module<a class="headerlink" href="#module-cup.storage.obj" title="Permalink to this heading"></a></h2>
-<dl class="field-list simple">
-<dt class="field-odd">description</dt>
-<dd class="field-odd"><p>Object related storage</p>
-</dd>
-</dl>
-<dl class="py class">
-<dt class="sig sig-object py" id="cup.storage.obj.AFSObjectSystem">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.storage.obj.</span></span><span class="sig-name descname"><span class="pre">AFSObjectSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#AFSObjectSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.AFSObjectSystem" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectInterface</span></code></p>
-<p>AFSObjectSystem implemented interface.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.AFSObjectSystem.delete">
-<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#AFSObjectSystem.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.AFSObjectSystem.delete" title="Permalink to this definition"></a></dt>
-<dd><p>delete a file</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>path</strong> – object path</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">success</span><span class="p">,</span> <span class="n">others</span> <span class="k">for</span> <span class="n">failure</span><span class="p">,</span>
-    <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;if any&#39;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.AFSObjectSystem.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localpath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#AFSObjectSystem.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.AFSObjectSystem.get" title="Permalink to this definition"></a></dt>
-<dd><p>get the object into localpath</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">success</span><span class="p">,</span> <span class="n">others</span> <span class="k">for</span> <span class="n">failure</span><span class="p">,</span>
-    <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;if any&#39;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.AFSObjectSystem.head">
-<span class="sig-name descname"><span class="pre">head</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#AFSObjectSystem.head"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.AFSObjectSystem.head" title="Permalink to this definition"></a></dt>
-<dd><p>get the object info</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">success</span><span class="p">,</span> <span class="n">others</span> <span class="k">for</span> <span class="n">failure</span><span class="p">,</span>
-    <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;if any&#39;</span>
-    <span class="s1">&#39;objectinfo&#39;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="n">size</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
-    <span class="o">.......</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.AFSObjectSystem.mkdir">
-<span class="sig-name descname"><span class="pre">mkdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#AFSObjectSystem.mkdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.AFSObjectSystem.mkdir" title="Permalink to this definition"></a></dt>
-<dd><p>mkdir dir of a path</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">success</span><span class="p">,</span> <span class="n">others</span> <span class="k">for</span> <span class="n">failure</span><span class="p">,</span>
-    <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;if any&#39;</span>
-    <span class="s1">&#39;objectinfo&#39;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="n">size</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
-    <span class="o">.......</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.AFSObjectSystem.put">
-<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#AFSObjectSystem.put"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.AFSObjectSystem.put" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dest</strong> – system path</p></li>
-<li><p><strong>localfile</strong> – localfile</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>{</dt><dd><p>‘returncode’: 0 for success, others for failure,
-‘msg’: ‘if any’</p>
-</dd>
-</dl>
-<p>}</p>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.AFSObjectSystem.rename">
-<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frompath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#AFSObjectSystem.rename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.AFSObjectSystem.rename" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.AFSObjectSystem.rmdir">
-<span class="sig-name descname"><span class="pre">rmdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#AFSObjectSystem.rmdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.AFSObjectSystem.rmdir" title="Permalink to this definition"></a></dt>
-<dd><p>rmdir of a path</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="cup.storage.obj.FTPObjectSystem">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.storage.obj.</span></span><span class="sig-name descname"><span class="pre">FTPObjectSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#FTPObjectSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.FTPObjectSystem" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectInterface</span></code></p>
-<p>ftp object system, Plz notice all methods of FTPObjectSystem is NOT
-thread-safe! Be careful when you use it in a service of concurrency.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.FTPObjectSystem.delete">
-<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#FTPObjectSystem.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.FTPObjectSystem.delete" title="Permalink to this definition"></a></dt>
-<dd><p>delete file</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.FTPObjectSystem.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localpath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#FTPObjectSystem.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.FTPObjectSystem.get" title="Permalink to this definition"></a></dt>
-<dd><p>get a file into localpath</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.FTPObjectSystem.head">
-<span class="sig-name descname"><span class="pre">head</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#FTPObjectSystem.head"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.FTPObjectSystem.head" title="Permalink to this definition"></a></dt>
-<dd><p>get the file info</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">success</span><span class="p">,</span> <span class="n">others</span> <span class="k">for</span> <span class="n">failure</span><span class="p">,</span>
-    <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;if any&#39;</span>
-    <span class="s1">&#39;fileinfo&#39;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s2">&quot;-rw-rw-r-- 1 work work   201 Nov  9 17:03 __init__.py&quot;</span>
-    <span class="p">]</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.FTPObjectSystem.is_file">
-<span class="sig-name descname"><span class="pre">is_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#FTPObjectSystem.is_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.FTPObjectSystem.is_file" title="Permalink to this definition"></a></dt>
-<dd><p>path is file or not</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.FTPObjectSystem.mkdir">
-<span class="sig-name descname"><span class="pre">mkdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#FTPObjectSystem.mkdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.FTPObjectSystem.mkdir" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.FTPObjectSystem.put">
-<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#FTPObjectSystem.put"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.FTPObjectSystem.put" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>destfile</strong> – ftp path for the localfile</p></li>
-<li><p><strong>localfile</strong> – localfile</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.FTPObjectSystem.rename">
-<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frompath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#FTPObjectSystem.rename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.FTPObjectSystem.rename" title="Permalink to this definition"></a></dt>
-<dd><p>rename frompath to path</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.FTPObjectSystem.rmdir">
-<span class="sig-name descname"><span class="pre">rmdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#FTPObjectSystem.rmdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.FTPObjectSystem.rmdir" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="cup.storage.obj.LocalObjectSystem">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.storage.obj.</span></span><span class="sig-name descname"><span class="pre">LocalObjectSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kvconfig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#LocalObjectSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.LocalObjectSystem" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectInterface</span></code></p>
-<p>local object system</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.LocalObjectSystem.delete">
-<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#LocalObjectSystem.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.LocalObjectSystem.delete" title="Permalink to this definition"></a></dt>
-<dd><p>delete a file in local</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.LocalObjectSystem.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localpath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#LocalObjectSystem.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.LocalObjectSystem.get" title="Permalink to this definition"></a></dt>
-<dd><p>get a file into localpath</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.LocalObjectSystem.head">
-<span class="sig-name descname"><span class="pre">head</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#LocalObjectSystem.head"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.LocalObjectSystem.head" title="Permalink to this definition"></a></dt>
-<dd><p>get the object info</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.LocalObjectSystem.mkdir">
-<span class="sig-name descname"><span class="pre">mkdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#LocalObjectSystem.mkdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.LocalObjectSystem.mkdir" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.LocalObjectSystem.put">
-<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#LocalObjectSystem.put"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.LocalObjectSystem.put" title="Permalink to this definition"></a></dt>
-<dd><p>local object put == copy</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.LocalObjectSystem.rename">
-<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frompath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#LocalObjectSystem.rename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.LocalObjectSystem.rename" title="Permalink to this definition"></a></dt>
-<dd><p>rename from path to path</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.LocalObjectSystem.rmdir">
-<span class="sig-name descname"><span class="pre">rmdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#LocalObjectSystem.rmdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.LocalObjectSystem.rmdir" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cup.storage.obj.</span></span><span class="sig-name descname"><span class="pre">S3ObjectSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectInterface</span></code></p>
-<p>s3 object system</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem.create_bucket">
-<span class="sig-name descname"><span class="pre">create_bucket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem.create_bucket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem.create_bucket" title="Permalink to this definition"></a></dt>
-<dd><p>create bucket</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem.delete">
-<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem.delete" title="Permalink to this definition"></a></dt>
-<dd><p>delete a file</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>path</strong> – object path</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>{</dt><dd><p>‘returncode’: 0 for success, others for failure,
-‘msg’: ‘if any’</p>
-</dd>
-</dl>
-<p>}</p>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem.delete_bucket">
-<span class="sig-name descname"><span class="pre">delete_bucket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forcely</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem.delete_bucket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem.delete_bucket" title="Permalink to this definition"></a></dt>
-<dd><p>delete bucket</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>forcely</strong> – <dl class="simple">
-<dt>if forcely is True, the bucket will be delete no matter it has</dt><dd><p>objects inside. Otherwise, you have to delete items inside,
-then delete the bucket</p>
-</dd>
-</dl>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localpath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem.get" title="Permalink to this definition"></a></dt>
-<dd><p>get the object into localpath</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><dl class="simple">
-<dt>{</dt><dd><p>‘returncode’: 0 for success, others for failure,
-‘msg’: ‘if any’</p>
-</dd>
-</dl>
-<p>}</p>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem.head">
-<span class="sig-name descname"><span class="pre">head</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem.head"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem.head" title="Permalink to this definition"></a></dt>
-<dd><p>get the object info</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">success</span><span class="p">,</span> <span class="n">others</span> <span class="k">for</span> <span class="n">failure</span><span class="p">,</span>
-    <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;if any&#39;</span>
-    <span class="s1">&#39;objectinfo&#39;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="n">size</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
-        <span class="o">.......</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem.head_bucket">
-<span class="sig-name descname"><span class="pre">head_bucket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem.head_bucket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem.head_bucket" title="Permalink to this definition"></a></dt>
-<dd><p>create bucket</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem.mkdir">
-<span class="sig-name descname"><span class="pre">mkdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem.mkdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem.mkdir" title="Permalink to this definition"></a></dt>
-<dd><p>mkdir dir of a path</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">success</span><span class="p">,</span> <span class="n">others</span> <span class="k">for</span> <span class="n">failure</span><span class="p">,</span>
-    <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;if any&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;objectinfo&#39;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="n">size</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
-        <span class="o">..</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem.put">
-<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">localfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem.put"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem.put" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dest</strong> – system path</p></li>
-<li><p><strong>localfile</strong> – localfile</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s1">&#39;returncode&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">success</span><span class="p">,</span> <span class="n">others</span> <span class="k">for</span> <span class="n">failure</span><span class="p">,</span>
-    <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;if any&#39;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem.rename">
-<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frompath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem.rename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem.rename" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cup.storage.obj.S3ObjectSystem.rmdir">
-<span class="sig-name descname"><span class="pre">rmdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cup/storage/obj.html#S3ObjectSystem.rmdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cup.storage.obj.S3ObjectSystem.rmdir" title="Permalink to this definition"></a></dt>
-<dd><p>rmdir of a path</p>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-</section>
-
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="cup.shell.html" class="btn btn-neutral float-left" title="cup.shell package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="cup.util.html" class="btn btn-neutral float-right" title="cup.util package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, CUP-DEV Team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/cup.storage.rst.txt"
+          rel="nofollow">Page source</a>
     </div>
 
-  <hr/>
+    
 
-  <div role="contentinfo">
-    <p>&#169; Copyright 2023, CUP-DEV Team.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
-      </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+    
+  </body>
 </html>

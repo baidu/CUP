@@ -32,9 +32,9 @@ import sys
 import time
 import uuid
 import random
-import string
 import socket
 import struct
+import string
 import hashlib
 import threading
 try:
@@ -47,6 +47,9 @@ from cup import log
 from cup import decorators
 if sys.version_info[0] >= 3:
     unicode = str
+    LOWERCASES = f'{string.ascii_lowercase}{string.digits}'
+else:
+    LOWERCASES = string.lowercase
 
 
 __all__ = [
@@ -123,12 +126,7 @@ class CGeneratorMan(object):
     @classmethod
     def get_random_str(cls, length):
         """get random str by length"""
-        if hasattr(string, 'lowercase'):
-            return ''.join(
-                random.choice(string.lowercase) for i in range(length))
-        else:
-            return ''.join(
-                random.choice(string.ascii_lowercase) for i in range(length))
+        return ''.join(random.choice(LOWERCASES) for i in range(length))
 
     @classmethod
     def get_uuid(cls):

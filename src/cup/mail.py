@@ -22,7 +22,6 @@ from email.mime import base
 from email.mime import image
 from email.mime import text
 
-import cup
 from cup import log
 from cup import shell
 from cup import decorators
@@ -138,8 +137,8 @@ class SmtpMailer(object):  # pylint: disable=R0903
             You can set it to True if the email format is html based.
 
         """
-        self._server = None
-        self._port = None
+        self._server = ''
+        self._port = port
         self._sender = None
         self._is_html = False
         self._login_params = None
@@ -265,7 +264,7 @@ class SmtpMailer(object):  # pylint: disable=R0903
             outer['To'] = recipients
             toaddrs.append(recipients)
         if cc is not None:
-            if any([isinstance(bcc, str), isinstance(bcc, unicode)]):
+            if any([isinstance(bcc, str), isinstance(bcc, unicode)]): #type:ignore
                 outer['Cc'] = cc
                 toaddrs.append(cc)
             elif isinstance(cc, list):
@@ -276,7 +275,7 @@ class SmtpMailer(object):  # pylint: disable=R0903
         if bcc is not None:
             if any([
                     isinstance(bcc, str),
-                    isinstance(bcc, unicode),
+                    isinstance(bcc, unicode), # type:ignore
             ]):
                 outer['Bcc'] = bcc
                 toaddrs.append(bcc)
