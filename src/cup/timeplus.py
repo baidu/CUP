@@ -8,7 +8,7 @@
 """
 from __future__ import print_function
 import time
-import datetime
+import datetime 
 
 import pytz
 
@@ -71,7 +71,14 @@ class TimePlus(object):
     def utc_now(cls):
         """return utc_now"""
         return datetime.datetime.now(pytz.UTC)
-
+    
+    @classmethod
+    def timestamp2datetime(cls, timestamp, pytz_timezone):
+        """
+        convert timestamp to datetime object with timezone
+        """
+        return datetime.datetime.fromtimestamp(timestamp, pytz_timezone)
+        
     def local2utc(self, dateobj):
         """
         local timezone to utc conversion

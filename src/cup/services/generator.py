@@ -36,8 +36,10 @@ import socket
 import struct
 import string
 import hashlib
+import warnings
 import threading
 try:
+    # pylint: disable=reportMissingImports
     import Queue as queue
 except ImportError:
     import queue
@@ -53,7 +55,8 @@ else:
 
 
 __all__ = [
-    'CGeneratorMan',
+    'CGeneratorManBase',
+    'Py3Generator',
     'CycleIDGenerator',
     'CachedUUID'
 ]
@@ -67,8 +70,7 @@ _UUID_LISTS_FUNCS = [
 ]
 
 
-@decorators.Singleton
-class CGeneratorMan(object):
+class CGeneratorManBase(object):
     """
     refer to the docstring
     """
@@ -126,12 +128,39 @@ class CGeneratorMan(object):
     @classmethod
     def get_random_str(cls, length):
         """get random str by length"""
-        return ''.join(random.choice(LOWERCASES) for i in range(length))
+        return ''.join(random.choice(LOWERCASES) for _ in range(length))
 
     @classmethod
     def get_uuid(cls):
         """get random uuid"""
-        uuid.uuid4()
+        return uuid.uuid4().hex
+
+
+@decorators.Singleton
+class CGeneratorMan(CGeneratorManBase):
+    """
+    """
+    def __init__(self, str_prefix='localhost'):
+        super().__init__(str_prefix)
+    
+
+class Py3Generator(CGeneratorManBase):
+    """py3 generator"""
+
+    def __init__(self, str_prefix='localhost'):
+
+        """
+        Generate unique integers, strings and auto incremental uint.
+        """
+        super().__init__(str_prefix)
+
+    @classmethod
+    @decorators.Singleton
+    def single_instance(cls, str_prefix='localhost'):
+        """
+        get single instance of this class
+        """
+        return Py3Generator(str_prefix)
 
 
 class CycleIDGenerator(object):
@@ -140,6 +169,7 @@ class CycleIDGenerator(object):
 
     128 bit contains: a. 64bit [ip, port, etc]  b. 64bit[auto increment id]
     """
+    
     def __init__(self, ipaddr, port):
         """
         ip, port will be encoded into the ID
@@ -149,8 +179,8 @@ class CycleIDGenerator(object):
         self._lock = threading.Lock()
         packed = socket.inet_aton(self._ip)
         tmp = struct.unpack("!L", packed)[0] << 96
-        self._pre_num = tmp | (int(self._port) << 64)
-        self._max_id = 0X1 << 63
+        self._pre_num = tmp | (int(self._port) << 80)
+        self._max_id = 0X1 << 79
         self._next_id = int(time.time())
 
     def reset_nextid(self, nextid):
@@ -177,11 +207,39 @@ class CycleIDGenerator(object):
     @classmethod
     def id2_hexstring(cls, num):
         """return hex of the id"""
-        str_num = str(hex(num))
-        return str_num
+        str_num = hex(num)
+        return str_num[2:]
+    
+    @classmethod
+    def id2_hexstring_0x(cls, num):
+        """return hex of the id"""
+        str_num = hex(num)
+        return '0x{0}'.format(str_num[2:])
+    
+    
+    @classmethod
+    def hex2id(cls, hexnum: str):
+        """
+        hex2id
+        """
+        return int(hexnum, 16)
+    
+    @classmethod
+    def ipport(cls, hexnum):
+        """
+        :raise:
+            ValueError if cannot convert it to ip port
+        """
+        try:
+            id = cls.hex2id(hexnum)
+            ip = socket.inet_ntoa(struct.pack('!L', id >> 96))
+            port = id >> 80 & 0xffff
+            return ip, port
+        except struct.error as err:
+            raise ValueError('failed to convert the hex')
 
 
-@decorators.Singleton
+
 class CachedUUID(object):
     """cached uuid object"""
     def __init__(self, mode=UUID1, max_cachenum=100):
@@ -193,6 +251,9 @@ class CachedUUID(object):
         self._uuidgen = _UUID_LISTS_FUNCS[mode]
         self._fifoque = queue.Queue(max_cachenum)
         self._max_cachenum = max_cachenum
+    
+    def _thd_gen_uuid(self, num=50):
+        self.gen_cached_uuid(num)
 
     def get_uuid(self, num=1):
         """
@@ -208,7 +269,11 @@ class CachedUUID(object):
                 ret.append(item)
                 num -= 1
             except queue.Empty:
-                self.gen_cached_uuid()
+                self.gen_cached_uuid(num=1)
+                thd = threading.Thread(
+                    target=self._thd_gen_uuid, name='gen uuid', daemon=True
+                )
+                thd.start()
         return ret
 
     def gen_cached_uuid(self, num=50):
@@ -229,5 +294,10 @@ class CachedUUID(object):
                 break
         size = self._fifoque.qsize()
         log.info('after generate cached uuid queue size :{0}'.format(size))
+    
+    @classmethod
+    @decorators.Singleton
+    def singleton_instance(cls, mode=UUID1, max_cachenum=100, firstinit=False):
+        return CachedUUID(mode, max_cachenum)
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

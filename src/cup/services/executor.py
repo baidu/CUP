@@ -26,6 +26,7 @@ import traceback
 import pytz
 from cup.util import threadpool
 from cup import log
+from cup import decorators
 from cup.services import generator
 
 URGENCY_HIGH = 0
@@ -43,6 +44,8 @@ class AbstractExecution(object):
         """
         init
         """
+        self._delayexe_thdnum = delay_exe_thdnum
+        self._queueexe_thdnum = queue_exec_thdnum
         self._toal_thdnum = delay_exe_thdnum + queue_exec_thdnum
         self._delay_exe_thdnu = delay_exe_thdnum
         self._queue_exe_thdnum = queue_exec_thdnum
@@ -53,10 +56,6 @@ class AbstractExecution(object):
             name='executor_pool'
         )
         self._status = 0  # 0 inited, 1 running 2 stopping
-        log.info(
-            'Executor service inited, delay_exec thread num:%d,'
-            ' exec thread num:%d' % (delay_exe_thdnum, queue_exec_thdnum)
-        )
         self._name = '' if name is None else name
 
     @abc.abstractmethod
@@ -101,6 +100,7 @@ class ExecutionService(AbstractExecution):
             delay_time_insec, self._do_delay_exe,
             [task_data]
         )
+        timer.daemon = True
         timer.start()
 
     def queue_exec(self, function, urgency, *argvs, **kwargs):
@@ -148,7 +148,6 @@ class ExecutionService(AbstractExecution):
         QueueExec worker checks task every 100ms
         """
         self._thdpool.start()
-        self._status = 1
         for _ in range(0, self._delay_exe_thdnu):
             self._thdpool.add_1job(
                 self.exec_worker,
@@ -161,10 +160,17 @@ class ExecutionService(AbstractExecution):
                 self._exec_queue,
                 'Exec'
             )
+        self._status = 1
         log.info('Executor service {0} started'.format(self._name))
 
     def start(self):
         """alias for self.run"""
+        log.info(
+            'Executor service started, delay_exec thread num:%d,'
+            ' exec thread num:%d' % (
+                self._delayexe_thdnum, self._queue_exe_thdnum
+            )
+        )
         return self.run()
 
     def stop(self, wait_workerstop=True):
@@ -185,6 +191,15 @@ class ExecutionService(AbstractExecution):
         else:
             self._thdpool.try_stop()
         log.info('end stopping executor {0}'.format(self._name))
+    
+    def running(self):
+        """return if it's running"""
+        return True if self._status == 1 else False
+    
+    @decorators.Singleton
+    @classmethod
+    def singleton_instance(delay_exe_thdnum=3, queue_exec_thdnum=4, name=None, firstinit=False):
+        return ExecutionService(delay_exe_thdnum=3, queue_exec_thdnum=4, name=None)
 
 
 class CronTask(object):
@@ -258,7 +273,7 @@ class CronTask(object):
         'hour': range(24),
         'minute': range(60)
     }
-    _GEN = generator.CachedUUID()
+    _GEN = generator.CachedUUID.singleton_instance()
 
     def __init__(
         self, name, pytz_timezone, timer_dict, md5uuid,
@@ -268,7 +283,7 @@ class CronTask(object):
         :param pytz_timezone:
             which can be initialized like: tz = pytz.timezone('Asia/Beijing')
         :param timer_dict:
-            {   'minute': minute_list,
+            {   'minute': minute_list,M
                 'hour': hour_list,
                 'weekday': weekday_list,    # [1~7]
                 'monthday': monday_list,    # [1~31]

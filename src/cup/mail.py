@@ -12,9 +12,11 @@
 __all__ = ['mutt_sendmail', 'SmtpMailer']
 
 import os
+import time
 import warnings
 import mimetypes
 import smtplib
+import contextlib
 from email.mime import multipart
 from email import encoders
 from email.mime import audio
@@ -24,6 +26,8 @@ from email.mime import text
 
 from cup import log
 from cup import shell
+from cup import thread
+from cup import platforms
 from cup import decorators
 
 
@@ -121,9 +125,9 @@ class SmtpMailer(object):  # pylint: disable=R0903
         )
     """
     _COMMA_SPLITTER = ','
+    RETRY_LOGIN_TIMES = 3
 
-    def __init__(self, sender, server, port=25,\
-        is_html=False):
+    def __init__(self, sender, server, port=25, ssl=False):
         """
 
         :param sender:
@@ -137,29 +141,56 @@ class SmtpMailer(object):  # pylint: disable=R0903
             You can set it to True if the email format is html based.
 
         """
-        self._server = ''
+        self._server = server
         self._port = port
-        self._sender = None
-        self._is_html = False
-        self._login_params = None
-        self.setup(sender, server, port, is_html)
+        self._sender = sender
+        self._login_params = ('', '')
+        self.setup(sender, server, port)
+        self._ssl = ssl
+        self._lock = thread.RWLock()
+        with self.lockit():
+            if ssl:
+                self._smtpser = smtplib.SMTP_SSL(self._server, self._port)
+            else:
+                self._smtpser = smtplib.SMTP(self._server, self._port)
 
-    def setup(self, sender, server, port=25, is_html=False):
+    def setup(self, sender: str, server: str, port=25):
         """
         change parameters during run-time
         """
         self._server = server
         self._port = port
         self._sender = sender
-        self._is_html = is_html
 
-    def login(self, username, passwords):
+    def login(self, username: str, passwords: str) -> bool:
         """
         if the smtp need login, plz call this method before you call
         sendmail
         """
         log.info('smtp server will login with user {0}'.format(username))
         self._login_params = (username, passwords)
+        new_login_params = (username, passwords)
+        if new_login_params != self._login_params:
+            log.info(
+                f"smtp sender username/passwords changed, "
+                "from {self._login_params[0]}/* to {username}/*"
+            )
+            self._login_params:tuple[str, str] = (username, passwords)
+        retry_times = SmtpMailer.RETRY_LOGIN_TIMES
+        while retry_times > 0:
+            try:
+                self._smtpser.login(
+                    self._login_params[0], self._login_params[1]
+                )
+                status = self._smtpser.noop()
+                if status[0] == 250:
+                    return True
+            except smtplib.SMTPException as err:
+                log.error(f'failed to login into smtpserver {err}')
+            time.sleep(0.5)
+            retry_times -= 1
+        log.error('failed to login into smtpserver')
+        return False
 
     @classmethod
     def _check_type(cls, instance, type_list):
@@ -168,9 +199,28 @@ class SmtpMailer(object):  # pylint: disable=R0903
                 '%s only accepts types like: %s' %
                 (instance, ','.join(type_list))
             )
+        
+    def get_attachment_content(self, attached):
+        """
+            get attachment_content
+            
+            :param attached:
+                local path of a file
 
-    @classmethod
-    def _handle_attachments(cls, outer, attachments):
+        """
+        content = None
+        with open(attached, 'rb') as fhandle:
+            content = fhandle.read()
+        return content
+    
+    def check_file_valid(self, attached):
+        """check if the file is valid"""
+        if not os.path.isfile(attached):
+            log.warn('attached is not a file:%s' % attached)
+            return False
+        return True
+
+    def _handle_attachments(self, outer, attachments):
         if type(attachments) == str:
             attrs = [attachments]
         elif type(attachments) == list:
@@ -178,8 +228,7 @@ class SmtpMailer(object):  # pylint: disable=R0903
         else:
             attrs = []
         for attached in attrs:
-            if not os.path.isfile(attached):
-                log.warn('attached is not a file:%s' % attached)
+            if not self.check_file_valid(attached):
                 continue
             # Guess the content type based on the file's extension.  Encoding
             # will be ignored, although we should check for simple things like
@@ -191,26 +240,25 @@ class SmtpMailer(object):  # pylint: disable=R0903
                 ctype = 'application/octet-stream'
             maintype, subtype = ctype.split('/', 1)
             try:
+                content = self.get_attachment_content(attached)
                 if maintype == 'text':
-                    with open(attached, 'rb') as fhandle:
+                    # with open(attached, 'rb') as fhandle:
                         # Note: we should handle calculating the charset
-                        msg = text.MIMEText(
-                            fhandle.read(), _subtype=subtype
-                        )
+                    msg = text.MIMEText(
+                        content.decode(), _subtype=subtype
+                    )
                 elif maintype == 'image':
-                    with open(attached, 'rb') as fhandle:
-                        imgid = os.path.basename(attached)
-                        msg = image.MIMEImage(
-                            fhandle.read(), _subtype=subtype
-                        )
-                        msg.add_header('Content-ID', imgid)
+                    imgid = os.path.basename(attached)
+                    msg = image.MIMEImage(
+                        content, _subtype=subtype
+                    )
+                    msg.add_header('Content-ID', imgid)
                 elif maintype == 'audio':
-                    with open(attached, 'rb') as fhandle:
-                        msg = audio.MIMEAudio(fhandle.read(), _subtype=subtype)
+                    msg = audio.MIMEAudio(
+                        content, _subtype=subtype)
                 else:
-                    with open(attached, 'rb') as fhandle:
-                        msg = base.MIMEBase(maintype, subtype)
-                        msg.set_payload(fhandle.read())
+                    msg = base.MIMEBase(maintype, subtype)
+                    msg.set_payload(content)
                     # Encode the payload using Base64
                     encoders.encode_base64(msg)
                     # Set the filename parameter
@@ -226,10 +274,24 @@ class SmtpMailer(object):  # pylint: disable=R0903
                         attached, str(exception)
                     )
                 )
+    
+    @contextlib.contextmanager
+    def lockit(self):
+        """
+        lock it
+        """
+        self._lock.acquire_writelock()
+        try:
+            yield
+        except:
+            pass
+        finally:
+            self._lock.release_writelock()
+            
 
     # pylint: disable=R0914,R0912,R0915
     def sendmail(self, recipients, subject='', body='', attachments=None,
-        cc=None, bcc=None
+        cc=None, bcc=None, ishtml=False
     ):
         """
         send mail
@@ -249,9 +311,9 @@ class SmtpMailer(object):  # pylint: disable=R0903
         :return:
             return (True, None) on success, return (False, error_msg) otherwise
         """
-        toaddrs = []
+        toaddrs: list[str] = []
         # self._check_type(body, [str])
-        if self._is_html:
+        if ishtml:
             msg_body = text.MIMEText(body, 'html', _charset='utf-8')
         else:
             msg_body = text.MIMEText(body, 'plain', _charset='utf-8')
@@ -264,7 +326,7 @@ class SmtpMailer(object):  # pylint: disable=R0903
             outer['To'] = recipients
             toaddrs.append(recipients)
         if cc is not None:
-            if any([isinstance(bcc, str), isinstance(bcc, unicode)]): #type:ignore
+            if platforms.is_str_py2py3(cc):
                 outer['Cc'] = cc
                 toaddrs.append(cc)
             elif isinstance(cc, list):
@@ -273,10 +335,7 @@ class SmtpMailer(object):  # pylint: disable=R0903
             else:
                 raise TypeError('cc only accepts string or list')
         if bcc is not None:
-            if any([
-                    isinstance(bcc, str),
-                    isinstance(bcc, unicode), # type:ignore
-            ]):
+            if platforms.is_str_py2py3(cc):
                 outer['Bcc'] = bcc
                 toaddrs.append(bcc)
             elif isinstance(bcc, list):
@@ -290,16 +349,44 @@ class SmtpMailer(object):  # pylint: disable=R0903
         outer.attach(msg_body)
         # handle attachments
         composed = outer.as_string()
-        ret = (False, 'failed to send email')
-        try:
-            smtp = smtplib.SMTP(self._server, self._port)
-            if self._login_params is not None:
-                smtp.login(self._login_params[0], self._login_params[1])
-            smtp.sendmail(self._sender, toaddrs, composed)
-            smtp.quit()
-            ret = (True, None)
-        except smtplib.SMTPException as smtperr:
-            ret = (False, '{0}'.format(smtperr))
+        ret: tuple = (False, 'failed to send email')
+        retry = SmtpMailer.RETRY_LOGIN_TIMES
+        login_try = True
+        while retry > 0:
+            retry -= 1
+            try:
+                status = self._smtpser.noop() 
+                if status[0] != 250:
+                    continue
+                self._smtpser.sendmail(self._sender, toaddrs, composed)
+                ret = (True, None)
+                break
+            except (
+                smtplib.SMTPSenderRefused, smtplib.SMTPConnectError, 
+                smtplib.SMTPServerDisconnected, smtplib.SMTPAuthenticationError
+            ) as err:
+                log.info('failed to send mail {0}, will retry'.format(err))
+                if login_try:
+                    log.debug('login smtp server to send email')
+                    with self.lockit():
+                        if self._ssl:
+                            self._smtpser = smtplib.SMTP_SSL(
+                                self._server, self._port
+                            )
+                        else:
+                            self._smtpser = smtplib.SMTP(
+                                self._server, self._port
+                            )
+                        self._smtpser.ehlo_or_helo_if_needed()
+                        if self.login(
+                            self._login_params[0], self._login_params[1]
+                        ):
+                            retry += 1
+                            login_try = False
+            except smtplib.SMTPException as smtperr:
+                ret = (False, '{0}'.format(smtperr))
+                log.error('failed to send mail {0}'.format(smtperr))
+
         return ret
 
 

@@ -75,4 +75,16 @@ def is_py3():
     else:
         return False
 
+
+def is_str_py2py3(input):
+    """
+    check if the input is string. py2 compatible
+    :param input
+        input
+    """
+    if is_py3():
+        return isinstance(input, str)
+    if is_py2():
+        return isinstance(input, unicode)
+
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

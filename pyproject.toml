@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cup"
-version = "3.2.33"
+version = "3.2.34"
 description = "A common useful python library"
 authors = ["CUP Dev Team lead by Guannan Ma <mythmgn@hotmail.com>"]
 maintainers = ["Guannan Ma <mythmgn@hotmail.com>"]
@@ -25,13 +25,19 @@ pytz = "^2022.7.1"
 psutil = "^5.9.4"
 pexpect = "^4.8.0"
 paramiko = "^3.0.0"
+twist = "^0.0.1"
+netifaces = "^0.11.0"
 
 
 [[tool.poetry.source]]
-name = "tsinghua-mirror"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-default = true
-secondary = false
+    name = "tsinghua-mirror"                                                                           
+    url = "https://pypi.tuna.tsinghua.edu.cn/simple"                                                   
+    priority = "primary"
+
+
+[[tool.poetry.source]]
+    name = "PyPI"
+    priority = "supplemental"
 
 [build-system]
 requires = ["poetry-core"]

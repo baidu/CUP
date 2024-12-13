@@ -12,7 +12,7 @@ import os
 import time
 import platform
 import threading
-from functools import wraps
+import functools
 from datetime import datetime as datetime_in
 
 
@@ -47,6 +47,8 @@ class Singleton(object):  # pylint: disable=R0903
         self._lock.acquire()
         if self.__instance is None:
             self.__instance = self.__cls(*args, **kwargs)
+            functools.wraps(self.__instance)
+            self.__instance.__wrapped__ = self.__cls
         self._lock.release()
         return self.__instance
 
@@ -195,7 +197,7 @@ class TraceUsedTime(object):
         self._leave_msg = leave_msg
 
     def __call__(self, function):
-        @wraps(function)
+        @functools.wraps(function)
         def _wrapper_log(*args, **kwargs):
             now = time.time()
             if self._b_print_stdout:
@@ -220,6 +222,7 @@ class TraceUsedTime(object):
                         function, datetime_in.now(),
                         used_time, self._leave_msg)
                 )
+        _wrapper_log.__wrapped__ = function
         return _wrapper_log
 
 

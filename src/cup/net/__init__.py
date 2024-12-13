@@ -11,6 +11,7 @@ import sys
 import time
 import socket
 import struct
+import netifaces as ni
 import platform
 import warnings
 
@@ -35,7 +36,8 @@ __all__ = [
     'set_sock_quickack',
     'localport_free',
     'port_listened',
-    'get_interfaces'
+    'get_interfaces',
+    'getip_byallinterfaces'
 ]
 
 
@@ -118,6 +120,38 @@ def get_hostip(hostname=None):
         else:
             log.error('failed to get hostip')
         return ipaddr
+
+
+def getip_byallinterfaces():
+    """
+    :return:
+        ip of a interface
+    :raise Exception:
+        ValueError if ip not got
+    """
+
+    interfaces = ni.interfaces()
+    retip = None
+    for i in interfaces: #Will cycle through all available interfaces and check each one.
+        if i.find('lo') < 0: #This will remove lo from the interfaces it checks.
+            try:
+                ni.ifaddresses(i)
+                # gws = ni.gateways()
+                # gateway = gws['default'][ni.AF_INET][0]
+                ip = ni.ifaddresses(i)[ni.AF_INET][0]['addr']
+                # sm = ni.ifaddresses(i)[ni.AF_INET][0]['netmask']
+                # print ("Network information for " + i + ":")
+                # print ("IP address: " + ip)
+                # print ("Subnet Mask: " + sm)
+                # print ("Gateway: " + gateway)
+                # print ()
+                retip = ip
+                break
+            except: #Error case for a disconnected Wi-Fi or trying to test a network with no DHCP
+                pass
+    if retip is None:
+        raise ValueError('cannot get the ip throught network interfaces')
+    return retip
 
 
 def set_sock_keepalive_linux(
@@ -240,16 +274,6 @@ def get_interfaces():
     :return:
         a python list of network interfaces/adapters
     """
-    eths = []
-    srcpath = '/sys/class/net/'
-    if os.path.exists(srcpath):
-        interfaces = os.listdir(srcpath)
-        for inter in interfaces:
-            if inter == 'lo':
-                continue
-            eths.append(inter)
-        return eths
-    else:
-        raise NameError('not supported other than linux')
+    return ni.interfaces()
 
 # vi:set tw=0 ts=4 sw=4 nowrap fdm=indent

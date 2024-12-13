@@ -28,6 +28,9 @@ class ContextManager(object):
         context is a {}
         """
         self.contexts.append(new_context)
+        new_context['function'] = func
+        new_context['args_num'] = len(args)
+        new_context['kwargs_num'] = len(kwargs)
         try:
             return func(*args, **kwargs)
         finally:

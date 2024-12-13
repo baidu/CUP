@@ -169,7 +169,7 @@ class LogInitializer:
             warn_handler.setLevel(logging.WARNING)
             warn_handler.setFormatter(formatter)
             logger.addHandler(warn_handler)
-            fdhandler.addFilter(_MsgFilter(logging.WARNING))
+            # fdhandler.addFilter(_MsgFilter(logging.WARNING))
         logger.addHandler(fdhandler)
 
     @classmethod

@@ -48,7 +48,7 @@ from cup import log
 from cup.util import context
 from cup import thread
 
-_CONTEXT_TRACKER = context.ContextTracker4Thread()
+CONTEXT_TRACKER = context.ContextTracker4Thread()
 
 
 # pylint: disable=R0902
@@ -194,7 +194,7 @@ class ThreadPool(object):
         if self._joined:
             return
         # pylint: disable=W0621
-        context = _CONTEXT_TRACKER.current_context().contexts[-1]
+        context = CONTEXT_TRACKER.current_context().contexts[-1]
         job = (context, func, args, kwargs, result_callback)
         self._jobqueue.put(job)
         if self._started:
@@ -216,9 +216,10 @@ class ThreadPool(object):
         context error, log warning msg
         """
         log.warn(
-            'Seems a call with context failed. See the context info'
+            'Seems a call with context failed. See the context info {0}'.format(
+                context
+            )
         )
-        log.warn(str(context))
 
     def _worker(self):
         """
@@ -229,50 +230,47 @@ class ThreadPool(object):
             job = self._jobqueue.get()
 
         while job is not self._WORKER_STOP_SIGN:
+            # when out of  "with scope",
+            # the self._working will remove the thread from
+            # its self._working list
             with self._worker_state(self._working, current_thd):
                 # pylint: disable=W0621
                 context, function, args, kwargs, result_callback = job
                 del job
                 try:
                     # pylint: disable=W0142
-                    result = _CONTEXT_TRACKER.call_with_context(
+                    result = CONTEXT_TRACKER.call_with_context(
                         context, function, *args, **kwargs
                     )
-                    success = True
+                    call_success = True
+                    result = ('success', args, kwargs)
                 except Exception as error:
-                    success = False
+                    call_success = False
                     log.warn(
-                        'Func failed, func:{0}, error_msg: {1}'.format(
-                        function, error)
+                        'Func failed, func:{0}, error_msg: {1}, '
+                        'context: {2}'.format(function, error, context)
                     )
                     if result_callback is None:
-                        log.warn('This func does not have callback.')
-                        _CONTEXT_TRACKER.call_with_context(
+                        CONTEXT_TRACKER.call_with_context(
                             context, self._log_err_context, context
                         )
                         result = None
                     else:
-                        result = error
-
-                del function, args, kwargs
-            # when out of  "with scope",
-            # the self._working will remove the thread from
-            # its self._working list
-            if result_callback is not None:
-                try:
-                    _CONTEXT_TRACKER.call_with_context(
-                        context, result_callback, success, result
-                    )
-                except Exception as e:
-                    log.warn(
-                        'result_callback func failed, callback func:%s,'
-                        'err_msg:%s' % (str(result_callback), str(e))
-                    )
-                    _CONTEXT_TRACKER.call_with_context(
-                        context, self._log_err_context, context
-                    )
-            del context, result_callback, result
-
+                        result = (error, args, kwargs)
+                if result_callback is not None:
+                    try:
+                        CONTEXT_TRACKER.call_with_context(
+                            context, result_callback, call_success, result
+                        )
+                    except Exception as e:
+                        log.warn(
+                            'call result_callback func failed, callback func:%s,'
+                            'err_msg:%s' % (str(result_callback), str(e))
+                        )
+                        CONTEXT_TRACKER.call_with_context(
+                            context, self._log_err_context, context
+                        )
+                del context, function, args, kwargs, result_callback, result
             with self._worker_state(self._waiters, current_thd):
                 job = self._jobqueue.get()
             # after with statements, self._waiters will remove current_thd

@@ -25,7 +25,7 @@ __all__ = [
 ]
 
 
-class ObjectInterface(object):
+class ObjectInterface:
     """
     object interface, abstract class. Should not be used directly
     """
@@ -245,8 +245,26 @@ class S3ObjectSystem(ObjectInterface):
     def __init__(self, config):
         """
         :param config:
-            be complied with cup.util.conf.Configure2Dict().get_dict().
-            Shoule be dict like object
+            Shoule be dict like object {
+                # required
+                'ak': 'xxx',,   
+                'sk' 'xxx',
+                'endpoint: 'https://xxxx.com/',
+                'bucket': 'xxx',              
+                # optional
+                'verify': False or '/path/to/public.crt file'  
+            }
+            
+             verify: Whether or not to verify SSL certificates.  By default
+             SSL certificates are verified.  You can provide the following
+             values:
+
+             * False - do not validate SSL certificates.  SSL will still be
+               used (unless use_ssl is False), but SSL certificates
+               will not be verified.
+             * path/to/cert/bundle.pem - A filename of the CA cert bundle to
+               uses.  You can specify this argument if you want to use a
+               different CA cert bundle than the one used by botocore.
 
         :raise:
             cup.err.ConfigError if there's any config item missing
@@ -259,6 +277,7 @@ class S3ObjectSystem(ObjectInterface):
         self._sk = self._config['sk']
         self._endpoint = self._config['endpoint']
         self._bucket = self._config['bucket']
+        self._verify = self._config.get('verify', False)
         import boto3
         from botocore import exceptions
         from botocore import client as coreclient
@@ -276,7 +295,8 @@ class S3ObjectSystem(ObjectInterface):
             aws_secret_access_key=self._sk,
             endpoint_url=self._endpoint,
             # region_name=conf_dict['region_name'],
-            config=self._s3_config
+            config=self._s3_config,
+            verify=self._verify
         )
         self._exception = exceptions.ClientError
 
@@ -299,7 +319,7 @@ class S3ObjectSystem(ObjectInterface):
             'returncode': -1,
             'msg': 'failed to put object'
         }
-        with open(localfile, 'r') as fhandle:
+        with open(localfile, 'rb') as fhandle:
             try:
                 self.__s3conn.put_object(
                     Key='{0}'.format(dest),
@@ -358,7 +378,7 @@ class S3ObjectSystem(ObjectInterface):
             'msg': 'success'
         }
         try:
-            with open(localpath, 'w+') as fhandle:
+            with open(localpath, 'wb+') as fhandle:
                 resp = self.__s3conn.get_object(
                     Key='{0}'.format(path),
                     Bucket=self._bucket
@@ -368,6 +388,22 @@ class S3ObjectSystem(ObjectInterface):
             ret['returncode'] = -1
             ret['msg'] = str(error)
         return ret
+    
+    def get_fhandler(self, path):
+        """
+        get object fhandle.
+        
+        You can call fhandle.read() to get file contents
+        """
+        try:
+            resp = self.__s3conn.get_object(
+                    Key='{0}'.format(path),
+                    Bucket=self._bucket
+            )
+            return resp['Body']
+        except Exception as err:
+            log.error('failed to get fhandler {0}, err {1}'.format(path, err))
+            return None
 
     def head(self, path):
         """
@@ -499,7 +535,7 @@ class S3ObjectSystem(ObjectInterface):
 
     def rename(self, frompath, topath):
         """rename"""
-        raise err.NotImplementedYet('AFSObjectSystem.rename')
+        raise err.NotImplementedYet('S3Object.rename not implemented yet')
 
 
 class FTPObjectSystem(ObjectInterface):
