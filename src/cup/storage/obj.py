@@ -302,18 +302,25 @@ class S3ObjectSystem(ObjectInterface):
 
     def put(self, dest, localfile):
         """
+        Upload a local file to S3
+        
         :param dest:
-            system path
+            Destination object key/path in S3 bucket (e.g., 'folder/file.txt')
         :param localfile:
-            localfile
-
+            Local file path to upload
+        
         :return:
+            dict {
+                'returncode': 0 for success, -1 for failure,
+                'msg': Success/error message
+            }
+        
+        :example:
             ::
-
-                {
-                    'returncode': 0 for success, others for failure,
-                    'msg': 'if any'
-                }
+            
+                result = s3.put('data/test.txt', '/local/path/test.txt')
+                if result['returncode'] == 0:
+                    print('Upload successful')
         """
         ret = {
             'returncode': -1,
@@ -335,17 +342,23 @@ class S3ObjectSystem(ObjectInterface):
 
     def delete(self, path):
         """
-        delete a file
-
+        Delete an object from S3 bucket
+        
         :param path:
-            object path
-
+            Object key/path to delete (e.g., 'folder/file.txt')
+        
         :return:
-            {
-                'returncode': 0 for success, others for failure,
-                'msg': 'if any'
-
+            dict {
+                'returncode': 0 for success, -1 for failure,
+                'msg': Success/error message
             }
+        
+        :example:
+            ::
+            
+                result = s3.delete('data/test.txt')
+                if result['returncode'] == 0:
+                    print('Delete successful')
         """
         ret = {
             'returncode': 0,
@@ -363,15 +376,25 @@ class S3ObjectSystem(ObjectInterface):
 
     def get(self, path, localpath):
         """
-        get the object into localpath
-
+        Download an object from S3 to local path
+        
+        :param path:
+            Source object key/path in S3 (e.g., 'folder/file.txt')
+        :param localpath:
+            Local destination path to save the file
+        
         :return:
-            {
-                'returncode': 0 for success, others for failure,
-                'msg': 'if any'
-
+            dict {
+                'returncode': 0 for success, -1 for failure,
+                'msg': Success/error message
             }
-
+        
+        :example:
+            ::
+            
+                result = s3.get('data/test.txt', '/local/path/test.txt')
+                if result['returncode'] == 0:
+                    print('Download successful')
         """
         ret = {
             'returncode': 0,
@@ -391,9 +414,24 @@ class S3ObjectSystem(ObjectInterface):
     
     def get_fhandler(self, path):
         """
-        get object fhandle.
+        Get file handler for streaming read of S3 object
         
-        You can call fhandle.read() to get file contents
+        :param path:
+            Source object key/path in S3 (e.g., 'folder/file.txt')
+        
+        :return:
+            boto3.StreamingBody object if successful, None on failure
+            The StreamingBody has methods:
+            - read(size=-1): Read data from stream
+            - close(): Close the stream
+        
+        :example:
+            ::
+            
+                fhandler = s3.get_fhandler('data/test.txt')
+                if fhandler:
+                    content = fhandler.read()
+                    fhandler.close()
         """
         try:
             resp = self.__s3conn.get_object(
@@ -407,19 +445,32 @@ class S3ObjectSystem(ObjectInterface):
 
     def head(self, path):
         """
-        get the object info
-
+        Get metadata/information about an S3 object
+        
+        :param path:
+            Object key/path in S3 (e.g., 'folder/file.txt')
+        
         :return:
+            dict {
+                'returncode': 0 for success, -1 for failure,
+                'msg': Success/error message,
+                'objectinfo': dict containing object metadata {
+                    'ContentLength': int (size in bytes),
+                    'ContentType': str (MIME type),
+                    'LastModified': datetime,
+                    'ETag': str,
+                    'Metadata': dict (user-defined metadata),
+                    ... (other S3 response fields)
+                } or None on failure
+            }
+        
+        :example:
             ::
-
-                {
-                    'returncode': 0 for success, others for failure,
-                    'msg': 'if any'
-                    'objectinfo': {
-                        size: 1024,
-                        .......
-                    }
-                }
+            
+                result = s3.head('data/test.txt')
+                if result['returncode'] == 0:
+                    size = result['objectinfo']['ContentLength']
+                    print(f'File size: {size} bytes')
         """
         ret = {
             'returncode': -1,
@@ -438,30 +489,122 @@ class S3ObjectSystem(ObjectInterface):
             ret['msg'] = str(error)
         return ret
 
-    def mkdir(self, path):
+    def presign(self, path, method='get_object', expires_in=3600, **kwargs):
         """
-        mkdir dir of a path
-
+        Generate a pre-signed URL for temporary access to S3 object
+        
+        :param path:
+            Object key/path in S3 (e.g., 'folder/file.txt')
+        :param method:
+            HTTP method for the pre-signed URL. Options:
+            - 'get_object': For downloading/reading object (default)
+            - 'put_object': For uploading/writing object
+            - 'delete_object': For deleting object
+            - 'head_object': For getting object metadata
+        :param expires_in:
+            URL expiration time in seconds (default: 3600 = 1 hour)
+            Minimum: 1 second, Maximum: 604800 seconds (7 days)
+        :param kwargs:
+            Additional parameters passed to boto3 generate_presigned_url
+            Common options:
+            - Params: dict of method-specific parameters
+            - HttpMethod: Override HTTP method
+        
         :return:
+            dict {
+                'returncode': 0 for success, -1 for failure,
+                'msg': Success/error message,
+                'url': Pre-signed URL string (only if successful)
+            }
+        
+        :raises ValueError:
+            If method is not one of the supported methods
+        
+        :example:
             ::
-
-                {
-                    'returncode': 0 for success, others for failure,
-                    'msg': 'if any',
-                    'objectinfo': {
-                        size: 1024,
-                        ..
-                    }
-                }
+            
+                # Generate download URL
+                result = s3.presign('data/test.txt', method='get_object')
+                if result['returncode'] == 0:
+                    download_url = result['url']
+                    print(f'Download URL: {download_url}')
+                
+                # Generate upload URL with custom expiry
+                result = s3.presign('uploads/file.txt', method='put_object', 
+                                   expires_in=7200)
+                if result['returncode'] == 0:
+                    upload_url = result['url']
+                    # Use requests.put(upload_url, data=file_content)
+                
+                # Generate URL with additional params
+                result = s3.presign('data/file.txt', method='get_object',
+                                   Params={'ResponseContentDisposition': 
+                                          'attachment; filename="file.txt"'})
         """
-        raise err.NotImplementedYet('mkdir not supported for S3ObjectSystem')
+        ret = {
+            'returncode': -1,
+            'msg': 'failed to generate presigned URL',
+            'url': None
+        }
+        
+        # Validate method
+        supported_methods = ['get_object', 'put_object', 'delete_object', 
+                            'head_object']
+        if method not in supported_methods:
+            ret['msg'] = 'Invalid method. Supported methods: {0}'.format(
+                supported_methods)
+            return ret
+        
+        try:
+            # Generate pre-signed URL
+            url = self.__s3conn.generate_presigned_url(
+                ClientMethod=method,
+                Params={
+                    'Bucket': self._bucket,
+                    'Key': '{0}'.format(path)
+                },
+                ExpiresIn=expires_in,
+                **kwargs
+            )
+            
+            ret['returncode'] = 0
+            ret['msg'] = 'success'
+            ret['url'] = url
+            
+            log.info('Generated presigned URL for {0} method, expires in {1}s'.format(
+                method, expires_in))
+            
+        except Exception as error:
+            ret['returncode'] = -1
+            ret['msg'] = 'Failed to generate presigned URL: {0}'.format(str(error))
+            log.error('Failed to generate presigned URL: {0}'.format(error))
+        
+        return ret
 
     def rmdir(self, path):
         """rmdir of a path"""
         raise err.NotImplementedYet('rmdir not supported for S3ObjectSystem')
 
     def create_bucket(self, bucket_name):
-        """create bucket"""
+        """
+        Create a new S3 bucket
+        
+        :param bucket_name:
+            Name of the bucket to create (must be globally unique)
+        
+        :return:
+            dict {
+                'returncode': 0 for success, -1 for failure,
+                'msg': Success/error message
+            }
+        
+        :example:
+            ::
+            
+                result = s3.create_bucket('my-new-bucket')
+                if result['returncode'] == 0:
+                    print('Bucket created successfully')
+        """
         ret = {
             'returncode': -1,
             'msg': 'failed to create bucket'
@@ -478,10 +621,33 @@ class S3ObjectSystem(ObjectInterface):
         return ret
 
     def head_bucket(self, bucket_name):
-        """create bucket"""
+        """
+        Check if a bucket exists and get its metadata
+        
+        :param bucket_name:
+            Name of the bucket to check
+        
+        :return:
+            dict {
+                'returncode': 0 for success, -1 for failure,
+                'msg': Success/error message,
+                'bucket_info': dict containing bucket metadata {
+                    'ResponseMetadata': dict with HTTP headers,
+                    ... (other S3 response fields)
+                } or None on failure
+            }
+        
+        :example:
+            ::
+            
+                result = s3.head_bucket('my-bucket')
+                if result['returncode'] == 0:
+                    print('Bucket exists')
+                    print(f'Bucket info: {result["bucket_info"]}')
+        """
         ret = {
             'returncode': -1,
-            'msg': 'failed to create bucket',
+            'msg': 'failed to head bucket',
             'bucket_info': None
         }
         try:
@@ -497,21 +663,46 @@ class S3ObjectSystem(ObjectInterface):
         return ret
 
     def delete_bucket(self, bucket_name, forcely=False):
-        """delete bucket
-
+        """
+        Delete an S3 bucket
+        
+        :param bucket_name:
+            Name of the bucket to delete
         :param forcely:
-            if forcely is True, the bucket will be delete no matter it has
-                objects inside. Otherwise, you have to delete items inside,
-                then delete the bucket
-
+            If True, delete all objects in the bucket before deleting the bucket.
+            If False, bucket must be empty or deletion will fail.
+            Default: False
+        
+        :return:
+            dict {
+                'returncode': 0 for success, -1 for failure,
+                'msg': Success/error message
+            }
+        
+        :example:
+            ::
+            
+                # Delete empty bucket
+                result = s3.delete_bucket('my-bucket')
+                
+                # Delete bucket with all its contents
+                result = s3.delete_bucket('my-bucket', forcely=True)
+                if result['returncode'] == 0:
+                    print('Bucket deleted successfully')
         """
         ret = {
             'returncode': -1,
-            'msg': 'failed to create bucket'
+            'msg': 'failed to delete bucket'
         }
         try:
             if forcely:
+                # First check if bucket exists
                 resp = self.head_bucket(bucket_name)
+                if resp['returncode'] != 0:
+                    ret['msg'] = 'Bucket does not exist'
+                    return ret
+                
+                # List and delete all objects
                 res = self.__s3conn.list_objects(Bucket=bucket_name)
                 if 'Contents' in res:
                     for obj in res['Contents']:
@@ -521,8 +712,11 @@ class S3ObjectSystem(ObjectInterface):
                                 Key=obj['Key']
                             )
                         except Exception as error:
-                            ret['msg'] = 'faield to delete obj in bucket'
+                            ret['msg'] = 'Failed to delete object {0} in bucket: {1}'.format(
+                                obj['Key'], str(error))
                             return ret
+            
+            # Delete the bucket itself
             resp = self.__s3conn.delete_bucket(
                 Bucket=bucket_name
             )
@@ -534,7 +728,21 @@ class S3ObjectSystem(ObjectInterface):
         return ret
 
     def rename(self, frompath, topath):
-        """rename"""
+        """
+        Rename/move an object (not implemented for S3)
+        
+        :param frompath:
+            Source object key/path
+        :param topath:
+            Destination object key/path
+        
+        :return:
+            Raises NotImplementedError
+        
+        :note:
+            S3 doesn't support native rename operation. This would require
+            copy + delete operations which is not implemented here.
+        """
         raise err.NotImplementedYet('S3Object.rename not implemented yet')
 
 

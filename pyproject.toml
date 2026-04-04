@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cup"
-version = "3.2.36"
+version = "3.2.38"
 description = "A common useful python library"
 authors = ["CUP Dev Team lead by Guannan Ma <mythmgn@hotmail.com>"]
 maintainers = ["Guannan Ma <mythmgn@hotmail.com>"]

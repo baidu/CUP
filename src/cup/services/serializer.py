@@ -47,7 +47,7 @@ class BaseSerilizer(object):
     @classmethod
     def asign_uint2byte_bybits(cls, num, bits):
         """uint to byte"""
-        asign_len = bits / 8
+        asign_len = int(bits / 8)
         tmp = ''
         i = 0
         while True:
@@ -478,33 +478,53 @@ class LocalFileSerilizer(BaseSerilizer):
         """
         get open load stream
 
-        :TODO:
-            read starting from logid
+        :param start_logid:
+            If -1, will start reading from the first available log.
+            Otherwise, will find the log file containing start_logid and
+            start reading from there.
+
+        :return:
+            True on success, False on failure
         """
         load_dir = self._get_storage_dir(logid=self._logid)
         self._buffer_files = self._get_ordered_logfiles(load_dir)
         to_open = None
         if len(self._buffer_files) <= 0:
             log.warn('does not have any log record yet')
+            return False
         else:
-            if -1 == start_logid:
+            if start_logid == -1:
+                # Start from the first available log file
                 to_open = self._buffer_files[0]
+                log.info('start reading from the first log file: {0}'.format(
+                    to_open))
             else:
-                pass
-                # if self._load_stream is None:
-                #     log.error('load stream should not be None')
-                #     return False
-                # name = os.path.basename(self._load_stream.name)
-                # ind = -1
-                # try:
-                #     ind = self._buffer_files.index(name)
-                # except ValueError:
-                #     log.error('does not find the log: {0}'.format(name))
-                #     return False
-                # to_open = self._buffer_files[ind]
+                # Find the appropriate log file containing start_logid
+                to_open = self._find_logfile_by_logid(start_logid)
+                if to_open is None:
+                    log.error(
+                        'Cannot find log file containing logid: {0}'.format(
+                            start_logid))
+                    return False
+                log.info(
+                    'start reading from log file: {0} for logid: {1}'.format(
+                        to_open, start_logid))
+            
             try:
                 fname = '{0}/{1}'.format(load_dir, to_open)
                 self._load_stream = open(fname, 'rb')
+                
+                # If start_logid is specified, seek to the approximate position
+                if start_logid != -1:
+                    seek_success = self._seek_to_logid(start_logid)
+                    if not seek_success:
+                        log.error(
+                            'Failed to seek to logid {0}, closing stream'.format(
+                                start_logid))
+                        self._load_stream.close()
+                        self._load_stream = None
+                        return False
+                
                 return True
             # pylint:disable=W0703
             # need such an exception
@@ -512,10 +532,148 @@ class LocalFileSerilizer(BaseSerilizer):
                 log.error('failed to open log stream :{0}'.format(err))
                 return False
 
+    def _find_logfile_by_logid(self, target_logid):
+        """
+        Find the log file that likely contains the target_logid.
+        
+        Log files are named as 'done.{start_logid}' or 'writing.{start_logid}',
+        where start_logid is the first logid in that file.
+        
+        :param target_logid:
+            The logid we want to find
+        
+        :return:
+            The filename containing the target_logid, or None if not found
+        """
+        if not self._buffer_files:
+            return None
+        
+        # Parse log files to find their starting logids
+        file_logid_map = []
+        for fname in self._buffer_files:
+            parts = fname.split('.')
+            if len(parts) != 2:
+                continue
+            try:
+                start_logid = int(parts[1])
+                file_logid_map.append((start_logid, fname))
+            except ValueError:
+                log.warn('Invalid log file name format: {0}'.format(fname))
+                continue
+        
+        # Sort by start_logid
+        file_logid_map.sort(key=lambda x: x[0])
+        
+        # Find the file that should contain target_logid
+        # We look for the last file whose start_logid <= target_logid
+        target_file = None
+        for start_logid, fname in file_logid_map:
+            if start_logid <= target_logid:
+                target_file = fname
+            else:
+                break
+        
+        if target_file is None:
+            # target_logid is smaller than all file start_logids
+            log.error(
+                'target_logid {0} is smaller than the earliest log file'.format(
+                    target_logid))
+            return None
+        
+        # Check if target_logid might be beyond the last file
+        last_start_logid, last_fname = file_logid_map[-1]
+        if target_file == last_fname and target_logid > last_start_logid:
+            # This is fine - we're looking into the latest file
+            # which might be a 'writing' file still being appended
+            pass
+        
+        return target_file
+    
+    def _seek_to_logid(self, target_logid):
+        """
+        Seek within the current load stream to find records starting from
+        target_logid. This scans through the file sequentially to find the
+        first record with logid >= target_logid.
+        
+        :param target_logid:
+            The logid to seek to
+        
+        :return:
+            True if successfully positioned at or after target_logid,
+            False if target_logid was not found (EOF reached)
+        
+        :note:
+            This is a linear scan implementation. For better performance
+            with large log files, consider implementing binary search or
+            maintaining an index.
+        """
+        if self._load_stream is None:
+            log.error('No open stream to seek')
+            return False
+        
+        # Save current position to restore if needed
+        original_pos = self._load_stream.tell()
+        
+        # Scan through the file to find the target logid
+        found = False
+        bad_record_count = 0
+        max_bad_records = 10  # Prevent infinite loops on corrupted files
+        
+        while True:
+            ret, retval = self._try_read_one_log(self._load_stream)
+            
+            if ret == LOGFILE_EOF:
+                # Reached end of file without finding target_logid
+                log.warn(
+                    'Reached EOF while seeking logid {0}, '
+                    'target may not exist yet'.format(target_logid))
+                # Seek back to a reasonable position (end of file)
+                break
+            
+            elif ret == LOGFILE_GOOD:
+                if retval.log_id >= target_logid:
+                    # Found the target or a later logid
+                    # Seek back to this position
+                    self._load_stream.seek(original_pos)
+                    found = True
+                    log.info(
+                        'Seeked to logid {0} (found logid {1})'.format(
+                            target_logid, retval.log_id))
+                    break
+                else:
+                    # Continue scanning - haven't reached target yet
+                    original_pos = self._load_stream.tell()
+            
+            elif ret == LOGFILE_BAD_RECORD:
+                bad_record_count += 1
+                if bad_record_count >= max_bad_records:
+                    log.error(
+                        'Too many bad records while seeking, '
+                        'giving up at position {0}'.format(
+                            self._load_stream.tell()))
+                    break
+                if not self._skip_badlog:
+                    raise IOError(
+                        'Bad record encountered while seeking to logid {0}'
+                        .format(target_logid))
+                else:
+                    log.warn(
+                        'Skipping bad record while seeking to logid {0}'.format(
+                            target_logid))
+                    continue
+        
+        if not found:
+            log.warn(
+                'Could not find exact position for logid {0}, '
+                'stream positioned at EOF'.format(target_logid))
+        
+        return found
+
     def close_read(self):
         """close open4read"""
-        if self._load_stream is None:
+        if self._load_stream is not None:
             self._load_stream.close()
+            self._load_stream = None
 
     def open4read(self):
         """open logs for read"""

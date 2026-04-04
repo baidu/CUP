@@ -1,7 +1,13 @@
 # 0. Version Under Development
+## Version 3.2.37
+* [Enhancement] cup.decorators | Enhance Singleton.  You can use it in a class or a staticmethod (singleton_instance) in a class
+* [Compatibility] 
+  - executor.py switch to new Singleton decorator
+  - generator.py switch to new Singleton decorator
+  - cup_decorator.py switch to new Singleton decorator
 
 ## Versin 3.2.36
-* cup.res.mac 
+* [Bug]cup.res.mac 
     - fix get disk info error
     - fix import paramiko error
 

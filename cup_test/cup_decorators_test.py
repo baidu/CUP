@@ -20,6 +20,7 @@ class TestD:
         """
         print("test func")
     
+    @decorators.Singleton
     @staticmethod
     def singleton_instance(firstinit=False):
         if firstinit:
@@ -51,6 +52,8 @@ def test_decorator_singleton():
     a.funca()
     b: TestD = TestD()
     assert a is b
+    c = TestD.singleton_instance(firstinit=False)
+    assert c is a
     c = TestSingleTon()
     d = TestSingleTon()
     e = TestSingleTon()
